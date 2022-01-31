@@ -1,3 +1,6 @@
+## added manually
+practicalities/forms/*
+practicalities/writing_tips/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,latex,jupyternotebooks
@@ -466,4 +469,3 @@ cython_debug/
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
-
