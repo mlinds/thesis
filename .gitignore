@@ -1,6 +1,20 @@
 ## added manually
 practicalities/forms/*
 practicalities/writing_tips/*
+document/out/*
+
+### Generated Files ###
+*.swp
+/out/
+.refresh
+_minted-document/
+missfont.log
+*.log
+*.fls
+*.fdb_latexmk
+*.aux
+.~lock.document.pdf#
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,latex,jupyternotebooks
@@ -378,6 +392,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+
 
 # Flask stuff:
 instance/
