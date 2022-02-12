@@ -6,6 +6,7 @@
 % \usepackage{csquotes}
 % 
 \usepackage{booktabs}
+\usepackage{csquotes}
 % 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
