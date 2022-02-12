@@ -2,6 +2,8 @@
 practicalities/forms/*
 practicalities/writing_tips/*
 document/out/*
+*.bib
+*.pdf
 
 ### Generated Files ###
 *.swp
