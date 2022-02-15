@@ -4,6 +4,8 @@ practicalities/writing_tips/*
 document/out/*
 *.bib
 *.pdf
+*.loc
+
 
 ### Generated Files ###
 *.swp

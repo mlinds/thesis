@@ -10,42 +10,9 @@
       "editor.insertSpaces": true,
       "editor.detectIndentation": false
   },
-  "files.exclude": {
-      "out/": true,
-      ".~lock.document.pdf#": true,
-      ".refresh": true,
-      "**/*.aux": true,
-      "**/*.fls": true,
-      "**/*.fdb_latexmk": true,
-      "**/*.log": true
-  },
-  "editor.wordBasedSuggestions": false,
-  "latex-workshop.latex.recipes": [
-      {
-          "name": "make",
-          "tools": [
-            "make"
-          ]
-      }
-  ],
-  "latex-workshop.latex.tools": [
-      {
-          "name": "make",
-          "command": "make",
-          "args": [
-             "-C",
-             "%DIR%/../"
-          ]
-      }
-  ],
-  "latex-workshop.chktex.args.active": [
-      "-wall",
-      "-n22",
-      "-n30",
-      "-n46",
-      "-e16",
-      "-q"
-  ],
-  "latex-workshop.latex.outDir": "../",
-  "html.format.wrapLineLength": 100
+"html.format.wrapLineLength": 100,
+"latex-workshop.latex.autoBuild.interval": 10000,
+"latex-workshop.latex.autoClean.run": "onBuilt",
+"latex-workshop.docker.enabled": true,
+"latex-workshop.docker.image.latex": "texlive/texlive"
 }
