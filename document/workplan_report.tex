@@ -1,0 +1,58 @@
+\documentclass[a4paper,oneside]{report}
+
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage[style=authoryear]{biblatex}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[obeyDraft]{todonotes}
+\usepackage{hyperref}
+\usepackage{eso-pic}
+\usepackage{changes}
+\usepackage{xcolor}
+
+\addbibresource{linked.bib}
+
+\def \tablepath {../tables/}
+
+\title{Work Plan for Thesis}
+\author{Maxwell AE Lindsay}
+
+\newcommand\BackgroundPic{%
+\put(0,0){%
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[width=\paperwidth]{figures/cover_image.jpg}%
+
+\vfill
+}}}
+
+\begin{document}
+\AddToShipoutPicture*{\BackgroundPic}
+\input{workplan/titlepage.tex}
+
+
+% ---------------- uncomment for final report ---------- %%
+% \tableofcontents
+% \listoffigures
+% \listoftables
+% ------------------------------------------------------ %%
+% \CenterWallPaper{1}{figures/cover_image.jpg}
+
+
+
+%% Use Arabic numerals for the page numbers of the chapters.
+
+\input{workplan/workplan.tex}
+% \input{chapters/introduction.tex}
+
+%% Use letters for the chapter numbers of the appendices.
+\appendix
+
+%\input{appendix-a}
+
+\printbibliography
+
+\end{document}
+

@@ -5,15 +5,16 @@
 \usepackage[style=authoryear]{biblatex}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{todonotes}
+\usepackage[obeyDraft]{todonotes}
+\usepackage{hyperref}
 
 \addbibresource{linked.bib}
 
 \def \tablepath {../tables/}
 
 \usepackage{changes}
-\title{Title}
-\author{J.\ Random Author}
+\title{Work Plan for Thesis}
+\author{Maxwell AE Lindsay}
 
 \begin{document}
 
@@ -22,15 +23,17 @@
 \frontmatter
 \maketitle
 
-\tableofcontents
+% ---------------- uncomment for final report ---------- %%
+% \tableofcontents
+% \listoffigures
+% \listoftables
+% ------------------------------------------------------ %%
 
-\listoffigures
-
-\listoftables
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
 
-\input{chapters/introduction.tex}
+\input{workplan/workplan.tex}
+% \input{chapters/introduction.tex}
 
 %% Use letters for the chapter numbers of the appendices.
 \appendix
