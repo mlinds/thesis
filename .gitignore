@@ -5,7 +5,7 @@ document/out/*
 *.bib
 *.pdf
 *.loc
-
+/data/*
 
 ### Generated Files ###
 *.swp
