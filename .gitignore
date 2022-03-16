@@ -6,6 +6,8 @@ document/out/*
 *.pdf
 *.loc
 /data/*
+*.png
+
 
 ### Generated Files ###
 *.swp
