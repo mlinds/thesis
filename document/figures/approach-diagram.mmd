@@ -1,0 +1,15 @@
+%%{init: {'theme':'dark'}}%%
+graph TD
+    numericalmodel[Numerical Model, either <br> - SWAN <br> - Xbeach ]
+    hydvar[/Hydrodynamic: variables <br> - Hs Offshore <br> - Peak Period <br> - Offshore water level /]-->numericalmodel
+    vegvar[/Vegetation variables: <br> - Canopy height <br> - trunk thickness <br> - Root Type/Species <br> - Forest Width /] -->numericalmodel
+    morphvars[/Morpodynamic Variables: <br> - bathymetry <br> - offshore slope/] --> numericalmodel
+    numericalmodel --> |model run for each variable combination| sampleddata
+    mangroveheight[/Global Canopy Height/] 
+    sampleddata[(Synthetic Database)] -->|Train Bayesian network| estimator[Bayesian Estimator Tool]
+    dem[/Global DEM/] --> estimator
+    metocean[/Global Metocean data/] --> estimator
+    mangroveheight --> estimator
+
+    estimator --> FRoutput[/Global map/]
+    
