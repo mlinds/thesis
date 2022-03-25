@@ -1,5 +1,5 @@
-FROM mambaorg/micromamba:0.22.0
-RUN micromamba install --yes --name base --channel conda-forge \
+FROM jupyter/scipy-notebook
+RUN mamba install --yes --name base --channel conda-forge \
     jupyter     \
     jupyterlab \
     numpy \
@@ -22,5 +22,6 @@ RUN micromamba install --yes --name base --channel conda-forge \
     bottleneck \
     h5netcdf \
     dask \
+    cfgrib \
     whitebox && \
-    micromamba clean --all --yes
+    mamba clean --all --yes
