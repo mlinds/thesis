@@ -7,7 +7,7 @@ document/out/*
 *.loc
 /data/*
 *.png
-
+code/secret_vars.py
 
 ### Generated Files ###
 *.swp
