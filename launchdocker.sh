@@ -1,2 +1,1 @@
-docker run --rm -p 8888:8888 -v "$(pwd)":/home/jovyan/work mlinds/thesis-stack
-
+docker run --rm -d -p 8888:8888 -v "$(pwd)":/home/jovyan/work "mlinds/thesis-stack"
