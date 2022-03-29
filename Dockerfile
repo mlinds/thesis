@@ -24,5 +24,6 @@ RUN mamba install --yes --name base --channel conda-forge \
     h5netcdf \
     dask \
     cfgrib \
+    nco \
     whitebox && \
     mamba clean --all --yes
