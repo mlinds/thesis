@@ -5,10 +5,10 @@ document/out/*
 *.bib
 *.pdf
 *.loc
-/data/*
+/data/
 *.png
 code/secret_vars.py
-
+code/data/*
 ### Generated Files ###
 *.swp
 /out/
@@ -490,3 +490,4 @@ cython_debug/
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
+
