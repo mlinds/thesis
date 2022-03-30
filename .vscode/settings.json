@@ -1,4 +1,6 @@
 {
+
+  "python.pythonPath": "~/anaconda/envs/${env.CONDA_DEFAULT_ENV}/bin/python",
   "editor.wordWrap": "off",
   "editor.wordWrapColumn": 100,
 //   "editor.rulers": [100, 120],
@@ -14,5 +16,6 @@
 "latex-workshop.latex.autoBuild.interval": 10000,
 "latex-workshop.latex.autoClean.run": "onBuilt",
 "latex-workshop.docker.enabled": true,
-"latex-workshop.docker.image.latex": "texlive/texlive"
+"latex-workshop.docker.image.latex": "texlive/texlive",
+"python.formatting.provider": "black"
 }
