@@ -15,8 +15,9 @@ RUN mamba install --yes --name base --channel conda-forge \
     rasterio \
     tifffile \
     geemap \
-    sentinelhub \
-    sentinelsat \ 
+    # going to comment these out intil I need them
+    # sentinelhub \ 
+    # sentinelsat \ 
     xarray \
     dask \
     netCDF4 \
@@ -25,5 +26,6 @@ RUN mamba install --yes --name base --channel conda-forge \
     dask \
     cfgrib \
     nco \
-    whitebox && \
+    whitebox \
+    python-pdal && \
     mamba clean --all --yes
