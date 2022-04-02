@@ -25,6 +25,7 @@ import fiona
 import matplotlib.pyplot as plt
 
 from secret_vars import EARTHDATA_PASSWORD,EARTHDATA_USERNAME,EMAIL
+from variablelist import coverage_requested
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers['LIBKML'] = 'rw'
 from shapely.geometry import Polygon, mapping
@@ -55,7 +56,7 @@ email = EMAIL # Enter Earthdata login email
 # %%
 # Input data set short name (e.g. ATL03) of interest here.
 
-short_name = input('Input short name, e.g. ATL03, here: ')
+short_name = 'ATL03'
 
 # %%
 # Get json response from CMR collection metadata
@@ -69,8 +70,8 @@ response = requests.get(cmr_collections_url, params=params)
 results = json.loads(response.content)
 
 # Find all instances of 'version_id' in metadata and print most recent version number
-
 versions = [el['version_id'] for el in results['feed']['entry']]
+latest_version = versions[-1]
 print('The most recent version of ', short_name, ' is ', versions[-1])
 
 # %% [markdown]
@@ -79,13 +80,13 @@ print('The most recent version of ', short_name, ' is ', versions[-1])
 # %%
 #Input temporal range 
 
-start_date = input('Input start date in yyyy-MM-dd format: ')
-start_time = input('Input start time in HH:mm:ss format: ')
-end_date = input('Input end date in yyyy-MM-dd format: ')
-end_time = input('Input end time in HH:mm:ss format: ')
+# start_date = input('Input start date in yyyy-MM-dd format: ')
+# start_time = input('Input start time in HH:mm:ss format: ')
+# end_date = input('Input end date in yyyy-MM-dd format: ')
+# end_time = input('Input end time in HH:mm:ss format: ')
 
-temporal = start_date + 'T' + start_time + 'Z' + ',' + end_date + 'T' + end_time + 'Z'
-
+# temporal = start_date + 'T' + start_time + 'Z' + ',' + end_date + 'T' + end_time + 'Z'
+temporal = ''
 # %% [markdown]
 # ### Select area of interest
 # 
@@ -97,8 +98,8 @@ temporal = start_date + 'T' + start_time + 'Z' + ',' + end_date + 'T' + end_time
 # Enter spatial coordinates in decimal degrees, with west longitude and south latitude reported as negative degrees. Do not include spaces between coordinates.
 # Example over the state of Colorado: -109,37,-102,41
 
-bounding_box = input('Input spatial coordinates in the following order: lower left longitude,lower left latitude,upper right longitude,upper right latitude. Leave blank if you wish to provide a vector-based spatial file for ICESat-2 search and subsetting:')
-
+# bounding_box = input('Input spatial coordinates in the following order: lower left longitude,lower left latitude,upper right longitude,upper right latitude. Leave blank if you wish to provide a vector-based spatial file for ICESat-2 search and subsetting:')
+bounding_box = "-81.19336,25.2682,-81.06152,25.41318"
 # %% [markdown]
 # #### Shapefile input for ICESat-2 search and subset
 # 
@@ -322,14 +323,17 @@ else:
 # %%
 # Select variable subsetting
 
-if len(subagent) > 0 :
-    if len(variable_vals) > 0:
-        v = input('Variable subsetting is available. Would you like to subset a selection of variables? (y/n)')
-        if v == 'y':
-            print('The', short_name, 'variables to select from include:')
-            print(*variable_vals, sep = "\n") 
-            coverage = input('If you would like to subset by variable, copy and paste the variables you would like separated by comma (be sure to remove spaces and retain all forward slashes: ')
-        else: coverage = ''
+# if len(subagent) > 0 :
+#     if len(variable_vals) > 0:
+#         v = input('Variable subsetting is available. Would you like to subset a selection of variables? (y/n)')
+#         if v == 'y':
+#             print('The', short_name, 'variables to select from include:')
+#             print(*variable_vals, sep = "\n") 
+#             coverage = input('If you would like to subset by variable, copy and paste the variables you would like separated by comma (be sure to remove spaces and retain all forward slashes: ')
+#             print(coverage)
+#         else: coverage = ''
+
+coverage = coverage_requested
 
 #no services selected
 if reformat == '' and projection == '' and projection_parameters == '' and coverage == '' and time_var == '' and bbox == '' and Boundingshape == '':
