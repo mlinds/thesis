@@ -28,5 +28,5 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Black Code Formatter
-        uses: lgeiger/black-action@v1.0.1
+      # - name: Black Code Formatter
+        # uses: lgeiger/black-action@v1.0.1
