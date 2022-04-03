@@ -118,7 +118,7 @@ def read_ncdf(inpfile):
     beamcoords = {}
     for beam in beams_available_file:
         array = load_beam_array(inpfile, beam)
-        beamcords[beam] = get_track_geom(array)
+        beamcoords[beam] = get_track_geom(array)
         yield array
 
 
