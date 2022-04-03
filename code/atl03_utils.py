@@ -1,18 +1,15 @@
-import json
-from enum import Enum
-
 import geopandas as gpd
 import numpy as np
-import pandas as pd
 import pdal
-import xarray as xr
-from netCDF4 import Dataset, MFDataset
+from netCDF4 import Dataset
 from shapely.geometry import LineString
-from sklearn.cluster import DBSCAN
+import glob
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
 # i'm super lazy and just made this to autocomplete the beam names when typing
+
+
 class Beams:
     gt1l = "gt1l"
     gt1r = "gt1r"
@@ -24,10 +21,8 @@ class Beams:
 
 def min_dbscan_points(oned_pt_array_in):
     """Get the minimmum points parameter for DBSCAN as defined in Ma et al 2021
-
-
     Args:
-        oned_pt_array_in (np.array): Numpy Structured array as returned by PDAL pipeline
+        oned_pt_array_in (np.array): Numpy Structured array from PDAL pipeline
 
     Returns:
         float: The minimum cluster size for DBSCAN
@@ -35,18 +30,18 @@ def min_dbscan_points(oned_pt_array_in):
     N1 = oned_pt_array_in.shape[0]
     Ra = 1.5
     h = oned_pt_array_in["Z"].max() - oned_pt_array_in["Z"].min()
-    l = oned_pt_array_in["tr_d"].max() - oned_pt_array_in["tr_d"].min()
+    seglen = oned_pt_array_in["tr_d"].max() - oned_pt_array_in["tr_d"].min()
     # find the boundary for the lowest 5m
     zlim = oned_pt_array_in["Z"].min() + 5
     # anything below that gets counted as above
     N2 = oned_pt_array_in["Z"][oned_pt_array_in["Z"] < zlim].shape[0]
-    SN1 = (np.pi * Ra**2 * N1) / (h * l)
-    SN2 = (np.pi * Ra**2 * N2) / (5 * l)
+    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen)
+    SN2 = (np.pi * Ra ** 2 * N2) / (5 * seglen)
     # coerce into an int
     minpoints = int((2 * SN1 - SN2) / np.log((2 * SN1 / SN2)))
     # lowest it can return is 3
     # print(f'{l=},{N1=},{N2=},{h=}')
-    return max(minpoints,3)
+    return max(minpoints, 3)
 
 
 def get_beams(granule_netcdf):
@@ -59,11 +54,11 @@ def get_beams(granule_netcdf):
         list: List of beams
     """
     netcdfdataset = Dataset(granule_netcdf)
-    available_beams = [beam for beam in netcdfdataset.groups if beam in beamlist]
-    return available_beams
+    
+    return [beam for beam in netcdfdataset.groups if beam in beamlist]
 
 
-def load_beam_array_ncds(filename,beam):
+def load_beam_array_ncds(filename, beam):
     # write using netcdf
     pass
 
@@ -107,9 +102,9 @@ def get_track_gdf(outarray):
 def get_track_geom(outarray):
     if outarray is not None:
         ymin = outarray["Y"].min()
-        xmin = outarray["X"][outarray['Y'].argmin()]
+        xmin = outarray["X"][outarray["Y"].argmin()]
         ymax = outarray["Y"].max()
-        xmax = outarray["X"][outarray['Y'].argmax()]
+        xmax = outarray["X"][outarray["Y"].argmax()]
         coords = [
             [xmin, ymin],
             [xmax, ymax],
@@ -119,27 +114,25 @@ def get_track_geom(outarray):
 
 
 def read_ncdf(inpfile):
-    beams_available_file = get_beams(inp_file)
-    for beam in beamlist:
+    beams_available_file = get_beams(inpfile)
+    beamcoords = {}
+    for beam in beams_available_file:
         array = load_beam_array(inpfile, beam)
         beamcords[beam] = get_track_geom(array)
         yield array
-from os import listdir
-import glob
 
 
 def make_gdf_from_ncdf_files(directory):
     # change to return a gdf like it says on the tin
     outdict = {}
-    for file in glob.iglob(directory):
+    for h5file in glob.iglob(directory):
         beamdict = {}
-        filefriendlyname = str(file.split('/')[3]).strip('.h5')
-        for beam in get_beams(file):
-            print(f'getting {beam} from {file}')
-            point_array = load_beam_array(file,beam)
+        filefriendlyname = str(h5file.split("/")[3]).strip(".h5")
+        for beam in get_beams(h5file):
+            print(f"getting {beam} from {h5file}")
+            point_array = load_beam_array(h5file, beam)
             track_geom = get_track_geom(point_array)
             beamdict[beam] = track_geom
         outdict[filefriendlyname] = beamdict
 
     return outdict
-        
