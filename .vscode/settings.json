@@ -17,5 +17,7 @@
 "latex-workshop.latex.autoClean.run": "onBuilt",
 "latex-workshop.docker.enabled": true,
 "latex-workshop.docker.image.latex": "texlive/texlive",
-"python.formatting.provider": "black"
+"python.formatting.provider": "black",
+"python.linting.flake8Enabled": true,
+"python.linting.enabled": true
 }
