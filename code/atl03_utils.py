@@ -1,15 +1,17 @@
 import geopandas as gpd
 import numpy as np
-import pdal
+# import pdal
 from netCDF4 import Dataset
 from shapely.geometry import LineString
 import glob
+import pandas as pd
+import logging
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
+logger = logging.getLogger('ATL03_Data_cleaning')
+
 # i'm super lazy and just made this to autocomplete the beam names when typing
-
-
 class Beams:
     gt1l = "gt1l"
     gt1r = "gt1r"
@@ -19,7 +21,7 @@ class Beams:
     gt3r = "gt3r"
 
 
-def min_dbscan_points(oned_pt_array_in):
+def min_dbscan_points(oned_pt_array_in,Ra,hscale):
     """Get the minimmum points parameter for DBSCAN as defined in Ma et al 2021
     Args:
         oned_pt_array_in (np.array): Numpy Structured array from PDAL pipeline
@@ -27,21 +29,21 @@ def min_dbscan_points(oned_pt_array_in):
     Returns:
         float: The minimum cluster size for DBSCAN
     """
+    h2 = 5
     N1 = oned_pt_array_in.shape[0]
-    Ra = 1.5
     h = oned_pt_array_in["Z"].max() - oned_pt_array_in["Z"].min()
-    seglen = oned_pt_array_in["tr_d"].max() - oned_pt_array_in["tr_d"].min()
+    seglen = oned_pt_array_in["dist_or"].max() - oned_pt_array_in["dist_or"].min()
     # find the boundary for the lowest 5m
-    zlim = oned_pt_array_in["Z"].min() + 5
+    zlim = oned_pt_array_in["Z"].min() + h2
     # anything below that gets counted as above
     N2 = oned_pt_array_in["Z"][oned_pt_array_in["Z"] < zlim].shape[0]
-    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen)
-    SN2 = (np.pi * Ra ** 2 * N2) / (5 * seglen)
+    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen/hscale)
+    SN2 = (np.pi * Ra ** 2 * N2) / (h2 * seglen/hscale)
     # coerce into an int
     minpoints = int((2 * SN1 - SN2) / np.log((2 * SN1 / SN2)))
     # lowest it can return is 3
-    # print(f'{l=},{N1=},{N2=},{h=}')
-    return max(minpoints, 3)
+    print(f'{seglen=},{N1=},{N2=},{h=}')
+    return max(minpoints, 5)
 
 
 def get_beams(granule_netcdf):
@@ -59,8 +61,21 @@ def get_beams(granule_netcdf):
 
 
 def load_beam_array_ncds(filename, beam):
-    # write using netcdf
-    pass
+    """ 
+    Updated implementiation of the load_beam_array function which uses netCDF4 library instead of PDAL. 
+    about 20% faster than PDAL so I need to change the API to only use this/
+    """
+    try:
+        ds = Dataset(filename)
+        Y = ds.groups[beam].groups['heights'].variables['lat_ph'][:]
+        X = ds.groups[beam].groups['heights'].variables['lon_ph'][:]
+        Z = ds.groups[beam].groups['heights'].variables['h_ph'][:]
+        date = ds.getncattr('time_coverage_start')
+        dtype = np.dtype([('X', '<f8'), ('Y', '<f8'), ('Z', '<f8')],metadata={'st_date':date})
+        return np.rec.array((X,Y,Z),dtype=dtype)
+    except KeyError:
+        logger.debug("Beam %s missing from %s",beam,)
+        return None
 
 
 # speedtest this vs other netcdf
@@ -117,22 +132,25 @@ def read_ncdf(inpfile):
     beams_available_file = get_beams(inpfile)
     beamcoords = {}
     for beam in beams_available_file:
-        array = load_beam_array(inpfile, beam)
+        array = load_beam_array_ncds(inpfile, beam)
         beamcoords[beam] = get_track_geom(array)
         yield array
 
 
 def make_gdf_from_ncdf_files(directory):
-    # change to return a gdf like it says on the tin
     outdict = {}
     for h5file in glob.iglob(directory):
         beamdict = {}
         filefriendlyname = str(h5file.split("/")[3]).strip(".h5")
         for beam in get_beams(h5file):
-            print(f"getting {beam} from {h5file}")
-            point_array = load_beam_array(h5file, beam)
+            # print(f"getting {beam} from {h5file}")
+            point_array = load_beam_array_ncds(h5file, beam)
             track_geom = get_track_geom(point_array)
             beamdict[beam] = track_geom
-        outdict[filefriendlyname] = beamdict
 
-    return outdict
+        outdict[filefriendlyname] = beamdict
+        # st_rgt = Dataset(h5file).groups['ancilliary_data'].variables['start_rgt'][:]
+
+    innerdf = pd.DataFrame.from_dict(outdict,orient='index').stack()
+    trackgdf = gpd.GeoDataFrame(innerdf,crs='EPSG:7912').rename(columns={0:'geometry'}).set_geometry('geometry')
+    return trackgdf
