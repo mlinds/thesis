@@ -26,6 +26,7 @@ class Beams:
 
 def min_dbscan_points(oned_pt_array_in, Ra, hscale):
     """Get the minimmum points parameter for DBSCAN as defined in Ma et al 2021
+
     Args:
         oned_pt_array_in (np.array): Numpy Structured array from PDAL pipeline
 
@@ -65,8 +66,9 @@ def get_beams(granule_netcdf):
 
 def load_beam_array_ncds(filename, beam):
     """
-    Updated implementiation of the load_beam_array function which uses netCDF4 library instead of PDAL.
-    about 20% faster than PDAL so I need to change the API to only use this/
+    Updated implementiation of the load_beam_array 
+    function which uses netCDF4 library instead of PDAL.
+    about 20% faster than PDAL so I need to change the API to only use this
     """
     try:
         ds = Dataset(filename)
@@ -78,6 +80,7 @@ def load_beam_array_ncds(filename, beam):
             [("X", "<f8"), ("Y", "<f8"), ("Z", "<f8")], metadata={"st_date": date}
         )
         return np.rec.array((X, Y, Z), dtype=dtype)
+    # u if we can't find a certain beam, just return None
     except KeyError:
         logger.debug(
             "Beam %s missing from %s",
@@ -128,7 +131,8 @@ def make_gdf_from_ncdf_files(directory):
             beamdict[beam] = track_geom
 
         outdict[filefriendlyname] = beamdict
-        # st_rgt = Dataset(h5file).groups['ancilliary_data'].variables['start_rgt'][:]
+        # st_rgt = Dataset(h5file).groups
+        # ['ancilliary_data'].variables['start_rgt'][:]
 
     innerdf = pd.DataFrame.from_dict(outdict, orient="index").melt()
     trackgdf = (
