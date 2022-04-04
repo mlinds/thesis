@@ -1,5 +1,6 @@
 import geopandas as gpd
 import numpy as np
+
 # import pdal
 from netCDF4 import Dataset
 from shapely.geometry import LineString
@@ -9,9 +10,11 @@ import logging
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
-logger = logging.getLogger('ATL03_Data_cleaning')
+logger = logging.getLogger("ATL03_Data_cleaning")
 
 # i'm super lazy and just made this to autocomplete the beam names when typing
+
+
 class Beams:
     gt1l = "gt1l"
     gt1r = "gt1r"
@@ -21,7 +24,7 @@ class Beams:
     gt3r = "gt3r"
 
 
-def min_dbscan_points(oned_pt_array_in,Ra,hscale):
+def min_dbscan_points(oned_pt_array_in, Ra, hscale):
     """Get the minimmum points parameter for DBSCAN as defined in Ma et al 2021
     Args:
         oned_pt_array_in (np.array): Numpy Structured array from PDAL pipeline
@@ -37,12 +40,12 @@ def min_dbscan_points(oned_pt_array_in,Ra,hscale):
     zlim = oned_pt_array_in["Z"].min() + h2
     # anything below that gets counted as above
     N2 = oned_pt_array_in["Z"][oned_pt_array_in["Z"] < zlim].shape[0]
-    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen/hscale)
-    SN2 = (np.pi * Ra ** 2 * N2) / (h2 * seglen/hscale)
+    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen / hscale)
+    SN2 = (np.pi * Ra ** 2 * N2) / (h2 * seglen / hscale)
     # coerce into an int
     minpoints = int((2 * SN1 - SN2) / np.log((2 * SN1 / SN2)))
     # lowest it can return is 3
-    print(f'{seglen=},{N1=},{N2=},{h=}')
+    print(f"{seglen=},{N1=},{N2=},{h=}")
     return max(minpoints, 5)
 
 
@@ -56,25 +59,30 @@ def get_beams(granule_netcdf):
         list: List of beams
     """
     netcdfdataset = Dataset(granule_netcdf)
-    
+
     return [beam for beam in netcdfdataset.groups if beam in beamlist]
 
 
 def load_beam_array_ncds(filename, beam):
-    """ 
-    Updated implementiation of the load_beam_array function which uses netCDF4 library instead of PDAL. 
+    """
+    Updated implementiation of the load_beam_array function which uses netCDF4 library instead of PDAL.
     about 20% faster than PDAL so I need to change the API to only use this/
     """
     try:
         ds = Dataset(filename)
-        Y = ds.groups[beam].groups['heights'].variables['lat_ph'][:]
-        X = ds.groups[beam].groups['heights'].variables['lon_ph'][:]
-        Z = ds.groups[beam].groups['heights'].variables['h_ph'][:]
-        date = ds.getncattr('time_coverage_start')
-        dtype = np.dtype([('X', '<f8'), ('Y', '<f8'), ('Z', '<f8')],metadata={'st_date':date})
-        return np.rec.array((X,Y,Z),dtype=dtype)
+        Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
+        X = ds.groups[beam].groups["heights"].variables["lon_ph"][:]
+        Z = ds.groups[beam].groups["heights"].variables["h_ph"][:]
+        date = ds.getncattr("time_coverage_start")
+        dtype = np.dtype(
+            [("X", "<f8"), ("Y", "<f8"), ("Z", "<f8")], metadata={"st_date": date}
+        )
+        return np.rec.array((X, Y, Z), dtype=dtype)
     except KeyError:
-        logger.debug("Beam %s missing from %s",beam,)
+        logger.debug(
+            "Beam %s missing from %s",
+            beam,
+        )
         return None
 
 
@@ -151,6 +159,10 @@ def make_gdf_from_ncdf_files(directory):
         outdict[filefriendlyname] = beamdict
         # st_rgt = Dataset(h5file).groups['ancilliary_data'].variables['start_rgt'][:]
 
-    innerdf = pd.DataFrame.from_dict(outdict,orient='index').stack()
-    trackgdf = gpd.GeoDataFrame(innerdf,crs='EPSG:7912').rename(columns={0:'geometry'}).set_geometry('geometry')
+    innerdf = pd.DataFrame.from_dict(outdict, orient="index").stack()
+    trackgdf = (
+        gpd.GeoDataFrame(innerdf, crs="EPSG:7912")
+        .rename(columns={0: "geometry"})
+        .set_geometry("geometry")
+    )
     return trackgdf
