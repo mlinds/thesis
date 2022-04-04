@@ -633,5 +633,6 @@ def complete_nasa_download(product,bbox_in,batchname):
     # %% [markdown]
     # ### To review, we have explored data availability and volume over a region and time of interest, discovered and selected data customization options, constructed an API endpoint for our request, and downloaded data directly to our local machine. You are welcome to request different data sets, areas of interest, and/or customization services by re-running the notebook or starting again at the 'Select a data set of interest' step above.
 
+
 if __name__ == '__main__':
-    complete_nasa_download('ATL03', "-80.96244,25.11870,-80.70600,25.25029", 'ns_test')
+    complete_nasa_download('ATL03',"-81.03522,24.57041,-80.98182,24.81407", '_marathon')
