@@ -1,4 +1,5 @@
 ## added manually
+code/download_examples/
 practicalities/forms/*
 practicalities/writing_tips/*
 document/out/*
@@ -491,3 +492,32 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 
+code/OTPS_model/OTPS/constit.h
+code/OTPS_model/OTPS/COPYRIGHT
+code/OTPS_model/OTPS/dumsetup
+code/OTPS_model/OTPS/extract_HC_sample_out
+code/OTPS_model/OTPS/extract_HC.f90
+code/OTPS_model/OTPS/extract_local_model.f90
+code/OTPS_model/OTPS/lat_lon
+code/OTPS_model/OTPS/lat_lon_time
+code/OTPS_model/OTPS/makefile
+code/OTPS_model/OTPS/predict_tide_sample_out
+code/OTPS_model/OTPS/predict_tide.f90
+code/OTPS_model/OTPS/README
+code/OTPS_model/OTPS/setup.atl
+code/OTPS_model/OTPS/setup.inp
+code/OTPS_model/OTPS/setup.local
+code/OTPS_model/OTPS/subs.f90
+code/OTPS_model/OTPS/time
+code/OTPS_model/OTPS/DATA/load_file
+code/OTPS_model/OTPS/DATA/Model_Hawaii
+code/OTPS_model/OTPS/DATA/Model_tpxo9_atlas_v5
+code/OTPS_model/OTPS/DATA/Model_tpxo9.v2
+code/OTPS_model/OTPS/matlab/grd_in.m
+code/OTPS_model/OTPS/matlab/grd_out.m
+code/OTPS_model/OTPS/matlab/h_in.m
+code/OTPS_model/OTPS/matlab/h_out.m
+code/OTPS_model/OTPS/matlab/mk_lltime.m
+code/OTPS_model/OTPS/matlab/tpxo_atlas2local.m
+code/OTPS_model/OTPS/matlab/u_in.m
+code/OTPS_model/OTPS/matlab/uv_out.m
