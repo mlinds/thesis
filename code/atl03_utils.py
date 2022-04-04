@@ -86,35 +86,6 @@ def load_beam_array_ncds(filename, beam):
         return None
 
 
-# speedtest this vs other netcdf
-def load_beam_array(filename, beam):
-    """Generate a structured numpy array from a netcdf file for a given beam
-
-    Args:
-        filename (Pathlike): Path to netCDF file
-        beam (str): beam name
-
-    Returns:
-        np.ndarray: numpy structured array of individual points
-    """
-    dimensions_dist = {
-        "X": f"{beam}/heights/lon_ph",
-        "Y": f"{beam}/heights/lat_ph",
-        "Z": f"{beam}/heights/h_ph",
-        "tr_d": f"{beam}/heights/dist_ph_along",
-        # "time":f"{beam}/heights/delta_time",
-    }
-    pipelineobject = pdal.Reader.hdf(
-        filename=filename, dimensions=dimensions_dist
-    ).pipeline()
-    try:
-        pipelineobject.execute()
-        return pipelineobject.arrays[0]
-    except RuntimeError:
-        print(f"Beam {beam} missing from {filename}")
-        return None
-
-
 def get_track_gdf(outarray):
     linegeom = get_track_geom(outarray)
     return gpd.GeoDataFrame(
