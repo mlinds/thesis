@@ -130,7 +130,7 @@ def make_gdf_from_ncdf_files(directory):
         outdict[filefriendlyname] = beamdict
         # st_rgt = Dataset(h5file).groups['ancilliary_data'].variables['start_rgt'][:]
 
-    innerdf = pd.DataFrame.from_dict(outdict, orient="index").stack()
+    innerdf = pd.DataFrame.from_dict(outdict, orient="index").melt()
     trackgdf = (
         gpd.GeoDataFrame(innerdf, crs="EPSG:7912")
         .rename(columns={0: "geometry"})
