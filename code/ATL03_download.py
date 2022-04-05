@@ -635,4 +635,4 @@ def complete_nasa_download(product,bbox_in,batchname):
 
 
 if __name__ == '__main__':
-    complete_nasa_download('ATL03',"-81.03522,24.57041,-80.98182,24.81407", '_marathon')
+    complete_nasa_download('ATL03',"-81.12408,24.57966,-80.89070,24.81094", '_all_key')
