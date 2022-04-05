@@ -47,7 +47,7 @@ def min_dbscan_points(oned_pt_array_in, Ra, hscale):
     minpoints = int((2 * SN1 - SN2) / np.log((2 * SN1 / SN2)))
     # lowest it can return is 3
     print(f"{seglen=},{N1=},{N2=},{h=}")
-    return max(minpoints, 5)
+    return max(minpoints, 3)
 
 
 def get_beams(granule_netcdf):
@@ -66,7 +66,7 @@ def get_beams(granule_netcdf):
 
 def load_beam_array_ncds(filename, beam):
     """
-    Updated implementiation of the load_beam_array 
+    Updated implementiation of the load_beam_array
     function which uses netCDF4 library instead of PDAL.
     about 20% faster than PDAL so I need to change the API to only use this
     """
@@ -87,6 +87,8 @@ def load_beam_array_ncds(filename, beam):
             beam,
         )
         return None
+    finally:
+        ds.close()
 
 
 def get_track_gdf(outarray):
