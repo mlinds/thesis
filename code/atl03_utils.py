@@ -41,8 +41,8 @@ def min_dbscan_points(oned_pt_array_in, Ra, hscale):
     zlim = oned_pt_array_in["Z"].min() + h2
     # anything below that gets counted as above
     N2 = oned_pt_array_in["Z"][oned_pt_array_in["Z"] < zlim].shape[0]
-    SN1 = (np.pi * Ra ** 2 * N1) / (h * seglen / hscale)
-    SN2 = (np.pi * Ra ** 2 * N2) / (h2 * seglen / hscale)
+    SN1 = (np.pi * Ra**2 * N1) / (h * seglen / hscale)
+    SN2 = (np.pi * Ra**2 * N2) / (h2 * seglen / hscale)
     # coerce into an int
     minpoints = int((2 * SN1 - SN2) / np.log((2 * SN1 / SN2)))
     # lowest it can return is 3
@@ -59,27 +59,61 @@ def get_beams(granule_netcdf):
     Returns:
         list: List of beams
     """
-    netcdfdataset = Dataset(granule_netcdf)
-
-    return [beam for beam in netcdfdataset.groups if beam in beamlist]
+    # print(granule_netcdf)
+    try:
+        with Dataset(granule_netcdf) as netcdfdataset:
+            return [beam for beam in netcdfdataset.groups if beam in beamlist]
+    # i  know pass in an except block is bad coding but i need to find a better way of handling this
+    except AttributeError:
+        pass
 
 
 def load_beam_array_ncds(filename, beam):
     """
-    Updated implementiation of the load_beam_array
-    function which uses netCDF4 library instead of PDAL.
-    about 20% faster than PDAL so I need to change the API to only use this
+    returns an array of photon-level details for a given file and beam name. Granule-level metadata is also included with the array
     """
+    ds = Dataset(filename)
+
+    # get the beam metadata
+    stdate = ds.groups["ancillary_data"].variables["data_start_utc"][:]
+    enddate = ds.groups["ancillary_data"].variables["data_end_utc"][:]
+    strgt = int(ds.groups["ancillary_data"].variables["start_rgt"][:])
+    endrgt = int(ds.groups["ancillary_data"].variables["end_rgt"][:])
+    granule_quality = int(
+        ds.groups["quality_assessment"].variables["qa_granule_pass_fail"][:]
+    )
+
     try:
-        ds = Dataset(filename)
+        # get array-type data
         Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
         X = ds.groups[beam].groups["heights"].variables["lon_ph"][:]
         Z = ds.groups[beam].groups["heights"].variables["h_ph"][:]
-        date = ds.getncattr("time_coverage_start")
+        # based on the data documentation, the dates are referenced to the 2018-01-01 so the
+        # datetimes are shifted accordingly
+        delta_time = ds.groups[beam].groups["heights"].variables["delta_time"][
+            :
+        ] + np.datetime64("2018-01-01T00:00:00.0000000").astype("<f8")
+        ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
+        land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
+
         dtype = np.dtype(
-            [("X", "<f8"), ("Y", "<f8"), ("Z", "<f8")], metadata={"st_date": date}
+            [
+                ("X", "<f8"),
+                ("Y", "<f8"),
+                ("Z", "<f8"),
+                ("delta_time", "<M8[ns]"),
+                ("oc_sig_conf", "<i4"),
+                ("land_sig_conf", "<i4"),
+            ],
+            metadata={
+                "st_date": stdate,
+                "end_date": enddate,
+                "QA_PF": granule_quality,
+                "Start RGT": strgt,
+                "End RGT": endrgt,
+            },
         )
-        return np.rec.array((X, Y, Z), dtype=dtype)
+        return np.rec.array((X, Y, Z, delta_time, ocean_sig, land_sig), dtype=dtype)
     # u if we can't find a certain beam, just return None
     except KeyError:
         logger.debug(
@@ -87,6 +121,7 @@ def load_beam_array_ncds(filename, beam):
             beam,
         )
         return None
+    # gotta remember to close the dataset
     finally:
         ds.close()
 
@@ -121,25 +156,57 @@ def read_ncdf(inpfile):
         yield array
 
 
+def get_beam_data(h5file, beam):
+    point_array = load_beam_array_ncds(h5file, beam)
+    track_geom = get_track_geom(point_array)
+
+    return (track_geom,)
+
+
 def make_gdf_from_ncdf_files(directory):
-    outdict = {}
+    # TODO fix this unreadable function
+    beamlist = []
+    datelist = []
+    rgtlist = []
+    filenamelist = []
+    geomlist = []
     for h5file in glob.iglob(directory):
-        beamdict = {}
-        filefriendlyname = str(h5file.split("/")[3]).strip(".h5")
+        # TODO change to use pathlib to make this more readable
+
+        filefriendlyname = str(h5file.split("/")[-1]).strip(".nc")
+
+        # all list writes need to be inside this loop
         for beam in get_beams(h5file):
-            # print(f"getting {beam} from {h5file}")
+            # get the point array and make it into a linestring
             point_array = load_beam_array_ncds(h5file, beam)
+
             track_geom = get_track_geom(point_array)
-            beamdict[beam] = track_geom
 
-        outdict[filefriendlyname] = beamdict
-        # st_rgt = Dataset(h5file).groups
-        # ['ancilliary_data'].variables['start_rgt'][:]
+            # write to all the lists
+            # we can stack this into a multiindex later
 
-    innerdf = pd.DataFrame.from_dict(outdict, orient="index").melt()
-    trackgdf = (
-        gpd.GeoDataFrame(innerdf, crs="EPSG:7912")
-        .rename(columns={0: "geometry"})
-        .set_geometry("geometry")
-    )
-    return trackgdf
+            filenamelist.append(filefriendlyname)
+            beamlist.append(beam)
+            geomlist.append(track_geom)
+
+            if point_array is None:
+                rgtlist.append(np.NaN)
+                datelist.append(np.NaN)
+            else:
+                rgt = point_array.dtype.metadata["Start RGT"]
+                date = point_array.dtype.metadata["st_date"]
+                rgtlist.append(rgt)
+                datelist.append(date)
+
+    df = gpd.GeoDataFrame(
+        {
+            "file": filenamelist,
+            "geometry": geomlist,
+            "Reference Ground Track": rgtlist,
+            "date": datelist,
+            "beam": beamlist,
+        },
+        crs = 'EPSG:7912',
+        geometry='geometry'
+    ).set_index(['file','beam'])
+    return df
