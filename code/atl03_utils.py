@@ -5,7 +5,6 @@ import numpy as np
 from netCDF4 import Dataset
 from shapely.geometry import LineString
 import glob
-import pandas as pd
 import logging
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
@@ -206,7 +205,7 @@ def make_gdf_from_ncdf_files(directory):
             "date": datelist,
             "beam": beamlist,
         },
-        crs = 'EPSG:7912',
-        geometry='geometry'
-    ).set_index(['file','beam'])
+        crs="EPSG:7912",
+        geometry="geometry",
+    ).set_index(["file", "beam"])
     return df
