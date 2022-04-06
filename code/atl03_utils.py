@@ -1,11 +1,13 @@
 import geopandas as gpd
 import numpy as np
+import pandas as pd
 
 # import pdal
 from netCDF4 import Dataset
 from shapely.geometry import LineString
 import glob
 import logging
+from cftime import num2pydate
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
@@ -69,8 +71,12 @@ def get_beams(granule_netcdf):
 
 def load_beam_array_ncds(filename, beam):
     """
-    returns an array of photon-level details for a given file and beam name. Granule-level metadata is also included with the array
+    returns an array of photon-level details for a given file and beam name. 
+
+    Granule-level metadata is also included with the array
     """
+    # this function is a mess and should probably abstracted into smaller functions
+
     ds = Dataset(filename)
 
     # get the beam metadata
@@ -81,25 +87,57 @@ def load_beam_array_ncds(filename, beam):
     granule_quality = int(
         ds.groups["quality_assessment"].variables["qa_granule_pass_fail"][:]
     )
+    
 
+    # this is in a try block because it raises a keyerror if the beam is missing from the 
     try:
         # get array-type data
         Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
         X = ds.groups[beam].groups["heights"].variables["lon_ph"][:]
         Z = ds.groups[beam].groups["heights"].variables["h_ph"][:]
+       
         # based on the data documentation, the dates are referenced to the 2018-01-01 so the
         # datetimes are shifted accordingly
-        delta_time = ds.groups[beam].groups["heights"].variables["delta_time"][
-            :
-        ] + np.datetime64("2018-01-01T00:00:00.0000000").astype("<f8")
+        delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
+        delta_time = num2pydate(delta_time_s,'seconds since 2018-01-01')
+        
         ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
         land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
+        
+        # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
+        # need to deal with geophysical variable time differenently since they're captured at a different rate
+        delta_time_geophys_s = ds.groups[beam].groups["geophys_corr"].variables["delta_time"][:]
+        delta_time_geophys = num2pydate(delta_time_geophys_s,'seconds since 2018-01-01')
+        
+        # to index these we need to set the first value to the first value of the 
+        # photon returns. This is because the photon time values start in the middle of a segment
+        
+        delta_time_geophys[0] = delta_time[0]
+        
+        # get the geophysical variables
+        geo_f2m = ds.groups[beam].groups['geophys_corr'].variables['geoid_free2mean'][:]
+        geoid = ds.groups[beam].groups['geophys_corr'].variables['geoid'][:]
+        tide_ocean = ds.groups[beam].groups['geophys_corr'].variables['tide_ocean'][:]
+        
+        # combine the corrections into one
+        additive_correction = -1*geoid + geo_f2m + tide_ocean
+        
+        # to assign the correct correction value, we need to get the correction at a certain time
+        # to do this we can align them using the pandas asof
+        
+        # switch into pandas to use as_of function
+        zcorr_series = pd.Series(additive_correction,index=delta_time_geophys)
+        
+        # make an array of the correction by time
+        z_corr = zcorr_series.asof(delta_time).values
+        
 
         dtype = np.dtype(
             [
                 ("X", "<f8"),
                 ("Y", "<f8"),
                 ("Z", "<f8"),
+                ("Z_g","<f8"),
                 ("delta_time", "<M8[ns]"),
                 ("oc_sig_conf", "<i4"),
                 ("land_sig_conf", "<i4"),
@@ -112,8 +150,8 @@ def load_beam_array_ncds(filename, beam):
                 "End RGT": endrgt,
             },
         )
-        return np.rec.array((X, Y, Z, delta_time, ocean_sig, land_sig), dtype=dtype)
-    # u if we can't find a certain beam, just return None
+        return np.rec.array((X, Y, Z, Z+z_corr, delta_time, ocean_sig, land_sig), dtype=dtype)
+    # if we can't find a certain beam, just return None
     except KeyError:
         logger.debug(
             "Beam %s missing from %s",
@@ -164,6 +202,7 @@ def get_beam_data(h5file, beam):
 
 def make_gdf_from_ncdf_files(directory):
     # TODO fix this unreadable function
+    # try to decrease the indent level - maybe try itertools?    
     beamlist = []
     datelist = []
     rgtlist = []
