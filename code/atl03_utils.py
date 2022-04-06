@@ -37,9 +37,7 @@ def min_dbscan_points(oned_pt_array_in, Ra, hscale):
     h2 = 5
     N1 = oned_pt_array_in.shape[0]
     h = oned_pt_array_in["Z"].max() - oned_pt_array_in["Z"].min()
-    seglen = (
-        oned_pt_array_in["dist_or"].max() - oned_pt_array_in["dist_or"].min()
-    )
+    seglen = oned_pt_array_in["dist_or"].max() - oned_pt_array_in["dist_or"].min()
     # find the boundary for the lowest 5m
     zlim = oned_pt_array_in["Z"].min() + h2
     # anything below that gets counted as above
@@ -99,17 +97,11 @@ def load_beam_array_ncds(filename, beam):
 
         # based on the data documentation, the dates are referenced to the 2018-01-01 so the
         # datetimes are shifted accordingly
-        delta_time_s = (
-            ds.groups[beam].groups["heights"].variables["delta_time"][:]
-        )
+        delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
         delta_time = num2pydate(delta_time_s, "seconds since 2018-01-01")
 
-        ocean_sig = (
-            ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
-        )
-        land_sig = (
-            ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
-        )
+        ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
+        land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
 
         # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
         # need to deal with geophysical variable time differenently since they're captured at a different rate
@@ -126,15 +118,9 @@ def load_beam_array_ncds(filename, beam):
         delta_time_geophys[0] = delta_time[0]
 
         # get the geophysical variables
-        geo_f2m = (
-            ds.groups[beam]
-            .groups["geophys_corr"]
-            .variables["geoid_free2mean"][:]
-        )
+        geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
         geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:]
-        tide_ocean = (
-            ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
-        )
+        tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
 
         # combine the corrections into one
         additive_correction = -1 * geoid + geo_f2m + tide_ocean

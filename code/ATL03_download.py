@@ -1,4 +1,4 @@
-# This is adapted from a notebook on the nasa website, and is intended to be run interactively. Therefore there is a lot of extra code to handle the inputs 
+# This is adapted from a notebook on the nasa website, and is intended to be run interactively. Therefore there is a lot of extra code to handle the inputs
 # from https://raw.githubusercontent.com/nsidc/NSIDC-Data-Access-Notebook/master/notebooks/Customize%20and%20Access%20NSIDC%20Data.ipynb
 # it might be difficult to understand and debug, just be warned
 
@@ -39,7 +39,8 @@ from shapely.geometry.polygon import orient
 from statistics import mean
 from requests.auth import HTTPBasicAuth
 
-def complete_nasa_download(product,bbox_in,batchname):
+
+def complete_nasa_download(product, bbox_in, batchname):
     # %% [markdown]
     # ### Input Earthdata Login credentials
     #
@@ -190,7 +191,9 @@ def complete_nasa_download(product,bbox_in,batchname):
     granules = []
     headers = {"Accept": "application/json"}
     while True:
-        response = requests.get(granule_search_url, params=search_params, headers=headers)
+        response = requests.get(
+            granule_search_url, params=search_params, headers=headers
+        )
         results = json.loads(response.content)
 
         if len(results["feed"]["entry"]) == 0:
@@ -211,7 +214,6 @@ def complete_nasa_download(product,bbox_in,batchname):
         "over my area and time of interest.",
     )
 
-
     # %% [markdown]
     # ### Determine the average size of those granules as well as the total volume
 
@@ -221,7 +223,6 @@ def complete_nasa_download(product,bbox_in,batchname):
     print(
         f"The average size of each granule is {mean(granule_sizes):.2f} MB and the total size of all {len(granules)} granules is {sum(granule_sizes):.2f} MB"
     )
-
 
     # %% [markdown]
     # Note that subsetting, reformatting, or reprojecting can alter the size of the granules if those services are applied to your request.
@@ -240,9 +241,7 @@ def complete_nasa_download(product,bbox_in,batchname):
 
     from xml.etree import ElementTree as ET
 
-    capability_url = (
-        f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{short_name}.{latest_version}.xml"
-    )
+    capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{short_name}.{latest_version}.xml"
 
     # Create session to store cookie and pass credentials to capabilities url
 
@@ -263,7 +262,8 @@ def complete_nasa_download(product,bbox_in,batchname):
         ]
         variables_raw = [variables[i]["value"] for i in range(len(variables))]
         variables_join = [
-            "".join(("/", v)) if v.startswith("/") == False else v for v in variables_raw
+            "".join(("/", v)) if v.startswith("/") == False else v
+            for v in variables_raw
         ]
         variable_vals = [v.replace(":", "/") for v in variables_join]
 
@@ -296,7 +296,7 @@ def complete_nasa_download(product,bbox_in,batchname):
         subdict = subagent[0]
         if subdict["spatialSubsetting"] == "true" and aoi == "1":
             Boundingshape = ""
-            ss = 'y'
+            ss = "y"
             if ss == "y":
                 bbox = bounding_box
             else:
@@ -311,9 +311,11 @@ def complete_nasa_download(product,bbox_in,batchname):
             else:
                 Boundingshape = ""
         if subdict["temporalSubsetting"] == "true":
-            ts = 'n'
+            ts = "n"
             if ts == "y":
-                time_var = start_date + "T" + start_time + "," + end_date + "T" + end_time
+                time_var = (
+                    start_date + "T" + start_time + "," + end_date + "T" + end_time
+                )
             else:
                 time_var = ""
         else:
@@ -330,7 +332,9 @@ def complete_nasa_download(product,bbox_in,batchname):
             projection = ""
             projection_parameters = ""
         if len(projections) > 0:
-            valid_proj = []  # select reprojection options based on reformatting selection
+            valid_proj = (
+                []
+            )  # select reprojection options based on reformatting selection
             for i in range(len(projections)):
                 if "excludeFormat" in projections[i]:
                     exclformats_str = projections[i]["excludeFormat"]
@@ -360,7 +364,9 @@ def complete_nasa_download(product,bbox_in,batchname):
                 else:
                     projection_parameters = ""
             else:
-                print("No reprojection options are supported with your requested format")
+                print(
+                    "No reprojection options are supported with your requested format"
+                )
                 projection = ""
                 projection_parameters = ""
         else:
@@ -500,7 +506,7 @@ def complete_nasa_download(product,bbox_in,batchname):
     # %%
     # Create an output folder if the folder does not already exist.
 
-    path = str(os.getcwd() + "/Outputs"+batchname)
+    path = str(os.getcwd() + "/Outputs" + batchname)
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -536,7 +542,9 @@ def complete_nasa_download(product,bbox_in,batchname):
 
             # Find order status
             request_response = session.get(statusURL)
-            print("HTTP response from order response URL: ", request_response.status_code)
+            print(
+                "HTTP response from order response URL: ", request_response.status_code
+            )
 
             # Raise bad request: Loop will stop for bad response code.
             request_response.raise_for_status()
@@ -614,7 +622,6 @@ def complete_nasa_download(product,bbox_in,batchname):
                 zip_ref.close()
                 os.remove(zip_name)
 
-
     # %% [markdown]
     # ### Finally, we will clean up the Output folder by removing individual order folders:
 
@@ -634,5 +641,5 @@ def complete_nasa_download(product,bbox_in,batchname):
     # ### To review, we have explored data availability and volume over a region and time of interest, discovered and selected data customization options, constructed an API endpoint for our request, and downloaded data directly to our local machine. You are welcome to request different data sets, areas of interest, and/or customization services by re-running the notebook or starting again at the 'Select a data set of interest' step above.
 
 
-if __name__ == '__main__':
-    complete_nasa_download('ATL03',"-81.12408,24.57966,-80.89070,24.81094", '_all_key')
+if __name__ == "__main__":
+    complete_nasa_download("ATL03", "-81.12408,24.57966,-80.89070,24.81094", "_all_key")
