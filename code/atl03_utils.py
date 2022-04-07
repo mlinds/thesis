@@ -10,6 +10,7 @@ import logging
 from cftime import num2pydate
 
 from shapely.geometry import Point
+
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
 logger = logging.getLogger("ATL03_Data_cleaning")
@@ -104,8 +105,12 @@ def load_beam_array_ncds(filename, beam):
             delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
             delta_time = num2pydate(delta_time_s, "seconds since 2018-01-01")
 
-            ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
-            land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
+            ocean_sig = (
+                ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
+            )
+            land_sig = (
+                ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
+            )
 
             # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
             # need to deal with geophysical variable time differenently since they're captured at a different rate
@@ -122,9 +127,13 @@ def load_beam_array_ncds(filename, beam):
             delta_time_geophys[0] = delta_time[0]
 
             # get the geophysical variables
-            geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
+            geo_f2m = (
+                ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
+            )
             geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:]
-            tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
+            tide_ocean = (
+                ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
+            )
 
             # combine the corrections into one
             additive_correction = -1 * geoid + geo_f2m + tide_ocean
@@ -133,33 +142,36 @@ def load_beam_array_ncds(filename, beam):
             # to do this we can align them using the pandas asof
 
             # switch into pandas to use as_of function
-            zcorr_series = pd.Series(additive_correction, index=delta_time_geophys).sort_index()
+            zcorr_series = pd.Series(
+                additive_correction, index=delta_time_geophys
+            ).sort_index()
 
             # make an array of the correction by time
             z_corr = zcorr_series.asof(delta_time).values
 
             Z_g = Z + z_corr
-            # add QA metadata
-            
+
+            # add QA metadata by adding each one
             QA_data = {}
 
-            for varname,values in ds.groups['quality_assessment'].groups[beam].variables.items():
-                QA_data[varname+'_ocean'] = values[:].data[0][1]
-                QA_data[varname+'_land'] = values[:].data[0][0]
-            
-            # the code below creates a structured array which interacts well with pandas and other libraries
+            for varname, values in (
+                ds.groups["quality_assessment"].groups[beam].variables.items()
+            ):
+                QA_data[varname + "_ocean"] = values[:].data[0][1]
+                QA_data[varname + "_land"] = values[:].data[0][0]
 
-          
-            
-            metadata={
-                    "st_date": stdate,
-                    "end_date": enddate,
-                    "QA_PF": granule_quality,
-                    "Start RGT": strgt,
-                    "End RGT": endrgt,
-                }
+            # creating a structured array
+            # first we set up the metadata dictionary
+            metadata = {
+                "st_date": stdate,
+                "end_date": enddate,
+                "QA_PF": granule_quality,
+                "Start RGT": strgt,
+                "End RGT": endrgt,
+            }
+            # append the QA parameters we got earlier
             metadata.update(QA_data)
-            
+
             dtype = np.dtype(
                 [
                     ("X", "<f8"),
@@ -169,7 +181,8 @@ def load_beam_array_ncds(filename, beam):
                     ("delta_time", "<M8[ns]"),
                     ("oc_sig_conf", "<i4"),
                     ("land_sig_conf", "<i4"),
-                ],metadata=metadata,
+                ],
+                metadata=metadata,
             )
 
             # then we assign each 1darray to the structured array
@@ -281,14 +294,15 @@ def make_gdf_from_ncdf_files(directory):
             "Reference Ground Track": rgtlist,
             "date": datelist,
             "beam": beamlist,
-            "Percentage High confidence Ocean Returns":percent_high_conf
+            "Percentage High confidence Ocean Returns": percent_high_conf,
         },
         crs="EPSG:7912",
         geometry="geometry",
     ).set_index(["file", "beam"])
     return df
 
-def add_track_dist_meters(strctarray,geodataframe=False):
+
+def add_track_dist_meters(strctarray, geodataframe=False):
     xcoords = strctarray["X"]
     ycoords = strctarray["Y"]
 
@@ -304,7 +318,8 @@ def add_track_dist_meters(strctarray,geodataframe=False):
 
     gdf = gdf.assign(dist_or=dist).sort_values("dist_or")
     # return a dataframe
-    if geodataframe: return gdf
+    if geodataframe:
+        return gdf
     else:
         df = pd.DataFrame(gdf.drop(columns="geometry"))
         return df
