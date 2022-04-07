@@ -76,10 +76,11 @@ def load_beam_array_ncds(filename, beam):
     Granule-level metadata is also included with the array
     """
     # this function is a mess and should probably abstracted into smaller functions
+    # if the pandas df induces too much overhead, could maybe be writte in numpy
 
     ds = Dataset(filename)
 
-    # get the beam metadata
+    # get the granule-level metadata
     stdate = ds.groups["ancillary_data"].variables["data_start_utc"][:]
     enddate = ds.groups["ancillary_data"].variables["data_end_utc"][:]
     strgt = int(ds.groups["ancillary_data"].variables["start_rgt"][:])
@@ -88,7 +89,9 @@ def load_beam_array_ncds(filename, beam):
         ds.groups["quality_assessment"].variables["qa_granule_pass_fail"][:]
     )
 
-    # this is in a try block because it raises a keyerror if the beam is missing from the
+    # this is in a try block because it raises a keyerror if the beam is missing from the granule
+    # TODO: add beam-level QA variables like qa_perc_signal_conf_ph_high, qa_perc_signal_conf_ph_med
+    # these need to be within the try block below but can be assigned to metadata
     try:
         # get array-type data
         Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
@@ -129,7 +132,7 @@ def load_beam_array_ncds(filename, beam):
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
-        zcorr_series = pd.Series(additive_correction, index=delta_time_geophys)
+        zcorr_series = pd.Series(additive_correction, index=delta_time_geophys).sort_index()
 
         # make an array of the correction by time
         z_corr = zcorr_series.asof(delta_time).values
