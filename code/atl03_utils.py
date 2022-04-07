@@ -76,7 +76,7 @@ def load_beam_array_ncds(filename, beam):
     Granule-level metadata is also included with the array
     """
     # this function is a mess and should probably abstracted into smaller functions
-    # if the pandas df induces too much overhead, could maybe be writte in numpy
+    # if the pandas df induces too much overhead, could maybe be rewritten in numpy
 
     with Dataset(filename) as ds:
 
@@ -138,11 +138,27 @@ def load_beam_array_ncds(filename, beam):
             z_corr = zcorr_series.asof(delta_time).values
 
             Z_g = Z + z_corr
+            # add QA metadata
+            
+            QA_data = {}
 
+            for varname,values in ds.groups['quality_assessment'].groups[beam].variables.items():
+                QA_data[varname+'_ocean'] = values[:].data[0][1]
+                QA_data[varname+'_land'] = values[:].data[0][0]
+            
             # the code below creates a structured array which interacts well with pandas and other libraries
 
-            # first step is to define dtypes of the structarray
-
+          
+            
+            metadata={
+                    "st_date": stdate,
+                    "end_date": enddate,
+                    "QA_PF": granule_quality,
+                    "Start RGT": strgt,
+                    "End RGT": endrgt,
+                }
+            metadata.update(QA_data)
+            
             dtype = np.dtype(
                 [
                     ("X", "<f8"),
@@ -152,14 +168,7 @@ def load_beam_array_ncds(filename, beam):
                     ("delta_time", "<M8[ns]"),
                     ("oc_sig_conf", "<i4"),
                     ("land_sig_conf", "<i4"),
-                ],
-                metadata={
-                    "st_date": stdate,
-                    "end_date": enddate,
-                    "QA_PF": granule_quality,
-                    "Start RGT": strgt,
-                    "End RGT": endrgt,
-                },
+                ],metadata=metadata,
             )
 
             # then we assign each 1darray to the structured array
@@ -232,6 +241,7 @@ def make_gdf_from_ncdf_files(directory):
     rgtlist = []
     filenamelist = []
     geomlist = []
+    percent_high_conf = []
     for h5file in glob.iglob(directory):
         # TODO change to use pathlib to make this more readable
 
@@ -254,11 +264,14 @@ def make_gdf_from_ncdf_files(directory):
             if point_array is None:
                 rgtlist.append(np.NaN)
                 datelist.append(np.NaN)
+                percent_high_conf.append(np.NaN)
             else:
                 rgt = point_array.dtype.metadata["Start RGT"]
                 date = point_array.dtype.metadata["st_date"]
+                p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
                 rgtlist.append(rgt)
                 datelist.append(date)
+                percent_high_conf.append(p_oc_h_conf)
 
     df = gpd.GeoDataFrame(
         {
@@ -267,6 +280,7 @@ def make_gdf_from_ncdf_files(directory):
             "Reference Ground Track": rgtlist,
             "date": datelist,
             "beam": beamlist,
+            "Percentage High confidence Ocean Returns":percent_high_conf
         },
         crs="EPSG:7912",
         geometry="geometry",
