@@ -143,22 +143,16 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # make an array of the correction by time
         z_corr = zcorr_series.asof(delta_time).values
 
+        # get the corrected Z vals
         Z_g = Z + z_corr
-
-        # add QA metadata by adding each one
-        QA_data = {}
 
         for varname, values in (
             ds.groups["quality_assessment"].groups[beam].variables.items()
         ):
-            QA_data[varname + "_ocean"] = values[:].data[0][1]
-            QA_data[varname + "_land"] = values[:].data[0][0]
+            metadata[varname + "_ocean"] = values[:].data[0][1]
+            metadata[varname + "_land"] = values[:].data[0][0]
 
         # creating a structured array
-        # first we set up the metadata dictionary
-
-        # append the QA parameters we got earlier
-        metadata.update(QA_data)
 
         dtype = np.dtype(
             [
@@ -174,7 +168,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         )
 
         # then we assign each 1darray to the structured array
-
         photon_data = np.empty(len(X), dtype=dtype)
         photon_data["X"] = X
         photon_data["Y"] = Y
@@ -185,8 +178,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["land_sig_conf"] = land_sig
 
         return photon_data
-
-        # if we can't find a certain beam, just return None
 
 
 def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
