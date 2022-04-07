@@ -11,6 +11,7 @@ varpaths = [
     "heights/dist_ph_along",
     "heights/delta_time",
     "heights/signal_conf_ph",
+    # "heights/quality_ph",
     "geophys_corr/dem_h",
     "geophys_corr/tide_ocean",
     "geophys_corr/delta_time",
