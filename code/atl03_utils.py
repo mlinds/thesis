@@ -78,113 +78,113 @@ def load_beam_array_ncds(filename, beam):
     # this function is a mess and should probably abstracted into smaller functions
     # if the pandas df induces too much overhead, could maybe be writte in numpy
 
-    ds = Dataset(filename)
+    with Dataset(filename) as ds:
 
-    # get the granule-level metadata
-    stdate = ds.groups["ancillary_data"].variables["data_start_utc"][:]
-    enddate = ds.groups["ancillary_data"].variables["data_end_utc"][:]
-    strgt = int(ds.groups["ancillary_data"].variables["start_rgt"][:])
-    endrgt = int(ds.groups["ancillary_data"].variables["end_rgt"][:])
-    granule_quality = int(
-        ds.groups["quality_assessment"].variables["qa_granule_pass_fail"][:]
-    )
-
-    # this is in a try block because it raises a keyerror if the beam is missing from the granule
-    # TODO: add beam-level QA variables like qa_perc_signal_conf_ph_high, qa_perc_signal_conf_ph_med
-    # these need to be within the try block below but can be assigned to metadata
-    try:
-        # get array-type data
-        Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
-        X = ds.groups[beam].groups["heights"].variables["lon_ph"][:]
-        Z = ds.groups[beam].groups["heights"].variables["h_ph"][:]
-
-        # based on the data documentation, the dates are referenced to the 2018-01-01 so the
-        # datetimes are shifted accordingly
-        delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
-        delta_time = num2pydate(delta_time_s, "seconds since 2018-01-01")
-
-        ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
-        land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
-
-        # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
-        # need to deal with geophysical variable time differenently since they're captured at a different rate
-        delta_time_geophys_s = (
-            ds.groups[beam].groups["geophys_corr"].variables["delta_time"][:]
-        )
-        delta_time_geophys = num2pydate(
-            delta_time_geophys_s, "seconds since 2018-01-01"
+        # get the granule-level metadata
+        stdate = ds.groups["ancillary_data"].variables["data_start_utc"][:]
+        enddate = ds.groups["ancillary_data"].variables["data_end_utc"][:]
+        strgt = int(ds.groups["ancillary_data"].variables["start_rgt"][:])
+        endrgt = int(ds.groups["ancillary_data"].variables["end_rgt"][:])
+        granule_quality = int(
+            ds.groups["quality_assessment"].variables["qa_granule_pass_fail"][:]
         )
 
-        # to index these we need to set the first value to the first value of the
-        # photon returns. This is because the photon time values start in the middle of a segment
+        # this is in a try block because it raises a keyerror if the beam is missing from the granule
+        # TODO: add beam-level QA variables like qa_perc_signal_conf_ph_high, qa_perc_signal_conf_ph_med
+        # these need to be within the try block below but can be assigned to metadata
+        try:
+            # get array-type data
+            Y = ds.groups[beam].groups["heights"].variables["lat_ph"][:]
+            X = ds.groups[beam].groups["heights"].variables["lon_ph"][:]
+            Z = ds.groups[beam].groups["heights"].variables["h_ph"][:]
 
-        delta_time_geophys[0] = delta_time[0]
+            # based on the data documentation, the dates are referenced to the 2018-01-01 so the
+            # datetimes are shifted accordingly
+            delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
+            delta_time = num2pydate(delta_time_s, "seconds since 2018-01-01")
 
-        # get the geophysical variables
-        geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
-        geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:]
-        tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
+            ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
+            land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
 
-        # combine the corrections into one
-        additive_correction = -1 * geoid + geo_f2m + tide_ocean
+            # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
+            # need to deal with geophysical variable time differenently since they're captured at a different rate
+            delta_time_geophys_s = (
+                ds.groups[beam].groups["geophys_corr"].variables["delta_time"][:]
+            )
+            delta_time_geophys = num2pydate(
+                delta_time_geophys_s, "seconds since 2018-01-01"
+            )
 
-        # to assign the correct correction value, we need to get the correction at a certain time
-        # to do this we can align them using the pandas asof
+            # to index these we need to set the first value to the first value of the
+            # photon returns. This is because the photon time values start in the middle of a segment
 
-        # switch into pandas to use as_of function
-        zcorr_series = pd.Series(additive_correction, index=delta_time_geophys).sort_index()
+            delta_time_geophys[0] = delta_time[0]
 
-        # make an array of the correction by time
-        z_corr = zcorr_series.asof(delta_time).values
+            # get the geophysical variables
+            geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
+            geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:]
+            tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
 
-        Z_g = Z + z_corr
+            # combine the corrections into one
+            additive_correction = -1 * geoid + geo_f2m + tide_ocean
 
-        # the code below creates a structured array which interacts well with pandas and other libraries
+            # to assign the correct correction value, we need to get the correction at a certain time
+            # to do this we can align them using the pandas asof
 
-        # first step is to define dtypes of the structarray
+            # switch into pandas to use as_of function
+            zcorr_series = pd.Series(additive_correction, index=delta_time_geophys).sort_index()
 
-        dtype = np.dtype(
-            [
-                ("X", "<f8"),
-                ("Y", "<f8"),
-                ("Z", "<f8"),
-                ("Z_g", "<f8"),
-                ("delta_time", "<M8[ns]"),
-                ("oc_sig_conf", "<i4"),
-                ("land_sig_conf", "<i4"),
-            ],
-            metadata={
-                "st_date": stdate,
-                "end_date": enddate,
-                "QA_PF": granule_quality,
-                "Start RGT": strgt,
-                "End RGT": endrgt,
-            },
-        )
+            # make an array of the correction by time
+            z_corr = zcorr_series.asof(delta_time).values
 
-        # then we assign each 1darray to the structured array
+            Z_g = Z + z_corr
 
-        photon_data = np.empty(len(X), dtype=dtype)
-        photon_data["X"] = X
-        photon_data["Y"] = Y
-        photon_data["Z"] = Z
-        photon_data["Z_g"] = Z_g
-        photon_data["delta_time"] = delta_time
-        photon_data["oc_sig_conf"] = ocean_sig
-        photon_data["land_sig_conf"] = land_sig
+            # the code below creates a structured array which interacts well with pandas and other libraries
 
-        return photon_data
+            # first step is to define dtypes of the structarray
 
-    # if we can't find a certain beam, just return None
-    except KeyError:
-        logger.debug(
-            "Beam %s missing from %s",
-            beam,
-        )
-        return None
-    # gotta remember to close the dataset
-    finally:
-        ds.close()
+            dtype = np.dtype(
+                [
+                    ("X", "<f8"),
+                    ("Y", "<f8"),
+                    ("Z", "<f8"),
+                    ("Z_g", "<f8"),
+                    ("delta_time", "<M8[ns]"),
+                    ("oc_sig_conf", "<i4"),
+                    ("land_sig_conf", "<i4"),
+                ],
+                metadata={
+                    "st_date": stdate,
+                    "end_date": enddate,
+                    "QA_PF": granule_quality,
+                    "Start RGT": strgt,
+                    "End RGT": endrgt,
+                },
+            )
+
+            # then we assign each 1darray to the structured array
+
+            photon_data = np.empty(len(X), dtype=dtype)
+            photon_data["X"] = X
+            photon_data["Y"] = Y
+            photon_data["Z"] = Z
+            photon_data["Z_g"] = Z_g
+            photon_data["delta_time"] = delta_time
+            photon_data["oc_sig_conf"] = ocean_sig
+            photon_data["land_sig_conf"] = land_sig
+
+            return photon_data
+
+        # if we can't find a certain beam, just return None
+        except KeyError:
+            logger.debug(
+                "Beam %s missing from %s",
+                beam,
+            )
+            return None
+        # # gotta remember to close the dataset
+        # finally:
+        #     ds.close()
 
 
 def get_track_gdf(outarray):
