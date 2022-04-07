@@ -1,0 +1,16 @@
+%%{init: {'theme':'base'}}%%
+flowchart TD
+    ph[/Raw Photon data from Icesat-2/] 
+    dbscan[Classify signal vs noise with DBSCAN]
+    chunk[Split data into chunks of 10k returns]
+    dbs_params[Calculate DBSCAN parameters by chunk]
+    find_surface_ph[Split signal returns into surface and bathymetric returns]
+    ph-->chunk-->dbs_params-->dbscan --> |Signal photons| find_surface_ph
+
+    dbscan --> |Noise photons| disc[Discard]
+    refr[Apply refraction correction based on depth]
+
+    find_surface_ph --> |Bathymetric returns| refr
+    find_surface_ph --> |Surface returns| mvavg[Take moving average] --> wsheight[/Water surface height data/]
+    refr --> dep[Depth data]
+
