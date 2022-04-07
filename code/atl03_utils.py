@@ -9,6 +9,7 @@ import glob
 import logging
 from cftime import num2pydate
 
+from shapely.geometry import Point
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
 logger = logging.getLogger("ATL03_Data_cleaning")
@@ -286,3 +287,24 @@ def make_gdf_from_ncdf_files(directory):
         geometry="geometry",
     ).set_index(["file", "beam"])
     return df
+
+def add_track_dist_meters(strctarray,geodataframe=False):
+    xcoords = strctarray["X"]
+    ycoords = strctarray["Y"]
+
+    geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
+
+    gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912").to_crs(
+        "EPSG:32619"
+    )
+    ymin = gdf.geometry.y.min()
+    xmin = gdf.geometry.x[gdf.geometry.y.argmin()]
+
+    dist = gdf.distance(Point(xmin, ymin))
+
+    gdf = gdf.assign(dist_or=dist).sort_values("dist_or")
+    # return a dataframe
+    if geodataframe: return gdf
+    else:
+        df = pd.DataFrame(gdf.drop(columns="geometry"))
+        return df
