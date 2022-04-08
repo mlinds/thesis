@@ -4,9 +4,8 @@ from os import PathLike
 
 import geopandas as gpd
 import numpy as np
-from cftime import num2pydate
-
 import pandas as pd
+from cftime import num2pydate
 from netCDF4 import Dataset
 from shapely.geometry import LineString, Point
 
@@ -146,11 +145,11 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # get the corrected Z vals
         Z_g = Z + z_corr
 
-        for varname, values in (
-            ds.groups["quality_assessment"].groups[beam].variables.items()
-        ):
-            metadata[varname + "_ocean"] = values[:].data[0][1]
-            metadata[varname + "_land"] = values[:].data[0][0]
+        # for varname, values in (
+        #     ds.groups["quality_assessment"].groups[beam].variables.items()
+        # ):
+        #     metadata[varname + "_ocean"] = values[:].data[0][1]
+        #     metadata[varname + "_land"] = values[:].data[0][0]
 
         # creating a structured array
 
@@ -283,12 +282,12 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
 
 def add_track_dist_meters(
     strctarray, geodataframe=False
-) -> pd.Dataframe or gpd.GeoDataFrame:
+) -> pd.DataFrame or gpd.GeoDataFrame:
     xcoords = strctarray["X"]
     ycoords = strctarray["Y"]
 
     geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
-
+    # TODO use utm library to chose zone automatically
     gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912").to_crs(
         "EPSG:32619"
     )
