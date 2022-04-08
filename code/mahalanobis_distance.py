@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.cm as cm
 
 #%%
-hscale = 5
+hscale = 50
 
 df = pd.read_csv('../data/derived/mahalanobis_test_set.csv',index_col=0).query('dist_or > 10000 and dist_or < 11000')
 
@@ -45,9 +45,11 @@ dist = np.diag(dist)
 
 # %%
 fig,ax = plt.subplots(figsize=(20,10))
-CS = ax.contour(meshx,meshz,distgrid)
-ax.clabel(CS, CS.levels,fontsize=20)
-# plt.contour(meshx,meshz,distgrid_euc,color='red')
+mah_contours = ax.contour(meshx,meshz,distgrid)
+ax.clabel(mah_contours, mah_contours.levels,fontsize=20)
+euc_contours = ax.contour(meshx,meshz,distgrid_euc,color='red')
+ax.clabel(euc_contours,euc_contours.levels,fmt=lambda x:f'{x}m euclidian',fontsize=15)
+
 plt.scatter(xvals,zvals,c=dist)
 # plt.axis('scaled')
 plt.colorbar()
