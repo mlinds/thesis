@@ -70,7 +70,8 @@ RUN mamba install --quiet --yes \
     'h5netcdf' \
     'cfgrib' \
     'nco' \
-    'whitebox' && \
+    'whitebox' \
+    'utm' && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
