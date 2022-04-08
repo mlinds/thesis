@@ -5,6 +5,7 @@ from os import PathLike
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+
 from cftime import num2pydate
 from netCDF4 import Dataset
 from shapely.geometry import LineString, Point
@@ -70,8 +71,7 @@ def get_beams(granule_netcdf: str or PathLike) -> list:
 
 
 def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
-    """
-    returns an array of photon-level details for a given file and beam name.
+    """return an array of photon-level details for a given file and beam name.
 
     Granule-level metadata is also included with the array
     """
