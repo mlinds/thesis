@@ -74,7 +74,7 @@ print(f"beams available {beamlist}")
 
 # %%
 # beam = next(beamiter)
-beam = "gt2r"
+beam = "gt1l"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -99,19 +99,29 @@ gdf = gdf[gdf.Z_g < 5]
 # Filter out any points that are classified as a potential TEP
 
 # %%
-gdf = gdf[gdf.oc_sig_conf >= 0]
+gdf = gdf[gdf.oc_sig_conf != -1]
 
 # %% [markdown]
 # ## Finding sea surface level
 # To estimate the sea surface level, points that have assigned a high confidence of being an ocean point (according to the NASA algorithms) are selected, and a moving median of 10 neigboring points is taken.
 
 # %%
-sea_level = gdf[gdf.oc_sig_conf == 4][["dist_or", "Z_g"]].rolling(10).median()
+sea_level = gdf[gdf.oc_sig_conf == 4]["Z_g"].rolling(11,).median()
+sea_level.name = 'sea_level'
+sea_level_std_dev = sea_level.std()
 
+newgdf = gdf.merge(right=sea_level,how='left',left_index=True,right_index=True,validate="1:1")
 
-# %%
-sea_level_std_dev = sea_level.Z_g.std()
-sea_level_std_dev
+gdf = gdf.assign(sea_level_interp = pd.Series(data=newgdf.sea_level.values
+,index=newgdf.dist_or.values).interpolate(method='index').to_numpy()).dropna()
+
+# %% [markdown]
+# Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns allong a rolling window of 10 returns
+# we can find probably subsurface returns - below a standard deviation from the median height.
+
+#%%
+gdf = gdf[gdf.Z_g < gdf.sea_level_interp-1.5*sea_level_std_dev]
+
 
 # %% [markdown]
 # The photons remaining after these filters are plotted below:
@@ -131,7 +141,7 @@ signal_conf_cmap = factor_cmap(
 p.scatter(
     source=gdf, x="dist_or", y="Z_g", color=signal_conf_cmap, legend_field="oc_sig_conf"
 )
-p.line(source=sea_level, x="dist_or", y="Z_g")
+p.line(source=gdf, x="dist_or", y="sea_level_interp")
 show(p)
 gdf["oc_sig_conf"] = gdf.oc_sig_conf.astype("int")
 
