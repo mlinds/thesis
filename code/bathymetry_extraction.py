@@ -66,14 +66,11 @@ atl03_testfile = (
 # fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
 
 # %%
-# atl03_testfile = next(fileiterator)
 print(atl03_testfile)
 beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
-# beamiter = iter(beamlist)
 
 # %%
-# beam = next(beamiter)
 beam = "gt3l"
 print(beam)
 
@@ -109,7 +106,7 @@ gdf = gdf[gdf.oc_sig_conf != -1]
 #  
 
 # %%
-sea_level = gdf[gdf.oc_sig_conf >=4]["Z_g"].rolling(11,).median()
+sea_level = gdf[gdf.oc_sig_conf >=4]["Z_g"].rolling(201,).median()
 sigma_sea_level = gdf[gdf.oc_sig_conf == 4]["Z_g"].rolling(31,).std()
 sea_level.name = 'sea_level'
 sea_level_std_dev = sea_level.std()
@@ -124,7 +121,7 @@ gdf = gdf.assign(sea_level_interp = pd.Series(data=newgdf.sea_level.values
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 #%%
-gdf = gdf[gdf.Z_g < gdf.sea_level_interp-3*sea_level_std_dev]
+gdf = gdf[gdf.Z_g < gdf.sea_level_interp-2*sea_level_std_dev]
 
 
 # %% [markdown]
@@ -194,13 +191,13 @@ gdf["oc_sig_conf"] = gdf.oc_sig_conf.astype("int")
 
 # %%
 # we want chunks of about 10.000 returns
-nchunks = max(round(len(gdf) / 10000), 1)
+nchunks = max(round(len(gdf) / 1000), 1)
 total_length = gdf.dist_or.max()
 print(f"the total length of the transect being studied is {total_length:.2f}km")
 
-Ra = 0.1
+Ra = 0.05
 # better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
-hscale = 100
+hscale = 1
 # this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
 
 # %%
@@ -209,17 +206,17 @@ sndf = []
 for chunk in np.array_split(gdf, nchunks):
     array = chunk.to_records()
 
-    # V = np.cov(array['dist_or'],array['Z'])
+    V = np.linalg.inv(np.cov(array['dist_or'],array['Z']))
     minpts = atl03_utils.min_dbscan_points(array, Ra, hscale)
     fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
     # for debugging
-    # print(f"{minpts=}")
+    print(f"{minpts=}")
     # run the clustering algo
     clustering = DBSCAN(
         eps=Ra,
         min_samples=minpts,
-        # metric = 'mahalanobis',
-        # metric_params={'V':V}
+        metric = 'mahalanobis',
+        metric_params={'VI':V}
     ).fit(fitarray)
     # clustering = OPTICS(max_eps=1, min_samples=5).fit(fitarray)
 
