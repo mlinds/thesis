@@ -60,7 +60,7 @@ output_notebook()
 
 # %%
 atl03_testfile = (
-    "../data/test_sites/PR/ATL03/processed_ATL03_20181028071900_04530107_005_01.nc"
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20191015153151_02860507_005_01.nc"
 )
 # this business with iterators is just for manual testing
 # fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
@@ -120,7 +120,7 @@ gdf = gdf.assign(sea_level_interp = pd.Series(data=newgdf.sea_level.values
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 #%%
-gdf = gdf[gdf.Z_g < gdf.sea_level_interp-1.5*sea_level_std_dev]
+gdf = gdf[gdf.Z_g < gdf.sea_level_interp-2*sea_level_std_dev]
 
 
 # %% [markdown]
@@ -194,9 +194,9 @@ nchunks = max(round(len(gdf) / 10000), 1)
 total_length = gdf.dist_or.max()
 print(f"the total length of the transect being studied is {total_length:.2f}km")
 
-Ra = 0.2
+Ra = 0.1
 # better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
-hscale = 400
+hscale = 100
 # this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
 
 # %%
@@ -287,14 +287,14 @@ def query_raster(dataframe, src):
 
 outlist = query_raster(
     signal_pts,
-    "../data/test_sites/PR/in-situ-DEM/Job720316_2019_ngs_topobathy_dem_pr_000_000.tif",
+    "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
 )
 mangrove_heightlist = query_raster(
     signal_pts, "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt"
 )
 gebco_depth = query_raster(
     signal_pts,
-    "../data/test_sites/PR/in-situ-DEM/Job719367_ncei_nintharcsec_dem.tif",
+    "../data/test_sites/florida_keys/in-situ-DEM/Job720273_fl2017_usace_fema_irma_dem.tif",
 )
 
 # manually change gebco to approximately the same vertical reference (ie. ellipsoid instead of geoid)
