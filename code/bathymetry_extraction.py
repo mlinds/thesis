@@ -60,7 +60,7 @@ output_notebook()
 
 # %%
 atl03_testfile = (
-    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20191015153151_02860507_005_01.nc"
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20190417001217_02860307_005_01.nc"
 )
 # this business with iterators is just for manual testing
 # fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
@@ -74,7 +74,7 @@ print(f"beams available {beamlist}")
 
 # %%
 # beam = next(beamiter)
-beam = "gt1l"
+beam = "gt3l"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -103,10 +103,14 @@ gdf = gdf[gdf.oc_sig_conf != -1]
 
 # %% [markdown]
 # ## Finding sea surface level
-# To estimate the sea surface level, points that have assigned a high confidence of being an ocean point (according to the NASA algorithms) are selected, and a moving median of 10 neigboring points is taken.
+# To estimate the sea surface level, points that have assigned a high confidence of being an ocean point (according to NASA's designations) are selected, and a moving median of 31 neigboring points is taken. This median of the Z values of the high confidence points is then interpolated to all photons, 
+# interpreted linearly along the transect line. These vaulues are added to back to the table. Now every photon return below +5m geoid elevation has a sea level value. To distinguish subsurface points,
+#  we also calculate a rolling standard deviation of the same window. The points that greater than 1.5(?) standard deviations below the sea level are assumed to be subsurface returns
+#  
 
 # %%
-sea_level = gdf[gdf.oc_sig_conf == 4]["Z_g"].rolling(11,).median()
+sea_level = gdf[gdf.oc_sig_conf >=4]["Z_g"].rolling(11,).median()
+sigma_sea_level = gdf[gdf.oc_sig_conf == 4]["Z_g"].rolling(31,).std()
 sea_level.name = 'sea_level'
 sea_level_std_dev = sea_level.std()
 
@@ -120,7 +124,7 @@ gdf = gdf.assign(sea_level_interp = pd.Series(data=newgdf.sea_level.values
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 #%%
-gdf = gdf[gdf.Z_g < gdf.sea_level_interp-2*sea_level_std_dev]
+gdf = gdf[gdf.Z_g < gdf.sea_level_interp-3*sea_level_std_dev]
 
 
 # %% [markdown]
