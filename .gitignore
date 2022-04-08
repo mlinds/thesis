@@ -522,3 +522,4 @@ code/OTPS_model/OTPS/matlab/tpxo_atlas2local.m
 code/OTPS_model/OTPS/matlab/u_in.m
 code/OTPS_model/OTPS/matlab/uv_out.m
 code/OTPS_model/OTPS/predict_tide
+.flake8
