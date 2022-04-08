@@ -6,16 +6,16 @@ import pandas as pd
 import matplotlib.cm as cm
 
 #%%
-hscale = 45
+hscale = 5
 
-df = pd.read_csv('../data/derived/mahalanobis_test_set.csv',index_col=0).query('dist_or > 10000 and dist_or < 12000')
+df = pd.read_csv('../data/derived/mahalanobis_test_set.csv',index_col=0).query('dist_or > 10000 and dist_or < 11000')
 
 pointarray = df.to_records()
 xvals = np.array(pointarray.dist_or)/hscale
 zvals = np.array(pointarray.Z_g)
 
-xgridrange = np.linspace(xvals.min(),xvals.max(),100)
-zgridrange = np.linspace(zvals.min(),zvals.max(),200)
+xgridrange = np.linspace(xvals.min(),xvals.max(),1000)
+zgridrange = np.linspace(zvals.min(),zvals.max(),2000)
 
 meshx,meshz = np.meshgrid(xgridrange,zgridrange)
 
@@ -36,20 +36,19 @@ midpoint_grid = np.vstack([xcenter_grid,zcenter_grid]).T
 #%%
 
 dist = distance.cdist(obs_pts,midpoint_array,metric='mahalanobis',VI=IV)
-distgrid = distance.cdist(np.vstack([meshx.flatten(),meshz.flatten()]).T,[(np.median(xvals),np.median(zvals))]).reshape(meshx.shape)
-# distgrid = np.diag(distgrid)
+distgrid = distance.cdist(np.vstack([meshx.flatten(),meshz.flatten()]).T,[(np.median(xvals),np.median(zvals))],metric='mahalanobis',VI=IV).reshape(meshx.shape)
+distgrid_euc = distance.cdist(np.vstack([meshx.flatten(),meshz.flatten()]).T,[(np.median(xvals),np.median(zvals))]).reshape(meshx.shape)
 
-dist_euc = distance.cdist(obs_pts,midpoint_array)
-distgrid_euc = distance.cdist(grid_pts,midpoint_grid)
 
 
 dist = np.diag(dist)
 
 # %%
-plt.figure(figsize=(20,10))
-plt.contour(meshx,meshz,distgrid)
+fig,ax = plt.subplots(figsize=(20,10))
+CS = ax.contour(meshx,meshz,distgrid)
+ax.clabel(CS, CS.levels,fontsize=20)
+# plt.contour(meshx,meshz,distgrid_euc,color='red')
 plt.scatter(xvals,zvals,c=dist)
-# plt.contour(xgridrange*hscale,zgridrange,distgrid_euc,c='black')
 # plt.axis('scaled')
 plt.colorbar()
 plt.show()
