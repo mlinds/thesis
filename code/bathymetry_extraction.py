@@ -195,7 +195,7 @@ nchunks = max(round(len(gdf) / 1000), 1)
 total_length = gdf.dist_or.max()
 print(f"the total length of the transect being studied is {total_length:.2f}km")
 
-Ra = 0.05
+Ra = 0.1
 # better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
 hscale = 1
 # this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
@@ -203,11 +203,20 @@ hscale = 1
 # %%
 # this list will be filled with geodataframes of each chunk
 sndf = []
-for chunk in np.array_split(gdf, nchunks):
+chunksize = 500
+from math import ceil
+nchunks = ceil(total_length/chunksize)+1
+dist_st = 0 
+
+bin_edges = [(binst,binend) for binst,binend in zip(range(0,(nchunks-1)*chunksize,chunksize),range(chunksize,nchunks*chunksize,chunksize))]
+
+# %%
+for dist_st,dist_end in bin_edges:
+    chunk = gdf[(gdf.dist_or>dist_st)&(gdf.dist_or<dist_end)]
     array = chunk.to_records()
 
     V = np.linalg.inv(np.cov(array['dist_or'],array['Z']))
-    minpts = atl03_utils.min_dbscan_points(array, Ra, hscale)
+    minpts = 5
     fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
     # for debugging
     print(f"{minpts=}")
