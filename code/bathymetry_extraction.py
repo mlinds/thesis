@@ -60,7 +60,7 @@ output_notebook()
 
 # %%
 atl03_testfile = (
-    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20190417001217_02860307_005_01.nc"
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20200714023110_02860807_005_01.nc"
 )
 # this business with iterators is just for manual testing
 # fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
@@ -71,7 +71,7 @@ beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
 
 # %%
-beam = "gt3l"
+beam = 'gt2r'
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -121,7 +121,7 @@ gdf = gdf.assign(sea_level_interp = pd.Series(data=newgdf.sea_level.values
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 #%%
-gdf = gdf[gdf.Z_g < gdf.sea_level_interp-2*sea_level_std_dev]
+gdf = gdf[gdf.Z_g < gdf.sea_level_interp-max(3*sea_level_std_dev,2)]
 
 
 # %% [markdown]
@@ -195,7 +195,7 @@ nchunks = max(round(len(gdf) / 1000), 1)
 total_length = gdf.dist_or.max()
 print(f"the total length of the transect being studied is {total_length:.2f}km")
 
-Ra = 0.1
+Ra = 0.2
 # better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
 hscale = 1
 # this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
@@ -205,21 +205,21 @@ hscale = 1
 sndf = []
 chunksize = 500
 from math import ceil
-nchunks = ceil(total_length/chunksize)+1
+nchunks = ceil(total_length/chunksize)
+print(f'Points will be proccessed in {nchunks} chunks')
 dist_st = 0 
 
 bin_edges = [(binst,binend) for binst,binend in zip(range(0,(nchunks-1)*chunksize,chunksize),range(chunksize,nchunks*chunksize,chunksize))]
 
 # %%
 for dist_st,dist_end in bin_edges:
-    chunk = gdf[(gdf.dist_or>dist_st)&(gdf.dist_or<dist_end)]
-    array = chunk.to_records()
+    array = gdf[(gdf.dist_or>dist_st)&(gdf.dist_or<dist_end)].to_records()
+    if len(array) < 50: continue
 
     V = np.linalg.inv(np.cov(array['dist_or'],array['Z']))
-    minpts = 5
+    minpts = 3
     fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
-    # for debugging
-    print(f"{minpts=}")
+
     # run the clustering algo
     clustering = DBSCAN(
         eps=Ra,
@@ -239,6 +239,7 @@ merged = pd.concat(
 )
 
 # %%
+
 signal_pts = merged[merged.SN == "signal"]
 noise_pts = merged[merged.SN == "noise"]
 
@@ -250,6 +251,7 @@ p2 = figure(
 )
 p2.scatter("dist_or", "Z_g", source=noise_pts, color="red")
 p2.scatter("dist_or", "Z_g", source=signal_pts, fill_color="blue")
+
 show(p2)
 
 # %% [markdown]
@@ -359,6 +361,53 @@ usgs_plot.xaxis.axis_label = "Along Track Distance [m]"
 usgs_plot.yaxis.axis_label = "Height relative to MSL [m]"
 show(usgs_plot)
 
+#%%
+
+
+signal_pts = signal_pts.assign(seafloor = signal_pts.Z_g.rolling(25).quantile(.2))
+signal_pts = signal_pts.assign(depth=signal_pts.sea_level_interp-signal_pts.seafloor)
+
+signal_pts = signal_pts.assign(sf_refr = signal_pts.sea_level_interp-0.75*signal_pts.depth)
+
+#%%
+
+
+usgs_plot = figure(
+    tools=TOOLS,
+    sizing_mode="scale_width",
+    height=200,
+    title="Refraction Corrected Results",
+)
+
+usgs_plot.scatter(
+    source=signal_pts,
+    x="dist_or",
+    y="Z_g",
+    color="green",
+    legend_label="Detected Signal Photon Returns",
+)
+usgs_plot.line(
+    source=signal_pts,
+    x="dist_or",
+    y="in_situ_height",
+    color="red",
+    legend_label="USGS high res topobathymetric data",
+)
+usgs_plot.line(
+    source=signal_pts,
+    x="dist_or",
+    y="sf_refr",
+    color="blue",
+    legend_label="Refraction corrected seafloor",
+)
+usgs_plot.xaxis.axis_label = "Along Track Distance [m]"
+usgs_plot.yaxis.axis_label = "Height relative to MSL [m]"
+show(usgs_plot)
+
+# %%
+p = figure()
+p.scatter(source=signal_pts,x='in_situ_height',y='sf_refr')
+show(p)
 # %% [markdown]
 # ## Issues to consider
 #
@@ -413,3 +462,5 @@ show(usgs_plot)
 # > The signal photons on sea surface and seafloor were detected using the above-mentioned method in last section. To obtain the precise water depth along ICESat-2's flight routes, the sea surface photons should be firstly discriminated against the seafloor photons. The local mean sea level Lm and the root mean square (RMS) wave height were calculated by the mean and standard deviation from the detected photons on the sea surface. All photons with the elevations lower than the local mean sea level minus 3-time RMS wave height were identified as seafloor photons.
 #
 # Could run DBSCAN again with different parameters to classifiy seafloor vs sea surface
+
+# %%
