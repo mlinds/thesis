@@ -71,10 +71,6 @@ output_notebook()
 
 # %%
 atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20200902115411_10560801_005_01.nc"
-# this business with iterators is just for manual testing
-# fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
-
-# %%
 print(atl03_testfile)
 beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
@@ -104,14 +100,22 @@ point_dataframe = point_dataframe[point_dataframe.Z_g < 5]
 # %% [markdown]
 # Filter out any points that are classified as a potential TEP.
 # We also filter out any points that are greater than 35m below the sea surface. The extreme upper limit of SDB via icesat is 40m (find citation)
-
-
 # %%
 point_dataframe = point_dataframe[point_dataframe.oc_sig_conf != -1]
 
 
 # %% [markdown]
-# ## Finding sea surface level
+# ## Tide Correction
+# from ATL03 ATBD:
+#
+# > Users should be aware that the GOT4.8 tide model used here provides values at 0.5 degree
+# resolution, so near coastlines and embayments, values should be treated with caution. See the
+# ICESat-2 Data Comparison User Guide for more detail.
+#
+# For now, the tide correction from the dataset is used until better data is available. The tide correction from the segment level is applied to
+# the point dataframe during loading
+
+# ## Finding the sea surface level
 # To estimate the sea surface level, points that have assigned a high confidence of being an ocean point (according to NASA's designations) are selected, and a moving median of 31 neigboring points is taken. This median of the Z values of the high confidence points is then interpolated to all photons,
 # interpreted linearly along the transect line. These vaulues are added to back to the table. Now every photon return below +5m geoid elevation has a sea level value. To distinguish subsurface points,
 #  we also calculate a rolling standard deviation of the same window. The points that greater than 1.5(?) standard deviations below the sea level are assumed to be subsurface returns
@@ -149,14 +153,19 @@ point_dataframe = point_dataframe.assign(
     .to_numpy()
 ).dropna()
 
-point_dataframe = point_dataframe[point_dataframe.sea_level_interp - point_dataframe.Z_g < 40]
+point_dataframe = point_dataframe[
+    point_dataframe.sea_level_interp - point_dataframe.Z_g < 40
+]
 
 # %% [markdown]
 # Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns allong a rolling window of 10 returns
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 # %%
-point_dataframe = point_dataframe[point_dataframe.Z_g < point_dataframe.sea_level_interp - max(3 * sea_level_std_dev, 2)]
+point_dataframe = point_dataframe[
+    point_dataframe.Z_g
+    < point_dataframe.sea_level_interp - max(3 * sea_level_std_dev, 2)
+]
 
 
 # %% [markdown]
@@ -261,7 +270,9 @@ bin_edges = list(
 
 # %%
 for dist_st, dist_end in bin_edges:
-    array = point_dataframe[(point_dataframe.dist_or > dist_st) & (point_dataframe.dist_or < dist_end)].to_records()
+    array = point_dataframe[
+        (point_dataframe.dist_or > dist_st) & (point_dataframe.dist_or < dist_end)
+    ].to_records()
     if len(array) < 50:
         continue
 
@@ -334,13 +345,13 @@ signal_pts = signal_pts.assign(
 )
 
 # %%
-results_plot = figure(
+DEM_comp_plot = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="USGS Topobathy Vs. ICESAT-2 photon returns",
 )
-results_plot.line(
+DEM_comp_plot.line(
     source=signal_pts,
     x="dist_or",
     y="canopy_h",
@@ -348,34 +359,40 @@ results_plot.line(
     legend_label="Mangrove Height above ground",
 )
 
-results_plot.line(
+DEM_comp_plot.line(
     source=signal_pts,
     x="dist_or",
     y="fema2019_elev",
     color="red",
     legend_label="FEMA 2019",
 )
-results_plot.scatter(
+DEM_comp_plot.scatter(
     source=signal_pts,
     x="dist_or",
     y="Z_g",
     color="green",
     legend_label="Detected Signal Photon Returns",
 )
-results_plot.line(
+DEM_comp_plot.line(
     source=signal_pts,
     x="dist_or",
     y="in_situ_height",
     color="blue",
     legend_label="USGS high res topobathymetric data",
 )
-results_plot.xaxis.axis_label = "Along Track Distance [m]"
-results_plot.yaxis.axis_label = "Height relative to MSL [m]"
-show(results_plot)
+DEM_comp_plot.xaxis.axis_label = "Along Track Distance [m]"
+DEM_comp_plot.yaxis.axis_label = "Height relative to MSL [m]"
+show(DEM_comp_plot)
 
+# %% [markdown]
+# ## Refraction correction
+#
+# The depth of each point can be corrected with the simple formula based on Snel's law:
+# $R_c  = \frac{n_1}{n_2} R_p \approx 0.75 R_p$
+#
+# To get the depth at each point, the following formula is used:
+# $$\text{Dep} = \text{Local sea Level} - \text{Seafloor Level}$$
 # %%
-
-
 # signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(25).quantile(0.2))
 signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
 signal_pts = signal_pts.assign(depth=signal_pts.sea_level_interp - signal_pts.seafloor)
@@ -385,47 +402,37 @@ signal_pts = signal_pts.assign(
 )
 
 # %%
-
-
-# %%
-
-
-usgs_plot = figure(
+results_plot = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="Refraction Corrected Results",
 )
 
-usgs_plot.scatter(
-    source=signal_pts,
-    x="dist_or",
-    y="Z_g",
-    color="green",
-    legend_label="Detected Signal Photon Returns",
-)
-usgs_plot.line(
+results_plot.line(
     source=signal_pts,
     x="dist_or",
     y="in_situ_height",
     color="red",
     legend_label="USGS high res topobathymetric data",
 )
-usgs_plot.line(
+results_plot.line(
     source=signal_pts,
     x="dist_or",
     y="sf_refr",
     color="blue",
     legend_label="Refraction corrected seafloor",
 )
-usgs_plot.xaxis.axis_label = "Along Track Distance [m]"
-usgs_plot.yaxis.axis_label = "Height relative to MSL [m]"
-show(usgs_plot)
+results_plot.xaxis.axis_label = "Along Track Distance [m]"
+results_plot.yaxis.axis_label = "Height relative to MSL [m]"
+show(results_plot)
 
 # %%
-p = figure()
+p = figure(title="Comparison calculated vs 'Sea-truth' data")
 p.scatter(source=signal_pts, x="in_situ_height", y="sf_refr")
+# p.line(x=)
 show(p)
+# export_png(obj=p,filename="../document/figures/bathy_extraction/comparison.png")
 # %% [markdown]
 # ## Issues to consider
 #
@@ -450,26 +457,6 @@ show(p)
 # from ATL12 ATBD section 4.2.1.2:
 #
 # > As of 11/5/2019 for Release 4, we modified the surface finding procedure as  described in section 5.3.2. Instead of basing surface finding on the distribution of photon heights, it is now based on the distribution of the photon height anomalies relative to a moving 11-point bin average of high-confidence photon heights. This excludes subsurface returns under the crests of surface waves that otherwise fall inside the histogram of true surface heights. This further reduces any error due to subsurface returns, obviating the immediate need for a subsurface return correction.
-#
-#
-#
-# ## Tide Correction
-# from ATL03 ATBD:
-#
-# > Users should be aware that the GOT4.8 tide model used here provides values at 0.5 degree
-# resolution, so near coastlines and embayments, values should be treated with caution. See the
-# ICESat-2 Data Comparison User Guide for more detail.
-#
-#
-# ## Refraction correction
-#
-# Still not implemented, but will use formula from Parrish et al.
-#
-# ![image.png](attachment:1a9efd91-7f72-4ba4-8430-f2792742bf26.png)
-#
-# The depth of each point can be corrected with the simple formula based on Snel's law:
-# $R_c  = \frac{n_1}{n_2} R_p \approx 0.75 R_p$
-#
 #
 # ### Separating sea surface from seafloor
 #

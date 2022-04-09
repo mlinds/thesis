@@ -310,6 +310,7 @@ def assign_na_values(inpval):
     """
     return np.NaN if inpval in ["", "-999999"] else float(inpval)
 
+
 # function that gets values from rasters for each lidar photon
 def query_raster(dataframe, src):
     # takes a dataframe of points, and any GDAL raster as input
@@ -331,4 +332,3 @@ def query_raster(dataframe, src):
     outlist = out.decode("utf-8").split("\n")
     # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
     return [assign_na_values(inpval) for inpval in outlist[:-1]]
-

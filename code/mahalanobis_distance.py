@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.cm as cm
 
 #%%
-hscale = 100
+hscale = 1000
 # %% [markdown]
 ## Loading an example set of bathymetric returns
 
@@ -17,7 +17,7 @@ hscale = 100
 
 # %%
 df = pd.read_csv("../data/derived/mahalanobis_test_set.csv", index_col=0).query(
-    "dist_or > 17000 and dist_or < 19000"
+    "dist_or > 15000 and dist_or < 16000"
 )
 df.plot.scatter(x="dist_or", y="Z_g")
 # convert the dataframe to numpy and separate the X and Z values
@@ -51,33 +51,38 @@ midpoint_array = np.vstack([xcenter, zcenter]).T
 
 #%%
 
-pt_distance = distance.cdist(obs_pts, midpoint_array, metric="mahalanobis", VI=IV)
-pt_distance_euc = distance.cdist(obs_pts, midpoint_array)
-median_pt = [(np.median(xvals), np.median(zvals))]
-distgrid = distance.cdist(
-    np.vstack([meshx.flatten(), meshz.flatten()]).T,
-    median_pt,
-    metric="mahalanobis",
-    VI=IV,
-).reshape(meshx.shape)
-distgrid_euc = distance.cdist(
-    np.vstack([meshx.flatten(), meshz.flatten()]).T, median_pt
-).reshape(meshx.shape)
 
-pt_distance = np.diag(pt_distance)
-pt_distance_euc = np.diag(pt_distance_euc)
+def plot_dist_contours(metric, **kwargs):
+    median_pt = [(np.median(xvals), np.median(zvals))]
+
+    pt_distance = distance.cdist(obs_pts, median_pt, metric=metric, **kwargs)
+
+    distgrid = distance.cdist(
+        np.vstack([meshx.flatten(), meshz.flatten()]).T,
+        median_pt,
+        metric=metric,
+        **kwargs,
+    ).reshape(meshx.shape)
+
+    fig, ax = plt.subplots(figsize=(20, 10))
+    contours = ax.contour(meshx, meshz, distgrid, levels=10)
+    ax.clabel(
+        contours, contours.levels, fontsize=20, fmt=lambda x: f"{x:.1f}m {metric[:3]}."
+    )
+    ax.scatter(xvals, zvals, c=pt_distance)
+
+    ax.set_title(f"{metric} distance plot with {hscale}x horizontal scaling")
+    ax.set_xlabel(f"Horizontal Distance [m]")
+    ax.set_ylabel(f"Elevation [m +MSL]")
+
+    fig.show()
+
 
 # %% [markdown]
 # ### Mahalobis visualization
 # The plot below shows the mahalanobis distance contours calculate for the data subset
 # %%
-fig, ax = plt.subplots(figsize=(20, 10))
-mah_contours = ax.contour(meshx, meshz, distgrid, levels=[0.2, 1])
-ax.clabel(
-    mah_contours, mah_contours.levels, fontsize=20, fmt=lambda x: f"{x:.1f}m mah."
-)
-ax.scatter(xvals, zvals, c=pt_distance)
-fig.show()
+plot_dist_contours(metric="mahalanobis", VI=IV)
 # %% [markdown]
 # ## Euclidian Distance
 
@@ -85,19 +90,16 @@ fig.show()
 
 # ### Euclidian Visualization
 # %%
-# add the contours of euclidian distance
+plot_dist_contours(metric="euclidean")
+# %% [markdown]
+## Other Metrics
 
-fig, ax = plt.subplots(figsize=(20, 10))
-euc_contours = ax.contour(meshx, meshz, distgrid_euc, levels=30)
-ax.clabel(
-    euc_contours, euc_contours.levels, fmt=lambda x: f"{x:.2f}m eucl.", fontsize=10
-)
+# %%
+plot_dist_contours(metric="seuclidean")
+plot_dist_contours(metric="minkowski")
+plot_dist_contours(metric="sqeuclidean")
+plot_dist_contours(metric="yule")
+plot_dist_contours(metric="cityblock")
 
-ax.scatter(xvals, zvals, c=pt_distance_euc)
-# plt.axis('scaled')
-# ax.colorbar()
-ax.set_title(f"Euclidian distance plot with {hscale}x horizontal scaling")
-ax.set_xlabel(f"Horizontal Distance [m]")
-ax.set_ylabel(f"Elevation [m +MSL]")
-fig.show()
+
 # %%
