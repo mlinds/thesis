@@ -1,6 +1,7 @@
 import glob
 import logging
 from os import PathLike
+from subprocess import PIPE, Popen
 
 import geopandas as gpd
 import numpy as np
@@ -299,3 +300,35 @@ def add_track_dist_meters(
     gdf = gdf.assign(dist_or=dist).sort_values("dist_or")
     # return a dataframe
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
+
+
+def assign_na_values(inpval):
+    """
+    assign the appropriate value to the output of the gdallocationinfo response. '-99999' is NA as is an empty string.
+
+    Anything else will return the input coerced to a float
+    """
+    return np.NaN if inpval in ["", "-999999"] else float(inpval)
+
+# function that gets values from rasters for each lidar photon
+def query_raster(dataframe, src):
+    # takes a dataframe of points, and any GDAL raster as input
+    xylist = dataframe[["X", "Y"]].values
+    # take x,y pairs from dataframe, convert to a big string, then into a bytestring to feed into the pipe
+
+    # first we take the coordinates and combine them as strings
+    coordlist = "".join([f"{x} {y} " for x, y in xylist.tolist()])
+
+    # convert string to a bytestring to keep GDAL happy
+    pipeinput = bytes(coordlist, "utf-8")
+
+    # gdal location info command with arguments
+    cmd = ["gdallocationinfo", "-geoloc", "-valonly", src]
+    # open a pipe to these commands
+    with Popen(cmd, stdout=PIPE, stdin=PIPE) as p:
+        # feed in our bytestring
+        out, err = p.communicate(input=pipeinput)
+    outlist = out.decode("utf-8").split("\n")
+    # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
+    return [assign_na_values(inpval) for inpval in outlist[:-1]]
+

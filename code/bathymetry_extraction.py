@@ -2,7 +2,6 @@
 # for testing I want to be able to reload my module when i change it
 from importlib import reload
 from math import ceil
-from subprocess import PIPE, Popen
 
 import numpy as np
 import pandas as pd
@@ -71,7 +70,7 @@ output_notebook()
 # - ../data/test_sites/PR/ATL03/processed_ATL03_20200721130011_04000801_005_01.nc (shallow but looks nice)
 
 # %%
-atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20200714023110_02860807_005_01.nc"
+atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20200902115411_10560801_005_01.nc"
 # this business with iterators is just for manual testing
 # fileiterator = iglob("../data/test_sites/PR/ATL03/*.nc")
 
@@ -81,7 +80,7 @@ beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
 
 # %%
-beam = "gt2r"
+beam = "gt1r"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -91,7 +90,7 @@ metadata_dict = beamdata.dtype.metadata
 
 print(metadata_dict)
 
-gdf = atl03_utils.add_track_dist_meters(beamdata)
+point_dataframe = atl03_utils.add_track_dist_meters(beamdata)
 # gdf.to_file('../data/derived/points.gpkg')
 
 
@@ -100,13 +99,16 @@ gdf = atl03_utils.add_track_dist_meters(beamdata)
 # Filter any points over 5m above the geoid.
 
 # %%
-gdf = gdf[gdf.Z_g < 5]
+point_dataframe = point_dataframe[point_dataframe.Z_g < 5]
 
 # %% [markdown]
-# Filter out any points that are classified as a potential TEP
+# Filter out any points that are classified as a potential TEP.
+# We also filter out any points that are greater than 35m below the sea surface. The extreme upper limit of SDB via icesat is 40m (find citation)
+
 
 # %%
-gdf = gdf[gdf.oc_sig_conf != -1]
+point_dataframe = point_dataframe[point_dataframe.oc_sig_conf != -1]
+
 
 # %% [markdown]
 # ## Finding sea surface level
@@ -117,14 +119,14 @@ gdf = gdf[gdf.oc_sig_conf != -1]
 
 # %%
 sea_level = (
-    gdf[gdf.oc_sig_conf >= 4]["Z_g"]
+    point_dataframe[point_dataframe.oc_sig_conf >= 4]["Z_g"]
     .rolling(
         201,
     )
     .median()
 )
 sigma_sea_level = (
-    gdf[gdf.oc_sig_conf == 4]["Z_g"]
+    point_dataframe[point_dataframe.oc_sig_conf == 4]["Z_g"]
     .rolling(
         31,
     )
@@ -133,7 +135,7 @@ sigma_sea_level = (
 sea_level.name = "sea_level"
 sea_level_std_dev = sea_level.std()
 
-newgdf = gdf.merge(
+newgdf = point_dataframe.merge(
     right=sea_level,
     how="left",
     left_index=True,
@@ -141,18 +143,20 @@ newgdf = gdf.merge(
     validate="1:1",
 )
 
-gdf = gdf.assign(
+point_dataframe = point_dataframe.assign(
     sea_level_interp=pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
     .interpolate(method="index")
     .to_numpy()
 ).dropna()
+
+point_dataframe = point_dataframe[point_dataframe.sea_level_interp - point_dataframe.Z_g < 40]
 
 # %% [markdown]
 # Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns allong a rolling window of 10 returns
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 # %%
-gdf = gdf[gdf.Z_g < gdf.sea_level_interp - max(3 * sea_level_std_dev, 2)]
+point_dataframe = point_dataframe[point_dataframe.Z_g < point_dataframe.sea_level_interp - max(3 * sea_level_std_dev, 2)]
 
 
 # %% [markdown]
@@ -161,7 +165,7 @@ gdf = gdf[gdf.Z_g < gdf.sea_level_interp - max(3 * sea_level_std_dev, 2)]
 
 # %%
 TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,reset,tap,save,box_select,poly_select,lasso_select,"
-gdf["oc_sig_conf"] = gdf.oc_sig_conf.astype("str")
+point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("str")
 p = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
@@ -171,18 +175,18 @@ p = figure(
 signal_conf_cmap = factor_cmap(
     "oc_sig_conf",
     palette=Spectral5,
-    factors=sorted(gdf.oc_sig_conf.unique().astype("str")),
+    factors=sorted(point_dataframe.oc_sig_conf.unique().astype("str")),
 )
 p.scatter(
-    source=gdf,
+    source=point_dataframe,
     x="dist_or",
     y="Z_g",
     color=signal_conf_cmap,
     legend_field="oc_sig_conf",
 )
-p.line(source=gdf, x="dist_or", y="sea_level_interp")
+p.line(source=point_dataframe, x="dist_or", y="sea_level_interp")
 show(p)
-gdf["oc_sig_conf"] = gdf.oc_sig_conf.astype("int")
+point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
 
 # %% [markdown]
 #
@@ -229,11 +233,11 @@ gdf["oc_sig_conf"] = gdf.oc_sig_conf.astype("int")
 
 # %%
 # we want chunks of about 10.000 returns
-nchunks = max(round(len(gdf) / 1000), 1)
-total_length = gdf.dist_or.max()
+nchunks = max(round(len(point_dataframe) / 1000), 1)
+total_length = point_dataframe.dist_or.max()
 print(f"the total length of the transect being studied is {total_length:.2f}km")
 
-Ra = 0.2
+Ra = 0.1
 # better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
 hscale = 1
 # this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
@@ -257,12 +261,12 @@ bin_edges = list(
 
 # %%
 for dist_st, dist_end in bin_edges:
-    array = gdf[(gdf.dist_or > dist_st) & (gdf.dist_or < dist_end)].to_records()
+    array = point_dataframe[(point_dataframe.dist_or > dist_st) & (point_dataframe.dist_or < dist_end)].to_records()
     if len(array) < 50:
         continue
 
     V = np.linalg.inv(np.cov(array["dist_or"], array["Z"]))
-    minpts = 3
+    minpts = 4
     fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
 
     # run the clustering algo
@@ -309,75 +313,34 @@ show(p2)
 # %%
 # For cleaning the raster results
 
-
-def assign_na_values(inpval):
-    """
-    assign the appropriate value to the output of the gdallocationinfo response. '-99999' is NA as is an empty string.
-
-    Anything else will return the input coerced to a float
-    """
-    return np.NaN if inpval in ["", "-999999"] else float(inpval)
-
-
-# %%
-# function that gets values from rasters for each lidar photon
-def query_raster(dataframe, src):
-    # takes a dataframe of points, and any GDAL raster as input
-    xylist = dataframe[["X", "Y"]].array
-    # take x,y pairs from dataframe, convert to a big string, then into a bytestring to feed into the pipe
-
-    # first we take the coordinates and combine them as strings
-    coordlist = "".join([f"{x} {y} " for x, y in xylist.tolist()])
-
-    # convert string to a bytestring to keep GDAL happy
-    pipeinput = bytes(coordlist, "utf-8")
-
-    # gdal location info command with arguments
-    cmd = ["gdallocationinfo", "-geoloc", "-valonly", src]
-    # open a pipe to these commands
-    with Popen(cmd, stdout=PIPE, stdin=PIPE) as p:
-        # feed in our bytestring
-        out, err = p.communicate(input=pipeinput)
-    outlist = out.decode("utf-8").split("\n")
-    # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
-    return [assign_na_values(inpval) for inpval in outlist[:-1]]
-
-
-outlist = query_raster(
+dem_2019 = atl03_utils.query_raster(
     signal_pts,
     "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
 )
-mangrove_heightlist = query_raster(
-    signal_pts,
-    "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
-)
-gebco_depth = query_raster(
+dem_2017 = atl03_utils.query_raster(
     signal_pts,
     "../data/test_sites/florida_keys/in-situ-DEM/Job720273_fl2017_usace_fema_irma_dem.tif",
 )
-
-# manually change gebco to approximately the same vertical reference (ie. ellipsoid instead of geoid)
-# i set this by eyeballing
-geoid_adjust = 0
-
-fema2019_depth = [depth + geoid_adjust for depth in gebco_depth]
-mangrove_heightlist = [height + geoid_adjust for height in mangrove_heightlist]
-
-# %%
-signal_pts = signal_pts.assign(
-    in_situ_height=outlist,
-    canopy_h=mangrove_heightlist,
-    fema2019_elev=gebco_depth,
+mangrove_heightlist = atl03_utils.query_raster(
+    signal_pts,
+    "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
 )
 
 # %%
-usgs_plot = figure(
+signal_pts = signal_pts.assign(
+    in_situ_height=dem_2019,
+    canopy_h=mangrove_heightlist,
+    fema2019_elev=dem_2017,
+)
+
+# %%
+results_plot = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="USGS Topobathy Vs. ICESAT-2 photon returns",
 )
-usgs_plot.line(
+results_plot.line(
     source=signal_pts,
     x="dist_or",
     y="canopy_h",
@@ -385,40 +348,44 @@ usgs_plot.line(
     legend_label="Mangrove Height above ground",
 )
 
-usgs_plot.line(
+results_plot.line(
     source=signal_pts,
     x="dist_or",
     y="fema2019_elev",
     color="red",
     legend_label="FEMA 2019",
 )
-usgs_plot.scatter(
+results_plot.scatter(
     source=signal_pts,
     x="dist_or",
     y="Z_g",
     color="green",
     legend_label="Detected Signal Photon Returns",
 )
-usgs_plot.line(
+results_plot.line(
     source=signal_pts,
     x="dist_or",
     y="in_situ_height",
     color="blue",
     legend_label="USGS high res topobathymetric data",
 )
-usgs_plot.xaxis.axis_label = "Along Track Distance [m]"
-usgs_plot.yaxis.axis_label = "Height relative to MSL [m]"
-show(usgs_plot)
+results_plot.xaxis.axis_label = "Along Track Distance [m]"
+results_plot.yaxis.axis_label = "Height relative to MSL [m]"
+show(results_plot)
 
 # %%
 
 
-signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(25).quantile(0.2))
+# signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(25).quantile(0.2))
+signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
 signal_pts = signal_pts.assign(depth=signal_pts.sea_level_interp - signal_pts.seafloor)
 
 signal_pts = signal_pts.assign(
     sf_refr=signal_pts.sea_level_interp - 0.75 * signal_pts.depth
 )
+
+# %%
+
 
 # %%
 
