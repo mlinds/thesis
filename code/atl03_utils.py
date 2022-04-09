@@ -62,7 +62,6 @@ def get_beams(granule_netcdf: str or PathLike) -> list:
     Returns:
         list: List of beams
     """
-    # print(granule_netcdf)
     try:
         with Dataset(granule_netcdf) as netcdfdataset:
             return [beam for beam in netcdfdataset.groups if beam in beamlist]
