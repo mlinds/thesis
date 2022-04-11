@@ -1,9 +1,29 @@
-%%{init: {'theme':'base'}}%%
+%%{init: {'theme':'forest'}}%%
 gantt
     title Max Lindsay Thesis Schedule
-
     dateFormat YYYY-MM-DD
-    Meeting 1: milestone, m1, 2022-04-16
+
+    section Meetings
+    Kickoff Meeting: milestone, m1, 2022-05-09, 0d
+    Progress Meeting 1: milestone, m2, 2022-06-16,0d
+    Progress Meeting 2: milestone, m3, 2022-07-15,0d
+    Greenlight meeting: milestone, m4, 2022-09-05,0d
     section Literature Review
-    Literature Review :lr, 2022-02-22,6w
-    coding tasks: code, after lr, 2w 
+    Mangroves as Coastal Defense:done, 2022-02-22,4w 
+    Modeling in Mangrove Forests:done, 2022-03-01,4w 
+    LiDAR Bathymetry:done, 2022-03-16,3w 
+    section Develop Toolkit
+    ATL03 Download script: download,2022-03-26,1w
+    Test Sites:2w
+    Signal/noise diff.: active, after download, 4w
+    Tidal: tide,2022-04-15, 2w
+    Extract depth: depth,after tide,3w
+    Develop hotspots of interest:hotspots, after depth, 2w
+    Apply at global scale:application, after hotspots,6w
+    Evaluate Results: after application, 6w
+
+    section writing
+    Project Plan: 2022-02-15, 2022-05-02
+    Final Report composition: after m2, 12w
+
+
