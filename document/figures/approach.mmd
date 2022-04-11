@@ -1,16 +1,25 @@
-%%{init: {'theme':'base'}}%%
+%%{init: {'theme':'forest'}}%%
 flowchart TD
+    %% 
     ph[/Raw Photon data from Icesat-2/] 
-    dbscan[Classify signal vs noise with DBSCAN]
-    chunk[Split data into chunks of 10k returns]
-    dbs_params[Calculate DBSCAN parameters by chunk]
-    find_surface_ph[Split signal returns into surface and bathymetric returns]
-    ph-->chunk-->dbs_params-->dbscan --> |Signal photons| find_surface_ph
+    strip_high[Remove any photon with a Z value greater than +5 msl]
+    strip_lo[Remove any photon with a Z value less than -40 msl]
+    msl[Find sea level by rolling median of NASA signal photons]
+    SNsplit[Classify signal vs noise]
+    msldata[/Local Sea Level data/]
+    tidemodel[/local tidal elevation from model/]
+    tides[Convert ellipsoidal height to MSL]
+    mov_avg_seafloor[Find seafloor by moving average]
+    seafloorheight[/Seafloor Elevation/]
+    uncorr[/Uncorrected depth/]
+    refr[Refraction correction]
+    msl-->|surface photons| msldata --> uncorr
 
-    dbscan --> |Noise photons| disc[Discard]
-    refr[Apply refraction correction based on depth]
+    SNsplit -->|Bathymetric signal photons| mov_avg_seafloor-->seafloorheight --> uncorr
+    %%SNsplit --> |Noise photons| disc[Discard]
+    tidemodel-->tides
+    ph-->tides-->strip_high-->strip_lo-->msl 
+    msl-->|Subsurface photons|SNsplit
+    uncorr --> refr --> bathydata[/Nearshore Bathymetry Depth/]
 
-    find_surface_ph --> |Bathymetric returns| refr
-    find_surface_ph --> |Surface returns| mvavg[Take moving average] --> wsheight[/Water surface height data/]
-    refr --> dep[Depth data]
 

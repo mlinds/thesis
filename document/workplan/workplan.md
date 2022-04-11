@@ -4,6 +4,19 @@
 
 ### Motivation
 
+#### Mangroves as a coastal buffer
+Sea level rise poses a threat to all coastal communities, including many of the world's largest population centers. The risk is even more existential for low-lying tropical commmunities, who have done little to contribute to the current climate crisis, but are disproportionatelly affected by the sea level rise. Low-lying nations often do not have any available high ground to move cities to, and sometimes don't have access to the resources to fully mitigate these risks through hard infrastrcture. For these reasons, mangroves forests are an important resource for these communities, providing coastal protection that can adapt to sea level rise by trapping sediment and expanding outward if conditions permit.
+
+
+Current study of the effects of mangroves on wave attenuation are limited by the difficulty of gather data about these ecosystems.  Shallow water bathymetry and mangrove height are extremely difficult to survey manually. Therefore, finding an automated way of extracting this data, from any site in the world, by remote sensing techniques would provide a massive improvement to wave modeling of sites that don't have existing survey data
+
+#### Impact of the nearshore data
+One of the most important aspects of a 1D wave model is the nearshore bathymetry, since the exact shape and depth of the profile has a profound impact on the wave transformation. The current state of 1D modeling of mangrove ecosystems either relies on in-situ survey data, or on a assumed profile shape. Currently, there exists a world-wide bathymetric dataset (GEBCO), but the resolution of 1km, and the rounding of depths to the nearest meter make this data insufficient for modeling of the nearshore zone. 
+
+
+
+
+
 ### Knowledge gaps
 
 - How does canopy height and other physical characteristics of the mangrove forest affect the coastal protection offered by mangroves
@@ -11,15 +24,13 @@
 
 ### Research Questions
 
--   In which areas of the world will investment in mangrove restoration
-    provide the most benefits in terms of flood risk reduction?
+-   How can mangrove canopy characteristics and nearshore bathymetry be extracted from spaceborne LiDAR data?
 
 To answer this question, the following subquestions will be pursued:
 
-- how can parameters for the classification be set dynamically
+- How can bathymetric data be isolated from data of individual photon return locations
 
--   How can global-scale data be used to improve the accuracy of
-    modeling of flood risk reduction due to mangrove ecosystems?
+- How to extract mangrove canopy heights from the lidar returns
 
 -   Based on this modeling method, where will restoration provide the
     largest reduction in flood risk?
@@ -29,16 +40,15 @@ To answer this question, the following subquestions will be pursued:
 
 ### Approach
 
-New idea: SWAN transect for every single icesat-2 path that intersects a mangrove forest
+Extract detailed nearshore bathymetry along icesat2 tracks. 
 
 How to find intersecting icesat2 paths?
-
 - Simplify mangrove shapefile geometry
     - Dissolve on the mangrove forest shapefile
     - Explode these features and drop those below a certain area
 
 - Get lidar data in those areas:
-    - Plug that shapefile into nasa earth downloader 
+    - Plug that shapefile into NSIDC DAAC downloader (or loop over features)
     - Process resulting with FME or something into a workable format
 
 - Extract data from lidar
@@ -54,9 +64,10 @@ How to find intersecting icesat2 paths?
     - Make a global map of which locations are best suited for restoration
 
 
-[]{#fig:approach label="fig:approach"}
-![image](figures/BN_approach.png){width="\\textwidth"}
+![image](../figures/approach.png){width="\\textwidth"}
 
 ## Planning
 
-![\<caption\>](figures/thesis-schedule.png){#<label>}
+The planned schedule is shown in the image below. 
+
+![Schedule](../figures/thesis-schedule.png)
