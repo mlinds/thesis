@@ -6,6 +6,7 @@ from subprocess import PIPE, Popen
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from pandas.api.extensions import register_dataframe_accessor
 
 from cftime import num2pydate
 from netCDF4 import Dataset
@@ -331,3 +332,67 @@ def query_raster(dataframe, src):
     outlist = out.decode("utf-8").split("\n")
     # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
     return [assign_na_values(inpval) for inpval in outlist[:-1]]
+
+
+@register_dataframe_accessor("bathy")
+class TransectFixer:
+    def __init__(self, dataframe):
+        self._validate(dataframe)
+        self._df = dataframe
+
+    @staticmethod
+    def _validate(dataframe):
+        pass
+
+    def filter_high_returns(self, level=5):
+        # remove any points above 5m
+        return self._df[self._df.Z_g < 5]
+
+    def filter_TEP(self):
+        return self._df[self._df.oc_sig_conf != -1]
+
+    def add_sea_level(self, rolling_window=50):
+        # take rolling median of signal points along track distance
+        sea_level = (
+            self._df[self._df.oc_sig_conf >= 4]["Z_g"]
+            .rolling(
+                rolling_window,
+            )
+            .median()
+        )
+        sigma_sea_level = (
+            self._df[self._df.oc_sig_conf == 4]["Z_g"]
+            .rolling(
+                rolling_window,
+            )
+            .std()
+        )
+        sea_level.name = "sea_level"
+        self.sea_level_std_dev = sea_level.std()
+
+        newgdf = self._df.merge(
+            right=sea_level,
+            how="left",
+            left_index=True,
+            right_index=True,
+            validate="1:1",
+        )
+
+        return self._df.assign(
+            sea_level_interp=pd.Series(
+                data=newgdf.sea_level.array, index=newgdf.dist_or.array
+            )
+            .interpolate(method="index")
+            .to_numpy()
+        ).dropna()
+
+    def filter_low_points(self):
+        # drop any points with an uncorrected depth greater than 40m
+
+        return self._df[self._df.sea_level_interp - self._df.Z_g < 40]
+
+    def remove_surface_points(self, n=3):
+        sea_level_std_dev = self._df.sea_level_interp.std()
+        return self._df[
+            self._df.Z_g < self._df.sea_level_interp - max(3 * sea_level_std_dev, 2)
+        ]

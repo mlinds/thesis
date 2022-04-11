@@ -95,13 +95,13 @@ point_dataframe = atl03_utils.add_track_dist_meters(beamdata)
 # Filter any points over 5m above the geoid.
 
 # %%
-point_dataframe = point_dataframe[point_dataframe.Z_g < 5]
+point_dataframe = point_dataframe.bathy.filter_high_returns()
 
 # %% [markdown]
 # Filter out any points that are classified as a potential TEP.
 # We also filter out any points that are greater than 35m below the sea surface. The extreme upper limit of SDB via icesat is 40m (find citation)
 # %%
-point_dataframe = point_dataframe[point_dataframe.oc_sig_conf != -1]
+point_dataframe = point_dataframe.bathy.filter_TEP()
 
 
 # %% [markdown]
@@ -122,50 +122,15 @@ point_dataframe = point_dataframe[point_dataframe.oc_sig_conf != -1]
 #
 
 # %%
-sea_level = (
-    point_dataframe[point_dataframe.oc_sig_conf >= 4]["Z_g"]
-    .rolling(
-        201,
-    )
-    .median()
-)
-sigma_sea_level = (
-    point_dataframe[point_dataframe.oc_sig_conf == 4]["Z_g"]
-    .rolling(
-        31,
-    )
-    .std()
-)
-sea_level.name = "sea_level"
-sea_level_std_dev = sea_level.std()
-
-newgdf = point_dataframe.merge(
-    right=sea_level,
-    how="left",
-    left_index=True,
-    right_index=True,
-    validate="1:1",
-)
-
-point_dataframe = point_dataframe.assign(
-    sea_level_interp=pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
-    .interpolate(method="index")
-    .to_numpy()
-).dropna()
-
-point_dataframe = point_dataframe[
-    point_dataframe.sea_level_interp - point_dataframe.Z_g < 40
-]
+point_dataframe = point_dataframe.bathy.add_sea_level()
+point_dataframe = point_dataframe.bathy.filter_low_points()
 
 # %% [markdown]
 # Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns allong a rolling window of 10 returns
 # we can find probably subsurface returns - below a standard deviation from the median height.
 
 # %%
-point_dataframe = point_dataframe[
-    point_dataframe.Z_g
-    < point_dataframe.sea_level_interp - max(3 * sea_level_std_dev, 2)
-]
+point_dataframe = point_dataframe.bathy.remove_surface_points()
 
 
 # %% [markdown]
