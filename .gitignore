@@ -21,8 +21,8 @@ missfont.log
 *.fdb_latexmk
 *.aux
 .~lock.document.pdf#
-
-
+*.ipynb
+!code\ALT03_processing.ipynb
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,latex,jupyternotebooks
 
@@ -524,3 +524,6 @@ code/OTPS_model/OTPS/matlab/uv_out.m
 code/OTPS_model/OTPS/predict_tide
 .flake8
 .vscode/settings.json
+code/netcdf_loading_prototyping.ipynb
+code/gh_icepyx_issue.py
+code/interactive_downloader.ipynb
