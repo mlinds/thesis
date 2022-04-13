@@ -9,7 +9,7 @@ Sea level rise poses a threat to all coastal communities, including many of the 
 Current study of the effects of mangroves on wave attenuation are limited by the difficulty of gather data about these ecosystems.  Shallow water bathymetry and mangrove height are difficult to survey manually. Mangrove forests are extremely dense and field work is difficuly. Therefore, finding an automated way of extracting this anywhere in the world from and publicly available data is a massive improvement when modeling sites that don't have existing survey data.
 
 ### ICESat-2
-The ICESat-2 mission is a satellite carrying ATLAS, a photon-counting, green-light LiDAR sensor instrument. The satellite follows ground tracks along the earth surface with a repeat time of 91 days. The instrument emits laser pulses of photons along 3 different tracks relative to the reference ground tracks. Along each track, there is one strong and one weak laser beam. Of the trillions of photons emitted, up to ~10 make it back to the sensor and are detected. (find citation)
+The ICESat-2 mission is a satellite carrying ATLAS, a photon-counting, green-light LiDAR sensor instrument. The satellite instruments points at reference ground tracks along the earth's surface with a repeat time of 91 days.  The instrument emits laser pulses of photons along 3 different tracks relative to the reference ground tracks. Of the approximately $10^14$ of photons emitted per pulse, up to ~10 make it back to the sensor and are detected. [@neumannt.a.ATLASICESat2L2A2019]
 
 ![RBTref](../figures/ATLAS_beam_layout_from_user_guide.png)
 
@@ -41,7 +41,7 @@ The nearshore zone is a very difficult environment to perform bathymetric survey
 
 ### Research Question
 
--   Can spaceborne LiDAR data be used to improve existing global estimates of nearshore bathymetry and mangrove canopy height?
+- How can spaceborne LiDAR data be used to improve existing nearshore bathymetry and canopy height data along mangrove-lined coasts?
 
 To answer this question, the following subquestions will be pursued:
 
@@ -49,6 +49,7 @@ To answer this question, the following subquestions will be pursued:
 - How can LiDAR returns reflecting the seafloor be separated from background noise? 
 - How can gaps be filled in areas with missing lidar photons?
 - Once signal photons have been identified, how can the seafloor elevation data be extracted? 
+- Can information about the mangrove canopy height be extracted from the LiDAR data?
 
 ## Approach
 
@@ -65,7 +66,7 @@ To extract the nearshore bathymetry
   - throw out any lines that don't intersect the OSM Coastline
   - determine which transect direction is offshore (based on deepest GEBCO depth?)
   - Go from offshore side to the OSM coastline intersection and resample the GEBCO depth to desired horizontal resolution
-  - calculate along-track distance in meters by reprojecting to local UTM , starting from offshore side of transect 
+  - calculate along-track distance in meters by reprojecting to local UTM, starting from offshore side of transect 
   
 - Classify lidar photon returns for each quality transect
     - Interpolate GEBCO data along the transect (contour raster, build 30m TIN off the contours?)
