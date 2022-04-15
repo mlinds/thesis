@@ -303,7 +303,7 @@ def _assign_na_values(inpval):
 # function that gets values from rasters for each lidar photon
 def query_raster(dataframe, src):
     # takes a dataframe of points, and any GDAL raster as input
-    xylist = dataframe[["X", "Y"]].values
+    xylist = dataframe.loc[:, ["X", "Y"]].values
     # take x,y pairs from dataframe, convert to a big string, then into a bytestring to feed into the pipe
 
     # first we take the coordinates and combine them as strings
@@ -338,19 +338,19 @@ class TransectFixer:
         return self._df.loc[(self._df.Z_g < 5)]
 
     def filter_TEP(self):
-        return self._df[self._df.oc_sig_conf != -2]
+        return self._df.loc[self._df.oc_sig_conf != -2]
 
     def add_sea_level(self, rolling_window=50):
         # take rolling median of signal points along track distance
         sea_level = (
-            self._df[self._df.oc_sig_conf >= 4]["Z_g"]
+            self._df.loc[self._df.oc_sig_conf >= 4]["Z_g"]
             .rolling(
                 rolling_window,
             )
             .median()
         )
         sigma_sea_level = (
-            self._df[self._df.oc_sig_conf == 4]["Z_g"]
+            self._df.loc[self._df.oc_sig_conf == 4]["Z_g"]
             .rolling(
                 rolling_window,
             )
@@ -377,11 +377,11 @@ class TransectFixer:
     def filter_low_points(self):
         # drop any points with an uncorrected depth greater than 40m
 
-        return self._df[self._df.sea_level_interp - self._df.Z_g < 40]
+        return self._df.loc[self._df.sea_level_interp - self._df.Z_g < 40]
 
     def remove_surface_points(self, n=3, min_remove=1):
         sea_level_std_dev = self._df.sea_level_interp.std()
-        return self._df[
+        return self._df.loc[
             self._df.Z_g
             < self._df.sea_level_interp - max(n * sea_level_std_dev, min_remove)
         ]
@@ -405,7 +405,7 @@ def cluster_signal_dbscan(
 
     # loop over the bins and classify
     for dist_st, dist_end in bin_edges:
-        array = beam_df[
+        array = beam_df.loc[
             (beam_df.dist_or > dist_st) & (beam_df.dist_or < dist_end)
         ].to_records()
         if len(array) < 10:
@@ -424,7 +424,7 @@ def cluster_signal_dbscan(
         ).fit(fitarray)
         df = pd.DataFrame(array).assign(cluster=clustering.labels_)
 
-        df["SN"] = df.cluster.apply(lambda x: "noise" if x == -1 else "signal")
+        df.loc[:, "SN"] = df.cluster.apply(lambda x: "noise" if x == -1 else "signal")
         sndf.append(df)
 
     merged = pd.concat(
@@ -435,7 +435,7 @@ def cluster_signal_dbscan(
 
 
 def add_raw_seafloor(beam_df: pd.DataFrame):
-    signal_pts = beam_df[beam_df.SN == "signal"]
+    signal_pts = beam_df.loc[beam_df.SN == "signal"]
 
     signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
     signal_pts = signal_pts.assign(
@@ -460,8 +460,10 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
 def calc_rms_error(beam_df, column_names: list):
     return_dict = {}
+    # go over the each DEM, and find the RMS error with the calculated seafloor
     for column in column_names:
-        comp_columns = beam_df[["sf_refr", column]].dropna()
+        # get a subset of the dataframe that is the seafloor and the column of interest
+        comp_columns = beam_df.loc[:, ["sf_refr", column]].dropna()
         if len(comp_columns) == 0:
             return_dict[str(column) + "_error"] = "No intersecting Points"
         else:
