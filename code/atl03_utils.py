@@ -1,16 +1,19 @@
 import glob
 import logging
+from math import ceil
 from os import PathLike
+from os.path import basename
 from subprocess import PIPE, Popen
+from sklearn.metrics import mean_squared_error
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from pandas.api.extensions import register_dataframe_accessor
-
 from cftime import num2pydate
 from netCDF4 import Dataset
+from pandas.api.extensions import register_dataframe_accessor
 from shapely.geometry import LineString, Point
+from sklearn.cluster import DBSCAN
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
@@ -65,7 +68,11 @@ def get_beams(granule_netcdf: str or PathLike) -> list:
     """
     try:
         with Dataset(granule_netcdf) as netcdfdataset:
-            return [beam for beam in netcdfdataset.groups if beam in beamlist]
+            return [
+                beam
+                for beam in netcdfdataset.groups
+                if beam in beamlist and "heights" in netcdfdataset.groups[beam].groups
+            ]
     # i  know pass in an except block is bad coding but i need to find a better way of handling this
     except AttributeError:
         pass
@@ -209,24 +216,6 @@ def get_track_geom(beamarray: np.ndarray) -> LineString:
         return LineString(coords)
 
 
-# i don't think these get used anymore
-
-# def read_ncdf(inpfile):
-#     beams_available_file = get_beams(inpfile)
-#     beamcoords = {}
-#     for beam in beams_available_file:
-#         array = load_beam_array_ncds(inpfile, beam)
-#         beamcoords[beam] = get_track_geom(array)
-#         yield array
-
-
-# def get_beam_data(h5file, beam):
-#     point_array = load_beam_array_ncds(h5file, beam)
-#     track_geom = get_track_geom(point_array)
-
-#     return (track_geom,)
-
-
 def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     # TODO fix this unreadable function
     # try to decrease the indent level - itertools?
@@ -282,16 +271,16 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
 
 
 def add_track_dist_meters(
-    strctarray, geodataframe=False
+    # y is lat, x is lon
+    strctarray,
+    geodataframe=False,
 ) -> pd.DataFrame or gpd.GeoDataFrame:
     xcoords = strctarray["X"]
     ycoords = strctarray["Y"]
-
     geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
-    # TODO use utm library to chose zone automatically
-    gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912").to_crs(
-        "EPSG:32619"
-    )
+    gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912")
+    utmzone = gdf.estimate_utm_crs()
+    gdf = gdf.to_crs(utmzone)
     ymin = gdf.geometry.y.min()
     xmin = gdf.geometry.x[gdf.geometry.y.argmin()]
 
@@ -302,7 +291,7 @@ def add_track_dist_meters(
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
 
 
-def assign_na_values(inpval):
+def _assign_na_values(inpval):
     """
     assign the appropriate value to the output of the gdallocationinfo response. '-99999' is NA as is an empty string.
 
@@ -331,7 +320,7 @@ def query_raster(dataframe, src):
         out, err = p.communicate(input=pipeinput)
     outlist = out.decode("utf-8").split("\n")
     # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
-    return [assign_na_values(inpval) for inpval in outlist[:-1]]
+    return [_assign_na_values(inpval) for inpval in outlist[:-1]]
 
 
 @register_dataframe_accessor("bathy")
@@ -346,10 +335,10 @@ class TransectFixer:
 
     def filter_high_returns(self, level=5):
         # remove any points above 5m
-        return self._df[self._df.Z_g < 5]
+        return self._df.loc[(self._df.Z_g < 5)]
 
     def filter_TEP(self):
-        return self._df[self._df.oc_sig_conf != -1]
+        return self._df[self._df.oc_sig_conf != -2]
 
     def add_sea_level(self, rolling_window=50):
         # take rolling median of signal points along track distance
@@ -368,7 +357,6 @@ class TransectFixer:
             .std()
         )
         sea_level.name = "sea_level"
-        self.sea_level_std_dev = sea_level.std()
 
         newgdf = self._df.merge(
             right=sea_level,
@@ -391,8 +379,95 @@ class TransectFixer:
 
         return self._df[self._df.sea_level_interp - self._df.Z_g < 40]
 
-    def remove_surface_points(self, n=3):
+    def remove_surface_points(self, n=3, min_remove=1):
         sea_level_std_dev = self._df.sea_level_interp.std()
         return self._df[
-            self._df.Z_g < self._df.sea_level_interp - max(3 * sea_level_std_dev, 2)
+            self._df.Z_g
+            < self._df.sea_level_interp - max(n * sea_level_std_dev, min_remove)
         ]
+
+
+def cluster_signal_dbscan(
+    beam_df: pd.DataFrame, minpts=3, chunksize=500, Ra=0.1, hscale=1
+):
+    # create emtpy list to store the chunks
+    sndf = []
+    total_length = beam_df.dist_or.max()
+    nchunks = ceil(total_length / chunksize)
+    dist_st = 0
+    # find the edges of the bins in meters
+    bin_edges = list(
+        zip(
+            range(0, (nchunks - 1) * chunksize, chunksize),
+            range(chunksize, nchunks * chunksize, chunksize),
+        )
+    )
+
+    # loop over the bins and classify
+    for dist_st, dist_end in bin_edges:
+        array = beam_df[
+            (beam_df.dist_or > dist_st) & (beam_df.dist_or < dist_end)
+        ].to_records()
+        if len(array) < 10:
+            continue
+
+        V = np.linalg.inv(np.cov(array["dist_or"], array["Z"]))
+        minpts = 6
+        fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
+
+        # run the clustering algo on the section
+        clustering = DBSCAN(
+            eps=Ra,
+            min_samples=minpts,
+            metric="mahalanobis",
+            metric_params={"VI": V},
+        ).fit(fitarray)
+        df = pd.DataFrame(array).assign(cluster=clustering.labels_)
+
+        df["SN"] = df.cluster.apply(lambda x: "noise" if x == -1 else "signal")
+        sndf.append(df)
+
+    merged = pd.concat(
+        sndf,
+    )
+
+    return merged
+
+
+def add_raw_seafloor(beam_df: pd.DataFrame):
+    signal_pts = beam_df[beam_df.SN == "signal"]
+
+    signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
+    signal_pts = signal_pts.assign(
+        depth=signal_pts.sea_level_interp - signal_pts.seafloor
+    )
+    signal_pts = signal_pts.assign(
+        sf_refr=signal_pts.sea_level_interp - 0.75 * signal_pts.depth
+    )
+
+    return signal_pts
+
+
+def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
+
+    for dempath in demlist:
+        demname = basename(dempath).strip(".nc")
+        values_at_pt = query_raster(beam_df, dempath)
+        beam_df.loc[:, (demname)] = values_at_pt
+
+    return beam_df
+
+
+def calc_rms_error(beam_df, column_names: list):
+    return_dict = {}
+    for column in column_names:
+        comp_columns = beam_df[["sf_refr", column]].dropna()
+        if len(comp_columns) == 0:
+            return_dict[str(column) + "_error"] = "No intersecting Points"
+        else:
+            rms_error = mean_squared_error(
+                comp_columns.loc[:, column], comp_columns.loc[:, "sf_refr"]
+            )
+            return_dict[str(column) + "_error"] = rms_error
+
+    return return_dict
