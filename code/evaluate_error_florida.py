@@ -44,7 +44,7 @@ def test_florida(filename, beam):
     # point_dataframe = atl03_utils.add_track_dist_meters(point_dataframe.drop(columns=['dist_or']).to_records())
 
     point_dataframe = atl03_utils.cluster_signal_dbscan(
-        point_dataframe, Ra=0.1, minpts=6, hscale=1000, chunksize=500
+        point_dataframe, Ra=0.2, minpts=10, hscale=1000, chunksize=500
     )
 
     signal_pts = point_dataframe[point_dataframe.SN == "signal"]

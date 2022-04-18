@@ -1,3 +1,8 @@
+"""
+TODO:
+- GEBCO automatic download function
+
+"""
 import glob
 import logging
 from math import ceil
@@ -15,7 +20,9 @@ from pandas.api.extensions import register_dataframe_accessor
 from shapely.geometry import LineString, Point
 from sklearn.cluster import DBSCAN
 
-beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
+
+# beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
+beamlist = ["gt1r", "gt2r", "gt3r"]
 
 logger = logging.getLogger("ATL03_Data_cleaning")
 
@@ -71,7 +78,8 @@ def get_beams(granule_netcdf: str or PathLike) -> list:
             return [
                 beam
                 for beam in netcdfdataset.groups
-                if beam in beamlist and "heights" in netcdfdataset.groups[beam].groups
+                if (beam in beamlist)
+                and ("heights" in netcdfdataset.groups[beam].groups)
             ]
     # i  know pass in an except block is bad coding but i need to find a better way of handling this
     except AttributeError:
@@ -277,7 +285,8 @@ def add_track_dist_meters(
 ) -> pd.DataFrame or gpd.GeoDataFrame:
     xcoords = strctarray["X"]
     ycoords = strctarray["Y"]
-    geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
+    # geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
+    geom = gpd.points_from_xy(xcoords, ycoords, crs="EPSG:7912")
     gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912")
     utmzone = gdf.estimate_utm_crs()
     gdf = gdf.to_crs(utmzone)
@@ -293,7 +302,7 @@ def add_track_dist_meters(
 
 def _assign_na_values(inpval):
     """
-    assign the appropriate value to the output of the gdallocationinfo response. '-99999' is NA as is an empty string.
+    assign the appropriate value to the output of the gdallocationinfo response. '-99999' and an empty string are NaN values
 
     Anything else will return the input coerced to a float
     """
@@ -411,16 +420,17 @@ def cluster_signal_dbscan(
         if len(array) < 10:
             continue
 
-        V = np.linalg.inv(np.cov(array["dist_or"], array["Z"]))
-        minpts = 6
+        V = np.linalg.inv(np.cov(array["dist_or"] / hscale, array["Z"]))
         fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
 
         # run the clustering algo on the section
         clustering = DBSCAN(
             eps=Ra,
+            # max_eps=Ra,
             min_samples=minpts,
             metric="mahalanobis",
             metric_params={"VI": V},
+            # cluster_method='dbscan'
         ).fit(fitarray)
         df = pd.DataFrame(array).assign(cluster=clustering.labels_)
 
@@ -451,7 +461,7 @@ def add_raw_seafloor(beam_df: pd.DataFrame):
 def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
     for dempath in demlist:
-        demname = basename(dempath).strip(".nc")
+        demname = basename(dempath).split(".")[0]
         values_at_pt = query_raster(beam_df, dempath)
         beam_df.loc[:, (demname)] = values_at_pt
 
@@ -459,17 +469,17 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
 
 def calc_rms_error(beam_df, column_names: list):
-    return_dict = {}
+    error_dict = {}
     # go over the each DEM, and find the RMS error with the calculated seafloor
     for column in column_names:
         # get a subset of the dataframe that is the seafloor and the column of interest
         comp_columns = beam_df.loc[:, ["sf_refr", column]].dropna()
         if len(comp_columns) == 0:
-            return_dict[str(column) + "_error"] = "No intersecting Points"
+            error_dict[str(column) + "_error"] = np.NaN
         else:
             rms_error = mean_squared_error(
                 comp_columns.loc[:, column], comp_columns.loc[:, "sf_refr"]
             )
-            return_dict[str(column) + "_error"] = rms_error
+            error_dict[str(column) + "_error"] = rms_error
 
-    return return_dict
+    return error_dict
