@@ -1,15 +1,11 @@
 # %%
 # for testing I want to be able to reload my module when i change it
 from importlib import reload
-from math import ceil
 
-import numpy as np
-import pandas as pd
 from bokeh.io import output_notebook
 from bokeh.palettes import Spectral5
 from bokeh.plotting import figure, show
 from bokeh.transform import factor_cmap
-from sklearn.cluster import DBSCAN
 
 import atl03_utils
 
@@ -71,14 +67,14 @@ output_notebook()
 #  - ../data/test_sites/PR/ATL03/processed_ATL03_20200721130011_04000801_005_01.nc (shallow but looks nice)
 
 # %%
-atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20200902115411_10560801_005_01.nc"
+atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20190116043219_02860207_005_01.nc"
 print(atl03_testfile)
 beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
 
 
 # %%
-beam = "gt1r"
+beam = "gt3l"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -130,8 +126,24 @@ point_dataframe = point_dataframe.bathy.filter_low_points()
 # Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns, we can find probable subsurface returns by removing any points within 3 standard deviations of the interpolated sea surface height.
 
 # %%
-point_dataframe = point_dataframe.bathy.remove_surface_points()
+point_dataframe = point_dataframe.bathy.remove_surface_points(min_remove=0.5)
 
+# %%[markdown]
+# ## removing deepwater points
+#  to remove points that we know are too deep, the GEBCO values for each point are added. Any points with a GEBCO depth of greater than 40 are removed
+
+point_dataframe = atl03_utils.add_dem_data(
+    point_dataframe,
+    [
+        "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
+        "../data/test_sites/florida_keys/in-situ-DEM/fema_2017.tif",
+        "../data/test_sites/florida_keys/GEBCO/gebco.tif",
+        "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
+    ],
+)
+
+# point_dataframe = point_dataframe[point_dataframe["gebco.tif"] > -40]
+# %%
 # %% [markdown]
 #  The photons remaining after these filters are plotted below:
 #
@@ -209,68 +221,16 @@ point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
 # %% [markdown]
 #  ### Setting DBSCAN parameters
 
-# %%
-# we want chunks of about 10.000 returns
-nchunks = max(round(len(point_dataframe) / 1000), 1)
-total_length = point_dataframe.dist_or.max()
-print(f"the total length of the transect being studied is {total_length:.2f}km")
-
-Ra = 0.1
-# better results are found by scaling the horizontal direction down to prioritize points that are horizontally closer than others
-hscale = 1
-# this loop splits the dataframe into chucks of approximately 10k points, finds the adaptive minpts, does the clustering, and then assigns the results to a dataframe, which are then combined back into one big frame
-
 
 # %%
-# this list will be filled with geodataframes of each chunk
-sndf = []
-chunksize = 500
 
-nchunks = ceil(total_length / chunksize)
-print(f"Points will be proccessed in {nchunks} chunks")
-dist_st = 0
-
-bin_edges = list(
-    zip(
-        range(0, (nchunks - 1) * chunksize, chunksize),
-        range(chunksize, nchunks * chunksize, chunksize),
-    )
-)
-
-
-# %%
-for dist_st, dist_end in bin_edges:
-    array = point_dataframe[
-        (point_dataframe.dist_or > dist_st) & (point_dataframe.dist_or < dist_end)
-    ].to_records()
-    if len(array) < 50:
-        continue
-
-    V = np.linalg.inv(np.cov(array["dist_or"], array["Z"]))
-    minpts = 4
-    fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
-
-    # run the clustering algo
-    clustering = DBSCAN(
-        eps=Ra,
-        min_samples=minpts,
-        metric="mahalanobis",
-        metric_params={"VI": V},
-    ).fit(fitarray)
-    df = pd.DataFrame(array).assign(cluster=clustering.labels_)
-
-    df["SN"] = df.cluster.apply(lambda x: "noise" if x == -1 else "signal")
-    sndf.append(df)
-
-merged = pd.concat(
-    sndf,
-)
+point_dataframe = atl03_utils.cluster_signal_dbscan(point_dataframe)
 
 
 # %%
 
-signal_pts = merged[merged.SN == "signal"]
-noise_pts = merged[merged.SN == "noise"]
+signal_pts = point_dataframe[point_dataframe.SN == "signal"]
+noise_pts = point_dataframe[point_dataframe.SN == "noise"]
 
 p2 = figure(
     tools=TOOLS,
@@ -292,55 +252,11 @@ show(p2)
 #  First we define some functions for reading a raster value for each Lidar return photon
 
 # %%
-# For cleaning the raster results
-
-dem_2019 = atl03_utils.query_raster(
-    signal_pts,
-    "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-)
-dem_2017 = atl03_utils.query_raster(
-    signal_pts,
-    "../data/test_sites/florida_keys/in-situ-DEM/Job720273_fl2017_usace_fema_irma_dem.tif",
-)
-mangrove_heightlist = atl03_utils.query_raster(
-    signal_pts,
-    "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
-)
-
-mangrove_heightlist = atl03_utils.query_raster(
-    signal_pts,
-    "../data/",
-)
-
-# %%
-signal_pts = signal_pts.assign(
-    in_situ_height=dem_2019,
-    canopy_h=mangrove_heightlist,
-    fema2019_elev=dem_2017,
-)
-
-
-# %%
 DEM_comp_plot = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="USGS Topobathy Vs. ICESAT-2 photon returns",
-)
-DEM_comp_plot.line(
-    source=signal_pts,
-    x="dist_or",
-    y="canopy_h",
-    color="orange",
-    legend_label="Mangrove Height above ground",
-)
-
-DEM_comp_plot.line(
-    source=signal_pts,
-    x="dist_or",
-    y="fema2019_elev",
-    color="red",
-    legend_label="FEMA 2019",
 )
 DEM_comp_plot.scatter(
     source=signal_pts,
@@ -349,13 +265,7 @@ DEM_comp_plot.scatter(
     color="green",
     legend_label="Detected Signal Photon Returns",
 )
-DEM_comp_plot.line(
-    source=signal_pts,
-    x="dist_or",
-    y="in_situ_height",
-    color="blue",
-    legend_label="USGS high res topobathymetric data",
-)
+
 DEM_comp_plot.xaxis.axis_label = "Along Track Distance [m]"
 DEM_comp_plot.yaxis.axis_label = "Height relative to MSL [m]"
 show(DEM_comp_plot)
@@ -369,15 +279,8 @@ show(DEM_comp_plot)
 #
 #  To get the depth at each point, the following formula is used:
 #  $\text{Dep} = \text{Local sea Level} - \text{Seafloor Level}$
-
 # %%
-# signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(25).quantile(0.2))
-signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
-signal_pts = signal_pts.assign(depth=signal_pts.sea_level_interp - signal_pts.seafloor)
-
-signal_pts = signal_pts.assign(
-    sf_refr=signal_pts.sea_level_interp - 0.75 * signal_pts.depth
-)
+signal_pts = atl03_utils.add_raw_seafloor(signal_pts)
 
 
 # %%
@@ -387,14 +290,6 @@ results_plot = figure(
     height=200,
     title="Refraction Corrected Results",
 )
-
-results_plot.line(
-    source=signal_pts,
-    x="dist_or",
-    y="in_situ_height",
-    color="red",
-    legend_label="USGS high res topobathymetric data",
-)
 results_plot.line(
     source=signal_pts,
     x="dist_or",
@@ -402,6 +297,30 @@ results_plot.line(
     color="blue",
     legend_label="Refraction corrected seafloor",
 )
+results_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="height_vrt.vrt",
+    color="orange",
+    legend_label="Mangrove Height above ground",
+)
+
+results_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="2019_irma.vrt",
+    color="red",
+    legend_label="FEMA 2019",
+)
+
+results_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="gebco.tif",
+    color="black",
+    legend_label="GEBCO",
+)
+
 results_plot.xaxis.axis_label = "Along Track Distance [m]"
 results_plot.yaxis.axis_label = "Height relative to MSL [m]"
 show(results_plot)
