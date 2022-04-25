@@ -78,6 +78,7 @@ The height provided in ATL03 is calculated by the following equation:
 $$H_{GC} =  H_{P} - H_{OPT} - H_{OL} - H_{SEPT} - H_{SET} - H_{TCA}$$
 
 Where:
+
 - $H_{GC}$ is the geophysically corrected photon height above the WGS84 ellipsoid
 - $H_{P}$ is the raw photon height above the WGS84 ellipsoid
 - $H_{OPT}$ is the height of the Ocean Pole tide
@@ -94,6 +95,7 @@ The ATL03 data product includes a calculated confidence that a given photon retu
 
 
 ## Satellite Derived bathymetry
+
 ### Multispectral imagery
 There are many techniques to approximate depth by the spectral signatures of optical satellite data. The two classical ones are the band-ratio model and the linear band model. they work well in optically shallow waters (cite). 
 
@@ -147,45 +149,46 @@ Further studies have implemented the combination of multispectral SDB that is ca
 
 # Proposed Methodology
 
-To extract the nearshore bathymetry 
+To extract the nearshore bathymetry:
+
 ## Find areas for global analysis:
-### select from VO hotspots where mangrove area >10% and population >20
-### dissolve polygons to merge any touching polygons
-### buffer features if needed?
-### resulting features are the study areas
 
 ## Refine Signal/noise classification algorithm
 
-##
-
 ## Downloading and processing data:
-### Get GEBCO and icesat for each study area 
-### extract ICESAT ground tracks lines
-### throw out any lines that don't intersect the OSM Coastline
-### determine which transect direction is offshore (based on deepest GEBCO depth?)
-### Go from offshore side to the OSM coastline intersection and resample the GEBCO depth to desired horizontal resolution
-### calculate along-track distance
-Find distance in meters by reprojecting to local UTM, starting from offshore side of transect 
+
+- Get GEBCO and icesat for each study area 
+- extract ICESAT ground tracks lines
+- throw out any lines that don't intersect the OSM Coastline
+- determine which transect direction is offshore (based on deepest GEBCO depth?)
+- Go from offshore side to the OSM coastline intersection and resample the GEBCO depth to desired horizontal resolution
+- calculate along-track distance
+- Find distance in meters by reprojecting to local UTM, starting from offshore side of transect 
   
 ## Classify lidar photon returns for each quality transect
-### Interpolate GEBCO data along the transect (contour raster, build 30m TIN off the contours?)
-### Extract bathymetry using correction algorithm 
-### Extract canopy height from canopy height data
+
+-  Interpolate GEBCO data along the transect (contour raster, build 30m TIN off the contours?)
+-  Extract bathymetry using correction algorithm 
+-  Extract canopy height from canopy height data
  
 ## assess seafloor bathymetry
   - Bayesian updating of interpolated GEBCO data
-## Analysis 
+  
+## Analysis and statistical evaluation
 
+- Find areas where the technique is applicable
+- study the resulting transects
 
 ## Proposed Method Flowchart
 
 ![image](../figures/approach.png){width="\\textwidth"}
 
 # Practicalities
-## Scheduling
+
+## Planned Schedule
 
 The planned schedule is shown below. 
 
 ![Schedule](../figures/thesis-schedule.png)
 
-## Planned final Thesis outline 
+## Planned final document outline 
