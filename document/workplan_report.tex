@@ -1,20 +1,18 @@
 \documentclass[a4paper,oneside]{report}
 
 \usepackage{amsmath}
-\usepackage{siunitx}
-\usepackage[style=authoryear]{biblatex}
+% \usepackage{siunitx}
+\usepackage{biblatex}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{rotating}
 \usepackage[obeyDraft]{todonotes}
 \usepackage{hyperref}
 \usepackage{eso-pic}
 \usepackage{changes}
 \usepackage{xcolor}
-% \usepackage[clean]{svg}
 \usepackage{markdown}
-\addbibresource{linked.bib}
-
-\def \tablepath {../tables/}
+\addbibresource[datatype=bibtex]{library.bib}
 
 \title{Work Plan for Thesis}
 \author{Maxwell AE Lindsay}
@@ -45,8 +43,8 @@
 
 %% Use Arabic numerals for the page numbers of the chapters.
 
-\input{workplan/workplan.tex}
-% \input{chapters/introduction.tex}
+\include{workplan/workplan.tex}
+
 
 %% Use letters for the chapter numbers of the appendices.
 \appendix
