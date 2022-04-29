@@ -1,185 +1,119 @@
-\hypertarget{introduction}{%
-  \chapter{Introduction}\label{introduction}}
 
-\hypertarget{motivation}{%
-  \section{Motivation}\label{motivation}}
+\chapter{Introduction}
 
-\hypertarget{impact-of-the-nearshore-data}{%
-  \subsubsection{Impact of the nearshore
-    data}\label{impact-of-the-nearshore-data}}
 
-One of the most important aspects of a 1D wave model is the nearshore
-bathymetry, since the exact shape and depth of the profile has a
-profound impact on the wave transformation. The current state of 1D
-modeling of mangrove ecosystems either relies on in-situ survey data, or
-on a assumed profile shape. Currently, there exists a world-wide
-bathymetric dataset (GEBCO), but the resolution of 1km, and the rounding
-of depths to the nearest meter make this data insufficient for accurate
-modeling of the nearshore zone.
+\section{Motivation}
+\begin{itemize}
+      \item 39\% of the world's population lives within 100km of the coast.\cite{Magdalena2021}
+      \item If further investment in coastal defence is not undertaken, the amount of people exposed to flooding will increase 52\%, and the value of assets at risk will increase by 46\% \cite{Kirezci2020}.
+      \item Currrently 10\% of the world's population lives in a Low Elevation Coastal Zone (LECZ), defined as land areas less than 10m above sea level. These areas are especially vulnerable and population in these zones is only projected to increase, especially in African cities \cite{Neumann2015,Lichter2011}
+      \item mangroves currently provide flood protection to over 15 million people \cite{Menendez2020}
+      \item 30-50\% of the world's mangroves have been lost in the last 50 years \cite{}. 
+\end{itemize}
+\subsection{Impact of nearshore data}
 
-\hypertarget{limitations-of-conventional-nearshore-survey}{%
-  \subsubsection{Limitations of conventional nearshore
-    survey}\label{limitations-of-conventional-nearshore-survey}}
+Nearshore bathymetry is crucial data for many aspects of coastal management and research. Bathymetric data is essential for many aspects of the blue economy, including aquaculture, marine energy, submarine cables, dredging operations, design of sea defences, navigation, scientific research, and ecosystem preservation \cite{Cesbron2021,Ashphaq2021}. However, the nearshore zone is notoriously difficult to survey. There is currently a global lack of data in the 5-10m zone \cite{Albright2021} and up to 50\% of the world's shallow coastal zones remain unsurveyed \cite{IHO/OHI2022}. Where surveys do exist, they can be decades out of date, especially in the 40\% of the world's coasts that are sandy and highly dynamic \cite{Almar2021e}.  
 
-The nearshore zone is a very difficult environment to perform
-bathymetric surveying. \cite{Parrish2019}. Existing methods of
-bathymetric survey, like a multi-beam echo sounder (MBES) are typically
-attached to ships which cannot navigate in water shallower than 4-5m,
-and are limited by operational restrictions when working in shallow
-water, like the precense of navigational hazards or sensitive
-ecosystems. Airborne lidar surveying can be used for a high resolution
-model of the bathymetry. However, these surveys are extremely expensive
-to perform and require extensive post-processing effort to create a
-usable surface model.
+There have been attempts at global bathymetric datasets, most notably GEBCO, which is an annually-updated global bathymetric and topograhpic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \cite{Cesbron2021}. While it provides very useful information about deep oceans, the resolution is not sufficient for detailed modeling, and because sonar data is limited in many shallow nearshore zones, GEBCO accuracy in the nearshore zone is limited \cite{add}.
 
-\hypertarget{identified-knowledge-gaps}{%
-  \section{Identified Knowledge gaps}\label{identified-knowledge-gaps}}
+In the context of researching the impact of mangroves on flood risk, one of the most important aspects of a wave model is the nearshore bathymetry, since the exact shape and depth of the profile has a large impact on the hydrodynamic response of mangrove ecosytems \cite{Horstman2014,Maza2019}. The current state of wave modeling of mangrove ecosystems either relies on in-situ survey data, or on a assumed profile shape. The further development of mangrove wave modeling will benefit from better quantification of bathymetry, topography, and mangrove structure \cite{Menendez2020}. This detailed data is especially helpful given the heterogeneity between different mangrove forests \cite{Mazda2013}.
 
-\hypertarget{research-question}{%
-  \section{Research Question}\label{research-question}}
+\subsection{Limitations of conventional nearshore survey}
 
+The nearshore zone is a very difficult environment to perform bathymetric surveying. \cite{Parrish2019}. All current bathymetric survey techniques face limitations that restrict their use in the shallowest 5-10m of the nearshore zone. Most deep water survey is done using acoustic sounding devices attached to ships. This limits their operation in water shallower than 4-5 meters or in areas with naviagational hazards \cite{Cesbron2021,add}. The current standard for high resolution survey in the nearshore zone is airborne lidar surveying. However, these surveys are extremely expensive to perform and require extensive post-processing effort to create a usable surface model.
+
+\section{Identified Knowledge gaps}
+
+To improve the modeling of interaction between wave heights/surges and mangroves, a global dataset of offshore mangrove bathymetry will 
+\section{Research Question}
 
 \begin{itemize}
-  \item
-        How can spaceborne lidar data be used to improve existing nearshore
-        bathymetry and canopy height data along mangrove-lined coasts?
+      \item How can spaceborne remote sensing data be used to improve estimates of nearshore bathymetry along mangrove-lined coasts?
 \end{itemize}
 
 To answer this question, the following subquestions will be pursued:
 
 \begin{itemize}
-  \item
-        How can ICESat-2 transects with reliable data be identified
-        algorithmically?
-  \item
-        How can lidar returns reflecting the seafloor be separated from
-        background noise?
-  \item
-        How can gaps be filled in areas with missing lidar photons?
-  \item
-        Once signal photons have been identified, how can the seafloor
-        elevation data be extracted?
-  \item
-        Can information about the mangrove canopy height be extracted from the
-        lidar data?
+      \item Which mangrove sites in the world are spaceborne lidar and optical SDB applicable?
+      \item How can ICESat-2 transects that contain bathymetry be identified algorithmically?
+      \item Which of the established optical SDB methods are most reliable in mangrove ecosystems?
+      \item Once transects with bathymetry are found, how can the seafloor elevation data be extracted?
+      \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
+      \item How can gaps be filled in areas with missing lidar photons?
 \end{itemize}
 
-\hypertarget{literature-review}{%
-  \chapter{Literature Review}\label{literature-review}}
+\chapter{Literature Review}
 
-\hypertarget{lidar-bathymetric-survey}{%
-  \section{lidar bathymetric survey}\label{lidar-bathymetric-survey}}
+
+\section{Bathymetric Survey Methods}
+
+\subsection[]{Airbone Lidar}
+\subsection{Spaceborne Lidar}
 
 The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \cite{Bailly2016}.
 
 \begin{itemize}
-  \item
-        1064 and 1550nm lasers are preferred for topographic lidar
-  \item
-        532nm laser better for bathymetric lidar
-  \item
-        photon-counting lidar allow low power consumption, so they are more
-        practical from a satellite
-  \item
-        in waveform-resolving lidar, each point return is a pulse containing
-        thousands of photons
+      \item 1064 and 1550nm lasers are preferred for topographic lidar
+      \item 532nm laser better for bathymetric lidar
+      \item photon-counting lidar allow low power consumption, so they are more practical from a satellite
+      \item in waveform-resolving lidar, each point return is a pulse containing thousands of photons
 \end{itemize}
 
-\hypertarget{mangroves-as-coastal-protection}{%
-  \subsection{Mangroves as coastal
-    protection}\label{mangroves-as-coastal-protection}}
+\section{Mangroves as Coastal Defence}
 
-Sea level rise poses a threat to all coastal communities, including many
-of the world's largest population centers. The risk is even more
-existential for low-lying tropical communities, who have done little to
-contribute to the current climate crisis, but are disproportionately
-affected by the sea level rise. Low-lying nations often do not have any
-available high ground to move cities to, and sometimes do not have
-access to the resources to fully mitigate these risks through hard
-infrastrcture. For these reasons, mangroves forests are an important
-resource for these communities, providing coastal protection that can
-adapt to sea level rise by trapping sediment and expanding outward if
-conditions permit.
+Sea level rise poses a threat to all coastal communities, including many of the world's largest population centers. The risk is even more existential for low-lying tropical communities, who have done little to contribute to the current climate crisis, but are disproportionately affected by the sea level rise. Low-lying nations often do not have any available high ground to move cities to, and sometimes do not have access to the resources to fully mitigate these risks through hard infrastrcture. For these reasons, mangroves forests are an important resource for these communities, providing coastal protection that can adapt to sea level rise by trapping sediment and expanding outward if conditions permit.
 
-Current study of the effects of mangroves on wave attenuation are
-limited by the difficulty of gathering data about these ecosystems.
-Shallow water bathymetry and mangrove height are difficult to survey
-manually. Mangrove forests are extremely dense and field work is
-difficult. Therefore, finding an automated way of extracting this
-anywhere in the world from and publicly available data is a massive
-improvement when modeling sites that do not have existing survey data.
+One way to adapt to the changing sea levels, and possible increases in extreme weather events is to promote the restoration and expansion of mangrove forests. It is well-established that mangrove forests can reduce wave energy \cite{Maza2019,Menendez2020}\todo{add a few more citations here}, and to a certain extent, storm surges \cite{Montgomery2019a,Chen2021,Mcivor2012}. Mangroves also offer many other ecosystem benefits including enhancing fish stocks, improving water quality, storing significant amounts of carbon, and attracting tourism \cite{Atkinson2016b}
 
-\hypertarget{icesat-2}{%
-  \section{ICESat-2}\label{icesat-2}}
+\begin{figure}[htbp]
+      \centering
+      \includegraphics[width = 0.5\textwidth]{figures/mangroves_reefs_Losada2018.png}
+      \caption{The protective effects of Mangroves (showing reefs as well). From \cite{Losada2018}}
+      \label{mangrove-protection-diagram}
+\end{figure}
+\todo{fix this caption}
 
-The ICESat-2 mission is intended to gather high resolution topographic
-data on a global scale. The satellite carries the Advanced Topographic
-Laser Altimeter System (ATLAS). ATLAS is a highly sensitive
-photon-counting, green-light lidar. The satellite instrument points at
-reference ground tracks (RGT) along the earth's surface with a repeat
-time of 91 days. Along the reference track, there are 3 beams, one
-pointing directly at the reference track, and two that are offset by
-approximately 3km on either side.
+Shallow water bathymetry and mangrove height are difficult to survey manually, due to the difficutly of field work in dense mangrove environments \cite{Gijsman2021}. Current study of the effects of mangroves on wave attenuation are limited by this lack of hydrodynamic data about these ecosystems \cite{Horstman2014}.  Therefore, finding an automated way of extracting this anywhere in the world from and publicly available data is a massive improvement when modeling sites that do not have existing survey data, and can be used to as the basis for wave modeling, and process-based models. Improved models can allow better characterization of the morphologic response to mechanical factors like sea level rise and sediment supply that need further study to understand the system response to climate change.
+
+One weakness of mangroves as a flood protection mechanism is that their response to long term changes in the biogeomorphic changes is not well known \cite{Gijsman2021}.
+
+\section{ICESat-2}
+
+The ICESat-2 mission is intended to gather high resolution topographic data on a global scale. The satellite carries the Advanced Topographic Laser Altimeter System (ATLAS). ATLAS is a highly sensitive photon-counting, green-light lidar. The satellite instrument points at reference ground tracks (RGT) along the earth's surface with a repeat time of 91 days. Along the reference track, there are 3 beams, one pointing directly at the reference track, and two that are offset by approximately 3km on either side.
 
 \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{./figures/ATLAS_beam_layout_from_user_guide.png}
-  \caption{RBTref}
+      \centering
+      \includegraphics[width=0.5\textwidth]{./figures/ATLAS_beam_layout_from_user_guide.png}
+      \caption{Layout of the IceSAT-2 beams}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong
-beam being approximately 4x more powerful \cite{Neumann2019d}. Of the
-approximately \(10^14\) of photons emitted per pulse, up to
-approximately 10 make it back to the sensor and are detected.
-\cite{Neumann2019d}. The exact number of emitted photons that
-subsequently detected at the sensor depends on the local atmospheric
-conditions and the reflectivity of the surface \cite{Neumann2019e}.
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \cite{Neumann2019d}. Of the approximately \(10^{14}\) of photons emitted per pulse, up to  10 make it back to the sensor and are detected.\cite{Neumann2019d}. The exact number of emitted photons that are subsequently detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \cite{Neumann2019e}.
 
 \includegraphics{./figures/3d_beam_view_from_atl03ATBD.png}\cite{Neumann2019d}
 
-The main mission of the satellite is to gather data about mass and
-elevation changes in ice sheets and glaciers, and to study global canopy
-height \cite{Markus2017}. In support of the global vegetation height
-mission, the observatory is pointed away from the reference ground
-tracks when flying over land, to increase the spatial density of the
-observations of vegetation height \cite{Markus2017}. The off
-pointing begins before the satellite begins to record data over land, so
-the nearshore coastal area is also included, and therefore bathymetyric
-and hydrological applications also benefit from increased spatial
-coverage \cite{Magruder2021}.
+The main mission of the satellite is to gather data about mass and elevation changes in ice sheets and glaciers, and to study global global canopy height \cite{Markus2017}. In support of the global vegetation height mission, the observatory is pointed away from the reference ground track when flying over land, to increase the spatial density of theobservations of vegetation height \cite{Markus2017}. The offpointing begins before the satellite begins to record data over land, so the nearshore coastal area is also included, and therefore bathymetyric and hydrological applications also benefit from increased spatial coverage \cite{Magruder2021}.
 
-To locate the position of each photon in 3D space, the time of flight of
-the photon is calculated with a precision of 800 ps
-\cite{Neumann2019d}. The location of the center of mass of the
-instrument is found using Global Positioning System (GPS) systems on
-board the satellite. By combining the measured time of flight and
-satellite position, the geolocation of the photon can be estimated with
-high accuracy \cite{Neumann2019d}.
+To locate the position of each photon in 3D space, the time of flight of the photon is calculated with a precision of 800 ps\cite{Neumann2019d}. The location of the center of mass of the instrument is found using Global Positioning System (GPS) systems onboard the satellite. By combining the measured time of flight and satellite position, the geolocation of the photon can be estimated with high accuracy \cite{Neumann2019d}.
 
-The photon geolocation data is distributed by NASA as the ATL03 data
-product{[}{]}
+The photon geolocation data is distributed by NASA as the ATL03 data product
 
-\hypertarget{weak-vs.-strong-beams}{%
-  \subsection{Weak Vs. Strong Beams}\label{weak-vs.-strong-beams}}
+\subsection{Weak Vs. Strong Beams}
 
-The beams are divided into weak and strong signals to enhance the
-radiometric dynamic range. The strong beams are expected to provide
-better signal-noise ratios over low-reflectively surfaces.
-\cite{Neumann2019d} Therefore, these beams are expected to provide
-the best data for radiometric bathymetry measurements.
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectively surfaces.\cite{Neumann2019d} Therefore, these beams are expected to provide the best data for radiometric bathymetry measurements.
 
-\hypertarget{refraction-correction}{%
-  \subsection{Refraction correction}\label{refraction-correction}}
+\subsection{Refraction correction}
 
-\hypertarget{vertical-reference-systems}{%
-  \subsubsection{Vertical Reference
-    Systems}\label{vertical-reference-systems}}
 
-The ATL03 data product reports the photon heights relative to the WGS84
-reference ellipsoid. These ellipsoidal heights already include
-corrections for: - The solid earth tides - Ocean loading - Ocean Pole
-tide - Wet and dry atmospheric delays
+\subsection{Vertical Reference Systems}
 
+The ATL03 data product reports the photon heights relative to the WGS84 reference ellipsoid. These ellipsoidal heights already include corrections for:
+\begin{itemize}
+      \item The solid earth tides 
+      \item Ocean loading 
+      \item Ocean Poletide 
+      \item Wet and dry atmospheric delays
+\end{itemize}
+ 
 The height provided in ATL03 is calculated by the following equation:
 
 \[H_{GC} =  H_{P} - H_{OPT} - H_{OL} - H_{SEPT} - H_{SET} - H_{TCA}\]
@@ -188,266 +122,150 @@ Where:
 
 \begin{itemize}
 
-  \item
-        \(H_{GC}\) is the geophysically corrected photon height above the
-        WGS84 ellipsoid
-  \item
-        \(H_{P}\) is the raw photon height above the WGS84 ellipsoid
-  \item
-        \(H_{OPT}\) is the height of the Ocean Pole tide
-  \item
-        \(H_{OL}\) is the height of the ocean load tide
-  \item
-        \(H_{SEPT}\) is the height of the solid earth pole \textbf{tide}
-  \item
-        \(H_{SET}\) is the solid earth tide
-  \item
-        \(H_{TCA}\) is the height of the total column atmospheric delay
+      \item \(H_{GC}\) is the geophysically corrected photon height above the WGS84 ellipsoid
+      \item \(H_{P}\) is the raw photon height above the WGS84 ellipsoid
+      \item \(H_{OPT}\) is the height of the Ocean Pole tide
+      \item \(H_{OL}\) is the height of the ocean load tide
+      \item \(H_{SEPT}\) is the height of the solid earth pole \textbf{tide}
+      \item \(H_{SET}\) is the solid earth tide
+      \item \(H_{TCA}\) is the height of the total column atmospheric delay
 \end{itemize}
 
-Included in the data are the height of the tide-free geoid, the height
-difference between the tide-free and mean-tide geoid, and the height of
-the tide relative to the mean tide geoid as calculated by the GOT4.8
-model. This GOT4.8 model tidal height is a based on a low resolution
-model, and therefore is less accurate in nearshore coastal areas and
-within embayments \cite{Neumann2019e}.
+Included in the data are the height of the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. This GOT4.8 model tidal height is a based on a low resolution model, and therefore is less accurate in nearshore coastal areas and within embayments \cite{Neumann2019e}.
 
-\hypertarget{signal-photon-identification}{%
-  \subsubsection{Signal Photon
-    Identification}\label{signal-photon-identification}}
+\subsection{Signal Photon Identification}
 
-The ATL03 data product includes a calculated confidence that a given
-photon return is signal or noise, for each surface type. This is a rough
-estimate, but is reliable for detecting ocean surface photons. However,
-many photons classified as noise by this included algorithm appear to
-represent bathymetric returns. Therefore, to calculate the bathymetry,
-all photon returns, including those classified as noise by the ATL03
-signal/noise algorithm are filtered to remove points that are too high
-or low to be considered bathymetric returns. Then, a seperate algorithm
-specifically calibrated to distinguish bathymetric signal from noise
-photons is applied to this data.
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise, for each surface type. This is a rough estimate, but is reliable for detecting ocean surface photons. However, many photons classified as noise by this included algorithm appear to represent bathymetric returns. Therefore, to calculate the bathymetry, all photon returns, including those classified as noise by the ATL03 signal/noise algorithm are filtered to remove points that are too high or low to be considered bathymetric returns. Then, a seperate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data.
 
-\hypertarget{satellite-derived-bathymetry}{%
-  \subsection{Satellite Derived
-    bathymetry}\label{satellite-derived-bathymetry}}
+\section{Optical Satellite Derived bathymetry}
 
-\hypertarget{multispectral-imagery}{%
-  \subsection{Multispectral imagery}\label{multispectral-imagery}}
+Cloud platforms like Google Earth Engine (GEE) \cite{Gorelick2017a} allow significant speedups in SDB methods \cite{Pike2019}. 
 
-There are many techniques to approximate depth by the spectral
-signatures of optical satellite data. The two classical ones are the
-band-ratio model and the linear band model. they work well in optically
-shallow waters (cite).
 
-\hypertarget{machine-learning-methods-for-optical-imagery}{%
-  \subsubsection{Machine learning methods for Optical
-    Imagery}\label{machine-learning-methods-for-optical-imagery}}
+
+\subsection{Multispectral imagery}
+
+There are many techniques to approximate depth by the spectral signatures of optical satellite data. The two classical ones are the band-ratio model and the linear band model. They work well in optically shallow waters \cite{Salameh2019}.
+
+\subsection{Machine learning methods for Optical Imagery}
 
 \begin{itemize}
 
-  \item
-        from {[}{]}
+      \item from {[}{]}
 \end{itemize}
 
-\hypertarget{lidar-bathymetry}{%
-  \section{lidar bathymetry}\label{lidar-bathymetry}}
 
-Green light lasers can penetrate the water up to a certain depth based
-on the local water clarity. In very clear water depth detection of up to
-40m has been achieved from spaceborne lasers \cite{Parrish2019}. The
-laser path has to be corrected for refraction induced by the water
-before the bathymetry can be reliably estimated.
+\section{Lidar bathymetry}
 
-\hypertarget{active-passive-sensor-fusion-the-best-of-both-worlds}{%
-  \subsection{Active-passive Sensor fusion: The best of both
-    worlds}\label{active-passive-sensor-fusion-the-best-of-both-worlds}}
+Green light lasers can penetrate the water up to a certain depth based on the local water clarity. In very clear water depth detection of up to 40m has been achieved from spaceborne lasers \cite{Parrish2019}. The laser path has to be corrected for refraction induced by the water before the bathymetry can be reliably estimated.
 
-The potential for bathymetric mapping using spaceborne laser
-observations has been known since before the advent of the IceSAT-2
-mission. The predecessor mission carried a lidar instrument called the
-Geoscience Laser Altimeter System (GLAS). While GLAS was a green-light
-laser, it was intended for measuring atmospheric aerosols {[}ref 14
-cited by@Forfinski2016{]}. However, because of the laser architecture,
-GLAS was not able to penetrate the water column
-\cite{Forfinski-Sarkozi2016}.
+\section{Active-passive Sensor fusion: The best of both worlds}
 
-However, a prototype of ATLAS, called the Multiple Altimeter Beam
-Experimental lidar (MABEL) instrument was tested with high-altitude
-aircraft missions, allowing a simulation of the data that would be
-transmitted by ATLAS. Early experiments with MABEL showed good agreement
-between bathymetry measured with MABEL and high-quality airborne
-reference data \cite{Jasinski2016,Forfinski-Sarkozi2016}.
+The potential for bathymetric mapping using spaceborne laser observations has been known since before the advent of the IceSAT-2 mission. The predecessor mission carried a lidar instrument called the Geoscience Laser Altimeter System (GLAS). While GLAS was a green-light laser, it was intended for measuring atmospheric aerosols \cite{Abshire2005}. However, because of the laser architecture, GLAS was not able to penetrate the water column \cite{Forfinski-Sarkozi2016}. However, a prototype of ATLAS, called the Multiple Altimeter Beam Experimental lidar (MABEL) instrument was tested with high-altitude aircraft missions, allowing a simulation of the data that would be transmitted by ATLAS \cite{Mcgill2013}. Early experiments with MABEL showed good agreement between bathymetry measured with MABEL and high-quality airborne reference data \cite{Jasinski2016,Forfinski-Sarkozi2016}. Since the launch of IceSAT-2 in 2018, there have been several studies that evaluate the data for bathymetric mapping purposes, and experiment with different techniques to distinguish signal from noise. One of the first and most cited is Parrish et al.~(2019) \cite{Parrish2019}. The paper addresses refraction correction by manually segmenting bathymetric signal points, estimating the water surface based on photons returns classified as water surface, using the provided angle of incidence of the satellite. The Parrish paper includes correction for both horizontal and vertical effects of refraction.
 
-Since the IceSAT-2 satellite launched in 2018, there have been several
-studies that evaluate the data for bathymetric mapping purposes, and
-experiment with different techniques to distinguish signal from noise.
-One of the earliest and most cited is Parrish et al.~(2019)
-\cite{Parrish2019}. The paper addresses refraction correction by
-manually segmenting bathymetric signal points, estimating the water
-surface based on photons returns classified as water surface, using the
-provided angle of incidence of the satellite.
+When the instrument is pointed directly at the RGT the laser beams are nearly pointing at the nadir. When directly on-nadir, the additional horizontal error induced by refraction is approximately 9cm \cite{Parrish2019}, which for bathymetric purposes is negligible. However, by design ATLAS can point up to $5 \degree$ off-nadir (Equal to 43km away from the RGT) \cite{Magruder2021}. The off-nadir pointing mode is used over land to increase the density of tracks in the mid-latitudes. This allows better spatial coverage of the vegetation canopy height and coasts at the mid-latitudes. When pointing off-nadir, the horizontal error is much more significant and must be corrected for accurate measurements. In all of these calculations, the water surface is assumed to be flat.
 
-The Parrish paper includes correction for both horizontal and vertical
-effects of refraction. Most of the time, the instrument is pointed
-directly down at the RGT, so the laser beams are near the nadir. When
-directly on-nadir, the horizontal error induced by refraction is
-approximately 9cm \cite{Parrish2019}, which for bathymetric purposes
-is negligible.
+Parrish et al.~test their technique in 4 different regions: St.~Thomas, Turks and Caicos, North West Australia, and the Great Bahama Bank. In the Parrish paper, they suggest that the best use of lidar data for bathymetry is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a certain track, and the multispectral approach allows the estimation for a 2D area, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the multispectral models allowing an accurate 2d picture of the bathymetry.
 
-However, by design ATLAS can point up to (5 degrees ) off-nadir (up to
-43km away from the RGT) \cite{Magruder2021}. The off-nadir pointing
-mode is used over land to increase the density of tracks in the
-mid-latitudes. This allows better coverage of the vegetation canopy
-height and coasts at the mid-latitudes. When pointing off-nadir, the
-horizontal error is much more significant and must be corrected for
-accurate bathymetry. In all of these calculations, the water surface is
-assumed to be flat.
+Further studies have implemented the combination of multispectral SDB that is calibrated using satellite data. This technique has shown promising results.
 
-Parrish et al.~test their technique in 4 different regions: St.~Thomas,
-Turks and Caicos, North West Australia, and the Great Bahama Bank. In
-the Parrish paper, they suggest that the best use of lidar data for
-bathymetry is to combine it with optical/multispectral techniques.
-Because the lidar-derived data provides highly accurate point estimates
-along a certain track, and the multispectral approach allows the
-estimation for a 2D area, combining the two techniques provides a
-synergistic fusion of the strengths of both. The lidar-derived depths
-are used as training data for the multispectral models allowing an
-accurate 2d picture of the bathymetry.
-
-Further studies have implemented the combination of multispectral SDB
-that is calibrated using satellite data. This technique has shown
-promising results.
-
-\hypertarget{summary-of-prior-studies-of-photon-counting-lidar-bathymetry-extraction}{%
-  \subsubsection{Summary of Prior studies of Photon-counting lidar
-    bathymetry
-    extraction}\label{summary-of-prior-studies-of-photon-counting-lidar-bathymetry-extraction}}
-
+\subsection{Summary of Prior studies of Photon-counting lidar bathymetry extraction}
+\todo{Sort table by year}
 \begin{landscape}
-\begin{table}
-  \label{SDB-research-summary}
-  \caption{Summary of SDB resarch that combines spaceborne lidar and optical data}
-  \centering
-  \begin{tabular}{lllllll}
-    \midrule
-    Author                  & Year & Dataset & Refraction Correction Method  & S/N Classification method & Tide Correction & Notes                    \\
-    Forfinski-Sarkozy et al & 2016 & MABEL   & First-order depth correction  & Manual                    & N/A             & non-tidal                \\
-    Jasinski et al.         & 2016 & MABEL   &                               &                           & N/A             & Looked at lakes          \\
-    Parrish et al.          & 2019 & ATLAS   & Parrish method                & Manual                    & N/A             & used  ellipsoidal height \\
-    Liu et al               & 2021 & ATL03   &                               &                           & TMD tidal model & -                        \\
-    Ma et al.               & 2020 & ATL03   & Parrish + sloping sea surface & Adaptive  DBSCAN          & OTPS2           & -                        \\
-    Xie et al.              & 2021 & ATL03   & Parrish method                & Adaptive DBSCAN           &                 & DBSCAN  is used twice    \\
-    Thomas et al.           & 2020 & ATL03   &                               &                           &                 & -                        \\
-    Albright and Glennie    & 2021 & ATL03   & First-order                   & Manual                    & N/A             & Converted to NAD83       \\
-    Cao et al.              & 2021 & ATL03   & First-order depth correction  & A-DRAGANN                 &                 &                          \\
-    Lee et al.              & 2021 & ATL03   &                               &                           &                 & -                        \\
-    Le Quilleuc et al.      & 2022 & ATL03   & Parrish                       &                           &                 & -                        \\
-    Xu et al.               & 2021 & ATL03   &                               &                           &                 & -                        \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+      \begin{table}
+            \caption{Summary of SDB resarch that combines spaceborne lidar and optical data}
+            % \centering
+            \begin{tabular}{lllp{3cm}p{3cm}ll}
+                  \midrule
+                  Author                                               & Year & Dataset & Refraction Correction Method  & S/N Classification method      & Tide Correction & Notes                        \\
+                  \hline
+                  Forfinski-Sarkozy et al \cite{Forfinski-Sarkozi2016} & 2016 & MABEL   & First-order depth correction  & Manual                         & N/A             & non-tidal                    \\
+                  Parrish et al. \cite{Parrish2019}                    & 2019 & ATLAS   & Parrish method                & Manual                         & N/A             & used  ellipsoidal height     \\
+                  Liu et al \cite{Liu2021}                             & 2021 & ATL03   & Liu method                    & DBSCAN after Ma et al.         & TMD tidal model & -                            \\
+                  Ma et al.  \cite{Ma2020}                             & 2020 & ATL03   & Parrish + sloping sea surface & Adaptive DBSCAN                & OTPS2           & -                            \\
+                  Xie et al. \cite{Xie2021}                            & 2021 & ATL03   & Parrish method                & Adaptive DBSCAN                &                 & DBSCAN  is used twice        \\
+                  Thomas et al. \cite{Thomas2021d}                     & 2020 & ATL03   & Parrish method                & Manual                         & Not Specified   & -                            \\
+                  Albright and Glennie \cite{Albright2021}             & 2021 & ATL03   & First-order                   & Manual                         & N/A             & Converted to NAD83           \\
+                  Cao et al. \cite{Cao2021}                            & 2021 & ATL03   & First-order depth correction  & A-DRAGANN                      & OTPS2           &                              \\
+                  Lee et al.  \cite{Lee2021}                           & 2021 & ATL03   & Not specified                 & not specified                  & T\_TIDE         & -                            \\
+                  Le Quilleuc et al. \cite{LeQuilleuc2022b}            & 2022 & ATL03   & Parrish                       & DBSCAN with manual corrrection & N/A             & Compared ellipsoidal heights \\
+                  Xu et al.  \cite{Xu2022a}                            & 2021 & ATL03   &                               &                                &                 & looked above water           \\
+                  \bottomrule
+            \end{tabular}
+      \end{table}
+      \todo{maybe remove last study}
 \end{landscape}
 % \end{sidewaystable}
 
-
-\hypertarget{proposed-methodology}{%
-  \chapter{Proposed Methodology}\label{proposed-methodology}}
+\chapter{Proposed Methodology}
 
 To extract the nearshore bathymetry:
 
-\hypertarget{find-areas-for-global-analysis}{%
-  \subsection{Find areas for global
-    analysis:}\label{find-areas-for-global-analysis}}
+\section{Find areas for global analysis}
 
-\hypertarget{refine-signalnoise-classification-algorithm}{%
-  \subsection{Refine Signal/noise classification
-    algorithm}\label{refine-signalnoise-classification-algorithm}}
+\section{Refine Signal/noise classification algorithm}
 
-\hypertarget{downloading-and-processing-data}{%
-  \subsection{Downloading and processing
-    data:}\label{downloading-and-processing-data}}
+1st pass - regular DBSCAN
+2nd pass - mahalanobis based DBSCAN
+\section{Downloading and processing  data:}
 
 \begin{itemize}
 
-  \item
-        Get GEBCO and icesat for each study area
-  \item
-        extract ICESAT ground tracks lines
-  \item
-        throw out any lines that don't intersect the OSM Coastline
-  \item
-        determine which transect direction is offshore (based on deepest GEBCO
-        depth?)
-  \item
-        Go from offshore side to the OSM coastline intersection and resample
-        the GEBCO depth to desired horizontal resolution
-  \item
-        calculate along-track distance
-  \item
-        Find distance in meters by reprojecting to local UTM, starting from
-        offshore side of transect
+      \item Get GEBCO and icesat for each study areas
+      \item extract ICESAT ground tracks lines
+      \item throw out any lines that don't intersect the OSM Coastline
+      \item determine which transect direction is offshore (based on deepest GEBCO depth?)
+      \item Go from offshore side to the OSM coastline intersection and resample the GEBCO depth to desired horizontal resolution
+      \item calculate along-track distance
+      \item Find distance in meters by reprojecting to local UTM, starting from offshore side of transect
 \end{itemize}
 
-\hypertarget{classify-lidar-photon-returns-for-each-quality-transect}{%
-  \subsection{Classify lidar photon returns for each quality
-    transect}\label{classify-lidar-photon-returns-for-each-quality-transect}}
+\section{Classify lidar photon returns for each quality  transect}
 
 \begin{itemize}
 
-  \item
-        Interpolate GEBCO data along the transect (contour raster, build 30m
-        TIN off the contours?)
-  \item
-        Extract bathymetry using correction algorithm
-  \item
-        Extract canopy height from canopy height data
+      \item Interpolate GEBCO data along the transect (contour raster, build 30m TIN off the contours?)
+      \item Extract bathymetry using correction algorithm
+      \item Extract canopy height from canopy height data
 \end{itemize}
 
-\hypertarget{assess-seafloor-bathymetry}{%
-  \subsection{assess seafloor
-    bathymetry}\label{assess-seafloor-bathymetry}}
+
+\section{assess seafloor bathymetry}
 
 \begin{itemize}
-
-  \item
-        Bayesian updating of interpolated GEBCO data
+      \item Bayesian updating of interpolated GEBCO data
 \end{itemize}
 
-\hypertarget{analysis-and-statistical-evaluation}{%
-  \subsection{Analysis and statistical
-    evaluation}\label{analysis-and-statistical-evaluation}}
+\section{Analysis and statistical evaluation}
 
 \begin{itemize}
-
-  \item
-        Find areas where the technique is applicable
-  \item
-        study the resulting transects
+      \item Find areas where the technique is applicable
+      \item study the resulting transects
 \end{itemize}
 
-\hypertarget{proposed-method-flowchart}{%
-  \section{Proposed Method Flowchart}\label{proposed-method-flowchart}}
+\section{Proposed Method Flowchart}
 
 \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{./figures/approach.png}
-  \caption{image}
+      \centering
+      \includegraphics[width=\textwidth]{./figures/approach.png}
+      \caption{Proposed methodology}
+      \label{method-flowchart}
 \end{figure}
 
-\hypertarget{practicalities}{%
-  \chapter{Practicalities}\label{practicalities}}
+\chapter{Practicalities}
 
-\hypertarget{planned-schedule}{%
-  \section{Planned Schedule}\label{planned-schedule}}
+\section{Planned Schedule}
 
 The planned schedule is shown below.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{./figures/thesis-schedule.png}
-  \caption{Schedule}
-\end{figure}
+\begin{landscape}
 
-\hypertarget{planned-final-document-outline}{%
-  \subsection{Planned final document
-    outline}\label{planned-final-document-outline}}
+      \begin{figure}
+            \centering
+            \includegraphics{./figures/thesis-schedule.png}
+            \caption{Tenative Schedule}
+            \label{project-schedule}
+      \end{figure}
+
+\end{landscape}
+\subsection{Planned final document outline}

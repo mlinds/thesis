@@ -1,21 +1,23 @@
-\documentclass[a4paper,oneside]{report}
-
+\documentclass[11pt,a4paper,oneside]{book}
+% [margin=2.5cm]
+\usepackage{geometry}
 \usepackage{amsmath}
 % \usepackage{siunitx}
-\usepackage{biblatex}
+\usepackage[]{biblatex}
 \usepackage{lscape}
 \usepackage{pdflscape}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{rotating}
-\usepackage[obeyDraft]{todonotes}
-\usepackage{hyperref}
+\usepackage{todonotes}
 \usepackage{eso-pic}
 \usepackage{changes}
 \usepackage{xcolor}
 \usepackage{markdown}
+\usepackage{gensymb}
 
 \addbibresource[datatype=bibtex]{library.bib}
+\usepackage{hyperref}
 
 \title{Work Plan for Thesis}
 \author{Maxwell AE Lindsay}
@@ -27,22 +29,27 @@
 \centering
 \includegraphics[width=\paperwidth]{figures/cover_image.jpg}%
 
-\vfill
+\vfilFl
 }}}
 
-\begin{document}
-\AddToShipoutPicture*{\BackgroundPic}
-\input{workplan/titlepage.tex}
+% Removing the chapter titles
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
 
+\begin{document}
+% \AddToShipoutPicture*{\BackgroundPic}
+\input{workplan/titlepage.tex}
+\frontmatter
 
 % ---------------- uncomment for final report ---------- %%
-% \tableofcontents
+\tableofcontents
 % \listoffigures
 % \listoftables
 % ------------------------------------------------------ %%
 % \CenterWallPaper{1}{figures/cover_image.jpg}
 
-
+\mainmatter
 
 %% Use Arabic numerals for the page numbers of the chapters.
 
