@@ -14,7 +14,7 @@
 
 Nearshore bathymetry is crucial data for many aspects of coastal management and research. Bathymetric data is essential for many aspects of the blue economy, including aquaculture, marine energy, submarine cables, dredging operations, design of sea defences, navigation, scientific research, and ecosystem preservation \cite{Cesbron2021,Ashphaq2021}. However, the nearshore zone is notoriously difficult to survey. There is currently a global lack of data in the 5-10m zone \cite{Albright2021} and up to 50\% of the world's shallow coastal zones remain unsurveyed \cite{IHO/OHI2022}. Where surveys do exist, they can be decades out of date, especially in the 40\% of the world's coasts that are sandy and highly dynamic \cite{Almar2021e}.  
 
-There have been attempts at global bathymetric datasets, most notably GEBCO, which is an annually-updated global bathymetric and topograhpic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \cite{Cesbron2021}. While it provides very useful information about deep oceans, the resolution is not sufficient for detailed modeling, and because sonar data is limited in many shallow nearshore zones, GEBCO accuracy in the nearshore zone is limited \cite{add}.
+There have been attempts at global bathymetric datasets, most notably GEBCO, which is an annually updated global bathymetric and topograhpic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \cite{Cesbron2021}. While it provides very useful information about deep oceans, the resolution is not sufficient for detailed modeling, and because sonar data is limited in many shallow nearshore zones, GEBCO accuracy in the nearshore zone is limited \cite{add}.
 
 In the context of researching the impact of mangroves on flood risk, one of the most important aspects of a wave model is the nearshore bathymetry, since the exact shape and depth of the profile has a large impact on the hydrodynamic response of mangrove ecosytems \cite{Horstman2014,Maza2019}. The current state of wave modeling of mangrove ecosystems either relies on in-situ survey data, or on a assumed profile shape. The further development of mangrove wave modeling will benefit from better quantification of bathymetry, topography, and mangrove structure \cite{Menendez2020}. This detailed data is especially helpful given the heterogeneity between different mangrove forests \cite{Mazda2013}.
 
@@ -169,27 +169,30 @@ Parrish et al.~test their technique in 4 different regions: St.~Thomas, Turks an
 
 Further studies have implemented the combination of multispectral SDB that is calibrated using satellite data. This technique has shown promising results.
 
+
+
 \subsection{Summary of Prior studies of Photon-counting lidar bathymetry extraction}
 \todo{Sort table by year}
 \begin{landscape}
       \begin{table}
             \caption{Summary of SDB resarch that combines spaceborne lidar and optical data}
             % \centering
+            \raggedright
             \begin{tabular}{lllp{3cm}p{3cm}ll}
                   \midrule
                   Author                                               & Year & Dataset & Refraction Correction Method  & S/N Classification method      & Tide Correction & Notes                        \\
                   \hline
-                  Forfinski-Sarkozy et al \cite{Forfinski-Sarkozi2016} & 2016 & MABEL   & First-order depth correction  & Manual                         & N/A             & non-tidal                    \\
-                  Parrish et al. \cite{Parrish2019}                    & 2019 & ATLAS   & Parrish method                & Manual                         & N/A             & used  ellipsoidal height     \\
-                  Liu et al \cite{Liu2021}                             & 2021 & ATL03   & Liu method                    & DBSCAN after Ma et al.         & TMD tidal model & -                            \\
-                  Ma et al.  \cite{Ma2020}                             & 2020 & ATL03   & Parrish + sloping sea surface & Adaptive DBSCAN                & OTPS2           & -                            \\
-                  Xie et al. \cite{Xie2021}                            & 2021 & ATL03   & Parrish method                & Adaptive DBSCAN                &                 & DBSCAN  is used twice        \\
-                  Thomas et al. \cite{Thomas2021d}                     & 2020 & ATL03   & Parrish method                & Manual                         & Not Specified   & -                            \\
-                  Albright and Glennie \cite{Albright2021}             & 2021 & ATL03   & First-order                   & Manual                         & N/A             & Converted to NAD83           \\
-                  Cao et al. \cite{Cao2021}                            & 2021 & ATL03   & First-order depth correction  & A-DRAGANN                      & OTPS2           &                              \\
-                  Lee et al.  \cite{Lee2021}                           & 2021 & ATL03   & Not specified                 & not specified                  & T\_TIDE         & -                            \\
-                  Le Quilleuc et al. \cite{LeQuilleuc2022b}            & 2022 & ATL03   & Parrish                       & DBSCAN with manual corrrection & N/A             & Compared ellipsoidal heights \\
-                  Xu et al.  \cite{Xu2022a}                            & 2021 & ATL03   &                               &                                &                 & looked above water           \\
+                  \citeauthor{Forfinski-Sarkozi2016} & 2016 & MABEL   & First-order depth correction  & Manual                         & N/A             & non-tidal                    \\
+                  \citeauthor{Parrish2019}                    & 2019 & ATLAS   & Parrish method                & Manual                         & N/A             & used  ellipsoidal height     \\
+                  \citeauthor{Liu2021}                             & 2021 & ATL03   & Liu method                    & DBSCAN after Ma et al.         & TMD tidal model & -                            \\
+                  \citeauthor{Ma2020}                             & 2020 & ATL03   & Parrish + sloping sea surface & Adaptive DBSCAN                & OTPS2           & -                            \\
+                  \citeauthor{Xie2021}                            & 2021 & ATL03   & Parrish method                & Adaptive DBSCAN                &                 & DBSCAN  is used twice        \\
+                  \citeauthor{Thomas2021d}                     & 2020 & ATL03   & Parrish method                & Manual                         & Not Specified   & -                            \\
+                  \citeauthor{Albright2021}             & 2021 & ATL03   & First-order                   & Manual                         & N/A             & Converted to NAD83           \\
+                  \citeauthor{Cao2021}                            & 2021 & ATL03   & First-order depth correction  & A-DRAGANN                      & OTPS2           &                              \\
+                  \citeauthor{Lee2021}                           & 2021 & ATL03   & Not specified                 & not specified                  & T\_TIDE         & -                            \\
+                  \citeauthor{LeQuilleuc2022b}            & 2022 & ATL03   & Parrish                       & DBSCAN with manual corrrection & N/A             & Compared ellipsoidal heights \\
+                  \citeauthor{Xu2022a}                            & 2021 & ATL03   &                               &                                &                 & looked above water           \\
                   \bottomrule
             \end{tabular}
       \end{table}
@@ -198,19 +201,32 @@ Further studies have implemented the combination of multispectral SDB that is ca
 % \end{sidewaystable}
 
 \chapter{Proposed Methodology}
-
-To extract the nearshore bathymetry:
+The following method is proposed to evaluate the effectiveness of hybrid SDB along mangrove coasts.
 
 \section{Find areas for global analysis}
+There are several datasets that provide a global distribution of mangrove forests. \citeauthor{Giri2011b} derived the first globally consistent remote-sensing-based global extent analysis \cite{Worthington2020}. \citeauthor{add} created a globally consistent database of mangrove types. Each mangrove area is classified as either carbonate or terrigenous, and the coast type (Delta, Estuary, Lagoon, Open Coast).
 
-\section{Refine Signal/noise classification algorithm}
+To create areas of analysis for this project, first the \citeauthor{Giri2011b} dataset will be buffered by a distance such that it includes the offshore area, and these polygons will be generalized to snap to a rectangular grid. Polygons with an area that is too small can be dropped from the dataset. The remaining polygons will be used as locations for the global analysis.
 
-1st pass - regular DBSCAN
-2nd pass - mahalanobis based DBSCAN
-\section{Downloading and processing  data:}
+\section{Download IceSAT-2 ATL03 tracks within polygons of interest}
+Using a python script that interacts with the NASA National Snow and Ice Data Center (NSIDC) download API, the ATL03 variables of interest can be downloaded for each polygon. 
+
+\section{Derive Signal/noise classification algorithm}
+Using the DBSCAN algorithm with adaptive parameters, find bathymetryic points (if there are any). Different methods of adaptive parameter choise can be tested at test sites to find a way to reliably distinguish transects with no useful signal from those with bathymetric signal, that are applicable anywhere in the world.
+
+\section{Correction for refraction and tides}
+Find the tidal correction from a tidal model, and then use this to transform the ellipsoidal height provided by the IceSAT-2 data into a depth relative to local MSL.
+
+The photon location data will be corrected for refraction by the Parrish method (possibly using one of the adaptions for wave height if needed)
+
+\section{Perform Sentinel-2 SDB classification on sites with IceSAT-2 Bathymetric data}
+Some sites, either due to turbidity, depth, or instrument data quality issues, will not provide reliable bathymetry photon points. Any sites without lidar reference data will be removed from the dataset. 
+
+Remaining polygons can then be analyzed in GEE to find the sentinel-2 images that are as temporally close to the date of the icesat track. An emperical optical SDB method will be used on these sites. 
+
+\todo{below this are just draft notes I had}
 
 \begin{itemize}
-
       \item Get GEBCO and icesat for each study areas
       \item extract ICESAT ground tracks lines
       \item throw out any lines that don't intersect the OSM Coastline
@@ -223,20 +239,19 @@ To extract the nearshore bathymetry:
 \section{Classify lidar photon returns for each quality  transect}
 
 \begin{itemize}
-
       \item Interpolate GEBCO data along the transect (contour raster, build 30m TIN off the contours?)
       \item Extract bathymetry using correction algorithm
       \item Extract canopy height from canopy height data
 \end{itemize}
 
 
-\section{assess seafloor bathymetry}
+\section{Assess Seafloor Bathymetry}
 
 \begin{itemize}
       \item Bayesian updating of interpolated GEBCO data
 \end{itemize}
 
-\section{Analysis and statistical evaluation}
+\section{Analysis and Statistical Evaluation}
 
 \begin{itemize}
       \item Find areas where the technique is applicable
@@ -256,8 +271,7 @@ To extract the nearshore bathymetry:
 
 \section{Planned Schedule}
 
-The planned schedule is shown below.
-
+Figure \ref{project-schedule} shows the tenative schedule for the project. 
 \begin{landscape}
 
       \begin{figure}

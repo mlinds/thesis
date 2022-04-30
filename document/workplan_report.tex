@@ -3,7 +3,7 @@
 \usepackage{geometry}
 \usepackage{amsmath}
 % \usepackage{siunitx}
-\usepackage[]{biblatex}
+\usepackage[style=authoryear]{biblatex}
 \usepackage{lscape}
 \usepackage{pdflscape}
 \usepackage{graphicx}
@@ -15,11 +15,23 @@
 \usepackage{xcolor}
 \usepackage{markdown}
 \usepackage{gensymb}
-
-\addbibresource[datatype=bibtex]{library.bib}
 \usepackage{hyperref}
 
+\definecolor{van-oord-blue}{cmyk}{1,.8,0.5,0.2}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=van-oord-blue,
+    citecolor=van-oord-blue,    
+    urlcolor=cyan,
+    pdftitle={Max Lindsay Thesis Proposal},
+    pdfpagemode=FullScreen,
+}
+
+\addbibresource[datatype=bibtex]{library.bib}
+
 \title{Work Plan for Thesis}
+
 \author{Maxwell AE Lindsay}
 
 \newcommand\BackgroundPic{%
