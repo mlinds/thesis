@@ -1,4 +1,5 @@
-%%{init: {'theme':'forest'}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#a8b0c9','tertiaryColor':'#FF8702'}}}%%
+%%'secondaryColor':'#FF8702'
 gantt
     title Planned Schedule
     dateFormat YYYY-MM-DD
@@ -16,7 +17,7 @@ gantt
     section Develop Toolkit
     ATL03 Download script: download,2022-03-26,1w
     Test Sites:2w
-    Signal/noise diff.: active, after download, 4w
+    Signal/noise diff.: after download, 4w
     Tidal: tide,2022-04-15, 2w
     Extract depth: depth,after tide,3w
     Develop hotspots of interest:hotspots, after depth, 2w
@@ -26,5 +27,7 @@ gantt
     section writing
     Project Plan: 2022-02-15, 2022-05-02
     Final Report composition: after m2, 12w
+
+
 
 
