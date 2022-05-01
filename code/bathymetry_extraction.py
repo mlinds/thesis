@@ -67,14 +67,17 @@ output_notebook()
 #  - ../data/test_sites/PR/ATL03/processed_ATL03_20200721130011_04000801_005_01.nc (shallow but looks nice)
 
 # %%
-atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20190116043219_02860207_005_01.nc"
+# gdf = atl03_utils.make_gdf_from_ncdf_files('../data/test_sites/OutputsIndonesia_testsite_1/*.nc')
+
+# %%
+atl03_testfile = "../data/test_sites/OutputsIndonesia_testsite_1/processed_ATL03_20190416114500_02780308_005_01.nc"
 print(atl03_testfile)
 beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
 
 
 # %%
-beam = "gt3l"
+beam = "gt1l"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -83,7 +86,6 @@ print(f"length of the dataset is {beamdata.shape[0]} points")
 metadata_dict = beamdata.dtype.metadata
 
 point_dataframe = atl03_utils.add_track_dist_meters(beamdata)
-# gdf.to_file('../data/derived/points.gpkg')
 
 # %% [markdown]
 #  ## Photon return filtering
@@ -165,7 +167,7 @@ signal_conf_cmap = factor_cmap(
 p.scatter(
     source=point_dataframe,
     x="dist_or",
-    y="Z_g",
+    y="Z",
     color=signal_conf_cmap,
     legend_field="oc_sig_conf",
 )
