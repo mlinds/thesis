@@ -1,8 +1,12 @@
-\listoftodos
-
 \chapter{Introduction}
 
 \section{Motivation}
+
+Coastal areas are attractive for human settlement, and up to 39\% of human population lives within 100km of the coast \parencite{Magdalena2021}, including many of the world's largest cities. 10\% of the world's population live in the an area that is less than 10m above sea level \parencite{Neumann2015,Lichter2011}, an area known as the Low Elevation Coastal Zone. All coastal populations face increasing vulnerability to coastal flooding hazards, due to increases in the sea level and changes in extreme weather patterns. To protect populations from these increasing risks, further investment in coastal protection is required; without more investment in coastal defense infrastructure, the population exposed to flooding risk is projected to increase by 50\% \Parencite{Kirezci2020}. One approach to mitigating these hazards is to employ the techniques of Building with Nature, using natural processes and ecosystem functions to create resilient coastal defenses. \todo{clean up transition} Mangroves provide coastal protection by reducing wave energy, while also adapting naturally to sea level rise, and providing other ecosystem services like increasing water quality and increasing fish spawning areas. Mangroves already provide flood protection to over 15 million people \parencite{Menendez2020}, but in the last 50 years between 30-50 percent of the world's mangrove have been lost \parencite{add}.
+
+One current weakness of mangroves as a flood defense strategy is that the research from 
+
+%% bullet points, delete below
 \todo{Make motivation section into a paragraph instead of bullets}
 \begin{itemize}
       \item 39\% of the world's population lives within 100km of the coast.\parencite{Magdalena2021}
@@ -104,7 +108,7 @@ The photon geolocation data is distributed by NASA as the ATL03 data product.
 
 \subsection{Weak Vs. Strong Beams}
 
-The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectively surfaces.\parencite{Neumann2019d} Therefore, these beams are expected to provide the best data for radiometric bathymetry measurements.
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectively surfaces.\parencite{Neumann2019d} Therefore, these beams are expected to provide the best data for lidar bathymetry measurements.
 
 \subsection{Refraction correction}
 
@@ -171,8 +175,11 @@ Further studies have implemented the combination of multispectral SDB that is ca
 \subsection{Summary of prior research in fusion of optical and lidar SDB}
 
 The studies that have used some version of the proposed technique are summarized in table \ref{research-summary}.
-\todo{Sort table by year}
+
+
 \begin{landscape}
+      \todo{Sort table by year}
+      \todo{figure out page margins}
       \begin{table}
             \label{research-summary}
             \caption{Summary of SDB research that combines spaceborne lidar and optical data}
@@ -204,17 +211,18 @@ The studies that have used some version of the proposed technique are summarized
 The following method is proposed to evaluate the effectiveness of hybrid SDB along mangrove coasts.
 
 \section{Find areas for global analysis}
-There are several datasets of the global distribution of mangrove forests. \citeauthor{Giri2011b} derived the first globally consistent remote-sensing-based global extent analysis \parencite{Worthington2020}. Another paper \parencite{Worthington2020a} created a globally consistent database of mangrove types. Each mangrove area is classified as either carbonate or terrigenous, and the coast type (Delta, Estuary, Lagoon, Open Coast). This data can provide valuable information on which types of mangrove environments might be 
+There are several datasets of the global distribution of mangrove forests. \citeauthor{Giri2011b} derived the first globally consistent remote-sensing-based global extent analysis \parencite{Worthington2020}. Another paper \parencite{Worthington2020a} created a globally consistent database of mangrove types. Each mangrove area is classified as either carbonate or terrigenous, and the coast type (Delta, Estuary, Lagoon, Open Coast). This data can provide valuable information on which types of mangrove environments might be favorable to automated bathymetric extraction. Certain mangrove environments might have higher average turbidity and therefore might be more difficult to extract spaceborne lidar from. The local turbidity at the time of the sattelite pass can be found using the GlobColour global database of ocean color \parencite{Garnesson2019} \todo{find academic citation for globcolour dataset}. 
 
 To create areas of analysis for this project, first the \citeauthor{Giri2011b} dataset will be buffered by a distance such that it includes the offshore area, and these polygons will be generalized to snap to a rectangular grid. Polygons with an area that is too small can be dropped from the dataset. The remaining polygons will be used as locations for the global analysis.
 
 \section{Download ICESat-2 ATL03 tracks within polygons of interest}
-Using a python script that interacts with the NASA National Snow and Ice Data Center (NSIDC) download API, the ATL03 variables of interest can be downloaded for each polygon. 
+Using a python script that interacts with the NASA National Snow and Ice Data Center (NSIDC) data download API, the ATL03 variables of interest can be downloaded for each polygon. 
 
 \section{Derive Signal/noise classification algorithm}
 Using the DBSCAN algorithm with adaptive parameters, find bathymetric points (if there are any). Different methods of adaptive parameter choice can be tested at test sites to find a way to reliably distinguish transects with no useful signal from those with bathymetric signal, that are applicable anywhere in the world.
 
 \section{Correction for refraction and tides}
+\todo{create separate sections for refraction and tides}
 Find the tidal correction from a tidal model, and then use this to transform the ellipsoidal height provided by the ICESat-2 data into a depth relative to local MSL.
 
 The photon location data will be corrected for refraction by the Parrish method (possibly using one of the adaptions for wave height if needed)
@@ -224,10 +232,10 @@ Some sites, either due to turbidity, depth, or instrument data quality issues, w
 
 Remaining polygons can then be analyzed in GEE to find the sentinel-2 images that are as temporally close to the date of the ICESat-2 track. An empirical optical SDB method will be used on these sites. 
 
-\section{summarize and analyze results}
+\section{Summarize and analyze results}
 
 
-\section{Proposed Method Flowchart}
+\section{Proposed method flowchart}
 \todo{Update figure based on rewritten methodology}
 \begin{figure}
       \centering
@@ -252,4 +260,4 @@ Figure \ref{project-schedule} shows the tenative schedule for the project.
       \end{figure}
 
 \end{landscape}
-\subsection{Planned final document outline}
+\section{Planned final document outline}
