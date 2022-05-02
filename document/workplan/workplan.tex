@@ -254,61 +254,84 @@ The studies that have used some version of the proposed technique are summarized
 
 \section{Planned Schedule}
 
-Figure \ref{project-schedule} shows the tentative schedule for the project.
+Figure \ref{thesis-schedule} shows the tentative schedule for the project. The early stages of some steps have already been started to asses their feasability.
 
 \newgeometry{bottom=20mm}
 \begin{landscape}
       \begin{figure}[htbp]
             \centering
-            \begin{ganttchart}[vgrid,
-                        chart element start border=right,
-                        y unit chart=5mm,
-                        x unit=1mm,
-                        time slot format=isodate,
-                        time slot unit=day
-                  ]{2022-02-15}{2022-09-010}
-                  % \gantttitle{Proposed Thesis Schedule}{40} \\
-                  % \ganttttitlecalendar{month}\\
-                  \gantttitlecalendar{year,month=shortname}\\
-
-                  \ganttmilestone[inline]{Kickoff Meeting}{2022-05-09}
-                  \ganttmilestone[inline]{Progress Meeting 1}{2022-06-16}
-                  \ganttmilestone[inline]{Progress Meeting 2}{2022-07-15}
-                  \ganttmilestone[inline]{Greenlight Meeting}{2022-09-05}\\
-
-
-                  \ganttgroup{Initial Literature Review}{2022-02-22}{2022-03-16} \\
-                  \ganttbar{Mangroves general}{2022-02-22}{2022-03-22} \\
-                  \ganttbar{Wave modeling in Mangroves}{2022-03-01}{2022-04-01} \\
-                  \ganttbar{Lidar bathymetry}{2022-03-16}{2022-04-02} \\
-                  \ganttbar{Optical SDB}{2022-04-01}{2022-04-22} \\
-
-                  \ganttgroup{Find Study sites}{2022-04-15}{2022-05-16} \\
-                  \ganttbar{Identify test sites}{2022-04-15}{2022-05-16} \\
-                  \ganttbar{Create study area polygons}{2022-05}{2022-05-} \\
-
-                  % \ganttgroup{Download Data}{0}{10} \\
-                  % \ganttbar{Write and test download script}{3}{10} \\
-
-                  % \ganttgroup{S/N algorithm development}{0}{10} \\
-                  % \ganttbar{Develop possible options}{3}{10} \\
-                  % \ganttbar{Test performance at test sites}{3}{10} \\
-
-                  % \ganttgroup{Tidal/refraction correction}{0}{10} \\
-                  % \ganttbar{Combine GTSM \& photon heights}{3}{10} \\
-                  % \ganttbar{Implement Parrish method}{3}{10} \\
-                  % \ganttbar{Evaluate results at test sites}{3}{10} \\
-
-                  % \ganttgroup{Apply optical SDB}{0}{10} \\
-                  % \ganttbar{Determine best methodology}{3}{10} \\
-                  % \ganttbar{Implement in GEE}{3}{10} \\
-                  % \ganttbar{}{3}{10} \\
-
-            \end{ganttchart}
-            \caption{Tentative Schedule}
-            \label{thesis schedule}
+            \includegraphics[height=0.8\paperwidth]{figures/gantt.png}
+            \caption{Proposed Schedule}
+            \label{thesis-schedule}
       \end{figure}
 
 \end{landscape}
 \restoregeometry
-\section{Planned final document outline}
+\section{Planned Final Document Outline}
+
+\begin{enumerate}
+      \item Introduction
+      \item Background
+      \begin{enumerate}
+            \item mangroves
+            \begin{enumerate}
+                  \item Morphodynamics
+                  \item Wave-vegetation interation
+                  \item Importance of bathymetry
+            \end{enumerate}
+            \item Lidar Bathymetry
+            \begin{enumerate}
+                  \item History
+                  \item Strengths
+                  \item Weaknesses
+                  \item Snell's Law and lidar refraction in the water column
+                  \item Photon counting lidar technology
+                  \item Geodetic reference systems in oceanography
+                  \item ICESat-2
+                \begin{enumerate}
+                        \item Photo geolocation algorithm
+                      \item Geophysical corrections
+                      \item Known issues
+                \end{enumerate}  
+            \end{enumerate}
+            \item Satellite-derived Optical bathymetry
+            \begin{enumerate}
+                  \item Wave-kinematic vs Optical
+                  \item Analytical vs Empirical
+                  \item Sentinel-2 
+                  \item Processing in GEE
+            \end{enumerate}
+      \end{enumerate} 
+
+      \item Methodology 
+      \begin{enumerate}
+            \item Selection of test sites
+            \item selection of global analysis sites
+            \item Processing of Lidar data
+            \begin{enumerate}
+                  \item Extracting sea surface returns
+                  \item Extracting subsurface returns
+                  \item DBSCAN
+            \end{enumerate}
+      \end{enumerate}
+      \item Results 
+      \begin{enumerate}
+            \item Geographic distribution of sites with useable data
+            \item error
+            \begin{enumerate}
+                  \item RMSE and MAE between Lidar and sea-truth data
+                  \item RMSE and MAE between SDB raster and sea-truth data
+            \end{enumerate}
+      \end{enumerate}
+      \item Discussion
+      \begin{enumerate}
+            \item Effect of turbidity on data usability
+            \item Terrigenous vs carbonate mangrove environment
+            \item Geographic patterns in ability to extract bathymetry
+      \end{enumerate}
+      \item Conclusion
+      \item Recommendations
+      \item Appendix A: Python module documentation
+      \item Appendix B: Google Earth Engine Javascript code
+      \item Appendix C: Full output data from all test sites
+\end{enumerate}
