@@ -3,7 +3,7 @@
 \usepackage{geometry}
 \usepackage{amsmath}
 % \usepackage{siunitx}
-\usepackage[style=authoryear]{biblatex}
+\usepackage[style=authoryear,maxcitenames=2,maxbibnames=100,firstinits=true]{biblatex}
 \usepackage{lscape}
 \usepackage{pdflscape}
 \usepackage{graphicx}
@@ -71,9 +71,15 @@
 
 
 %% Use letters for the chapter numbers of the appendices.
-\appendix
+% \appendix
 
 %\input{appendix-a}
+
+\
+
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
 
 \printbibliography
 
