@@ -1,20 +1,9 @@
 {
-
   "python.pythonPath": "~/anaconda/envs/${env.CONDA_DEFAULT_ENV}/bin/python",
   "editor.wordWrap": "off",
   "editor.wordWrapColumn": 100,
 //   "editor.rulers": [100, 120],
-  "[latex]": {
-      "editor.wordWrap": "wordWrapColumn",
-      "editor.wordWrapColumn": 80,
-      "editor.renderWhitespace": "all",
-      "editor.tabSize": 2,
-      "editor.insertSpaces": true,
-      "editor.detectIndentation": false
-  },
 "html.format.wrapLineLength": 100,
-"latex-workshop.latex.autoBuild.interval": 10000,
-"latex-workshop.latex.autoClean.run": "onBuilt",
 "latex-workshop.docker.enabled": true,
 "latex-workshop.docker.image.latex": "texlive/texlive",
 "python.formatting.provider": "black",

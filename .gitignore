@@ -3,7 +3,6 @@ code/download_examples/
 practicalities/forms/*
 practicalities/writing_tips/*
 document/out/*
-*.bib
 *.pdf
 *.loc
 /data/
