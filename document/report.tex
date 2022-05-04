@@ -56,20 +56,33 @@
 
 
 %% Include an optional title page.
-\input{title}
+\input{chapters/title.tex}
 
-\input{preface}
+\input{chapters/preface.tex}
 
 \tableofcontents
-
+\listoftodos
+\listoffigures
+\listoftables
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
+
+
+\input{chapters/introduction.tex}
+\input{chapters/background.tex}
+\input{chapters/methodology.tex}
+\input{chapters/results.tex}
+\input{chapters/discussion.tex}
+\input{chapters/conclusion.tex}
+\input{chapters/recommendations.tex}
 
 \input{workplan/workplan.tex}
 
 %% Use letters for the chapter numbers of the appendices.
 \appendix
-
+\input{chapters/python_code.tex}
+\input{chapters/GEE_code.tex}
+\input{chapters/output_data.tex}
 %\input{appendix-a}
 
 \renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}

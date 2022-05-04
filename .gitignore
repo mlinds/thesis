@@ -1,4 +1,6 @@
 ## added manually
+# don't commit binaries
+*.zip 
 code/download_examples/
 practicalities/forms/*
 practicalities/writing_tips/*
@@ -7,8 +9,11 @@ document/out/*
 *.loc
 /data/
 *.png
+*.jpg
 code/secret_vars.py
 code/data/*
+/document/fonts
+
 ### Generated Files ###
 *.swp
 /out/
@@ -526,3 +531,6 @@ code/OTPS_model/OTPS/predict_tide
 code/netcdf_loading_prototyping.ipynb
 code/gh_icepyx_issue.py
 code/interactive_downloader.ipynb
+document/linked.bib
+document/README.txt
+document/roboto.sty
