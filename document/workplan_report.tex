@@ -27,7 +27,6 @@
     citecolor=van-oord-blue,    
     urlcolor=cyan,
     pdftitle={Max Lindsay Thesis Proposal},
-    pdfpagemode=FullScreen,
 }
 
 \addbibresource[datatype=bibtex]{library.bib}
@@ -41,9 +40,9 @@
 \parbox[b][\paperheight]{\paperwidth}{%
 \vfill
 \centering
-\includegraphics[width=\paperwidth]{figures/cover_image.jpg}%
+\includegraphics[width=\paperwidth]{./figures/cover_image_crop.jpg}%
 
-\vfilFl
+\vfill
 }}}
 
 % Removing the chapter titles
@@ -52,7 +51,7 @@
   {\normalfont\bfseries}{}{0pt}{\Huge}
 
 \begin{document}
-% \AddToShipoutPicture*{\BackgroundPic}
+\AddToShipoutPicture*{\BackgroundPic}
 \input{workplan/titlepage.tex}
 \frontmatter
 
@@ -76,7 +75,7 @@
 
 %\input{appendix-a}
 
-\
+
 
 \renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
 \renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}

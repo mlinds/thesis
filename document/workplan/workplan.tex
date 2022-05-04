@@ -12,14 +12,14 @@ One current weakness of mangroves as a flood defense strategy is that the respon
 
 \subsection{Limitations of conventional nearshore survey}
 
-The nearshore zone is a very difficult environment to perform bathymetric surveying. \parencite{Parrish2019}. All current bathymetric survey techniques face limitations that restrict their use in the shallowest 5-10m of the nearshore zone. Most deep water survey is done using multi-beam echo sounders (MBES) attached to ships. This limits their operation in water shallower than 4-5 meters or in areas with navigational hazards \parencite{Cesbron2021,Monteys2015}. The current standard for high resolution survey in the nearshore zone is airborne lidar surveying. However, these surveys are extremely expensive to perform and require extensive post-processing effort to create a usable surface model.
+The nearshore zone is a very difficult environment to perform bathymetric surveying. \parencite{Parrish2019}. All current bathymetric survey techniques face limitations that restrict their use in the shallowest 5-10m of the nearshore zone. Most deep water survey is done using multi-beam echo sounders (MBES) attached to ships. This limits their operation in water shallower than 4-5 meters or in areas with navigational hazards \parencite{Cesbron2021,Monteys2015}. To survey the nearshore zone, airborne lidar survey is a common choice, and allows simultaneous surveying of the topography and high resolution. However, airborne surveys are extremely expensive to perform and require extensive post-processing effort to create a usable surface model.
 
 
 \subsection{Importance of Nearshore Bathymetric Data}
 
 Nearshore bathymetry is crucial data for many aspects of coastal management and research. Bathymetric data is essential for many aspects of the blue economy, including aquaculture, marine energy, submarine cables, dredging operations, design of sea defenses, navigation, scientific research, and ecosystem preservation \parencite{Cesbron2021,Ashphaq2021}. However, the nearshore zone is notoriously difficult to survey. There is currently a global lack of data in the 5-10m zone \parencite{Albright2021} and up to 50\% of the world's shallow coastal zones remain unsurveyed \parencite{IHO/OHI2022}. Where surveys do exist, they can be decades out of date, especially in the 40\% of the world's coasts that are sandy and highly dynamic \parencite{Almar2021e}.
 
-There have been attempts at global bathymetric datasets, most notably GEBCO, which is an annually updated global bathymetric and topographic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \parencite{Cesbron2021}. While it provides very useful information about deep oceans, the resolution is not sufficient for wave transformation modeling, and because sonar data is limited in many shallow nearshore zones, GEBCO accuracy in the nearshore zone is limited \parencite{Monteys2015}.
+There have been attempts at global bathymetric datasets, most notably the General Bathymetric Chart of the Ocean (GEBCO), which is an annually updated global bathymetric and topographic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \parencite{Cesbron2021}. While it provides useful information about deep oceans, GEBCO accuracy in the nearshore zone is limited because sonar data is limited in many shallow nearshore zones. \parencite{Monteys2015}. The resolution, both horizontally and vertically, is not sufficient for wave transformation studies.
 
 \section{Identified Knowledge gaps}
 
@@ -30,10 +30,8 @@ The objective of this project is to determine where remote sensing might be able
 \section{Research Question}
 The primary question that this project intends to answer is:
 
-% \vspace{2mm}
 \emph{How can spaceborne remote sensing data be used to improve estimates of nearshore bathymetry along mangrove-lined coasts?}
 
-% \vspace{1cm}
 To answer this question, the following subquestions will be investigated:
 
 \begin{itemize}
@@ -45,65 +43,8 @@ To answer this question, the following subquestions will be investigated:
       \item Which of the established optical SDB methods are most reliable in mangrove ecosystems?
 \end{itemize}
 
-\chapter{Proposed Methodology}
 
-The following method is proposed to evaluate the effectiveness of combining optical SDB methods with lidar data along mangrove coasts.
-
-\section{Find Areas for Global Analysis}
-
-There are several datasets of the global distribution of mangrove forests \parencite{Worthington2020}. This study will use the recent \cite{Giri2011b} dataset. To find the areas of interest, the mangrove extent data will be buffered by a distance large enough so that it includes the offshore area, and these polygons will be generalized to snap to a rectangular grid. Polygons with an area under a certain threshold will be dropped from the dataset. The remaining polygons will be used as sites for the global analysis.
-
-To compare the the effect that the mangrove typology has on the quality of the bathymetric output, data on the local biogeographic environment for each site can be added using the data from \cite{Worthington2020a} which classifies every mangrove forest as either carbonate or terrigenous, and is assigned a coast type (Delta, Estuary, Lagoon, Open Coast). This data can provide valuable information on which types of mangrove environments might be more favorable for automated bathymetry extraction. Certain mangrove types might have higher average turbidity which will impede remotely sensed bathymetry. To check the effect of turbidity on the results, the local turbidity at the time of the satellite pass can be found using the GlobColour dataset of ocean color \parencite{Garnesson2019}, which reports the Secchi Disk Depth (SDD) at a given time.
-
-As part of this step, a series of test sites with surveyed in-situ bathymetry will be found for testing the error present in the satellite derived data. To ensure good coverage, these sites will have varied mangrove typology and and geographic location.
-
-\section{Download Lidar Data Within Areas of Interest}
-Using a Python script that interacts with the NASA National Snow and Ice Data Center (NSIDC) data download API, the ATL03 variables of interest can be downloaded for each polygon.
-
-\section{Develop Bathymetric Photon Identification algorithm}
-
-The data from the satellite consists of raw photon locations along a given track. To answer the subquestion \emph{How can spaceborne lidar transects that contain bathymetry be identified algorithmically}, the noise extraction algorithm needs reliably find bathymetric photon returns, if they are present, and indicate if no signal can be found.
-
-Many most previous papers use a variation of the \emph{Density-based spatial clustering of applications with noise (DBSCAN)} algorithm, from \citeauthor{Ester1996} for this purpose. For this project it is proposed to use the DBSCAN method iteratively with adaptive parameters to identify bathymetric points. The first pass of the DBSCAN algorithm will find clusters of signal using a modified version of the approach from \citeauthor{Ma2020}, which runs the algorithm on clusters of 10,000 points in the along track direction. The results of Ma's technique are shown in figure \ref{fig:dbscan-clustering}. In the figure, the red points are the locations of photon returns, and the green points are classified as signal by Ma's approach.
-
-\begin{figure}[htbp]
-      \centering
-      \includegraphics[width=0.7\textwidth]{figures/clustering_ma_et_al.png}
-      \caption{Results of DBSCAN as used by \citeauthor{Ma2020}}
-      \label{fig:dbscan-clustering}
-\end{figure}
-
-This algorithm reliably detects signal, but also produces several clusters of false positives, below the seafloor. \citeauthor{Ma2020} manually removes these points, but for a global approach this is not a feasibly solution. Therefore, it is proposed to run the algorithm a second time, on the entire result of the first iteration, to detect any clusters which maybe have been false positives in the first iteration.
-
-The exact details of the implementation will be tested against the test sites to see which produce the best results. This allows an answer to the subquestion \emph{How can lidar photon return locations reflecting the seafloor be separated from background noise?}
-
-Some sites, either due to turbidity, depth, or instrument data quality issues, will not provide reliable bathymetry lidar photons. Any sites without lidar reference data will be removed from the analysis. This will lead to an answer to the subquestion \emph{In which mangrove forests might spaceborne lidar and optical SDB be an effective survey method?}
-
-\section{Correction for Refraction and Tides}
-
-To correct for the effects of refraction and the tidal elevation, first the tide level at the time and location of the ICESat-2 pass will be found from the archives of the GTSM.  Using this tidal data the local depth relative to MSL is calculated from the ellipsoidal height. Then using the Parrish method the vertical and horizontal error induced by refraction will be calculated and corrected.
-
-This will adjust individual photon heights, but it does not provide a profile along of the seafloor. To find a seafloor profile, different methods of finding a profile can be tested, like using a windowed median function of the photon heights, or bayesian updating of other data like GEBCO. This will serve to answer the subquestion \emph{once transects with bathymetry are found, how can the seafloor elevation data be extracted?}.
-
-The validity of different approaches to seafloor profile extraction and tidal/refraction correction can be found by calculating the root mean square (RMS) and mean absolute error (MAE) values at test sites with surveyed data available.
-
-\section{Apply Optical SDB Where Spaceborne Lidar is Available}
-
-In the last step, a list of mangrove coasts that have spaceborne lidar data available is established. To extend this to a 2D map of the bathymetry, first we need satellite scenes that are approximately contemporaneous with the lidar data. These can be found using Google Earth Engine, a cloud platform that provides access to computational resources and a large catalog of remote sensing data \parencite{Gorelick2017a}. Because of the computational simplicity, the bathymetric will be calculated using an empirical algorithm.
-
-The results of this step will be a series of 2D bathymetric rasters. To evaluate the accuracy of the SDB bathymetry output, the error can be calculated against the surveyed data at test sites.
-
-\section{Summarize and Analyze Results}
-
-In the end, the global distribution of mangrove coasts where spaceborne bathymetry is effective can be created. In the sites where the approach is successful, profile data can be extracted from the 2D bathymetry output to provide information about the profile shapes.
-
-
-\section{Strengths and Limitations}
-
-The proposed method could allow a significant increase in the global data available about mangrove ecosystems, and the analysis could potentially be repeated in the future and more data is available to give a temporal dimension, allowing for assessment of offshore erosion or deposition processes around mangroves. The largest limitation forseen is the turbidity limiting the optical clarity of the water. This might make it difficult to find meaningful data along muddy coasts, and limit the bathymetric analysis to carbonate mangroves, which tend to occur in clearer waters.
-
-
-\chapter{Literature Review}
+\chapter{Background}
 
 \section{Lidar Bathymetric surveying}
 
@@ -208,10 +149,10 @@ There are several established methods for calculating bathymetric data from pass
 \subsection{Wave-Kinematic Bathymetry}
 This approach uses the hydrodynamic properties of a wave field to estimate the bathymetry. The hydrodynamic variables like wave celerity and wave length are estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation \cite{Almar2021e}. The major advantage of this method is that the results do not depend on the turbidity, which can be a significant limitation to optical SDB along many coastlines. The downsides to this approach are that the horizontal resolution is limited compared to optical methods, and the depth that it can reach is limited by the wavelength: longer waves feel the bottom earlier, so only in areas with significant swells can deeper bathymetry measurements be found \parencite{Almar2021e}.
 
-\subsection{Optical Remote Sensing Bathymetry}
+\subsection{Bathymetry from Optical Remote Sensing}
 Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it gives very high resolution data of the seafloor. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements, and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to run.
 
-Because of the ability to incorporate in-situ data and the computational ease, an empirical approach is considered for this project.
+Because of the ability to incorporate in-situ data and the computational ease, empirical methods are considered for this project.
 
 \subsection{Active-passive Sensor Fusion: The best of both worlds}
 \citeauthor{Parrish2019} conclude that the best way to use ICESat-2 data for bathymetric survey is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
@@ -250,11 +191,69 @@ The studies that have used some version of the proposed technique are summarized
 \end{landscape}
 \restoregeometry
 
+
+\chapter{Proposed Methodology}
+
+The following method is proposed to evaluate the effectiveness of combining optical SDB methods with lidar data along mangrove coasts.
+
+\section{Find Areas for Global Analysis}
+
+There are several datasets of the global distribution of mangrove forests \parencite{Worthington2020}. This study will use the recent \cite{Giri2011b} dataset. To find the areas of interest, the mangrove extent data will be buffered by a distance large enough so that it includes the offshore area, and these polygons will be generalized to snap to a rectangular grid. Polygons with an area under a certain threshold will be dropped from the dataset. The remaining polygons will be used as sites for the global analysis.
+
+To compare the the effect that the mangrove typology has on the quality of the bathymetric output, data on the local biogeographic environment for each site can be added using the data from \cite{Worthington2020a} which classifies every mangrove forest as either carbonate or terrigenous, and is assigned a coast type (Delta, Estuary, Lagoon, Open Coast). This data can provide valuable information on which types of mangrove environments might be more favorable for automated bathymetry extraction. Certain mangrove types might have higher average turbidity which will impede remotely sensed bathymetry. To check the effect of turbidity on the results, the local turbidity at the time of the satellite pass can be found using the GlobColour dataset of ocean color \parencite{Garnesson2019}, which reports the Secchi Disk Depth (SDD) at a given time.
+
+As part of this step, a series of test sites with surveyed in-situ bathymetry will be found for testing the error present in the satellite derived data. To ensure good coverage, these sites will have varied mangrove typology and and geographic location.
+
+\section{Download Lidar Data Within Areas of Interest}
+Using a Python script that interacts with the NASA National Snow and Ice Data Center (NSIDC) data download API, the ATL03 variables of interest can be downloaded for each polygon.
+
+\section{Develop Bathymetric Photon Identification algorithm}
+
+The data from the satellite consists of raw photon locations along a given track. To answer the subquestion \emph{How can spaceborne lidar transects that contain bathymetry be identified algorithmically}, the noise extraction algorithm needs reliably find bathymetric photon returns, if they are present, and indicate if no signal can be found.
+
+Many most previous papers use a variation of the \emph{Density-based spatial clustering of applications with noise (DBSCAN)} algorithm, from \citeauthor{Ester1996} for this purpose. For this project it is proposed to use the DBSCAN method iteratively with adaptive parameters to identify bathymetric points. The first pass of the DBSCAN algorithm will find clusters of signal using a modified version of the approach from \citeauthor{Ma2020}, which runs the algorithm on clusters of 10,000 points in the along track direction. The results of Ma's technique are shown in figure \ref{fig:dbscan-clustering}. In the figure, the red points are the locations of photon returns, and the green points are classified as signal by Ma's approach.
+
+\begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.7\textwidth]{figures/clustering_ma_et_al.png}
+      \caption{Results of DBSCAN as used by \citeauthor{Ma2020}}
+      \label{fig:dbscan-clustering}
+\end{figure}
+
+This algorithm reliably detects signal, but also produces several clusters of false positives, below the seafloor. \citeauthor{Ma2020} manually removes these points, but for a global approach this is not a feasibly solution. Therefore, it is proposed to run the algorithm a second time, on the entire result of the first iteration, to detect any clusters which maybe have been false positives in the first iteration.
+
+The exact details of the implementation will be tested against the test sites to see which produce the best results. This allows an answer to the subquestion \emph{How can lidar photon return locations reflecting the seafloor be separated from background noise?}
+
+Some sites, either due to turbidity, depth, or instrument data quality issues, will not provide reliable bathymetry lidar photons. Any sites without lidar reference data will be removed from the analysis. This will lead to an answer to the subquestion \emph{In which mangrove forests might spaceborne lidar and optical SDB be an effective survey method?}
+
+\section{Correction for Refraction and Tides}
+
+To correct for the effects of refraction and the tidal elevation, first the tide level at the time and location of the ICESat-2 pass will be found from the archives of the GTSM.  Using this tidal data the local depth relative to MSL is calculated from the ellipsoidal height. Then using the Parrish method the vertical and horizontal error induced by refraction will be calculated and corrected.
+
+This will adjust individual photon heights, but it does not provide a profile along of the seafloor. To find a seafloor profile, different methods of finding a profile can be tested, like using a windowed median function of the photon heights, or bayesian updating of other data like GEBCO. This will serve to answer the subquestion \emph{once transects with bathymetry are found, how can the seafloor elevation data be extracted?}.
+
+The validity of different approaches to seafloor profile extraction and tidal/refraction correction can be found by calculating the root mean square (RMS) and mean absolute error (MAE) values at test sites with surveyed data available.
+
+\section{Apply Optical SDB Where Spaceborne Lidar is Available}
+
+In the last step, a list of mangrove coasts that have spaceborne lidar data available is established. To extend this to a 2D map of the bathymetry, first we need satellite scenes that are approximately contemporaneous with the lidar data. These can be found using Google Earth Engine, a cloud platform that provides access to computational resources and a large catalog of remote sensing data \parencite{Gorelick2017a}. Because of the computational simplicity, the bathymetric will be calculated using an empirical algorithm.
+
+The results of this step will be a series of 2D bathymetric rasters. To evaluate the accuracy of the SDB bathymetry output, the error can be calculated against the surveyed data at test sites.
+
+\section{Summarize and Analyze Results}
+
+In the end, the global distribution of mangrove coasts where spaceborne bathymetry is effective can be created. In the sites where the approach is successful, profile data can be extracted from the 2D bathymetry output to provide information about the profile shapes.
+
+
+\section{Strengths and Limitations}
+
+The proposed method could allow a significant increase in the global data available about mangrove ecosystems, and the analysis could potentially be repeated in the future and more data is available to give a temporal dimension, allowing for assessment of offshore erosion or deposition processes around mangroves. The largest limitation forseen is the turbidity limiting the optical clarity of the water. This might make it difficult to find meaningful data along muddy coasts, and limit the bathymetric analysis to carbonate mangroves, which tend to occur in clearer waters.
+
 \chapter{Practicalities}
 
 \section{Planned Schedule}
 
-Figure \ref{thesis-schedule} shows the tentative schedule for the project. The early stages of some steps have already been started to asses their feasability.
+Figure \ref{thesis-schedule} shows the tentative schedule for the project. The early stages of some steps have already been started to assess their feasibility.
 
 \newgeometry{bottom=20mm}
 \begin{landscape}
@@ -276,7 +275,7 @@ Figure \ref{thesis-schedule} shows the tentative schedule for the project. The e
             \item mangroves
             \begin{enumerate}
                   \item Morphodynamics
-                  \item Wave-vegetation interation
+                  \item Wave-vegetation interaction
                   \item Importance of bathymetry
             \end{enumerate}
             \item Lidar Bathymetry
@@ -284,7 +283,7 @@ Figure \ref{thesis-schedule} shows the tentative schedule for the project. The e
                   \item History
                   \item Strengths
                   \item Weaknesses
-                  \item Snell's Law and lidar refraction in the water column
+                  \item Snell's law and lidar refraction in the water column
                   \item Photon counting lidar technology
                   \item Geodetic reference systems in oceanography
                   \item ICESat-2
