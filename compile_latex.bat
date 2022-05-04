@@ -1,2 +1,0 @@
-docker run --rm  -v D:\Grad_School\_Year_2\thesis\:/data pandoc/core --biblatex --bibliography document/MyLibrary.bib document/markdown/test1.md -o document/latex/test.tex
-docker run --rm  -v D:\Grad_School\_Year_2\thesis\:/usr/src/app -w /usr/src/app/document/latex texlive/texlive latexmk -pdfxe report-numbered.tex
