@@ -1,0 +1,82 @@
+\documentclass[whitelogo]{tudelft-report}
+\usepackage{gensymb}
+\usepackage{changes}
+\usepackage{todonotes}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage[style=authoryear,maxcitenames=2,maxbibnames=100,firstinits=true]{biblatex}
+\usepackage{csquotes}
+\addbibresource[datatype=bibtex]{library.bib}
+
+\begin{document}
+
+%% Use Roman numerals for the page numbers of the title pages and table of
+%% contents.
+\frontmatter
+
+%% Uncomment following 19 lines for a cover with a picture on the lower half only
+%\title[tudelft-white]{Title}
+%\subtitle[tudelft-cyan]{Optional subtitle}
+%\author[tudelft-white]{J.\ Random Author}
+%\affiliation{Technische Universiteit Delft}
+%\coverimage{cover.jpg}
+%\titleoffsetx{10cm}
+%\titleoffsety{10cm}
+%\afiloffsetx{1cm}
+%\afiloffsety{18cm}
+%\covertext[tudelft-white]{
+%    \textbf{Cover Text} \\
+%    possibly \\
+%    spanning 
+%    multiple 
+%    lines
+%    \vfill
+%    ISBN 000-00-0000-000-0
+%}
+%\makecover
+
+%% Uncomment following 16 lines for a cover with a picture on the lower half only
+\title[tudelft-white]{newtitle}
+\subtitle[tudelft-black]{Optional subtitle}
+\author[tudelft-white]{J.\ Random Author}
+\affiliation{Technische Universiteit Delft}
+\coverimage{tank.jpg}
+\covertext[tudelft-white]{
+    \textbf{Cover Text} \\
+    possibly \\
+    spanning 
+    multiple 
+    lines
+    \vfill
+    ISBN 000-00-0000-000-0
+}
+\setpagecolor{tudelft-cyan}
+\makecover[split]
+
+
+%% Include an optional title page.
+\input{title}
+
+\input{preface}
+
+\tableofcontents
+
+%% Use Arabic numerals for the page numbers of the chapters.
+\mainmatter
+
+\input{workplan/workplan.tex}
+
+%% Use letters for the chapter numbers of the appendices.
+\appendix
+
+%\input{appendix-a}
+
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
+
+\printbibliography
+
+\end{document}
+
