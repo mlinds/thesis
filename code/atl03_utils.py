@@ -21,8 +21,7 @@ from shapely.geometry import LineString, Point
 from sklearn.cluster import DBSCAN
 
 
-# beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
-beamlist = ["gt1r", "gt2r", "gt3r"]
+beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
 logger = logging.getLogger("ATL03_Data_cleaning")
 
@@ -101,6 +100,11 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             varname: values[:]
             for varname, values in ds.groups["ancillary_data"].variables.items()
         }
+        # add the beam-level metadata
+        for attribute_name in ds.groups[beam].ncattrs():
+            metadata[attribute_name] = getattr(ds.groups[beam], attribute_name)
+
+        # metadata['ocean_high_conf_perc'] = ds.groups['quality_assessment'].groups[beam].variables['qa_perc_signal_conf_ph_high'][:,1]
 
         # this is in a try block because it raises a keyerror if the beam is missing from the granule
         try:
@@ -145,21 +149,20 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
 
         # combine the corrections into one
-        additive_correction = -1 * geoid + geo_f2m + tide_ocean
+        # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
+        correction = geoid + geo_f2m + tide_ocean
 
         # to assign the correct correction value, we need to get the correction at a certain time
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
-        zcorr_series = pd.Series(
-            additive_correction, index=delta_time_geophys
-        ).sort_index()
+        zcorr_series = pd.Series(correction, index=delta_time_geophys).sort_index()
 
         # make an array of the correction by time
         z_corr = zcorr_series.asof(delta_time).values
 
         # get the corrected Z vals
-        Z_g = Z + z_corr
+        Z_g = Z - z_corr
 
         # for varname, values in (
         #     ds.groups["quality_assessment"].groups[beam].variables.items()
@@ -225,6 +228,14 @@ def get_track_geom(beamarray: np.ndarray) -> LineString:
 
 
 def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
+    """Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
+
+    Args:
+        directory (strorPathLike): Location of the folder to search for netcdf files
+
+    Returns:
+        gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
+    """
     # TODO fix this unreadable function
     # try to decrease the indent level - itertools?
     beamlist = []
@@ -232,7 +243,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     rgtlist = []
     filenamelist = []
     geomlist = []
-    percent_high_conf = []
+    # percent_high_conf = []
     for h5file in glob.iglob(directory):
         # TODO change to use pathlib to make this more readable
 
@@ -255,27 +266,32 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             if point_array is None:
                 rgtlist.append(np.NaN)
                 datelist.append(np.NaN)
-                percent_high_conf.append(np.NaN)
+                # percent_high_conf.append(np.NaN)
             else:
-                rgt = point_array.dtype.metadata["Start RGT"]
-                date = point_array.dtype.metadata["st_date"]
-                p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
+                rgt = point_array.dtype.metadata["start_rgt"]
+                date = point_array.dtype.metadata["data_start_utc"]
+                # p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
                 rgtlist.append(rgt)
                 datelist.append(date)
-                percent_high_conf.append(p_oc_h_conf)
-
-    return gpd.GeoDataFrame(
+                # percent_high_conf.append(p_oc_h_conf)
+    # get geodataframe in same CRS as icessat data
+    gdf = gpd.GeoDataFrame(
         {
             "file": filenamelist,
             "geometry": geomlist,
             "Reference Ground Track": rgtlist,
             "date": datelist,
             "beam": beamlist,
-            "Percentage High confidence Ocean Returns": percent_high_conf,
+            # "Percentage High confidence Ocean Returns": percent_high_conf,
         },
         crs="EPSG:7912",
         geometry="geometry",
     ).set_index(["file", "beam"])
+
+    # prooject it to the appropriate UTM system
+    crs_UTM = gdf.estimate_utm_crs()
+    gdf.to_crs(crs_UTM, inplace=True)
+    return gdf
 
 
 def add_track_dist_meters(
@@ -288,7 +304,9 @@ def add_track_dist_meters(
     # geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
     geom = gpd.points_from_xy(xcoords, ycoords, crs="EPSG:7912")
     gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912")
+    # to find distance in meters we need to estimate the UTM zone required
     utmzone = gdf.estimate_utm_crs()
+    # convert to the UTM zone we found
     gdf = gdf.to_crs(utmzone)
     ymin = gdf.geometry.y.min()
     xmin = gdf.geometry.x[gdf.geometry.y.argmin()]
@@ -358,6 +376,7 @@ class TransectFixer:
             )
             .median()
         )
+
         sigma_sea_level = (
             self._df.loc[self._df.oc_sig_conf == 4]["Z_g"]
             .rolling(
@@ -447,13 +466,11 @@ def cluster_signal_dbscan(
 def add_raw_seafloor(beam_df: pd.DataFrame):
     signal_pts = beam_df.loc[beam_df.SN == "signal"]
 
-    signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).median())
+    signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(100).median())
     signal_pts = signal_pts.assign(
         depth=signal_pts.sea_level_interp - signal_pts.seafloor
     )
-    signal_pts = signal_pts.assign(
-        sf_refr=signal_pts.sea_level_interp - 0.75 * signal_pts.depth
-    )
+    signal_pts = signal_pts.assign(sf_refr=signal_pts.Z_g + 0.2541 * signal_pts.depth)
 
     return signal_pts
 
