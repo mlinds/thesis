@@ -11,7 +11,6 @@ from qgis.core import QgsProcessingMultiStepFeedback
 from qgis.core import QgsProcessingParameterMapLayer
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterBoolean
-from qgis.core import QgsProcessingParameterVectorDestination
 from qgis.core import QgsProcessingParameterFeatureSink
 import processing
 
@@ -23,13 +22,12 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterMapLayer('GlobalMangrovePolygons', 'Global Mangrove Polygons', defaultValue=None, types=[QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber('MinimumbufferedPolygonarea', 'Minimum buffered Polygon area', type=QgsProcessingParameterNumber.Double, minValue=0, maxValue=1.79769e+308, defaultValue=None))
         self.addParameter(QgsProcessingParameterBoolean('VERBOSE_LOG', 'Verbose logging', optional=True, defaultValue=False))
-        self.addParameter(QgsProcessingParameterVectorDestination('StudyAreas', 'Study Areas', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))
-        self.addParameter(QgsProcessingParameterFeatureSink('CoastalBuffer', 'coastal buffer', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, supportsAppend=True, defaultValue=None))
+        self.addParameter(QgsProcessingParameterFeatureSink('Studyareas', 'StudyAreas', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, supportsAppend=True, defaultValue=None))
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the
         # overall progress through the model
-        feedback = QgsProcessingMultiStepFeedback(13, model_feedback)
+        feedback = QgsProcessingMultiStepFeedback(17, model_feedback)
         results = {}
         outputs = {}
 
@@ -167,42 +165,83 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
         # Explode coastline polygons
         alg_params = {
             'INPUT': outputs['RemovedHolesInCoastalPolygons']['OUTPUT'],
-            'OUTPUT': parameters['CoastalBuffer']
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
         }
         outputs['ExplodeCoastlinePolygons'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['CoastalBuffer'] = outputs['ExplodeCoastlinePolygons']['OUTPUT']
 
         feedback.setCurrentStep(11)
         if feedback.isCanceled():
             return {}
 
-        # Convex hull
+        # Buffer
         alg_params = {
+            'DISSOLVE': True,
+            'DISTANCE': 0.1,
+            'END_CAP_STYLE': 0,
             'INPUT': outputs['ExplodeCoastlinePolygons']['OUTPUT'],
+            'JOIN_STYLE': 0,
+            'MITER_LIMIT': 2,
+            'SEGMENTS': 5,
             'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
         }
-        outputs['ConvexHull'] = processing.run('native:convexhull', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs['Buffer'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
 
         feedback.setCurrentStep(12)
         if feedback.isCanceled():
             return {}
 
-        # Dissovle the 
+        # Multipart to singleparts
         alg_params = {
-            'COMPUTE_AREA': False,
-            'COMPUTE_STATISTICS': False,
-            'COUNT_FEATURES': False,
-            'EXPLODE_COLLECTIONS': True,
-            'FIELD': '',
-            'GEOMETRY': 'geom',
-            'INPUT': outputs['ConvexHull']['OUTPUT'],
-            'KEEP_ATTRIBUTES': False,
-            'OPTIONS': '',
-            'STATISTICS_ATTRIBUTE': '',
-            'OUTPUT': parameters['StudyAreas']
+            'INPUT': outputs['Buffer']['OUTPUT'],
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
         }
-        outputs['DissovleThe'] = processing.run('gdal:dissolve', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['StudyAreas'] = outputs['DissovleThe']['OUTPUT']
+        outputs['MultipartToSingleparts'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(13)
+        if feedback.isCanceled():
+            return {}
+
+        # Convex hull
+        alg_params = {
+            'INPUT': outputs['MultipartToSingleparts']['OUTPUT'],
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+        }
+        outputs['ConvexHull'] = processing.run('native:convexhull', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(14)
+        if feedback.isCanceled():
+            return {}
+
+        # Dissolve
+        alg_params = {
+            'FIELD': [''],
+            'INPUT': outputs['ConvexHull']['OUTPUT'],
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+        }
+        outputs['Dissolve'] = processing.run('native:dissolve', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(15)
+        if feedback.isCanceled():
+            return {}
+
+        # Multipart to singleparts
+        alg_params = {
+            'INPUT': outputs['Dissolve']['OUTPUT'],
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+        }
+        outputs['MultipartToSingleparts'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(16)
+        if feedback.isCanceled():
+            return {}
+
+        # Convex hull
+        alg_params = {
+            'INPUT': outputs['MultipartToSingleparts']['OUTPUT'],
+            'OUTPUT': parameters['Studyareas']
+        }
+        outputs['ConvexHull'] = processing.run('native:convexhull', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        results['Studyareas'] = outputs['ConvexHull']['OUTPUT']
         return results
 
     def name(self):
