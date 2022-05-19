@@ -20,6 +20,7 @@ from pandas.api.extensions import register_dataframe_accessor
 from shapely.geometry import LineString, Point
 from sklearn.cluster import DBSCAN
 
+np.seterr(all='warn')
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
@@ -97,14 +98,22 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
 
         # get the granule-level metadata
         metadata = {
-            varname: values[:]
+            varname: str(values[:])
             for varname, values in ds.groups["ancillary_data"].variables.items()
         }
-        # add the beam-level metadata
+        # add the beam-level metadata by looping over attribute names and getting them from the
+        # netcdf group
         for attribute_name in ds.groups[beam].ncattrs():
-            metadata[attribute_name] = getattr(ds.groups[beam], attribute_name)
+            metadata[attribute_name] = str(getattr(ds.groups[beam], attribute_name))
 
-        # metadata['ocean_high_conf_perc'] = ds.groups['quality_assessment'].groups[beam].variables['qa_perc_signal_conf_ph_high'][:,1]
+        try:
+            metadata["ocean_high_conf_perc"] = float(
+                ds.groups["quality_assessment"]
+                .groups[beam]
+                .variables["qa_perc_signal_conf_ph_high"][:, 1]
+            )
+        except KeyError:
+            metadata["ocean_high_conf_perc"] = np.NaN
 
         # this is in a try block because it raises a keyerror if the beam is missing from the granule
         try:
@@ -129,7 +138,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
         land_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 0]
 
-        # z_correction = xrds.geoid_free2mean+xrds.geoid*-1+xrds.tide_ocean
         # need to deal with geophysical variable time differenently since they're captured at a different rate
         delta_time_geophys_s = (
             ds.groups[beam].groups["geophys_corr"].variables["delta_time"][:]
@@ -144,9 +152,9 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         delta_time_geophys[0] = delta_time[0]
 
         # get the geophysical variables
-        geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:]
-        geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:]
-        tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:]
+        geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:].filled(np.NaN)
+        geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:].filled(np.NaN)
+        tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:].filled(np.NaN)
 
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
@@ -159,10 +167,10 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         zcorr_series = pd.Series(correction, index=delta_time_geophys).sort_index()
 
         # make an array of the correction by time
-        z_corr = zcorr_series.asof(delta_time).values
+        z_corr = zcorr_series.asof(delta_time).to_numpy()
 
         # get the corrected Z vals
-        Z_g = Z - z_corr
+        Z_corrected = Z - z_corr
 
         # for varname, values in (
         #     ds.groups["quality_assessment"].groups[beam].variables.items()
@@ -190,7 +198,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["X"] = X
         photon_data["Y"] = Y
         photon_data["Z"] = Z
-        photon_data["Z_g"] = Z_g
+        photon_data["Z_g"] = Z_corrected
         photon_data["delta_time"] = delta_time
         photon_data["oc_sig_conf"] = ocean_sig
         photon_data["land_sig_conf"] = land_sig
@@ -270,6 +278,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             else:
                 rgt = point_array.dtype.metadata["start_rgt"]
                 date = point_array.dtype.metadata["data_start_utc"]
+                beamtype = point_array.dtype.metadata["atlas_beam_type"]
                 # p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
                 rgtlist.append(rgt)
                 datelist.append(date)
@@ -282,6 +291,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             "Reference Ground Track": rgtlist,
             "date": datelist,
             "beam": beamlist,
+            "beam_type": beamtype,
             # "Percentage High confidence Ocean Returns": percent_high_conf,
         },
         crs="EPSG:7912",
