@@ -321,7 +321,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
 
 def add_track_dist_meters(
     # y is lat, x is lon
-    df:pd.DataFrame,
+    df: pd.DataFrame,
     geodataframe=False,
 ) -> pd.DataFrame or gpd.GeoDataFrame:
     xcoords = df["X"]
