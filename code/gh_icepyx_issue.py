@@ -14,8 +14,8 @@ gee_bbox = [
     -77.86778421403766,
     22.576108370765198,
 ]
-product = "ATL12"
-datapath = "./data/ATLAS_test_subset/"
+product = "ATL03"
+datapath = "./data/icepyxtest/"
 pattern = (
     "processed_"
     + product
@@ -30,10 +30,10 @@ region_a = ipx.Query(
     start_time="00:00:00",
     end_time="23:59:59",
 )
-region_a.earthdata_login(uid="XXX", email="XXX")
+region_a.earthdata_login(uid="maelinds", email="max.lindsay95@gmail.com")
 region_a.download_granules(path=datapath)
 reader = ipx.Read(data_source=datapath, product=product, filename_pattern=pattern)
-reader.vars.append(beam_list=["gt1l", "gt3r"], var_list=["h", "latitude", "longitude"])
+reader.vars.append(beam_list=["gt1l", "gt3r"], var_list=["h_ph", "lat_ph", "lon_ph"])
 
 
 out = reader.load()

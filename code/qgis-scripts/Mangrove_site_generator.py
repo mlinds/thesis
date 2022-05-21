@@ -124,7 +124,7 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Buffer simplified shorelines 5km offshore
         alg_params = {
-            'DISTANCE': 5000,
+            'DISTANCE': 10000,
             'INPUT': outputs['Simplify']['OUTPUT'],
             'JOIN_STYLE': 0,
             'MITER_LIMIT': 2,
