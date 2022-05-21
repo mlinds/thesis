@@ -5,10 +5,10 @@ import pandas as pd
 from glob import iglob
 from tqdm import tqdm
 from multiprocessing import Pool
+import numpy as np
 
 
-def _filter_apply_kde(filename, beam):
-
+def _filter_points(filename:str,beam:str)->pd.DataFrame:
     print(f"reading {beam} from {filename}")
     beamdata = atl03_utils.load_beam_array_ncds(filename, beam)
 
@@ -27,13 +27,18 @@ def _filter_apply_kde(filename, beam):
     point_dataframe = point_dataframe.bathy.add_gebco()
     # filter points based on gebco
     point_dataframe = point_dataframe[point_dataframe.gebco_elev > -50]
-    point_dataframe = point_dataframe[point_dataframe.gebco_elev < 6]
+    point_dataframe = point_dataframe[point_dataframe.gebco_elev < 2]
 
     # Recalculate the horizontal distance
     point_dataframe["dist_or"] = point_dataframe.dist_or - point_dataframe.dist_or.min()
+    
+    return point_dataframe
 
+
+def _apply_kde(point_dataframe):
+   
     kde_elev = point_dataframe.Z_g.rolling(window=300, center=True).apply(
-        get_elev_at_max_density, raw=True, kwargs={"threshold": 0.07}
+        get_elev_at_max_density_sklearn, raw=True, kwargs={"threshold": 0.07}
     )
 
     point_dataframe = point_dataframe.assign(kde_seafloor=kde_elev)
@@ -48,7 +53,7 @@ def get_all_bathy_from_granule(filename):
     beamlist = atl03_utils.get_beams(filename)
     granulelist = []
     for beam in beamlist:
-        bathy_pts = _filter_apply_kde(filename, beam)
+        bathy_pts = apply_kde(_filter_points(filename, beam))
         print(len(bathy_pts), "Points with bathymetry found")
         if len(bathy_pts) > 0:
             granulelist.append(bathy_pts)
@@ -76,16 +81,19 @@ def bathy_from_all_tracks(path):
 
 def bathy_from_all_tracks_parallel(path):
     filenamelist = list(iglob(path + "/ATL03/*.nc"))
-    with Pool(8) as pool:
+    with Pool() as pool:
         result = pool.map(get_all_bathy_from_granule, filenamelist)
-    return pd.concat(result)
+    
+    if len(result) > 1: return pd.concat(result) 
+    elif len(result) == 1: return result
 
 def run_multiple():
-    paths = ["../data/test_sites/florida_keys","../data/test_sites/PR","../data/test_sites/NE_aus","../data/test_sites/PR_SE"]
+    paths = ["../data/test_sites/florida_keys","../data/test_sites/PR","../data/test_sites/North_aus","../data/test_sites/PR_SE_corner"]
     for path in paths:
+        print('starting folder',path)
         combined_result = bathy_from_all_tracks_parallel(path)
         combined_result.to_file(path+'/all_bathy_pts.gpkg')
-
+# %%
 if __name__ == "__main__":
-    run_multiple()
+    # bathy_from_all_tracks_parallel('../data/test_sites/PR_SE_corner').to_file(path+'/all_bathy_pts.gpkg')
 # %%

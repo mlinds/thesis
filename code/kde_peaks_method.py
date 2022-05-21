@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde
 from scipy.signal import find_peaks
+from sklearn.neighbors import KernelDensity 
+from KDEpy import FFTKDE
 
 # %%
 def get_elev_at_max_density(point_array, threshold):
@@ -14,21 +16,26 @@ def get_elev_at_max_density(point_array, threshold):
     # return if we don't have anything over the threshold
     if max(kde_heights) <= threshold:
         return np.NaN
-    # get the peaks of the density function
-    # peaks, properties = find_peaks(
-    #     kde_heights,
-    #     # limit the high so if there is not sufficient signal, it will return NA
-    #     height=threshold,
-    #     # don't get points next to one another
-    #     distance=10,
-    #     # this is only added to force it to calculate promenince
-    #     prominence=0.0,
-    # )
-    # find the Z value at the peak
-    # peak_zvals = point_array[peaks]
-    # get the lower (i.e. deeper) of the two most prominent peaks
-    # return min(peak_zvals[properties["prominences"].argsort()][:2])
     return z_at_kdemax
 
+def get_elev_at_max_density_sklearn(point_array, threshold):
+    kde = KernelDensity().fit(point_array[:,np.newaxis])
+    kde_heights = kde.score_samples(point_array[:,np.newaxis])
+    print(kde_heights)
 
+    # find the Z value at the highest density
+    z_at_kdemax = point_array[kde_heights.argmax()]
+    # return if we don't have anything over the threshold
+    if max(kde_heights) <= threshold:
+        return np.NaN
+    return z_at_kdemax
+
+def get_elev_at_max_density_kdepy(point_array, threshold):
+    x,y = FFTKDE(bw='ISJ').fit(point_array).evaluate()
+    return x[y.argmax()]
+
+
+# %%
+df = _filter_points('../data/test_sites/florida_keys/ATL03/processed_ATL03_20210303031355_10561001_005_01.nc','gt2r')
+testdata = df.iloc[500:800].Z_g.to_numpy()
 # %%
