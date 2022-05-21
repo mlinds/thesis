@@ -321,14 +321,13 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
 
 def add_track_dist_meters(
     # y is lat, x is lon
-    strctarray,
+    df:pd.DataFrame,
     geodataframe=False,
 ) -> pd.DataFrame or gpd.GeoDataFrame:
-    xcoords = strctarray["X"]
-    ycoords = strctarray["Y"]
-    # geom = [Point((x, y)) for x, y in zip(xcoords, ycoords)]
+    xcoords = df["X"]
+    ycoords = df["Y"]
     geom = gpd.points_from_xy(xcoords, ycoords, crs="EPSG:7912")
-    gdf = gpd.GeoDataFrame(strctarray, geometry=geom, crs="EPSG:7912")
+    gdf = gpd.GeoDataFrame(df.reset_index(drop=True), geometry=geom, crs="EPSG:7912")
     # to find distance in meters we need to estimate the UTM zone required
     utmzone = gdf.estimate_utm_crs()
     # convert to the UTM zone we found
@@ -353,7 +352,16 @@ def _assign_na_values(inpval):
 
 
 # function that gets values from rasters for each lidar photon
-def query_raster(dataframe, src):
+def query_raster(dataframe: pd.DataFrame, src: str):
+    """Takes a dataframe with a column named X and Y and a raster file, and returns the raster value at each point X and Y
+
+    Args:
+        dataframe (pd.DataFrame): Column with X and Y values, in the same CRS as the raster
+        src (str): PathLike string that is the path of the raster to query
+
+    Returns:
+        ndarray: 1D Array of values at each point.
+    """
     # takes a dataframe of points, and any GDAL raster as input
     xylist = dataframe.loc[:, ["X", "Y"]].values
     # take x,y pairs from dataframe, convert to a big string, then into a bytestring to feed into the pipe
@@ -390,6 +398,7 @@ class TransectFixer:
         return self._df.loc[(self._df.Z_g < 5)]
 
     def filter_TEP(self):
+        # remove any transmitter Echo Path photons
         return self._df.loc[self._df.oc_sig_conf != -2]
 
     def add_sea_level(self, rolling_window=50):
@@ -442,6 +451,7 @@ class TransectFixer:
         return self._df.loc[self._df.sea_level_interp - self._df.Z_g < 50]
 
     def remove_surface_points(self, n=3, min_remove=1):
+        # remove all points `n` standard deviations away from the sea level
         sea_level_std_dev = self._df.sea_level_interp.std()
         return self._df.loc[
             self._df.Z_g
