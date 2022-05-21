@@ -20,7 +20,8 @@ from pandas.api.extensions import register_dataframe_accessor
 from shapely.geometry import LineString, Point
 from sklearn.cluster import DBSCAN
 
-np.seterr(all='warn')
+
+np.seterr(all="warn")
 
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
@@ -152,9 +153,21 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         delta_time_geophys[0] = delta_time[0]
 
         # get the geophysical variables
-        geo_f2m = ds.groups[beam].groups["geophys_corr"].variables["geoid_free2mean"][:].filled(np.NaN)
-        geoid = ds.groups[beam].groups["geophys_corr"].variables["geoid"][:].filled(np.NaN)
-        tide_ocean = ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:].filled(np.NaN)
+        geo_f2m = (
+            ds.groups[beam]
+            .groups["geophys_corr"]
+            .variables["geoid_free2mean"][:]
+            .filled(np.NaN)
+        )
+        geoid = (
+            ds.groups[beam].groups["geophys_corr"].variables["geoid"][:].filled(np.NaN)
+        )
+        tide_ocean = (
+            ds.groups[beam]
+            .groups["geophys_corr"]
+            .variables["tide_ocean"][:]
+            .filled(np.NaN)
+        )
 
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
@@ -251,6 +264,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     rgtlist = []
     filenamelist = []
     geomlist = []
+    beam_type_list = []
     # percent_high_conf = []
     for h5file in glob.iglob(directory):
         # TODO change to use pathlib to make this more readable
@@ -282,6 +296,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
                 # p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
                 rgtlist.append(rgt)
                 datelist.append(date)
+                beam_type_list.append(beamtype)
                 # percent_high_conf.append(p_oc_h_conf)
     # get geodataframe in same CRS as icessat data
     gdf = gpd.GeoDataFrame(
@@ -291,7 +306,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             "Reference Ground Track": rgtlist,
             "date": datelist,
             "beam": beamlist,
-            "beam_type": beamtype,
+            "beam_type": beam_type_list,
             # "Percentage High confidence Ocean Returns": percent_high_conf,
         },
         crs="EPSG:7912",
@@ -402,6 +417,12 @@ class TransectFixer:
             left_index=True,
             right_index=True,
             validate="1:1",
+        ).merge(
+            right=sigma_sea_level,
+            how="left",
+            left_index=True,
+            right_index=True,
+            validate="1:1",
         )
 
         return self._df.assign(
@@ -409,13 +430,16 @@ class TransectFixer:
                 data=newgdf.sea_level.array, index=newgdf.dist_or.array
             )
             .interpolate(method="index")
-            .to_numpy()
+            .to_numpy(),
+            # sea_level_std_dev=pd.Series(
+            #     data=newgdf.sea_level.array, index=newgdf.dist_or.array
+            # ),
         ).dropna()
 
     def filter_low_points(self):
-        # drop any points with an uncorrected depth greater than 40m
+        # drop any points with an uncorrected depth greater than 50m
 
-        return self._df.loc[self._df.sea_level_interp - self._df.Z_g < 40]
+        return self._df.loc[self._df.sea_level_interp - self._df.Z_g < 50]
 
     def remove_surface_points(self, n=3, min_remove=1):
         sea_level_std_dev = self._df.sea_level_interp.std()
@@ -423,6 +447,15 @@ class TransectFixer:
             self._df.Z_g
             < self._df.sea_level_interp - max(n * sea_level_std_dev, min_remove)
         ]
+
+    def add_gebco(self):
+        # query the gebco ncdf file, add the relevant GEBCO height
+        gebco_height = query_raster(
+            self._df,
+            "../data/GEBCO/GEBCO_2021_sub_ice_topo.nc",
+        )
+        # return the dataframe with the new column
+        return self._df.assign(gebco_elev=gebco_height)
 
 
 def cluster_signal_dbscan(
