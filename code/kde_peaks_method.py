@@ -1,7 +1,7 @@
 # %%
 import numpy as np
 import pandas as pd
-from scipy.stats import gaussian_kde
+from scipy.stats import gaussian_kde,skew
 from scipy.signal import find_peaks
 from sklearn.neighbors import KernelDensity 
 from KDEpy import FFTKDE
@@ -14,6 +14,8 @@ def get_elev_at_max_density(point_array, threshold):
     # find the Z value at the highest density
     z_at_kdemax = point_array[kde_heights.argmax()]
     # return if we don't have anything over the threshold
+    # print(skew(point_array))
+    pd.DataFrame({'x':point_array,'y':kde_heights}).plot.scatter(x='x',y='y')
     if max(kde_heights) <= threshold:
         return np.NaN
     return z_at_kdemax
@@ -31,9 +33,19 @@ def get_elev_at_max_density_sklearn(point_array, threshold):
     return z_at_kdemax
 
 def get_elev_at_max_density_kdepy(point_array, threshold):
-    x,y = FFTKDE(bw='ISJ').fit(point_array).evaluate()
+    x,y = FFTKDE(bw='scott').fit(point_array).evaluate()
+    pd.DataFrame({'x':x,'y':y}).plot.line(x='x',y='y')
     return x[y.argmax()]
 
+def get_elev_at_max_density_mirror(point_array, threshold):
+    kdefunc = FFTKDE(bw='scott').fit(point_array)
+    low_bound = -40
+    point_array_mirror = np.concatenate((point_array, 2 * low_bound - point_array))
+    x, y = FFTKDE(bw=kdefunc.bw,).fit(point_array_mirror).evaluate()
+    y[x<=low_bound] = 0  # Set the KDE to zero outside of the domain
+    y = y * 2  # Double the y-values to get integral of ~1
+    pd.DataFrame({'x':x,'y':y}).plot.line(x='x',y='y',xlim=[-40,0])
+    return x[y.argmax()]
 
 # %%
 df = _filter_points('../data/test_sites/florida_keys/ATL03/processed_ATL03_20210303031355_10561001_005_01.nc','gt2r')
