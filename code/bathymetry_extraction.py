@@ -1,15 +1,23 @@
 # %%
 # for testing I want to be able to reload my module when i change it
 from importlib import reload
+from math import ceil
 
+import numpy as np
+import pandas as pd
 from bokeh.io import output_notebook
 from bokeh.palettes import Spectral5
 from bokeh.plotting import figure, show
 from bokeh.transform import factor_cmap
+from sklearn.cluster import DBSCAN
 
 import atl03_utils
+import atl03_clustering
+import get_bathymetry
+from kde_peaks_method import get_elev_at_max_density
 
 atl03_utils = reload(atl03_utils)
+atl03_clustering = reload(atl03_clustering)
 # tells bokeh to print to notebook
 output_notebook()
 
@@ -39,11 +47,12 @@ output_notebook()
 #  individual photon returns for the maximum and minimum, and the the results are saved into a GeoDataFrame (and exported to a file)
 
 # %%
-# make a dataframe including all granule files in the data download folder
+
+# # make a dataframe including all granule files in the data download folder
 # alltracks = atl03_utils.make_gdf_from_ncdf_files("../data/test_sites/PR/ATL03/*.nc")
 
-# alltracks.reset_index().sort_values("Percentage High confidence Ocean Returns",ascending=False)
-# alltracks.to_file('../data/derived/PR_atl_tracks.gpkg')
+# # alltracks.reset_index().sort_values("Percentage High confidence Ocean Returns",ascending=False)
+# alltracks.to_file("../data/test_sites/PR/atl03_tracks.gpkg")
 
 
 # %% [markdown]
@@ -67,17 +76,16 @@ output_notebook()
 #  - ../data/test_sites/PR/ATL03/processed_ATL03_20200721130011_04000801_005_01.nc (shallow but looks nice)
 
 # %%
-# gdf = atl03_utils.make_gdf_from_ncdf_files('../data/test_sites/OutputsIndonesia_testsite_1/*.nc')
-
-# %%
-atl03_testfile = "../data/test_sites/OutputsIndonesia_testsite_1/processed_ATL03_20190416114500_02780308_005_01.nc"
+atl03_testfile = (
+    '../data/test_sites/florida_keys/ATL03/processed_ATL03_20210303031355_10561001_005_01.nc'
+)
 print(atl03_testfile)
 beamlist = atl03_utils.get_beams(atl03_testfile)
 print(f"beams available {beamlist}")
 
 
 # %%
-beam = "gt1l"
+beam = "gt1r"
 print(beam)
 
 beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
@@ -85,103 +93,64 @@ beamdata = atl03_utils.load_beam_array_ncds(atl03_testfile, beam)
 print(f"length of the dataset is {beamdata.shape[0]} points")
 metadata_dict = beamdata.dtype.metadata
 
-point_dataframe = atl03_utils.add_track_dist_meters(beamdata)
-
-# %% [markdown]
-#  ## Photon return filtering
-#  Filter any points over 5m above the geoid.
+point_dataframe = get_bathymetry._filter_points(atl03_testfile, beam)
 
 # %%
-point_dataframe = point_dataframe.bathy.filter_high_returns()
-
-
-# %% [markdown]
-#  Filter out any points that are classified as a potential TEP.
-#  We also filter out any points that are greater than 35m below the sea surface. The extreme upper limit of SDB via icesat is 40m (find citation)
-
-# %%
-point_dataframe = point_dataframe.bathy.filter_TEP()
-
-
-# %% [markdown]
-# ## Tide Correction
-# from ATL03 ATBD:
-#
-#  > Users should be aware that the GOT4.8 tide model used here provides values at 0.5 degree
-#  resolution, so near coastlines and embayments, values should be treated with caution. See the
-#  ICESat-2 Data Comparison User Guide for more detail.
-#
-# For now, the tide correction provided along with the photon data is used until better data is available. The tide correction from the segment level is applied to the point dataframe during loading.
-#
-# ## Finding the sea surface level
-#
-# To estimate the sea surface level, points that have assigned a high confidence of being an ocean point (according to NASA's designations) are selected, and a moving median of 31 neigboring points is taken. This median of the Z values of the high confidence points is then interpolated to all photons, interpreted linearly along the transect line. These vaulues are added to back to the table. Now every photon return below +5m geoid elevation has a sea level value. To distinguish subsurface points, we also calculate a rolling standard deviation of the same window.
-#
-
-# %%
-point_dataframe = point_dataframe.bathy.add_sea_level()
-
-# %%
-point_dataframe = point_dataframe.bathy.filter_low_points()
-
-# %% [markdown]
-# Now that the sea level has been interpolated based on the median elevation of high-confidence ocean returns, we can find probable subsurface returns by removing any points within 3 standard deviations of the interpolated sea surface height.
-
-# %%
-point_dataframe = point_dataframe.bathy.remove_surface_points(min_remove=0.5)
-
-# %%[markdown]
-# ## removing deepwater points
-#  to remove points that we know are too deep, the GEBCO values for each point are added. Any points with a GEBCO depth of greater than 40 are removed
-
-point_dataframe = atl03_utils.add_dem_data(
-    point_dataframe,
-    [
-        "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-        "../data/test_sites/florida_keys/in-situ-DEM/fema_2017.tif",
-        "../data/test_sites/florida_keys/GEBCO/gebco.tif",
-        "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
-    ],
+kde_elev = point_dataframe.Z_g.rolling(window=200, center=True).apply(
+    get_elev_at_max_density, raw=True, kwargs={"threshold": 0.07}
 )
-
-# point_dataframe = point_dataframe[point_dataframe["gebco.tif"] > -40]
-# %%
-# %% [markdown]
-#  The photons remaining after these filters are plotted below:
-#
+point_dataframe = point_dataframe.assign(kde_seafloor=kde_elev)
 
 # %%
+try:
+    point_dataframe = pd.DataFrame(point_dataframe.drop(columns="geometry"))
+except KeyError:
+    pass
+
 TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,reset,tap,save,box_select,poly_select,lasso_select,"
-point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("str")
+# temporarily make the ints into strings
+# point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("str")
 p = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="All Photon Returns",
 )
-signal_conf_cmap = factor_cmap(
-    "oc_sig_conf",
-    palette=Spectral5,
-    factors=sorted(point_dataframe.oc_sig_conf.unique().astype("str")),
-)
+# signal_conf_cmap = factor_cmap(
+#     "oc_sig_conf",
+#     palette=Spectral5,
+#     factors=sorted(point_dataframe.oc_sig_conf.unique().astype("str")),
+# )
 p.scatter(
     source=point_dataframe,
     x="dist_or",
-    y="Z",
-    color=signal_conf_cmap,
-    legend_field="oc_sig_conf",
+    y="Z_g",
+    # color='blue',
+    # legend_field="oc_sig_conf",
 )
 p.line(
     source=point_dataframe,
     x="dist_or",
-    y="sea_level_interp",
-    legend_label="calculated sea surface",
+    y="kde_seafloor",
+    color="green",
+    legend_label="KDE fitted seafloor",
 )
+p.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="gebco_elev",
+    color="red",
+    legend_label="GEBCO",
+)
+p.xaxis.axis_label = "Along Track Distance [m]"
+p.yaxis.axis_label = "Height above Ellipsoid"
+p.legend.location = "bottom_right"
+# p.line(source=point_dataframe, x="dist_or", y="sea_level_interp",legend_label='calculated sea surface')
 show(p)
-point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
+# point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
 
-
-# %% [markdown]
+# %%
+## %% [markdown]
 #  ## Clustering Signal/Noise with DBSCAN
 #
 #  Based largely on Ma et al.
@@ -220,30 +189,64 @@ point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
 #
 #  The beam and file to apply the algorithm to can be selcted below:
 
-# %% [markdown]
+## %% [markdown]
 #  ### Setting DBSCAN parameters
 
+# # %%
+# atl03_utils = reload(atl03_utils)
+# atl03_clustering = reload(atl03_clustering)
 
-# %%
+# hor_dist = point_dataframe.dist_or.max() - point_dataframe.dist_or.min()
+# vert_dist = point_dataframe.Z_g.max() - point_dataframe.Z_g.min()
+# print(hor_dist / vert_dist)
+# merged = atl03_clustering.cluster_by_chunks(
+#     point_dataframe, Ra=2, hscale=40, minpts=20, chunksize=1000, chunk_meth="dist"
+# )
 
-point_dataframe = atl03_utils.cluster_signal_dbscan(point_dataframe)
+# signal_pts = merged[merged.SN == "signal"]
+# noise_pts = merged[merged.SN == "noise"]
+
+# p2 = figure(
+#     tools=TOOLS,
+#     title="Signal Vs Noise identified with DBSCAN",
+#     sizing_mode="scale_width",
+#     height=200,
+# )
+# # p2.scatter("dist_or", "Z_g", source=noise_pts, color="red")
+# p2.scatter("dist_or", "Z_g", source=noise_pts, color="red")
+# p2.scatter("dist_or", "Z_g", source=signal_pts, color="blue")
+# show(p2)
 
 
-# %%
+# # %%
+# # second clustering
+# hscale = 5
+# array = signal_pts.to_records(0)
+# fitarray = np.stack([array["dist_or"] / hscale, array["Z"]]).transpose()
 
-signal_pts = point_dataframe[point_dataframe.SN == "signal"]
-noise_pts = point_dataframe[point_dataframe.SN == "noise"]
+# second_clustering_round = DBSCAN(
+#     eps=50,
+#     min_samples=50,
+# ).fit(fitarray)
 
-p2 = figure(
-    tools=TOOLS,
-    title="Signal Vs Noise identified with DBSCAN",
-    sizing_mode="scale_width",
-    height=200,
-)
-p2.scatter("dist_or", "Z_g", source=noise_pts, color="red")
-p2.scatter("dist_or", "Z_g", source=signal_pts, fill_color="blue")
 
-show(p2)
+# df = pd.DataFrame(array).assign(cluster=second_clustering_round.labels_)
+
+# df["SN"] = df.cluster.apply(lambda x: "noise" if x == -1 else "signal")
+
+# second_round_signal = df[df.SN == "signal"]
+
+# # %%
+# p2 = figure(
+#     tools=TOOLS,
+#     title="Signal Vs Noise identified with DBSCAN",
+#     sizing_mode="scale_width",
+#     height=200,
+# )
+# # p2.scatter("dist_or", "Z_g", source=noise_pts, color="red")
+# p2.scatter("dist_or", "Z_g", source=signal_pts, color="red")
+# p2.scatter("dist_or", "Z_g", source=second_round_signal, color="blue")
+# show(p2)
 
 
 # %% [markdown]
@@ -254,20 +257,74 @@ show(p2)
 #  First we define some functions for reading a raster value for each Lidar return photon
 
 # %%
+# For cleaning the raster results
+
+dem_2019 = atl03_utils.query_raster(
+    point_dataframe,
+    "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
+)
+dem_2017 = atl03_utils.query_raster(
+    point_dataframe,
+    "../data/test_sites/florida_keys/in-situ-DEM/fema_2017.tif",
+)
+mangrove_heightlist = atl03_utils.query_raster(
+    point_dataframe,
+    "../data/CMS_Global_Map_Mangrove_Canopy_1665/data/hmax95/height_vrt.vrt",
+)
+
+# %%
+point_dataframe = point_dataframe.assign(
+    fema2019_elev=dem_2019,
+    # canopy_h=mangrove_heightlist,
+    fema2017_elev=dem_2017,
+)
+
+
+# %%
 DEM_comp_plot = figure(
     tools=TOOLS,
     sizing_mode="scale_width",
     height=200,
     title="USGS Topobathy Vs. ICESAT-2 photon returns",
 )
-DEM_comp_plot.scatter(
-    source=signal_pts,
+
+DEM_comp_plot.line(
+    source=point_dataframe,
     x="dist_or",
-    y="Z_g",
+    y="fema2019_elev",
+    color="red",
+    legend_label="FEMA 2019 Lidar",
+)
+# DEM_comp_plot.scatter(
+#     source=point_dataframe,
+#     x="dist_or",
+#     y="Z_g",
+#     color="green",
+#     legend_label="Detected Signal Photon Returns",
+# )
+DEM_comp_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="fema2017_elev",
+    color="blue",
+    legend_label="FEMA 2017 Lidar",
+)
+DEM_comp_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="gebco_elev",
     color="green",
-    legend_label="Detected Signal Photon Returns",
+    legend_label="gebco",
 )
 
+DEM_comp_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="kde_seafloor",
+    color="black",
+    legend_label="Fitted Seafloor",
+)
+DEM_comp_plot.legend.location = "bottom_right"
 DEM_comp_plot.xaxis.axis_label = "Along Track Distance [m]"
 DEM_comp_plot.yaxis.axis_label = "Height relative to MSL [m]"
 show(DEM_comp_plot)
@@ -281,8 +338,15 @@ show(DEM_comp_plot)
 #
 #  To get the depth at each point, the following formula is used:
 #  $\text{Dep} = \text{Local sea Level} - \text{Seafloor Level}$
+
 # %%
-signal_pts = atl03_utils.add_raw_seafloor(signal_pts)
+# signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(25).quantile(0.2))
+signal_pts = signal_pts.assign(seafloor=signal_pts.Z_g.rolling(30).quantile(0.05))
+signal_pts = signal_pts.assign(depth=signal_pts.sea_level_interp - signal_pts.seafloor)
+
+signal_pts = signal_pts.assign(
+    sf_refr=signal_pts.sea_level_interp - 0.75 * signal_pts.depth
+)
 
 
 # %%
@@ -292,37 +356,21 @@ results_plot = figure(
     height=200,
     title="Refraction Corrected Results",
 )
+
 results_plot.line(
-    source=signal_pts,
+    source=point_dataframe,
     x="dist_or",
-    y="sf_refr",
+    y="gebco_elev",
+    color="red",
+    legend_label="USGS high res topobathymetric data",
+)
+results_plot.line(
+    source=point_dataframe,
+    x="dist_or",
+    y="kde_seafloor",
     color="blue",
     legend_label="Refraction corrected seafloor",
 )
-results_plot.line(
-    source=point_dataframe,
-    x="dist_or",
-    y="height_vrt.vrt",
-    color="orange",
-    legend_label="Mangrove Height above ground",
-)
-
-results_plot.line(
-    source=point_dataframe,
-    x="dist_or",
-    y="2019_irma.vrt",
-    color="red",
-    legend_label="FEMA 2019",
-)
-
-results_plot.line(
-    source=point_dataframe,
-    x="dist_or",
-    y="gebco.tif",
-    color="black",
-    legend_label="GEBCO",
-)
-
 results_plot.xaxis.axis_label = "Along Track Distance [m]"
 results_plot.yaxis.axis_label = "Height relative to MSL [m]"
 show(results_plot)
