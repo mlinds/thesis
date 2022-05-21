@@ -1,8 +1,10 @@
 \chapter{Methodology}
-\section{selection of Test sites}
+\section{Selection of Test Sites}
 \section{Creation of global analysis sites layer}
+\subsubsection*{temp notes}
 \todo{temp notes}
 \begin{enumerate}
+    \color{orange}
     \item Start with 2021 OSM coastline
     \item 
     \item clip to extent of mangroves worldwide - only the tropics and subtropics
@@ -11,8 +13,17 @@
     \item select these segments where they touch a mangrove 
 \end{enumerate}
 
-\begin{tikzpicture}
-    \node (osmcoast)[]{2021 OpenStreetMap Coastline}
-    \node (GWN2016)[]{Global Mangrove Watch 2016 Mangrove extent}
-\end{tikzpicture}
-\section{processing of Lidar Data}
+
+\section{Processing of Lidar Data}
+
+\section{Gridding of data}
+\subsection{temp notes}
+Still need to figure out Kalman filter, but based on the current plan one approach might be...
+\begin{itemize}
+    \color{orange}
+    \item download the xyz data that the gebco data is based onboard
+    \item download and filter photon locations
+    \item correct for tide to put them in MSL
+    \item Use the pygmt gridding using the xyz data
+    \item how to use satellite gravimetry data in gebco? Need to sort that out
+\end{itemize}

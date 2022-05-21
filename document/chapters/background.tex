@@ -10,9 +10,7 @@ The time average of the sun and moon's tidal effect on the earth is not zero and
 Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\todo{find a published reference for this}. The dynamic atmospheric correction (DAC) 
 \subsection{Ocean Tides}
 
-The ocean tides contribute 70\% of the variance to the sea surface \parencite{comparison guide}.
-
-
+The ocean tides contribute 70\% of the variance to the sea surface \parencite{icesat2 comparison guide}.
 
 
 \section{Lidar Bathymetric surveying}
@@ -159,3 +157,38 @@ The studies that have used some version of the proposed technique are summarized
 
 \end{landscape}
 \restoregeometry
+
+\subsection{Bathymetric Data Assimilation}
+
+\subsubsection*{temp notes}
+\begin{itemize}
+      \color{blue}
+      \item Ensemble Kalman Filter represents distributions by an ensemble, which is propagated using the temporal evolution model and updated via a linear shift based on new observations \parencite{Jurek2021}.
+      \item When ignoring the temporal dimension, using the sparsity assumption with an ensemble kalman filter allows for faster computation \parencite{Jurek2021}
+      \item The approach in \citeauthor{Jurek2021} seems better for if I need a temporal dimension 
+      \item Data Assimilation is a an inverse modeling technique, that uses statistical optimization to find the most likely true value given the known uncertainties and correlations in uncertainties \parencite{Salim2021}
+      \item Interpolation from discrete points induces 2 types of error, aliasing of subgrid features and measurement errors \parencite{Plant2002}
+   
+      \item  Extended Kalman filter from \parencite{Ghorbanidehno2019}
+       \begin{itemize}
+            \item The idea behind the extended kalman is you have unknowns in a state vector $x_{t+1} = f(x_t) + w_t$, where $f(...)$ is the forward transition model and $w_t$ is the model error or noise and is modeled as a multivariate gaussian random vector 
+            \item Measurements in the system are defined as $y_t = h(x_{t+1}) + v_t$
+            \item EKF gives the posterior mean ($X_{t+1 | t+1}$)
+            \item EKF gives accurate results in the least-squares sense, but its not practical due to the amount of matrix multiplication of large matrices and the cost of computing jacobian matricies.
+      \end{itemize}
+      \item This EKF can be made more efficient using Compressed-state Kalman filter (Also from \parencite{Ghorbanidehno2019})
+      \begin{itemize}
+            \item use low-rank approximation to reduce amount of memory
+            \item the covariance matrix can be approximated using data compression algorithms.
+            \item To get the covariance matrix back from compression you do $P_t \approx A C_t A_T$ where A is a matrix defining a subspace of the original matrix that provides a good approximation (ie you project the state onto this subspace and its reasonably close to the actual state)
+
+      \end{itemize}
+\end{itemize}
+
+
+\color{blue}
+\begin{equation}
+      \hat{z}_i = \sum_{j=1}^{J}{\hat{a}_{ij}} (\tilde{z}_j + {z'}_j+e_j)
+\end{equation}
+where $\tilde{z}_j = \text{true bathymetry}$, and ${z'}_j = \text{part of bathy unresolved due to horizontal resolution}$, and $e_j = \text{measurement error}$. This can be further split into noise and aliasing error. \parencite{Plant2002}
+\color{black}
