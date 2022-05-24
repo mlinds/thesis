@@ -4,7 +4,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from shapely.geometry import LineString, Point
-
+from atl_module.load_netcdf import get_beams,load_beam_array_ncds
 
 def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
     """Create a geodataframe for a track as defined by an array of photon returns
@@ -15,13 +15,13 @@ def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
     Returns:
         gpd.GeoDataFrame: A geodataframe of a particular track
     """
-    linegeom = get_track_geom(outarray)
+    linegeom = _get_single_track_linegeom(outarray)
     return gpd.GeoDataFrame(
         {"geometry": [linegeom]}, crs="EPSG:7912", geometry="geometry"
     )
 
 
-def get_track_geom(beamarray: np.ndarray) -> LineString:
+def _get_single_track_linegeom(beamarray: np.ndarray) -> LineString:
     if beamarray is not None:
         ymin = beamarray["Y"].min()
         xmin = beamarray["X"][beamarray["Y"].argmin()]
@@ -55,7 +55,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     # percent_high_conf = []
     for h5file in glob.iglob(directory):
         # TODO change to use pathlib to make this more readable
-
+        
         filefriendlyname = str(h5file.split("/")[-1]).strip(".nc")
 
         # all list writes need to be inside this loop
@@ -63,7 +63,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             # get the point array and make it into a linestring
             point_array = load_beam_array_ncds(h5file, beam)
 
-            track_geom = get_track_geom(point_array)
+            track_geom = _get_single_track_linegeom(point_array)
 
             # write to all the lists
             # we can stack this into a multiindex later
@@ -105,6 +105,9 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     gdf.to_crs(crs_UTM, inplace=True)
     return gdf
 
+def photon_df_to_gdf(photon_data:pd.DataFrame or np.ndarray):
+    pass
+
 
 def add_track_dist_meters(
     # y is lat, x is lon
@@ -125,6 +128,6 @@ def add_track_dist_meters(
     # returns a vector of the dist from the start point (the start point being (xmin,ymin))
     dist = gdf.distance(Point(xmin, ymin))
     # add the new distance
-    gdf = gdf.assign(dist_or=dist).sort_values("dist_or")
+    gdf = gdf.assign(dist_or=dist,easting=gdf.geometry.x,northing=gdf.geometry.y).sort_values("dist_or")
     # return a dataframe or GDF
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
