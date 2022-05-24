@@ -26,15 +26,16 @@ import time
 import geopandas as gpd
 import fiona
 import matplotlib.pyplot as plt
+from statistics import mean
 
-from secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
+from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
 from variablelist import coverage_requested
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
 
 
-def request_data_download(product, bbox_in, batchname):
+def request_data_download(product, bbox_in,folderpath):
     # %% [markdown]
     # ### Input Earthdata Login credentials
     #
@@ -500,7 +501,7 @@ def request_data_download(product, bbox_in, batchname):
     # %%
     # Create an output folder if the folder does not already exist.
 
-    path = str(f"../data/test_sites/{batchname}/ATL03")
+    path = folderpath+"/ATL03"
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -637,5 +638,5 @@ def request_data_download(product, bbox_in, batchname):
 
 if __name__ == "__main__":
     request_data_download(
-        "ATL03", "130.97236,-12.20950,131.33249,-12.02428", "North_aus"
+        "ATL03", "-81.1882873999999646,24.6516978000000080,-80.8634985999999714,24.8338040000000078", "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys"
     )
