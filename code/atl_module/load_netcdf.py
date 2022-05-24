@@ -87,6 +87,10 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             delta_time_geophys_s, "seconds since 2018-01-01"
         )
 
+        ## ----- ASSIGNING SEGMENT-RATE VARIABLES----------- ##
+
+        # some variables are given per 20m segment, so they need to be interpolated to assign the correct one to each photon.
+
         # to index these we need to set the first value to the first value of the
         # photon returns. This is because the photon time values start in the middle of a segment
 
@@ -108,6 +112,12 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             .variables["tide_ocean"][:]
             .filled(np.NaN)
         )
+        pointing_vec_az = (
+            ds.groups[beam]
+            .groups["geolocation"]
+            .variables["ref_azimuth"][:]
+            .filled(np.NaN)
+        )
 
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
@@ -117,10 +127,15 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
+        # create a time-index series of the variables we want to interpolate
         zcorr_series = pd.Series(correction, index=delta_time_geophys).sort_index()
+        p_vec_az_series = pd.Series(
+            pointing_vec_az, index=delta_time_geophys
+        ).sort_index()
 
-        # make an array of the correction by time
+        # get the value for every single photon
         z_corr = zcorr_series.asof(delta_time).to_numpy()
+        p_vec_az = p_vec_az_series.asof(delta_time).to_numpy()
 
         # get the corrected Z vals
         Z_corrected = Z - z_corr
@@ -142,6 +157,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("delta_time", "<M8[ns]"),
                 ("oc_sig_conf", "<i4"),
                 ("land_sig_conf", "<i4"),
+                ("p_vec_az", "<f8"),
             ],
             metadata=metadata,
         )
@@ -155,5 +171,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["delta_time"] = delta_time
         photon_data["oc_sig_conf"] = ocean_sig
         photon_data["land_sig_conf"] = land_sig
+        photon_data["p_vec_az"] = p_vec_az
 
         return photon_data
