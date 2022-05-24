@@ -1,10 +1,12 @@
 import pandas as pd
-from raster_interaction import query_raster
+from atl_module.raster_interaction import query_raster
 from pathlib import Path
-
+import numpy as np
 p = Path(__file__).parents[2]
 
 print(p)
+
+
 def filter_high_returns(df, level=5):
     """Remove returns above *level* which is an elevation in meters
 
@@ -14,12 +16,20 @@ def filter_high_returns(df, level=5):
 
     Returns:
         pd.DataFrame: output dataframe
-    """    
+    """
     # remove any points above 5m
     return df.loc[(df.Z_g < 5)]
 
 
 def filter_TEP(df):
+    """Remove Transmitter Echo Path (TEP) photons
+
+    Args:
+        df (pd.DataFrame): Input dataframe
+
+    Returns:
+        pd.DataFrame: Output dataframe
+    """    
     # remove any transmitter Echo Path photons
     return df.loc[df.oc_sig_conf != -2]
 
@@ -57,10 +67,13 @@ def add_sea_surface_level(df, rolling_window=50):
         validate="1:1",
     )
 
-    interp_sea_surf_elev = pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array).interpolate(method="index").to_numpy()
+    interp_sea_surf_elev = (
+        pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
+        .interpolate(method="index")
+        .to_numpy()
+    )
 
-    return df.assign(
-        sea_level_interp=interp_sea_surf_elev).dropna()
+    return df.assign(sea_level_interp=interp_sea_surf_elev).dropna()
 
 
 def filter_low_points(df, filter_below_z):
@@ -83,13 +96,16 @@ def add_gebco(df):
     # return the dataframe with the new column
     return df.assign(gebco_elev=gebco_height)
 
+
 def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
-    # add the gebco points
-    df = add_gebco(df)
+    # check for gebco height in the columns
+    if not 'gebco_elev' in df.columns:
+        raise ValueError('Make sure to add the gebco elevation before running this function')
     # filter points based on gebco
     df = df[df.gebco_elev > low_limit]
     df = df[df.gebco_elev < high_limit]
     return df
+
 
 def _interpolate_dataframe(
     point_dataframe: pd.DataFrame, spacing: float
