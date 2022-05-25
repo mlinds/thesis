@@ -33,13 +33,13 @@ def filter_TEP(df):
     # remove any transmitter Echo Path photons
     return df.loc[df.oc_sig_conf != -2]
 
-
-def add_sea_surface_level(df, rolling_window=50):
+# TODO rewrite this to include NAs for non-high-confience photons
+def add_sea_surface_level(df, rolling_window=200):
     # take rolling median of signal points along track distance
     sea_level = (
         df.loc[df.oc_sig_conf >= 4]["Z_g"]
         .rolling(
-            rolling_window,
+            rolling_window,center=True
         )
         .median()
     )
@@ -47,7 +47,7 @@ def add_sea_surface_level(df, rolling_window=50):
     sigma_sea_level = (
         df.loc[df.oc_sig_conf == 4]["Z_g"]
         .rolling(
-            rolling_window,
+            rolling_window,center=True
         )
         .std()
     )
@@ -77,7 +77,7 @@ def add_sea_surface_level(df, rolling_window=50):
 
 
 def filter_low_points(df, filter_below_z):
-    # drop any points with an uncorrected depth greater than 50m
+    # drop any points with an uncorrected depth greater than a threshold
     return df.loc[df.sea_level_interp - df.Z_g < filter_below_z]
 
 
