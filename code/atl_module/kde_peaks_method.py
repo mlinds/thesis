@@ -3,12 +3,12 @@ from scipy.stats import gaussian_kde
 
 # This code is hard to read/maintain,maybe should change to try a numpy rolling window eventually
 
-
 # This function shouldn't be called directly, only from the AccumluateKDEs class so that both values can be stored
 def get_elev_at_max_density(point_array):
 
     # point_array = point_array[~np.isnan(point_array)]
     kde = gaussian_kde(point_array)
+    # xvals = np.linspace(0,-40,400)
     kde_heights = kde.pdf(point_array)
     # find the Z value at the highest density
     max_density = kde_heights.max()
@@ -38,18 +38,20 @@ def get_elev_at_max_density(point_array):
 
 
 class AccumulateKDEs:
+        # wtf is going on here?
     def __init__(self):
         self.index= 0
         self.index_val_list = []
         self.z_max_list = []
         self.kde_val_list = []
-        self.returndict = {'z_kde':self.z_max_list,'kde_val':self.kde_val_list}
+        self.returndict = {'matchup':self.index_val_list,'z_kde':self.z_max_list,'kde_val':self.kde_val_list}
 
-    def your_function(self, zvals):
+    def calc_kdeval_and_zval(self, zvals):
         z_max_kde,kde_val = get_elev_at_max_density(zvals)
         self.kde_val_list.append(kde_val)
         self.z_max_list.append(z_max_kde)
         self.index_val_list.append(self.index)
         self.index = self.index+ 1
-        return z_max_kde
+        # the series that is returned by the funcion is the key to matching the accumlutor to the original df
+        return self.index-1
 
