@@ -1,4 +1,4 @@
-from atl_module.kde_peaks_method import get_elev_at_max_density
+from atl_module.kde_peaks_method import get_elev_at_max_density,AccumulateKDEs
 import pandas as pd
 from glob import iglob
 from tqdm import tqdm
@@ -26,34 +26,59 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
     """
     filtered_photon_df = (
         raw_photon_df.pipe(dfilt.add_sea_surface_level)
-        .pipe(dfilt.filter_low_points, filter_below_z=50)
+        .pipe(dfilt.filter_low_points, filter_below_z=40)
         .pipe(dfilt.remove_surface_points)
         .pipe(dfilt.add_gebco)
-        .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=5)
+        .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=6)
         .pipe(dfilt.filter_high_returns)
         .pipe(dfilt.filter_TEP)
     )
     # reset
-    filtered_photon_df["dist_or"] = (
-        filtered_photon_df.dist_or - filtered_photon_df.dist_or.min()
-    )
+    # filtered_photon_df["dist_or"] = (
+    #     filtered_photon_df.dist_or - filtered_photon_df.dist_or.min()
+    # )
 
     return filtered_photon_df
 
 
-def get_kde_bathymetry(df,threshold,window):
-    if df is None:
-        return None
+# def get_kde_bathymetry(df,threshold,window):
+#     if df is None:
+#         return None
+    
+#     accumulator = AccumulateKDEs()
+#     series_out = df.Z_g.rolling(window=window, center=True).apply(
+#         accumulator.calc_kdeval_and_zval, raw=True, kwargs={"threshold": threshold}
+#     )
 
-    kde_elev,kd = df.Z_g.rolling(window=window, center=True).apply(
-        get_elev_at_max_density, raw=True, kwargs={"threshold": threshold}
+#     df = df.assign(kde_seafloor=kde_elev,kernel_density=kd)
+#     points_with_bathy = df[df.kde_seafloor.notna()]
+
+#     return points_with_bathy
+
+def add_rolling_kde(df,window):    
+    # set up the object to keep all the return values
+    accumulator = AccumulateKDEs()
+    # this series is a key to matching the KDE value and the Z elevation of the Max KDE to the points in original df
+    # this is a complicated series of joins but it should support matching any arbitrary indexes
+    series_out = (
+        # apply the function from the object
+        df.Z_g.rolling(window=window, center=True)
+        .apply(accumulator.calc_kdeval_and_zval, raw=True)
+        .dropna()
+        .astype("int")
     )
-
-    df = df.assign(kde_seafloor=kde_elev,kernel_density=kd)
-    points_with_bathy = df[df.kde_seafloor.notna()]
-
-    return points_with_bathy
-
+    # rename the series so the merge works
+    series_out.name = "matchup"
+    kdevals_df = pd.DataFrame(accumulator.returndict).set_index("matchup")
+    merge_df = (
+        pd.DataFrame(series_out)
+        .merge(kdevals_df, left_on="matchup", right_index=True)
+        .drop(columns="matchup")
+    )
+    df_w_kde = df.merge(merge_df,right_index=True,left_index=True,how='left')
+    # make sure we didn't lose anything
+    assert df_w_kde.shape[0] == df.shape[0],'rolling KDE was not added correctly for all points'
+    return df_w_kde
 
 def get_all_bathy_from_granule(filename):
     # find which beams are available in the netcdf file
@@ -66,7 +91,9 @@ def get_all_bathy_from_granule(filename):
         point_df = geofn.add_track_dist_meters(beamarray)
         # filter out points could not be bathymetry
         filtered_df = _filter_points(point_df)
-        bathy_pts = get_kde_bathymetry(filtered_df,threshold=0.06,window=200)
+        bathy_pts = add_rolling_kde(filtered_df,window=200)
+        thresholdval = bathy_pts.kde_val.mean()-1.2*bathy_pts.kde_val.std()
+        bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
         if len(bathy_pts) > 0:
             granulelist.append(bathy_pts)
     if len(granulelist) > 0:
