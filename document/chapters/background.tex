@@ -1,5 +1,20 @@
 
 \chapter{Background}
+\section{Mangroves as Coastal Defense}
+Sea level rise, and the resultant increase in flood risk poses a threat to all coastal communities, including many of the world's largest population centers. The risk is even more existential for low-lying tropical that are disproportionately affected by the sea level rise. Low-lying nations often do not have any available high ground to move cities to, and sometimes do not have access to the resources to fully mitigate these risks through hard infrastructure. For these reasons, mangroves forests are an important resource for these communities, providing coastal protection that can adapt to sea level rise by trapping sediment and expanding outward if conditions permit.
+
+One way to adapt to the changing sea levels, and possible increases in extreme weather events is to promote the restoration and expansion of mangrove forests. It is well-established that mangrove forests can reduce wave energy \parencite{Maza2019,Menendez2020,Hadi2003,Sanchez-Nunez2020}, and to a more limited extent, storm surges \parencite{Montgomery2019a,Chen2021,Mcivor2012}. Mangroves also offer many other ecosystem benefits including enhancing fish stocks, improving water quality, storing significant amounts of carbon, and attracting tourism \parencite{Atkinson2016b}. Mangroves also have the unique property of creating their own ecosystem, by trapping sediment and expanding seaward under certain conditions \cite{Gijsman2021}.
+
+\begin{figure}[htbp]
+      \centering
+      \includegraphics[width = 0.7\textwidth]{figures/mangroves_reefs_Losada2018.png}
+      \caption{The protective effects of Mangroves. From \parencite{Losada2018}}
+      \label{mangrove-protection-diagram}
+\end{figure}
+
+Shallow water bathymetry and mangrove height are difficult to survey manually, due to the difficulty of field work in dense mangrove environments \parencite{Gijsman2021}. Current study of the effects of mangroves on wave attenuation are limited by this lack of hydrodynamic data about these ecosystems \parencite{Horstman2014}.  Therefore, finding an automated way of calculating bathymetry anywhere in the world from publicly available data is a improvement when modeling sites that do not have existing survey data, and can be used to as the basis for wave modeling and process-based models. Improved models can allow better characterization of the morphologic response to mechanical factors like sea level rise and sediment supply that need further study to understand the system response to climate change.
+
+One weakness of mangroves as a flood protection mechanism is that their response to long term changes in the biogeomorphic environment is not well understood \parencite{Gijsman2021}. This uncertainty about the long term persistance of mangrove structures is an impediment to widespread adoption of mangrove greenbelt restoration as a coastal protection strategy.
 
 \section{Geodetic Reference Systems for Ocean Observation}
 \subsection{Permanent Tide}
@@ -21,22 +36,6 @@ Recent advances in lidar technology have allowed the development of the photon-c
 
 The potential for bathymetric mapping using spaceborne laser observations has been noted since before the advent of the ICESat-2 mission. The predecessor mission carried a lidar instrument called the Geoscience Laser Altimeter System (GLAS). GLAS was a green-light laser intended for measuring atmospheric aerosols \parencite{Abshire2005}. However, because of the laser architecture, GLAS was not able to penetrate the water column \parencite{Forfinski-Sarkozi2016}. However, a prototype of ATLAS, called the Multiple Altimeter Beam Experimental lidar (MABEL) instrument was tested with high-altitude aircraft missions, allowing a simulation of the data that would be provided by ATLAS \parencite{Mcgill2013}. Early experiments with MABEL showed good agreement between bathymetric measurements from MABEL and high-quality airborne reference data \parencite{Jasinski2016,Forfinski-Sarkozi2016}.
 
-\section{Mangroves as Coastal Defense}
-
-Sea level rise, and the resultant increase in flood risk poses a threat to all coastal communities, including many of the world's largest population centers. The risk is even more existential for low-lying tropical that are disproportionately affected by the sea level rise. Low-lying nations often do not have any available high ground to move cities to, and sometimes do not have access to the resources to fully mitigate these risks through hard infrastructure. For these reasons, mangroves forests are an important resource for these communities, providing coastal protection that can adapt to sea level rise by trapping sediment and expanding outward if conditions permit.
-
-One way to adapt to the changing sea levels, and possible increases in extreme weather events is to promote the restoration and expansion of mangrove forests. It is well-established that mangrove forests can reduce wave energy \parencite{Maza2019,Menendez2020,Hadi2003,Sanchez-Nunez2020}, and to a more limited extent, storm surges \parencite{Montgomery2019a,Chen2021,Mcivor2012}. Mangroves also offer many other ecosystem benefits including enhancing fish stocks, improving water quality, storing significant amounts of carbon, and attracting tourism \parencite{Atkinson2016b}. Mangroves also have the unique property of creating their own ecosystem, by trapping sediment and expanding seaward under certain conditions \cite{Gijsman2021}.
-
-\begin{figure}[htbp]
-      \centering
-      \includegraphics[width = 0.7\textwidth]{figures/mangroves_reefs_Losada2018.png}
-      \caption{The protective effects of Mangroves. From \parencite{Losada2018}}
-      \label{mangrove-protection-diagram}
-\end{figure}
-
-Shallow water bathymetry and mangrove height are difficult to survey manually, due to the difficulty of field work in dense mangrove environments \parencite{Gijsman2021}. Current study of the effects of mangroves on wave attenuation are limited by this lack of hydrodynamic data about these ecosystems \parencite{Horstman2014}.  Therefore, finding an automated way of calculating bathymetry anywhere in the world from publicly available data is a improvement when modeling sites that do not have existing survey data, and can be used to as the basis for wave modeling and process-based models. Improved models can allow better characterization of the morphologic response to mechanical factors like sea level rise and sediment supply that need further study to understand the system response to climate change.
-
-One weakness of mangroves as a flood protection mechanism is that their response to long term changes in the biogeomorphic environment is not well understood \parencite{Gijsman2021}. This uncertainty about the long term persistance of mangrove structures is an impediment to widespread adoption of mangrove greenbelt restoration as a coastal protection strategy.
 
 \section{ICESat-2}
 
@@ -101,7 +100,7 @@ Where:
       \item \(H_{TCA}\) is the height of the total column atmospheric delay
 \end{itemize}
 
-The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM), developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
+The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM) \citeparen{Buckman2015}, developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
 
 \subsection{Signal Photon Identification}
 
@@ -117,7 +116,7 @@ There are several established methods for calculating bathymetric data from pass
 This approach uses the hydrodynamic properties of a wave field to estimate the bathymetry. The hydrodynamic variables like wave celerity and wave length are estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation \cite{Almar2021e}. The major advantage of this method is that the results do not depend on the turbidity, which can be a significant limitation to optical SDB along many coastlines. The downsides to this approach are that the horizontal resolution is limited compared to optical methods, and the depth that it can reach is limited by the wavelength: longer waves feel the bottom earlier, so only in areas with significant swells can deeper bathymetry measurements be found \parencite{Almar2021e}.
 
 \subsection{Bathymetry from Optical Remote Sensing}
-Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it gives very high resolution data of the seafloor. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements, and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to run.
+Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it gives very high resolution data of the seafloor. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements, and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to apply.
 
 Because of the ability to incorporate in-situ data and the computational ease, empirical methods are considered for this project.
 

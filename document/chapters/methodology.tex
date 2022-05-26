@@ -1,7 +1,26 @@
 \chapter{Methodology}
+
+\section*{from workplan}
+etc
+
+\section{Identification of signal points}
+Most of the studies that try to find bathymetric points from Icesat-2 use some variation of the DBSCAN algorithm to identify possible bathymetric signal. The algorithm has the advantages of being robust to noise \cite{} and very computationally efficient. However, one disadvantage is that is is very sensitive to the choice of parameter values, and setting them programatically so that they work on a global scale basis is difficult \cite{}.
+
+My proposed method is to:
+
+\begin{itemize}
+    \item implement the approach of \cite{Ranndal2021} to remove points greater than 5m above the geoid, then get the median sea surface, then select points that are lower than a buffer distance below the sea surface. This will create a set of points where bathymetry returns *could* be present
+    \item Run a rolling function that finds the peak of the kernel density 
+\end{itemize}
+
 \section{Selection of Test Sites}
 \section{Creation of global analysis sites layer}
 \subsubsection*{temp notes}
+
+may 25 - what did I do today:
+- rewrote testing notebook to use the updated kde seafloor function, and to include some plots showing the trends in the error (ie. error vs depth, error vs kde value, etc)
+- Generated the error for florida, and tried to figure out why it was happening. The error is highly concentrated on a few granules from a certain day - it may be clouds on that day.
+- if I look at these transects and see what is going wrong, I might be able to find a way to adapt the algorithm to deal with it.
 \todo{temp notes}
 \begin{enumerate}
     \color{orange}
@@ -21,9 +40,9 @@
 Still need to figure out Kalman filter, but based on the current plan one approach might be...
 \begin{itemize}
     \color{orange}
-    \item download the xyz data that the gebco data is based onboard
+    \item download the xyz data that the gebco data is based on
     \item download and filter photon locations
     \item correct for tide to put them in MSL
     \item Use the pygmt gridding using the xyz data
-    \item how to use satellite gravimetry data in gebco? Need to sort that out
+    \item how to use satellite gravimetry data in gebco? Need to sort that out. Most the MBES data that gebco is based on is available, but the gravimetric seemingly is not.
 \end{itemize}
