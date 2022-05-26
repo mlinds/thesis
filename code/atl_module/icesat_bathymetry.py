@@ -31,7 +31,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         .pipe(dfilt.add_gebco)
         .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=6)
         .pipe(dfilt.filter_high_returns)
-        .pipe(dfilt.filter_TEP)
+        .pipe(dfilt.filter_TEP_and_nonassoc)
     )
     # reset
     # filtered_photon_df["dist_or"] = (
@@ -92,7 +92,7 @@ def get_all_bathy_from_granule(filename):
         # filter out points could not be bathymetry
         filtered_df = _filter_points(point_df)
         bathy_pts = add_rolling_kde(filtered_df,window=200)
-        thresholdval = bathy_pts.kde_val.mean()-1.2*bathy_pts.kde_val.std()
+        thresholdval = bathy_pts.kde_val.mean()-1*bathy_pts.kde_val.std()
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
         if len(bathy_pts) > 0:
             granulelist.append(bathy_pts)

@@ -21,7 +21,7 @@ def filter_high_returns(df, level=5):
     return df.loc[(df.Z_g < 5)]
 
 
-def filter_TEP(df):
+def filter_TEP_and_nonassoc(df):
     """Remove Transmitter Echo Path (TEP) photons
 
     Args:
@@ -31,7 +31,7 @@ def filter_TEP(df):
         pd.DataFrame: Output dataframe
     """    
     # remove any transmitter Echo Path photons
-    return df.loc[df.oc_sig_conf != -2]
+    return df.loc[df.oc_sig_conf >= 0]
 
 # TODO rewrite this to include NAs for non-high-confience photons
 def add_sea_surface_level(df, rolling_window=200):

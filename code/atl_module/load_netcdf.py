@@ -96,6 +96,9 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
 
         delta_time_geophys[0] = delta_time[0]
 
+        # TODO rewrite to return these correction factors in the numpy array and then to the correction in another part of the script
+        # this will make diagnosing problems much easier. 
+
         # get the geophysical variables
         geo_f2m = (
             ds.groups[beam]
@@ -147,7 +150,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         #     metadata[varname + "_land"] = values[:].data[0][0]
 
         # creating a structured array
-
+        # TODO change Z to Z_ellip and Z_g to Z_geoid or something
         dtype = np.dtype(
             [
                 ("X", "<f8"),
