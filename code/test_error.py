@@ -31,4 +31,5 @@ gdf.to_file('../data/test_sites/florida_keys/all_bathy_pts.gpkg',overwrite=True)
 # %%
 gdf.error.plot.hist(bins=50)
 
-bathy_points.plot.scatter(y='z_kde',x='fema_elev',alpha=0.1,figsize=(20,20))
+bathy_points.plot.scatter(y='z_kde',x='fema_elev',figsize=(20,20),c='kde_val',cmap='viridis')
+# %%
