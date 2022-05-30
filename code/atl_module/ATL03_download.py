@@ -35,7 +35,7 @@ from variablelist import coverage_requested
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
 
 
-def request_data_download(product, bbox_in,folderpath):
+def request_data_download(product, bbox_in, folderpath):
     # %% [markdown]
     # ### Input Earthdata Login credentials
     #
@@ -501,7 +501,7 @@ def request_data_download(product, bbox_in,folderpath):
     # %%
     # Create an output folder if the folder does not already exist.
 
-    path = folderpath+"/ATL03"
+    path = folderpath + "/ATL03"
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -638,5 +638,7 @@ def request_data_download(product, bbox_in,folderpath):
 
 if __name__ == "__main__":
     request_data_download(
-        "ATL03", "-81.1882873999999646,24.6516978000000080,-80.8634985999999714,24.8338040000000078", "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys"
+        "ATL03",
+        "-67.3079,17.8234,-66.0576,17.9600",
+        "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/PR_south",
     )

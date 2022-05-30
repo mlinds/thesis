@@ -4,6 +4,7 @@ from scipy.stats import gaussian_kde
 # This code is hard to read/maintain,maybe should change to try a numpy rolling window eventually
 
 # This function shouldn't be called directly, only from the AccumluateKDEs class so that both values can be stored
+# TODO change this function to consider distance
 def get_elev_at_max_density(point_array):
 
     # point_array = point_array[~np.isnan(point_array)]
@@ -15,8 +16,7 @@ def get_elev_at_max_density(point_array):
     z_at_kdemax = point_array[kde_heights.argmax()]
     # return if we don't have anything over the threshold
     # pd.DataFrame({'x':x,'y':kde_heights}).plot.scatter(x='x',y='y',xlim=[-35,0])
-    return z_at_kdemax,max_density
-
+    return z_at_kdemax, max_density
 
 
 # the above function is expensive to apply, so we can follow these instructions to avoid calling it twice:
@@ -38,20 +38,23 @@ def get_elev_at_max_density(point_array):
 
 
 class AccumulateKDEs:
-        # wtf is going on here?
+    # wtf is going on here?
     def __init__(self):
-        self.index= 0
+        self.index = 0
         self.index_val_list = []
         self.z_max_list = []
         self.kde_val_list = []
-        self.returndict = {'matchup':self.index_val_list,'z_kde':self.z_max_list,'kde_val':self.kde_val_list}
+        self.returndict = {
+            "matchup": self.index_val_list,
+            "z_kde": self.z_max_list,
+            "kde_val": self.kde_val_list,
+        }
 
     def calc_kdeval_and_zval(self, zvals):
-        z_max_kde,kde_val = get_elev_at_max_density(zvals)
+        z_max_kde, kde_val = get_elev_at_max_density(zvals)
         self.kde_val_list.append(kde_val)
         self.z_max_list.append(z_max_kde)
         self.index_val_list.append(self.index)
-        self.index = self.index+ 1
+        self.index = self.index + 1
         # the series that is returned by the funcion is the key to matching the accumlutor to the original df
-        return self.index-1
-
+        return self.index - 1

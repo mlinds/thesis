@@ -4,7 +4,8 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from shapely.geometry import LineString, Point
-from atl_module.load_netcdf import get_beams,load_beam_array_ncds
+from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+
 
 def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
     """Create a geodataframe for a track as defined by an array of photon returns
@@ -44,7 +45,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     Returns:
         gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
     """
-    # TODO fix this unreadable function
+    # TODO: fix this unreadable function
     # try to decrease the indent level - itertools?
     beamlist = []
     datelist = []
@@ -54,8 +55,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     beam_type_list = []
     # percent_high_conf = []
     for h5file in glob.iglob(directory):
-        # TODO change to use pathlib to make this more readable
-        
+
         filefriendlyname = str(h5file.split("/")[-1]).strip(".nc")
 
         # all list writes need to be inside this loop
@@ -101,11 +101,12 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     ).set_index(["file", "beam"])
 
     # prooject it to the appropriate UTM system
-    crs_UTM = gdf.estimate_utm_crs()
-    gdf.to_crs(crs_UTM, inplace=True)
+    # crs_UTM = gdf.estimate_utm_crs()
+    # gdf.to_crs(crs_UTM, inplace=True)
     return gdf
 
-def photon_df_to_gdf(photon_data:pd.DataFrame or np.ndarray):
+
+def photon_df_to_gdf(photon_data: pd.DataFrame or np.ndarray):
     pass
 
 
@@ -128,6 +129,8 @@ def add_track_dist_meters(
     # returns a vector of the dist from the start point (the start point being (xmin,ymin))
     dist = gdf.distance(Point(xmin, ymin))
     # add the new distance
-    gdf = gdf.assign(dist_or=dist,easting=gdf.geometry.x,northing=gdf.geometry.y).sort_values("dist_or")
+    gdf = gdf.assign(
+        dist_or=dist, easting=gdf.geometry.x, northing=gdf.geometry.y
+    ).sort_values("dist_or")
     # return a dataframe or GDF
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))

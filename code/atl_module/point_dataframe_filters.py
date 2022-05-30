@@ -1,10 +1,10 @@
 import pandas as pd
 from atl_module.raster_interaction import query_raster
+from atl_module.refraction_correction import correct_refr
 from pathlib import Path
 import numpy as np
-p = Path(__file__).parents[2]
 
-print(p)
+p = Path(__file__).parents[2]
 
 
 def filter_high_returns(df, level=5):
@@ -29,27 +29,20 @@ def filter_TEP_and_nonassoc(df):
 
     Returns:
         pd.DataFrame: Output dataframe
-    """    
+    """
     # remove any transmitter Echo Path photons
     return df.loc[df.oc_sig_conf >= 0]
+
 
 # TODO rewrite this to include NAs for non-high-confience photons
 def add_sea_surface_level(df, rolling_window=200):
     # take rolling median of signal points along track distance
     sea_level = (
-        df.loc[df.oc_sig_conf >= 4]["Z_g"]
-        .rolling(
-            rolling_window,center=True
-        )
-        .median()
+        df.loc[df.oc_sig_conf >= 4]["Z_g"].rolling(rolling_window, center=True).median()
     )
 
     sigma_sea_level = (
-        df.loc[df.oc_sig_conf == 4]["Z_g"]
-        .rolling(
-            rolling_window,center=True
-        )
-        .std()
+        df.loc[df.oc_sig_conf == 4]["Z_g"].rolling(rolling_window, center=True).std()
     )
     sea_level.name = "sea_level"
 
@@ -99,8 +92,10 @@ def add_gebco(df):
 
 def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
     # check for gebco height in the columns
-    if not 'gebco_elev' in df.columns:
-        raise ValueError('Make sure to add the gebco elevation before running this function')
+    if not "gebco_elev" in df.columns:
+        raise ValueError(
+            "Make sure to add the gebco elevation before running this function"
+        )
     # filter points based on gebco
     df = df[df.gebco_elev > low_limit]
     df = df[df.gebco_elev < high_limit]
@@ -128,3 +123,16 @@ def _interpolate_dataframe(
     newindex = interpdf.index.union(xindex_interp)
     # set the new index and return the dataframe
     return interpdf.reindex(newindex)
+
+
+def correct_for_refraction(df):
+    # get horizotnal and vertical refraction correction factors
+    xcorr, ycorr, zcorr = correct_refr(
+        df.sea_level_interp - df.Z_g,
+        pointing_vector_az=df.p_vec_az,
+        pointing_vector_elev=df.p_vec_elev,
+    )
+    # apply these factors to the dataframe
+    return df.assign(
+        Z_g=df.Z_g + zcorr, easting=df.easting + xcorr, northing=df.northing + ycorr
+    )

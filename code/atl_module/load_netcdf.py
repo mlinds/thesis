@@ -96,20 +96,19 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
 
         delta_time_geophys[0] = delta_time[0]
 
-        # TODO rewrite to return these correction factors in the numpy array and then to the correction in another part of the script
-        # this will make diagnosing problems much easier. 
+        # this will make diagnosing problems much easier.
 
         # get the geophysical variables
-        geo_f2m = (
+        geo_f2m_segment = (
             ds.groups[beam]
             .groups["geophys_corr"]
             .variables["geoid_free2mean"][:]
             .filled(np.NaN)
         )
-        geoid = (
+        geoid_segment = (
             ds.groups[beam].groups["geophys_corr"].variables["geoid"][:].filled(np.NaN)
         )
-        tide_ocean = (
+        tide_ocean_segment = (
             ds.groups[beam]
             .groups["geophys_corr"]
             .variables["tide_ocean"][:]
@@ -121,28 +120,46 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             .variables["ref_azimuth"][:]
             .filled(np.NaN)
         )
+        pointing_vec_elev = (
+            ds.groups[beam]
+            .groups["geolocation"]
+            .variables["ref_elev"][:]
+            .filled(np.NaN)
+        )
 
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
-        correction = geoid + geo_f2m + tide_ocean
 
         # to assign the correct correction value, we need to get the correction at a certain time
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
         # create a time-index series of the variables we want to interpolate
-        zcorr_series = pd.Series(correction, index=delta_time_geophys).sort_index()
+        geoid_series = pd.Series(geoid_segment, index=delta_time_geophys).sort_index()
+        tide_ocean_series = pd.Series(
+            tide_ocean_segment, index=delta_time_geophys
+        ).sort_index()
+        geo_f2m_series = pd.Series(
+            geo_f2m_segment, index=delta_time_geophys
+        ).sort_index()
         p_vec_az_series = pd.Series(
             pointing_vec_az, index=delta_time_geophys
         ).sort_index()
+        p_vec_elev_series = pd.Series(
+            pointing_vec_elev, index=delta_time_geophys
+        ).sort_index()
 
         # get the value for every single photon
-        z_corr = zcorr_series.asof(delta_time).to_numpy()
+        geoid = geoid_series.asof(delta_time).to_numpy()
+        tide_ocean = tide_ocean_series.asof(delta_time).to_numpy()
+        geof2m = geo_f2m_series.asof(delta_time).to_numpy()
         p_vec_az = p_vec_az_series.asof(delta_time).to_numpy()
+        p_vec_elev = p_vec_elev_series.asof(delta_time).to_numpy()
 
+        correction = geoid + geof2m + tide_ocean
+        print(len(correction))
         # get the corrected Z vals
-        Z_corrected = Z - z_corr
-
+        Z_corrected = Z - correction
         # for varname, values in (
         #     ds.groups["quality_assessment"].groups[beam].variables.items()
         # ):
@@ -157,10 +174,14 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("Y", "<f8"),
                 ("Z", "<f8"),
                 ("Z_g", "<f8"),
+                ("geoid_corr", "<f8"),
+                ("tide_ocean_corr", "<f8"),
+                ("geof2m_corr", "<f8"),
                 ("delta_time", "<M8[ns]"),
                 ("oc_sig_conf", "<i4"),
                 ("land_sig_conf", "<i4"),
                 ("p_vec_az", "<f8"),
+                ("p_vec_elev", "<f8"),
             ],
             metadata=metadata,
         )
@@ -170,10 +191,14 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["X"] = X
         photon_data["Y"] = Y
         photon_data["Z"] = Z
+        photon_data["geoid_corr"] = geoid
+        photon_data["tide_ocean_corr"] = tide_ocean
+        photon_data["geof2m_corr"] = geof2m
         photon_data["Z_g"] = Z_corrected
         photon_data["delta_time"] = delta_time
         photon_data["oc_sig_conf"] = ocean_sig
         photon_data["land_sig_conf"] = land_sig
         photon_data["p_vec_az"] = p_vec_az
+        photon_data["p_vec_elev"] = p_vec_elev
 
         return photon_data

@@ -1,4 +1,4 @@
-from atl_module.kde_peaks_method import get_elev_at_max_density,AccumulateKDEs
+from atl_module.kde_peaks_method import get_elev_at_max_density, AccumulateKDEs
 import pandas as pd
 from glob import iglob
 from tqdm import tqdm
@@ -6,11 +6,11 @@ from multiprocessing import Pool
 import numpy as np
 from atl_module import point_dataframe_filters as dfilt
 from atl_module import geospatial_functions as geofn
-from atl_module.load_netcdf import get_beams,load_beam_array_ncds
+from atl_module.load_netcdf import get_beams, load_beam_array_ncds
 
 
 def add_along_track_dist(pointdata):
-    if isinstance(pointdata,pd.DataFrame): 
+    if isinstance(pointdata, pd.DataFrame):
         pointdata = pointdata.to_records()
     return geofn.add_track_dist_meters(pointdata)
 
@@ -32,6 +32,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=6)
         .pipe(dfilt.filter_high_returns)
         .pipe(dfilt.filter_TEP_and_nonassoc)
+        .pipe(dfilt.correct_for_refraction)
     )
     # reset
     # filtered_photon_df["dist_or"] = (
@@ -44,7 +45,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
 # def get_kde_bathymetry(df,threshold,window):
 #     if df is None:
 #         return None
-    
+
 #     accumulator = AccumulateKDEs()
 #     series_out = df.Z_g.rolling(window=window, center=True).apply(
 #         accumulator.calc_kdeval_and_zval, raw=True, kwargs={"threshold": threshold}
@@ -55,7 +56,8 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
 
 #     return points_with_bathy
 
-def add_rolling_kde(df,window):    
+
+def add_rolling_kde(df, window):
     # set up the object to keep all the return values
     accumulator = AccumulateKDEs()
     # this series is a key to matching the KDE value and the Z elevation of the Max KDE to the points in original df
@@ -75,10 +77,13 @@ def add_rolling_kde(df,window):
         .merge(kdevals_df, left_on="matchup", right_index=True)
         .drop(columns="matchup")
     )
-    df_w_kde = df.merge(merge_df,right_index=True,left_index=True,how='left')
+    df_w_kde = df.merge(merge_df, right_index=True, left_index=True, how="left")
     # make sure we didn't lose anything
-    assert df_w_kde.shape[0] == df.shape[0],'rolling KDE was not added correctly for all points'
+    assert (
+        df_w_kde.shape[0] == df.shape[0]
+    ), "rolling KDE was not added correctly for all points"
     return df_w_kde
+
 
 def get_all_bathy_from_granule(filename):
     # find which beams are available in the netcdf file
@@ -91,8 +96,8 @@ def get_all_bathy_from_granule(filename):
         point_df = geofn.add_track_dist_meters(beamarray)
         # filter out points could not be bathymetry
         filtered_df = _filter_points(point_df)
-        bathy_pts = add_rolling_kde(filtered_df,window=200)
-        thresholdval = bathy_pts.kde_val.mean()-1*bathy_pts.kde_val.std()
+        bathy_pts = add_rolling_kde(filtered_df, window=200)
+        thresholdval = bathy_pts.kde_val.mean() - 1 * bathy_pts.kde_val.std()
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
         if len(bathy_pts) > 0:
             granulelist.append(bathy_pts)
@@ -124,5 +129,4 @@ def run_multiple(paths):
         outpath = path + "/all_bathy_pts.gpkg"
         combined_result = bathy_from_all_tracks_parallel(path)
         combined_result.to_file(outpath)
-        print('wrote results to ',outpath)
-
+        print("wrote results to ", outpath)

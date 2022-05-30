@@ -6,6 +6,7 @@ varpaths = [
     "geolocation/segment_id",
     "geolocation/sigma_h",
     "geolocation/ref_azimuth",
+    "geolocation/ref_elev",
     "heights/h_ph",
     "heights/lat_ph",
     "heights/lon_ph",
