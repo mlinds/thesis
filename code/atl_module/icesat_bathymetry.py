@@ -27,7 +27,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
     filtered_photon_df = (
         raw_photon_df.pipe(dfilt.add_sea_surface_level)
         .pipe(dfilt.filter_low_points, filter_below_z=40)
-        .pipe(dfilt.remove_surface_points)
+        .pipe(dfilt.remove_surface_points,n=1)
         .pipe(dfilt.add_gebco)
         .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=6)
         .pipe(dfilt.filter_high_returns)
