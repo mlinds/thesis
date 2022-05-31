@@ -17,12 +17,16 @@ Shallow water bathymetry and mangrove height are difficult to survey manually, d
 One weakness of mangroves as a flood protection mechanism is that their response to long term changes in the biogeomorphic environment is not well understood \parencite{Gijsman2021}. This uncertainty about the long term persistance of mangrove structures is an impediment to widespread adoption of mangrove greenbelt restoration as a coastal protection strategy.
 
 \section{Geodetic Reference Systems for Ocean Observation}
+\pdfcomment{Maybe incorporate this into an appendix about geophysics?}
 \subsection{Permanent Tide}
-The time average of the sun and moon's tidal effect on the earth is not zero and therefore cause a permanent deformation of the earth's surface, and this permanent deformation is referred to as the permanent tide. 
+The ocean tides create a loading on the earth, and cause the planet to deform under their weight. Because the time average of the sun and moon's tidal effect on the earth is nonzero, the time-averaged deformation effect is also non-zero. This time-averaged deformation is referred to as the permanent tide (n.b. `tide` in this term refers to tidal deformation of the earth, not the water). The \emph{tide-free geoid} is defined as a reference system where this effect is removed \parencite{Makinen2009}.
+
+\pdfcomment{add picture of the geoid reference models}
 
 \subsection{Solid Earth Tides}
+
 \subsection{Inverted barometer effect}
-Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\todo{find a published reference for this}. The dynamic atmospheric correction (DAC) 
+Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\pdfcomment{find a published reference for this}. The dynamic atmospheric correction (DAC) 
 \subsection{Ocean Tides}
 
 The ocean tides contribute 70\% of the variance to the sea surface \parencite{icesat2 comparison guide}.
@@ -64,10 +68,10 @@ To locate the position of each photon in 3D space, the time of flight of the pho
 
 \subsection{Weak vs. Strong Beams}
 
-The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. Therefore, these beams are expected to provide the best data for lidar bathymetry measurements. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and not provide useful data.
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements. The strong beams have been found to provide the best data for lidar bathymetry measurements. 
 
 \subsection{Refraction Correction}
-
+\pdfcomment{test?}
 The locations calculated by the data products from the satellite do not correct of the refraction induced by the different speeds and which light travels in water and in the atmosphere. This effect introduces both a horizontal and vertical error in the photon location, as shown in figure \ref{refract-image}.
 
 \begin{figure}[ht]
@@ -100,13 +104,15 @@ Where:
       \item \(H_{TCA}\) is the height of the total column atmospheric delay
 \end{itemize}
 
-The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM) \citeparen{Buckman2015}, developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
+To correct the Z elevation provided in the dataset, several correction factors can be used. 
+
+The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM) \parencite{Buckman2015}, developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
 
 \subsection{Signal Photon Identification}
+\label{subsec:denoising}
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \cite{add} and can be used to filter out points at or above the sea surface. 
 
-The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable and can be used to filter out points at or above the sea surface.
-
-To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data. There are several different techniques proposed in the literature. Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016}. Other researchers have used implementations of DBSCAN \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. Others
+To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data. There are several different techniques proposed in the literature.  Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016}. Other researchers have used implementations of DBSCAN \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. These density-based methods are premised expectation that signal photons are closer together than noise photons. \parencite{Neuenschwander2019}.
 
 
 \section{Satellite Derived bathymetry}
@@ -121,7 +127,7 @@ Optical remote sensing is a passive technique, as it detects light from the sun 
 Because of the ability to incorporate in-situ data and the computational ease, empirical methods are considered for this project.
 
 \subsection{Active-passive Sensor Fusion: The best of both worlds}
-\citeauthor{Parrish2019} conclude that the best way to use ICESat-2 data for bathymetric survey is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
+\cite{Parrish2019} conclude that the best way to use ICESat-2 data for bathymetric survey is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
 
 There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, finding bathymetric signal points, and combining the lidar data with optical techniques.
 

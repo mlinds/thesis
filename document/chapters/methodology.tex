@@ -14,11 +14,11 @@ The raw photon cloud from the ATL03 data product contains many photons from land
     
     \item Cull any points 5m above the geoid
 
-    \item Calculate the sea surface for each point. This can be done using the rolling median of the remaining points with window width n=?\todo{fill in and justify value} of points that are marked as high confidence ocean signal \parencite{Ranndal2021}. Then subtract the Z elevation to get the depth below the ocean surface.  Cull any points deeper than 40m. This provides the vertical filtering. 
+    \item Calculate the sea surface for each point. This can be done using the rolling median of the remaining points with window width n=?\pdfcomment{fill in and justify value} of points that are marked as high confidence ocean signal \parencite{Ranndal2021}. Then subtract the Z elevation to get the depth below the ocean surface.  Cull any points deeper than 40m. This provides the vertical filtering. 
     \item Cull any points within a buffer distance of the sea surface. This removes the strong signal associated with the sea surface.
 \end{enumerate}
 
-After applying the filtering steps above, the remaining points are then evaluated for bathymetric signal. Several methods common methods in the literature explained in section \ref{subsec:denoising}. For this project\todo{reword?}, a new method is proposed:
+After applying the filtering steps above, the remaining points are then evaluated for bathymetric signal. Several methods common methods in the literature explained in section \ref{subsec:denoising}. For this project\pdfcomment{reword?}, a new method is proposed:
 
 
 \begin{enumerate}
@@ -45,7 +45,7 @@ may 25 - what did I do today:
 may 31 -
 
 My current method culls points within a buffer of the sea surface, so it struggles to find signal in very shallow (2-3m) water depth. Maybe A-DRAGANN as implemented in \cite{Cao2021} might be more reliable in shallow water?
-\todo{temp notes}
+\pdfcomment{temp notes}
 \begin{enumerate}
     \color{orange}
     \item Start with 2021 OSM coastline
