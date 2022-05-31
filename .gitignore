@@ -13,6 +13,18 @@ document/out/*
 code/secret_vars.py
 code/data/*
 /document/fonts
+secret_vars.py
+
+secret*.*
+code/atl_module/secret_vars.py
+program.prof
+
+
+!transect_viewer.ipynb
+!./transect_viewer.ipynb
+!code/transect_viewer.ipynb
+!./code/transect_viewer.ipynb
+!/code/transect_viewer.ipynb
 
 ### Generated Files ###
 *.swp
@@ -25,7 +37,7 @@ missfont.log
 *.fdb_latexmk
 *.aux
 .~lock.document.pdf#
-*.ipynb
+#*.ipynb
 !code\ALT03_processing.ipynb
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,latex,jupyternotebooks
@@ -534,8 +546,9 @@ code/interactive_downloader.ipynb
 document/linked.bib
 document/README.txt
 document/roboto.sty
-*.docx
-*.jpeg
-*.pptx
+document/kickoff/presentation.pptx
+.vscode/settings.json
+document/report.lpc
 code/OTPS_model
-code/atl_module/secret_vars.py
+*.jpeg
+*.docx
