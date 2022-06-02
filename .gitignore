@@ -58,6 +58,7 @@ ipython_config.py
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
+*.lpc
 *.aux
 *.lof
 *.log
