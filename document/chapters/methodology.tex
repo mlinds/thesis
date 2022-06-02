@@ -33,6 +33,21 @@ After applying the filtering steps above, the remaining points are then evaluate
     \label{fig:kdefunc}
 \end{figure}
 
+\section{Bayesian data assimilation}
+\subsection{temp notes}
+Still need to figure out Kalman filter, but based on the current plan one approach might be...
+\begin{itemize}
+    \color{orange}
+    \item download the xyz data that the gebco data is based on
+    \item download and filter photon locations
+    \item correct for tide to put them in MSL
+    \item Use the pygmt gridding using the xyz data
+    \item how to use satellite gravimetry data in gebco? Need to sort that out. Most the MBES data that gebco is based on is available, but the gravimetric seemingly is not.
+    \item Decide on what horizontal resolution should be the end goal - choose one or assign dynamically based on available data. 
+    \item 
+\end{itemize}
+
+
 \section{Selection of Test Sites}
 \section{Creation of global analysis sites layer}
 \subsubsection*{temp notes}
@@ -59,16 +74,3 @@ My current method culls points within a buffer of the sea surface, so it struggl
 
 \section{Processing of Lidar Data}
 
-\section{Gridding of data}
-\subsection{temp notes}
-Still need to figure out Kalman filter, but based on the current plan one approach might be...
-\begin{itemize}
-    \color{orange}
-    \item download the xyz data that the gebco data is based on
-    \item download and filter photon locations
-    \item correct for tide to put them in MSL
-    \item Use the pygmt gridding using the xyz data
-    \item how to use satellite gravimetry data in gebco? Need to sort that out. Most the MBES data that gebco is based on is available, but the gravimetric seemingly is not.
-    \item Decide on what horizontal resolution should be the end goal - choose one or assign dynamically based on available data. 
-    \item 
-\end{itemize}
