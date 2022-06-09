@@ -34,14 +34,10 @@ After applying the filtering steps above, the remaining points are then evaluate
 \end{figure}
 
 \section{Bayesian data assimilation}
-\subsection{temp notes}
-Still need to figure out Kalman filter, but based on the current plan one approach might be...
+\subsection*{temp notes}
+Instead of using the kalman filter with a state vector of only position, which might just reduce to applying bayes rule recursively, would an MCMC function be a good alternative? 
 
-Instead of using the kalman filter with a state vector of only position, which might just reduce to a bayesian update, would an MCMC funnction be a good alternative? 
-
-The kalman filter can indeed by used with only update steps. 
-
-from wikiepdia: 
+The kalman filter can indeed by used with only update steps, per wikiepdia: 
 \begin{quotation}
     Typically, the two phases alternate, with the prediction advancing the state until the next scheduled observation, and the update incorporating the observation. However, this is not necessary; if an observation is unavailable for some reason, the update may be skipped and multiple prediction procedures performed. Likewise, if multiple independent observations are available at the same time, multiple update procedures may be performed (typically with different observation matrices Hk).[23][24]
 \end{quotation}
@@ -50,10 +46,9 @@ from wikiepdia:
     \item download the xyz data that the gebco data is based on
     \item download and filter photon locations
     \item correct for tide to put them in MSL
-    \item Use the pygmt gridding using the xyz data
-    \item how to use satellite gravimetry data in gebco? Need to sort that out. Most the MBES data that gebco is based on is available, but the gravimetric seemingly is not.
-    \item Decide on what horizontal resolution should be the end goal - choose one or assign dynamically based on available data. 
-    \item 
+    \item Spatially interpolate the resulting XYZ points (Universal kriging?)
+    \item Spatially interpolate GEBCO grid (bilinear?)
+    \item Run Kalman update step  
 \end{itemize}
 
 
