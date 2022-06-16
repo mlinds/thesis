@@ -74,6 +74,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # based on the data documentation, the dates are referenced to the 2018-01-01 so the
         # datetimes are shifted accordingly
         delta_time_s = ds.groups[beam].groups["heights"].variables["delta_time"][:]
+        # TODO this might be what is truncating the full times
         delta_time = num2pydate(delta_time_s, "seconds since 2018-01-01")
 
         ocean_sig = ds.groups[beam].groups["heights"].variables["signal_conf_ph"][:, 1]
@@ -157,7 +158,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         p_vec_elev = p_vec_elev_series.asof(delta_time).to_numpy()
 
         correction = geoid + geof2m + tide_ocean
-        print(len(correction))
+        # print(len(correction))
         # get the corrected Z vals
         Z_corrected = Z - correction
         # for varname, values in (
@@ -177,7 +178,8 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("geoid_corr", "<f8"),
                 ("tide_ocean_corr", "<f8"),
                 ("geof2m_corr", "<f8"),
-                ("delta_time", "<M8[ns]"),
+        # TODO there is still a rounding error on the times here
+                ("delta_time", "<M8[us]"),
                 ("oc_sig_conf", "<i4"),
                 ("land_sig_conf", "<i4"),
                 ("p_vec_az", "<f8"),
@@ -185,7 +187,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             ],
             metadata=metadata,
         )
-
         # then we assign each 1darray to the structured array
         photon_data = np.empty(len(X), dtype=dtype)
         photon_data["X"] = X

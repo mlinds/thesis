@@ -6,6 +6,10 @@ import pandas as pd
 from shapely.geometry import LineString, Point
 from atl_module.load_netcdf import get_beams, load_beam_array_ncds
 
+def to_refr_corrected_gdf(df,crs):
+    # make the geometry of the horizontallly corrected point locations
+    geometry = gpd.points_from_xy((df.easting+df.easting_corr),(df.northing+df.northing_corr),crs=crs)
+    return gpd.GeoDataFrame(df,geometry=geometry)
 
 def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
     """Create a geodataframe for a track as defined by an array of photon returns
