@@ -57,15 +57,14 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
 #     return points_with_bathy
 
 
-def dadd_rolling_kde(df, window):
+def add_rolling_kde(df, window):
     # set up the object to keep all the return values
     accumulator = AccumulateKDEs()
     # this series is a key to matching the KDE value and the Z elevation of the Max KDE to the points in original df
     # this is a complicated series of joins but it should support matching any arbitrary indexes
     series_out = (
         # apply the function from the object
-        # TODO consider changing this back to use the refraction-corrected Z value?
-        df.Z_g.rolling(window=window, center=True)
+        df.Z_refr.rolling(window=window, center=True)
         .apply(accumulator.calc_kdeval_and_zval, raw=True)
         .dropna()
         .astype("int")
