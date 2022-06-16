@@ -133,6 +133,4 @@ def correct_for_refraction(df):
         pointing_vector_elev=df.p_vec_elev,
     )
     # apply these factors to the dataframe
-    return df.assign(
-        Z_refr=df.Z_g + zcorr, easting_corr= xcorr, northing_corr=ycorr
-    )
+    return df.assign(Z_refr=df.Z_g + zcorr, easting_corr=xcorr, northing_corr=ycorr)

@@ -7,6 +7,7 @@ import numpy as np
 from atl_module import point_dataframe_filters as dfilt
 from atl_module import geospatial_functions as geofn
 from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+import itertools
 
 
 def add_along_track_dist(pointdata):
@@ -16,7 +17,7 @@ def add_along_track_dist(pointdata):
 
 
 def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
-    """Remove points outside of the gebco nearshore zone, points that are invalied, or to high
+    """Remove points outside of the gebco nearshore zone, points that are invalied, or too high. Also calculate refraction corrections and add them to the dataframe
 
     Args:
         beamdata (np.ndarray): structed ndarray recieved from the beam parsing function
@@ -29,7 +30,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         .pipe(dfilt.filter_gebco, low_limit=-50, high_limit=6)
         .pipe(dfilt.add_sea_surface_level)
         .pipe(dfilt.filter_low_points, filter_below_z=40)
-        .pipe(dfilt.remove_surface_points,n=1)
+        .pipe(dfilt.remove_surface_points, n=1)
         .pipe(dfilt.filter_high_returns)
         .pipe(dfilt.filter_TEP_and_nonassoc)
         .pipe(dfilt.correct_for_refraction)
@@ -85,22 +86,48 @@ def add_rolling_kde(df, window):
     return df_w_kde
 
 
-def get_all_bathy_from_granule(filename):
+def get_all_bathy_from_granule(filename, window, threshold_val, req_perc_hconf):
+    """For a single granule (stored in a netcdf4 file), loop over ever single beam, determine if it contains useful bathymetry signal, and return a dataframe just of the bathymetric points
+
+    Args:
+        filename (str or PathLike): location of the NetCDF4 file
+        window (int): The length, in *number of points* of the rolling window function
+        threshold_val (float): cutoff value of kerndel density for a point to be consider a signal point, in  number of standard deviations away from the median kernel density
+        req_perc_hconf (float): Minimum percentage of high confidence ocean photons in a granule for the granule to be included
+
+    Returns:
+        pd.DataFrame: Pandas Dataframe of bathymetric points
+    """
     # find which beams are available in the netcdf file
     beamlist = get_beams(filename)
     granulelist = []
     for beam in beamlist:
         # get numpy array of the beam data
         beamarray = load_beam_array_ncds(filename=filename, beam=beam)
+        # get the metadata dictionary
+        metadata_dict = beamarray.dtype.metadata
+        # the percentage of high confidence ocean photons is a proxy for the overall quality of the signal
+        if metadata_dict["ocean_high_conf_perc"] > req_perc_hconf:
+            next()
         # convert numpy array to a geodataframe with the along-track distance
         point_df = geofn.add_track_dist_meters(beamarray)
-        # filter out points could not be bathymetry
-        filtered_df = _filter_points(point_df)
-        bathy_pts = add_rolling_kde(filtered_df, window=200)
-        thresholdval = bathy_pts.kde_val.mean() - 1 * bathy_pts.kde_val.std()
+        # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
+        subsurface_return_pts = _filter_points(point_df)
+
+        bathy_pts = add_rolling_kde(subsurface_return_pts, window=window)
+        thresholdval = (
+            bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
+        )
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
+        bathy_pts = bathy_pts.assign(
+            atm_profile=metadata_dict["atmosphere_profile"],
+            beamtype=metadata_dict["atlas_beam_type"],
+            oc_hconf_perc=metadata_dict["ocean_high_conf_perc"],
+        )
+        # catch the case where there is no signal in one beam
         if len(bathy_pts) > 0:
             granulelist.append(bathy_pts)
+    # catch the case where there is no signal in any beams in the granule
     if len(granulelist) > 0:
         return pd.concat(granulelist)
 
@@ -112,10 +139,19 @@ def bathy_from_all_tracks(path):
     return pd.concat(dflist)
 
 
-def bathy_from_all_tracks_parallel(folderpath):
-    filenamelist = list(iglob(folderpath + "/ATL03/*.nc"))
+def bathy_from_all_tracks_parallel(folderpath, window, threshold_val, req_perc_hconf):
+
+    # to run the algorithm for all granules in parallel, create an iterable of tuples with the function parameters (as required by pool.starmap)
+    filenamelist = list(
+        zip(
+            iglob(folderpath + "/ATL03/*.nc"),
+            itertools.repeat(window),
+            itertools.repeat(threshold_val),
+            itertools.repeat(req_perc_hconf),
+        )
+    )
     with Pool() as pool:
-        result = pool.map(get_all_bathy_from_granule, filenamelist)
+        result = pool.starmap(get_all_bathy_from_granule, filenamelist)
     if len(result) > 1:
         return pd.concat(result)
     elif len(result) == 1:

@@ -178,7 +178,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("geoid_corr", "<f8"),
                 ("tide_ocean_corr", "<f8"),
                 ("geof2m_corr", "<f8"),
-        # TODO there is still a rounding error on the times here
+                # TODO there is still a rounding error on the times here
                 ("delta_time", "<M8[us]"),
                 ("oc_sig_conf", "<i4"),
                 ("land_sig_conf", "<i4"),
