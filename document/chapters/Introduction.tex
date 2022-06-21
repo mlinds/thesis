@@ -1,1 +1,44 @@
 \chapter{Introduction}
+
+Coastal areas are attractive for human settlement, and up to 39\% of human population lives within 100km of the coast \parencite{Magdalena2021}, including many of the world's largest cities. 10\% of the world's population live in the an area that is less than 10m above sea level \parencite{Neumann2015,Lichter2011}, an area known as the Low Elevation Coastal Zone. All coastal populations face increasing vulnerability to coastal flooding hazards, due to increases in the sea level and changes in extreme weather patterns. To protect populations from these increasing risks, further investment in coastal protection is required; without more investment in coastal defense infrastructure, the population exposed to flooding risk is projected to increase by 50\% \Parencite{Kirezci2020}. One approach to mitigating these hazards is to employ the techniques of Building with Nature, using natural processes and ecosystem functions to create resilient coastal defenses. Of particular interest in the tropical regions of the world are Mangroves, a coastal tree whose dense roots and sturdy branches can provide resilient protection from flooding hazards.
+
+Mangroves provide coastal protection by reducing wave energy, while also adapting naturally to sea level rise, and providing other ecosystem services like increasing water quality and increasing fish spawning areas. Mangroves already provide flood protection to over 15 million people \parencite{Menendez2020}, but in the last 50 years between 30-50 percent of the world's mangrove area has been lost \parencite{Goldberg2020}. To rebuild and enhance the world's mangrove belts, significant research on these ecosystems is required.
+
+Towards this goal, this project aims to capitalize on recent advances in remote sensing techniques, specifically high resolution optical imagery from Sentinel-2 and Spaceborne lidar from NASA's ICESat-2 to create a global database of bathymetry in mangrove forest ecosystems.
+
+\section{Motivation and Relevance}
+
+One current weakness of mangroves as a flood defense strategy is that the response of these natural ecosystems is not well known. The persistance of mangroves over the long term is not as well understood as for traditional hard infrastructure \parencite{Gijsman2021}. Traditional hard coastal infrastructure like dams, dikes and seawalls have many years of research on their mechanical responses. To increase the use of BwN solutions, we need increased understanding of the risks and benefits of relying on mangroves for flood defense.
+
+\subsection{Limitations of conventional nearshore survey}
+
+The nearshore zone is a very difficult environment to perform bathymetric surveying. \parencite{Parrish2019}. All current bathymetric survey techniques face limitations that restrict their use in the shallowest 5-10m of the nearshore zone. Most deep water survey is done using multi-beam echo sounders (MBES) attached to ships. This limits their operation in water shallower than 4-5 meters or in areas with navigational hazards \parencite{Cesbron2021,Monteys2015}. To survey the nearshore zone, airborne lidar survey is a common choice, and allows simultaneous surveying of the topography and high resolution. However, airborne surveys are extremely expensive to perform and require extensive post-processing effort to create a usable surface model.
+
+
+\subsection{Importance of Nearshore Bathymetric Data}
+
+Nearshore bathymetry is crucial data for many aspects of coastal management and research. Bathymetric data is essential for many aspects of the blue economy, including aquaculture, marine energy, submarine cables, dredging operations, design of sea defenses, navigation, scientific research, and ecosystem preservation \parencite{Cesbron2021,Ashphaq2021}. However, the nearshore zone is notoriously difficult to survey. There is currently a global lack of data in the 5-10m zone \parencite{Albright2021} and up to 50\% of the world's shallow coastal zones remain unsurveyed \parencite{IHO/OHI2022}. Where surveys do exist, they can be decades out of date, especially in the 40\% of the world's coasts that are sandy and highly dynamic \parencite{Almar2021e}.
+
+There have been attempts at global bathymetric datasets, most notably the General Bathymetric Chart of the Ocean (GEBCO), which is an annually updated global bathymetric and topographic dataset. The bathymetry in GEBCO grids is derived by assimilation of acoustic soundings provided by ships and gravimetric bathymetry measurements \parencite{Cesbron2021}. While it provides useful information about deep oceans, GEBCO accuracy in the nearshore zone is limited because sonar data is limited in many shallow nearshore zones. \parencite{Monteys2015}. The resolution, both horizontally and vertically, is not sufficient for wave transformation studies.
+
+\section{Identified Knowledge gaps}
+
+A major restriction in modeling how mangroves and waves interact is the lack of global nearshore bathymetry data. In the context of researching the impact of mangroves on flood risk, one of the most important aspects of a wave model is the nearshore bathymetry, since the exact shape and depth of the profile has a large impact on the hydrodynamic response of mangrove ecosystems \parencite{Horstman2014,Maza2019}. The current state of wave modeling of mangrove ecosystems either relies on in-situ survey data, or uses an idealized profile shape. The further development of mangrove wave modeling will benefit from better quantification of bathymetry \parencite{Menendez2020,GijonMancheno2021}. This detailed data could be particularly useful given the heterogeneity between different mangrove forests \parencite{Mazda2013}.
+
+The objective of this project is to determine where remote sensing might be able to fill this gap in nearshore data availability.
+
+\section{Research Question}
+The primary question that this project intends to answer is:
+
+\emph{How can spaceborne remote sensing data be used to improve estimates of nearshore bathymetry along mangrove-lined coasts?}
+
+To answer this question, the following subquestions will be investigated:
+
+\begin{itemize}
+      \item In which mangrove forests might spaceborne lidar and optical SDB be an effective survey method?
+      \item How can spaceborne lidar transects that contain bathymetry be identified algorithmically?
+      \item Once transects with bathymetry are found, how can the seafloor elevation data be extracted?
+      \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
+      \item How can gaps be filled in areas with missing lidar photons?
+      \item Which of the established optical SDB methods are most reliable in mangrove ecosystems?
+\end{itemize}
