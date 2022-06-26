@@ -25,9 +25,9 @@ def simple_kalman(z, sigma, z_meas, sigma_meas):
 
 
 def gridded_kalman_update(outputfile, start_raster_path, measrasterlist):
-    
+
     # if there is a single path instead of a list, convert it to a single-element list
-    if isinstance(measrasterlist,str):
+    if isinstance(measrasterlist, str):
         measrasterlist = [measrasterlist]
 
     # load the results of the interpolation
@@ -37,24 +37,20 @@ def gridded_kalman_update(outputfile, start_raster_path, measrasterlist):
     gebco_depth[gebco_depth == -3.2767e04] = np.NaN
     gebco_uncertainty = np.full_like(gebco_depth, 2)
 
-    # set initial value for first loop 
+    # set initial value for first loop
     kalman_depth = gebco_depth
     kalman_uncertainty = gebco_uncertainty
 
-    # loop over 
+    # loop over
     for measrasterpath in measrasterlist:
         with rasterio.open(measrasterpath) as measurement_raster_file:
             measurement_depths = measurement_raster_file.read(1)
             # convert variance to std dev
             measurement_sigma = np.sqrt(measurement_raster_file.read(2))
 
-        kalman_depth,kalman_uncertainty = simple_kalman(kalman_depth,kalman_uncertainty,measurement_depths,measurement_sigma)
-
-    # do the kalman update and save the file
-    # updated_depth_grid, updated_uncertainty_grid = simple_kalman(
-    #     gebco_depth, gebco_uncertainty, kriged_depth, kriged_std
-    # )
-
+        kalman_depth, kalman_uncertainty = simple_kalman(
+            kalman_depth, kalman_uncertainty, measurement_depths, measurement_sigma
+        )
 
     # TODO consider abstracting this into another function
     # write the output to a raster file
@@ -70,8 +66,9 @@ def gridded_kalman_update(outputfile, start_raster_path, measrasterlist):
     ) as outras:
         outras.write(kalman_depth, 1)
         outras.write(kalman_uncertainty, 2)
-    
+
     return None
+
 
 if __name__ == "__main__":
     gridded_kalman_update(
