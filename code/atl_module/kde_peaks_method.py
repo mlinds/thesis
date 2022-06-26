@@ -19,8 +19,7 @@ def get_elev_at_max_density(point_array):
     return z_at_kdemax, max_density
 
 
-# the above function is expensive to apply, so we can follow these instructions to avoid calling it twice:
-# https://stackoverflow.com/questions/22218438/returning-two-values-from-pandas-rolling-apply
+
 # class CountCalls:
 #     def __init__(self):
 #         self.counter = 0
@@ -38,7 +37,8 @@ def get_elev_at_max_density(point_array):
 
 
 class AccumulateKDEs:
-    # wtf is going on here?
+    # the kde function is expensive to apply, so we can follow these instructions to avoid calling it twice:
+    # https://stackoverflow.com/questions/22218438/returning-two-values-from-pandas-rolling-apply
     def __init__(self):
         self.index = 0
         self.index_val_list = []
@@ -56,5 +56,5 @@ class AccumulateKDEs:
         self.z_max_list.append(z_max_kde)
         self.index_val_list.append(self.index)
         self.index = self.index + 1
-        # the series that is returned by the funcion is the key to matching the accumlutor to the original df
+        # the series that is returned by the funcion is the key to matching the accumlutor to the original dataframe
         return self.index - 1

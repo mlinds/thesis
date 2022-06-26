@@ -35,27 +35,14 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         .pipe(dfilt.filter_TEP_and_nonassoc)
         .pipe(dfilt.correct_for_refraction)
     )
-    # reset
+    # reset the distances be zero at the first photon
+    # commenting out for now since not needed and makes comparison harder
+
     # filtered_photon_df["dist_or"] = (
     #     filtered_photon_df.dist_or - filtered_photon_df.dist_or.min()
     # )
 
     return filtered_photon_df
-
-
-# def get_kde_bathymetry(df,threshold,window):
-#     if df is None:
-#         return None
-
-#     accumulator = AccumulateKDEs()
-#     series_out = df.Z_g.rolling(window=window, center=True).apply(
-#         accumulator.calc_kdeval_and_zval, raw=True, kwargs={"threshold": threshold}
-#     )
-
-#     df = df.assign(kde_seafloor=kde_elev,kernel_density=kd)
-#     points_with_bathy = df[df.kde_seafloor.notna()]
-
-#     return points_with_bathy
 
 
 def add_rolling_kde(df, window):
@@ -107,8 +94,8 @@ def get_all_bathy_from_granule(filename, window, threshold_val, req_perc_hconf):
         # get the metadata dictionary
         metadata_dict = beamarray.dtype.metadata
         # the percentage of high confidence ocean photons is a proxy for the overall quality of the signal
-        if metadata_dict["ocean_high_conf_perc"] > req_perc_hconf:
-            next()
+        if metadata_dict["ocean_high_conf_perc"] < req_perc_hconf:
+            continue
         # convert numpy array to a geodataframe with the along-track distance
         point_df = geofn.add_track_dist_meters(beamarray)
         # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
