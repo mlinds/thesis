@@ -19,7 +19,6 @@ def get_elev_at_max_density(point_array):
     return z_at_kdemax, max_density
 
 
-
 # class CountCalls:
 #     def __init__(self):
 #         self.counter = 0
