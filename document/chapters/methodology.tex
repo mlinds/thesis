@@ -24,7 +24,7 @@ The raw photon cloud from the ATL03 data product contains photons returns from l
 
 After applying the filtering steps above, the remaining points are in the area that \emph{could} contain batymetric signal. To determine if there is signal present, further processing is required. There have been several methods for separating bathymetric signal photons from noise, which are explained in section \ref{subsec:denoising}. For this project\pdfcomment{reword?}, a new method is proposed based on a Gaussian Kernel Density Estimation (KDE) function. A function is created that returns the maximum kernel density, and the Z location at which it occurs. Figure \ref{fig:kdefunc} shows the KDE function as applied to two different windows, and the resulting kernel density plots. The KDE function is highly influenced by the \emph{Bandwidth} parameter. For this implementation, the Scott method \citeauthor{Scott2015} is used to estimate the required bandwidth based on the data. 
 
-This function is applied on a rolling basis to a window of 200 points. This function returns a value for every single point along the transect, including in areas that do not have any noticeable signal. The kernel density value gives an indication of the strength of the peak. To reject the locations where the signal is weak, any points with a KDE value of less than $$ kde_{50} - 0.25 * \sigma_{kde} $$ \pdfcomment{maybe just less than median? decreases RMS error}  are assigned an NaN value and are dropped from the analysis.
+This function is applied on a rolling basis to a window of 200 points. This function returns a value for every single point along the transect, including in areas that do not have any noticeable signal. The kernel density value gives an indication of the strength of the peak. To reject the locations where the signal is weak, any points with a KDE value of less than $$ kde_{50} - 0.25 * \sigma_{kde} $$ \pdfcomment{maybe just less than median? that decreases RMS error at the florida site} are assigned an NaN value and are dropped from the analysis.
 
 \begin{enumerate}
     \item apply a window function that finds the kernel density of the subsurface points in the vertical direction. The vertical location of the peak of the kernel density is calculated, as in figure \ref{fig:kdefunc}
@@ -83,16 +83,6 @@ may 31 -
 
 My current method culls points within a buffer of the sea surface, so it struggles to find signal in very shallow (2-3m) water depth. Maybe A-DRAGANN as implemented in \cite{Cao2021} might be more reliable in shallow water?
 \pdfcomment{temp notes}
-\begin{enumerate}
-    \color{orange}
-    \item Start with 2021 OSM coastline
-    \item 
-    \item clip to extent of mangroves worldwide - only the tropics and subtropics
-    \item project in pseudo mercator
-    \item split the lines into 100km segments
-    \item select these segments where they touch a mangrove 
-\end{enumerate}
-
 
 \section{Processing of Lidar Data}
 
