@@ -137,11 +137,11 @@ def bathy_from_all_tracks_parallel(folderpath, window, threshold_val, req_perc_h
 
     Returns:
         GeoDataFrame: Geodataframe of the locations of photons that are bathmetry
-    """    
+    """
 
     # to run the algorithm for all granules in parallel, create an iterable of tuples with the function parameters (as required by pool.starmap)
-    # TODO jesus this is unreadable, there must be a better way to make this iterator. 
-    # maybe go back to map, and feed map object the a modified function with lambda or functools.partial 
+    # TODO jesus this is unreadable, there must be a better way to make this iterator.
+    # maybe go back to map, and feed map object the a modified function with lambda or functools.partial
     filenamelist = list(
         zip(
             iglob(folderpath + "/ATL03/*.nc"),
