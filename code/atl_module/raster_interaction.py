@@ -25,6 +25,8 @@ def query_raster(dataframe: pd.DataFrame, src: str):
     Returns:
         ndarray: 1D Array of values at each point.
     """
+    # TODO adjust this to deal with the refraction-corrected locations. Might make a very small difference
+
     # takes a dataframe of points, and any GDAL raster as input
     xylist = dataframe.loc[:, ["X", "Y"]].values
     # take x,y pairs from dataframe, convert to a big string, then into a bytestring to feed into the pipe
