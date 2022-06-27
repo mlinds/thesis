@@ -14,37 +14,45 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
     # open the data to be compared as a rasterio dataset
     measured_ras = rasterio.open(measured_rasterpath)
-    dst_crs = measured_ras.crs
+
+    # going to try to reproject to the same crs as the truth raster to reduce error due to distortion.
+    dst_crs = truthras.crs
+
+    # the next block is actually not required since we don't really need to warp the truth raster
 
     # First we reproject the truth raster to the same CRS as the kalman update (i.e. )
-    fema_projected_array, fema_projected_transform = warp.reproject(
+    truth_data_reproj, truth_data_tranform = warp.reproject(
         truthband, dst_crs=dst_crs, resampling=Resampling.bilinear
     )
     # drop the firstlayer of the ndarray
-    fema_projected_array = fema_projected_array[0]
+    truth_data_reproj = truth_data_reproj[0]
     # mask the NA values from the numpy array
-    fema_projected_array[(fema_projected_array == truthras.nodata)] = np.nan
+    truth_data_reproj[(truth_data_reproj == truthras.nodata)] = np.nan
+
+    truth_data_reproj = truthras.read(1, masked=True)
+    truth_data_tranform = truthras.transform
 
     # get the dimensions we need the output raster to be
-    dst_height = fema_projected_array.shape[0]
-    dst_width = fema_projected_array.shape[1]
+    dst_height = truth_data_reproj.shape[0]
+    dst_width = truth_data_reproj.shape[1]
 
     # create an in memory VRT object with the same crs and the same resolution as the truth raster
+    # set up the parameters
     vrt_options = {
         "resampling": Resampling.bilinear,
         "crs": dst_crs,
-        "transform": fema_projected_transform,
+        "transform": truth_data_tranform,
         "height": dst_height,
         "width": dst_width,
         "src_nodata": measured_ras.nodata,
     }
-    #
+    # actually make the raster
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
-        bilinear_data = bi_vrt.read(1)
+        bilinear_data = bi_vrt.read(1, masked=True)
         # mask out nodata values
-        bilinear_data[bilinear_data == measured_ras.nodata] = np.NaN
 
-    return np.nanmean((fema_projected_array - bilinear_data) ** 2) ** (0.5)
+    # return the square root of the average of the squared difference
+    return np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5)
 
 
 def main():
