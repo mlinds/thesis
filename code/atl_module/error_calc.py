@@ -9,20 +9,24 @@ from atl_module.geospatial_functions import to_refr_corrected_gdf
 from atl_module.raster_interaction import query_raster
 
 
-def add_true_elevation(bathy_points,true_data_path):
+def add_true_elevation(bathy_points, true_data_path):
     gdf = to_refr_corrected_gdf(bathy_points, crs="EPSG:32617")
     true_bathy = query_raster(
-    gdf,
-    src=true_data_path,
+        gdf,
+        src=true_data_path,
     )
     # assign the series to the dataframe
     return bathy_points.assign(true_elevation=true_bathy)
 
-def icesat_rmse(bathy_points,true_data_path):
-    bathy_points = add_true_elevation(bathy_points=bathy_points,true_data_path=true_data_path)
+
+def icesat_rmse(bathy_points, true_data_path):
+    bathy_points = add_true_elevation(
+        bathy_points=bathy_points, true_data_path=true_data_path
+    )
     # return the RMS error
     rms = calc_rms_error(bathy_points, ["true_elevation"])
     return rms
+
 
 def calc_rms_error(beam_df, column_names: list):
     error_dict = {}
@@ -39,6 +43,7 @@ def calc_rms_error(beam_df, column_names: list):
             error_dict[str(column) + "_error"] = rms_error
 
     return error_dict
+
 
 def raster_RMSE(truth_raster_path, measured_rasterpath):
     # open the truth raster, which might be in a different crs than the output than the one being compared
@@ -86,7 +91,10 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         # mask out nodata values
 
     # return the square root of the average of the squared difference
-    errordict = {'RMSE':np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),'MAE':np.nanmean(np.abs(truth_data_reproj - bilinear_data))}
+    errordict = {
+        "RMSE": np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),
+        "MAE": np.nanmean(np.abs(truth_data_reproj - bilinear_data)),
+    }
     return errordict
 
 

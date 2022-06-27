@@ -41,7 +41,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     return pts_gdf
 
 
-def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts,variogram_model):
+def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_model):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -98,7 +98,7 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts,variogram_m
 if __name__ == "__main__":
     krige_bathy(
         krmodel=OrdinaryKriging,
-        variogram_model='linear',
+        variogram_model="linear",
         initial_raster_path="../data/resample_test/bilinear.tif",
         pointfolder_path="../data/test_sites/florida_keys",
         npts=2000,
