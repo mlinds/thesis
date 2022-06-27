@@ -1,0 +1,15 @@
+flowchart TD
+    rawdata[/Raw ATL03 Data/] --> addgeb[Assign GEBCO elevation for each point]
+    addgeb --> horizcull[Cull points with at a depth less than -50 or a height above 6]
+    horizcull --> sealevelcalc[Calclate sea surface with rolling window of ocean signal point elevation]
+    sealevelcalc --> seasurfcull[Cull points with within 1 std. dev. of sea surface]
+    seasurfcull --> vertcull[Cull any points with a Z value greater than 5 or less than -40]
+    vertcull --> filtertep[Cull any points labeled as TEP or not classified as ocean returns]
+    filtertep --> refr[Calculate refraction correction value and apply to photon Z value]
+    refr --> mvwindow[Apply a moving window function that finds the Z value of the greatest density]
+    mvwindow --> filterkde[If the density at the peak is greater than a threshold value, return the value as the seafloor elevation]
+
+
+
+
+    
