@@ -1,5 +1,10 @@
 # %%
-from atl_module import load_netcdf,point_dataframe_filters,icesat_bathymetry,raster_interaction
+from atl_module import (
+    load_netcdf,
+    point_dataframe_filters,
+    icesat_bathymetry,
+    raster_interaction,
+)
 import atl_module
 import pandas as pd
 from bokeh.io import output_notebook
@@ -7,6 +12,7 @@ from bokeh.palettes import Spectral5
 from bokeh.plotting import figure, show
 from bokeh.transform import factor_cmap
 import numpy as np
+
 output_notebook()
 
 atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20210601225346_10561101_005_01.nc"
@@ -20,7 +26,7 @@ print(f"beams available {beamlist}")
 beam = "gt3r"
 print(beam)
 
-beamdata =  load_netcdf.load_beam_array_ncds(atl03_testfile, beam)
+beamdata = load_netcdf.load_beam_array_ncds(atl03_testfile, beam)
 
 print(f"length of the dataset is {beamdata.shape[0]} points")
 metadata_dict = beamdata.dtype.metadata
@@ -30,8 +36,8 @@ raw_data = icesat_bathymetry.add_along_track_dist(beamdata)
 # .pipe(point_dataframe_filters.add_sea_surface_level)
 point_dataframe = icesat_bathymetry._filter_points(raw_data)
 
-point_dataframe= icesat_bathymetry.add_rolling_kde(point_dataframe,window=200)
-point_dataframe.loc[point_dataframe.kde_val.to_numpy() < 0.0347,'z_kde'] = np.NaN
+point_dataframe = icesat_bathymetry.add_rolling_kde(point_dataframe, window=200)
+point_dataframe.loc[point_dataframe.kde_val.to_numpy() < 0.0347, "z_kde"] = np.NaN
 # skewness_rolling = point_dataframe.Z_g.rolling(
 #     window=200, center=True, min_periods=180
 # ).median()
@@ -81,7 +87,7 @@ p.scatter(
     source=point_dataframe,
     x="dist_or",
     y="Z_g",
-    color='green',
+    color="green",
     legend_label="points after filtering",
 )
 
@@ -115,7 +121,9 @@ show(p)
 # point_dataframe["oc_sig_conf"] = point_dataframe.oc_sig_conf.astype("int")
 
 #%%
-point_dataframe = point_dataframe.assign(z_kde_mean = point_dataframe.z_kde.rolling(window=200,center = True).mean())
+point_dataframe = point_dataframe.assign(
+    z_kde_mean=point_dataframe.z_kde.rolling(window=200, center=True).mean()
+)
 #%%
 
 # %% [markdown]
