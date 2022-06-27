@@ -1,5 +1,6 @@
 ## added manually
 # don't commit binaries
+code/OTPS_model/*
 *.docx
 *.zip 
 code/download_examples/
@@ -592,3 +593,8 @@ document/kickoff/presentation.pptx
 .vscode/settings.json
 document/report.lpc
 .vscode/launch.json
+code/OTPS_model/OTPS/extract_HC
+code/OTPS_model/OTPS/extract_local_model
+code/OTPS_model/OTPS/DATA/Model_Mex
+code/OTPS_model/OTPS/DATA/MEX/grid_Mex
+code/OTPS_model/OTPS/DATA/MEX/h_Mex2010
