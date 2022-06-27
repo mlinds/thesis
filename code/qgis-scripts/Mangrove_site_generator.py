@@ -16,13 +16,48 @@ import processing
 
 
 class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
-
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterMapLayer('Coastlinesegments', 'Coastline segments', defaultValue=None, types=[QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterMapLayer('GlobalMangrovePolygons', 'Global Mangrove Polygons', defaultValue=None, types=[QgsProcessing.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterNumber('MinimumbufferedPolygonarea', 'Minimum buffered Polygon area', type=QgsProcessingParameterNumber.Double, minValue=0, maxValue=1.79769e+308, defaultValue=None))
-        self.addParameter(QgsProcessingParameterBoolean('VERBOSE_LOG', 'Verbose logging', optional=True, defaultValue=False))
-        self.addParameter(QgsProcessingParameterFeatureSink('Studyareas', 'StudyAreas', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, supportsAppend=True, defaultValue=None))
+        self.addParameter(
+            QgsProcessingParameterMapLayer(
+                "Coastlinesegments",
+                "Coastline segments",
+                defaultValue=None,
+                types=[QgsProcessing.TypeVectorLine],
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterMapLayer(
+                "GlobalMangrovePolygons",
+                "Global Mangrove Polygons",
+                defaultValue=None,
+                types=[QgsProcessing.TypeVectorPolygon],
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                "MinimumbufferedPolygonarea",
+                "Minimum buffered Polygon area",
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0,
+                maxValue=1.79769e308,
+                defaultValue=None,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                "VERBOSE_LOG", "Verbose logging", optional=True, defaultValue=False
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                "Studyareas",
+                "StudyAreas",
+                type=QgsProcessing.TypeVectorAnyGeometry,
+                createByDefault=True,
+                supportsAppend=True,
+                defaultValue=None,
+            )
+        )
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the
@@ -33,11 +68,17 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Extract sufficiently large forests
         alg_params = {
-            'EXPRESSION': ' attribute( $currentfeature ,\'area\') >  @MinimumbufferedPolygonarea ',
-            'INPUT': parameters['GlobalMangrovePolygons'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "EXPRESSION": " attribute( $currentfeature ,'area') >  @MinimumbufferedPolygonarea ",
+            "INPUT": parameters["GlobalMangrovePolygons"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['ExtractSufficientlyLargeForests'] = processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["ExtractSufficientlyLargeForests"] = processing.run(
+            "native:extractbyexpression",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(1)
         if feedback.isCanceled():
@@ -45,11 +86,17 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Remove holes in Global Mangrove data
         alg_params = {
-            'INPUT': outputs['ExtractSufficientlyLargeForests']['OUTPUT'],
-            'MIN_AREA': 0,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["ExtractSufficientlyLargeForests"]["OUTPUT"],
+            "MIN_AREA": 0,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['RemoveHolesInGlobalMangroveData'] = processing.run('native:deleteholes', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["RemoveHolesInGlobalMangroveData"] = processing.run(
+            "native:deleteholes",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(2)
         if feedback.isCanceled():
@@ -57,12 +104,18 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Clean up Mangrove edges
         alg_params = {
-            'INPUT': outputs['RemoveHolesInGlobalMangroveData']['OUTPUT'],
-            'METHOD': 0,
-            'TOLERANCE': 200,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["RemoveHolesInGlobalMangroveData"]["OUTPUT"],
+            "METHOD": 0,
+            "TOLERANCE": 200,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['CleanUpMangroveEdges'] = processing.run('native:simplifygeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["CleanUpMangroveEdges"] = processing.run(
+            "native:simplifygeometries",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(3)
         if feedback.isCanceled():
@@ -70,16 +123,22 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Buffer and Dissolve Mangrove polygons by 1km
         alg_params = {
-            'DISSOLVE': True,
-            'DISTANCE': 500,
-            'END_CAP_STYLE': 0,
-            'INPUT': outputs['CleanUpMangroveEdges']['OUTPUT'],
-            'JOIN_STYLE': 0,
-            'MITER_LIMIT': 2,
-            'SEGMENTS': 3,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "DISSOLVE": True,
+            "DISTANCE": 500,
+            "END_CAP_STYLE": 0,
+            "INPUT": outputs["CleanUpMangroveEdges"]["OUTPUT"],
+            "JOIN_STYLE": 0,
+            "MITER_LIMIT": 2,
+            "SEGMENTS": 3,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['BufferAndDissolveMangrovePolygonsBy1km'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["BufferAndDissolveMangrovePolygonsBy1km"] = processing.run(
+            "native:buffer",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(4)
         if feedback.isCanceled():
@@ -87,10 +146,16 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Explode dissolve mangrove polygons to Single Parts
         alg_params = {
-            'INPUT': outputs['BufferAndDissolveMangrovePolygonsBy1km']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["BufferAndDissolveMangrovePolygonsBy1km"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['ExplodeDissolveMangrovePolygonsToSingleParts'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["ExplodeDissolveMangrovePolygonsToSingleParts"] = processing.run(
+            "native:multiparttosingleparts",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(5)
         if feedback.isCanceled():
@@ -98,12 +163,20 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Extract Coastal line segments touching a mangrove polygon
         alg_params = {
-            'INPUT': parameters['Coastlinesegments'],
-            'INTERSECT': outputs['ExplodeDissolveMangrovePolygonsToSingleParts']['OUTPUT'],
-            'PREDICATE': [0,4,7],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": parameters["Coastlinesegments"],
+            "INTERSECT": outputs["ExplodeDissolveMangrovePolygonsToSingleParts"][
+                "OUTPUT"
+            ],
+            "PREDICATE": [0, 4, 7],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['ExtractCoastalLineSegmentsTouchingAMangrovePolygon'] = processing.run('native:extractbylocation', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["ExtractCoastalLineSegmentsTouchingAMangrovePolygon"] = processing.run(
+            "native:extractbylocation",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(6)
         if feedback.isCanceled():
@@ -111,12 +184,20 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Simplify
         alg_params = {
-            'INPUT': outputs['ExtractCoastalLineSegmentsTouchingAMangrovePolygon']['OUTPUT'],
-            'METHOD': 0,
-            'TOLERANCE': 300,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["ExtractCoastalLineSegmentsTouchingAMangrovePolygon"][
+                "OUTPUT"
+            ],
+            "METHOD": 0,
+            "TOLERANCE": 300,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['Simplify'] = processing.run('native:simplifygeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["Simplify"] = processing.run(
+            "native:simplifygeometries",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(7)
         if feedback.isCanceled():
@@ -124,15 +205,21 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Buffer simplified shorelines 5km offshore
         alg_params = {
-            'DISTANCE': 10000,
-            'INPUT': outputs['Simplify']['OUTPUT'],
-            'JOIN_STYLE': 0,
-            'MITER_LIMIT': 2,
-            'SEGMENTS': 8,
-            'SIDE': 0,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "DISTANCE": 10000,
+            "INPUT": outputs["Simplify"]["OUTPUT"],
+            "JOIN_STYLE": 0,
+            "MITER_LIMIT": 2,
+            "SEGMENTS": 8,
+            "SIDE": 0,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['BufferSimplifiedShorelines5kmOffshore'] = processing.run('native:singlesidedbuffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["BufferSimplifiedShorelines5kmOffshore"] = processing.run(
+            "native:singlesidedbuffer",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(8)
         if feedback.isCanceled():
@@ -140,11 +227,17 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Dissolve coastal buffer
         alg_params = {
-            'FIELD': [''],
-            'INPUT': outputs['BufferSimplifiedShorelines5kmOffshore']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "FIELD": [""],
+            "INPUT": outputs["BufferSimplifiedShorelines5kmOffshore"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['DissolveCoastalBuffer'] = processing.run('native:dissolve', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["DissolveCoastalBuffer"] = processing.run(
+            "native:dissolve",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(9)
         if feedback.isCanceled():
@@ -152,11 +245,17 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Removed holes in coastal polygons
         alg_params = {
-            'INPUT': outputs['DissolveCoastalBuffer']['OUTPUT'],
-            'MIN_AREA': 0,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["DissolveCoastalBuffer"]["OUTPUT"],
+            "MIN_AREA": 0,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['RemovedHolesInCoastalPolygons'] = processing.run('native:deleteholes', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["RemovedHolesInCoastalPolygons"] = processing.run(
+            "native:deleteholes",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(10)
         if feedback.isCanceled():
@@ -164,10 +263,16 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Explode coastline polygons
         alg_params = {
-            'INPUT': outputs['RemovedHolesInCoastalPolygons']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["RemovedHolesInCoastalPolygons"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['ExplodeCoastlinePolygons'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["ExplodeCoastlinePolygons"] = processing.run(
+            "native:multiparttosingleparts",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(11)
         if feedback.isCanceled():
@@ -175,16 +280,22 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Buffer
         alg_params = {
-            'DISSOLVE': True,
-            'DISTANCE': 0.1,
-            'END_CAP_STYLE': 0,
-            'INPUT': outputs['ExplodeCoastlinePolygons']['OUTPUT'],
-            'JOIN_STYLE': 0,
-            'MITER_LIMIT': 2,
-            'SEGMENTS': 5,
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "DISSOLVE": True,
+            "DISTANCE": 0.1,
+            "END_CAP_STYLE": 0,
+            "INPUT": outputs["ExplodeCoastlinePolygons"]["OUTPUT"],
+            "JOIN_STYLE": 0,
+            "MITER_LIMIT": 2,
+            "SEGMENTS": 5,
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['Buffer'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["Buffer"] = processing.run(
+            "native:buffer",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(12)
         if feedback.isCanceled():
@@ -192,10 +303,16 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Multipart to singleparts
         alg_params = {
-            'INPUT': outputs['Buffer']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["Buffer"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['MultipartToSingleparts'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["MultipartToSingleparts"] = processing.run(
+            "native:multiparttosingleparts",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(13)
         if feedback.isCanceled():
@@ -203,10 +320,16 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Convex hull
         alg_params = {
-            'INPUT': outputs['MultipartToSingleparts']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["MultipartToSingleparts"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['ConvexHull'] = processing.run('native:convexhull', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["ConvexHull"] = processing.run(
+            "native:convexhull",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(14)
         if feedback.isCanceled():
@@ -214,11 +337,17 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Dissolve
         alg_params = {
-            'FIELD': [''],
-            'INPUT': outputs['ConvexHull']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "FIELD": [""],
+            "INPUT": outputs["ConvexHull"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['Dissolve'] = processing.run('native:dissolve', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["Dissolve"] = processing.run(
+            "native:dissolve",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(15)
         if feedback.isCanceled():
@@ -226,10 +355,16 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Multipart to singleparts
         alg_params = {
-            'INPUT': outputs['Dissolve']['OUTPUT'],
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            "INPUT": outputs["Dissolve"]["OUTPUT"],
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
         }
-        outputs['MultipartToSingleparts'] = processing.run('native:multiparttosingleparts', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs["MultipartToSingleparts"] = processing.run(
+            "native:multiparttosingleparts",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
 
         feedback.setCurrentStep(16)
         if feedback.isCanceled():
@@ -237,24 +372,30 @@ class Make_mangrove_coastAoi(QgsProcessingAlgorithm):
 
         # Convex hull
         alg_params = {
-            'INPUT': outputs['MultipartToSingleparts']['OUTPUT'],
-            'OUTPUT': parameters['Studyareas']
+            "INPUT": outputs["MultipartToSingleparts"]["OUTPUT"],
+            "OUTPUT": parameters["Studyareas"],
         }
-        outputs['ConvexHull'] = processing.run('native:convexhull', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['Studyareas'] = outputs['ConvexHull']['OUTPUT']
+        outputs["ConvexHull"] = processing.run(
+            "native:convexhull",
+            alg_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        results["Studyareas"] = outputs["ConvexHull"]["OUTPUT"]
         return results
 
     def name(self):
-        return 'Make_mangrove_coast AOI'
+        return "Make_mangrove_coast AOI"
 
     def displayName(self):
-        return 'Make_mangrove_coast AOI'
+        return "Make_mangrove_coast AOI"
 
     def group(self):
-        return ''
+        return ""
 
     def groupId(self):
-        return ''
+        return ""
 
     def createInstance(self):
         return Make_mangrove_coastAoi()
