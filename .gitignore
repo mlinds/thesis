@@ -42,6 +42,46 @@ missfont.log
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,latex,jupyternotebooks
 
+# added fortran stuff
+# Created by https://www.toptal.com/developers/gitignore/api/fortran
+# Edit at https://www.toptal.com/developers/gitignore?templates=fortran
+
+### Fortran ###
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# End of https://www.toptal.com/developers/gitignore/api/fortran
+
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
@@ -550,3 +590,4 @@ document/roboto.sty
 document/kickoff/presentation.pptx
 .vscode/settings.json
 document/report.lpc
+.vscode/launch.json
