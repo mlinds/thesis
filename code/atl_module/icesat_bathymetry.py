@@ -127,8 +127,21 @@ def bathy_from_all_tracks(path):
 
 
 def bathy_from_all_tracks_parallel(folderpath, window, threshold_val, req_perc_hconf):
+    """Run the kde function for every single granule in parallel
+
+    Args:
+        folderpath (str): Path to directory where the netcdf files are stored
+        window (int): The number of points to use in the windowing function
+        threshold_val (float): the *number of standard deviation* away from the median to include. If 0, only include points greater than the median value
+        req_perc_hconf (float): Minimum percent of high confidence ocean points to include the granule in the data at all
+
+    Returns:
+        GeoDataFrame: Geodataframe of the locations of photons that are bathmetry
+    """    
 
     # to run the algorithm for all granules in parallel, create an iterable of tuples with the function parameters (as required by pool.starmap)
+    # TODO jesus this is unreadable, there must be a better way to make this iterator. 
+    # maybe go back to map, and feed map object the a modified function with lambda or functools.partial 
     filenamelist = list(
         zip(
             iglob(folderpath + "/ATL03/*.nc"),

@@ -41,7 +41,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     return pts_gdf
 
 
-def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts):
+def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts,variogram_model):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -69,9 +69,9 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts):
         x=x_loc,
         y=y_loc,
         z=z_elev,
-        variogram_model="linear",
+        variogram_model=variogram_model,
         verbose=True,
-        coordinates_type="euclidean",
+        # coordinates_type="euclidean",
     )
     # get the output Zgrid and uncertainty
     z, ss = krigemodel.execute("grid", gridx, gridy)
@@ -98,6 +98,7 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts):
 if __name__ == "__main__":
     krige_bathy(
         krmodel=OrdinaryKriging,
+        variogram_model='linear',
         initial_raster_path="../data/resample_test/bilinear.tif",
         pointfolder_path="../data/test_sites/florida_keys",
         npts=2000,
