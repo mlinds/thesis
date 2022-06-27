@@ -1,5 +1,6 @@
 ## added manually
 # don't commit binaries
+*.docx
 *.zip 
 code/download_examples/
 practicalities/forms/*
