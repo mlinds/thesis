@@ -1,20 +1,37 @@
 \chapter{Results}
 \section{Florida Keys test site}
+\subsection{ICESat-2 Transects within AOI}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/study_site_tracklines.jpg}
+    \caption{Location of ICESat-2 Transects in Florida keys Study Area}
+    \label{fig:keys_transects}
+\end{figure}
+\subsection{Comparison Data}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
+    \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
+    \label{fig:truebathy}
+\end{figure}
 \subsection{Error in lidar photon data}
 
-\input{tables/rms_by_atm.tex}
+% \input{tables/rms_by_atm.tex}
 
-\input{tables/rms_by_type.tex}
+% \input{tables/rms_by_type.tex}
 
-\section{Kalman Update with Lidar vs. simple bilinear}
-
+\subsection{Bathymetric photons}
+\ref{fig:bathyphotonmap} shows the location and esimated bathymetric depths of individual ICESat-2 photon returns.
+\pdfcomment{change colorbars to match}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/florida_test_site_photon_map.jpg}
     \caption{Geographic distribution of Bathymetric photon data}
-    \label{bathyphotonmap}
+    \label{fig:bathyphotonmap}
 \end{figure}
 
+\subsection{Kalman Update with Lidar vs. simple bilinear}
 \input{tables/total_raster_error_kalman_vs_bi.tex}
 \section{Geographic Distribution of Results}
 \section{Distribution of error at test sites}
