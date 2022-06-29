@@ -4,7 +4,7 @@
 etc
 
 \section{Identification of signal points}
-Most of the studies that try to find bathymetric points from Icesat-2 use some variation of the DBSCAN algorithm to identify possible bathymetric signal. The algorithm has the advantages of being robust to noise \cite{} and very computationally efficient. However, one disadvantage is that is is very sensitive to the choice of parameter values, and setting them programatically so that they work on a global scale basis is difficult \cite{} \pdfcomment{does this need better support?}, and many of the previous studies employing this method used a manual review after classification to remove clusters of noise incorrectly labeled as signal \parencite{} \pdfcomment{add citation}. Also, methods based on DBSCAN label points as either likely signal or noise, but then require further interpolation to calculate a sea surface value from the 
+Most of the studies that try to find bathymetric points from Icesat-2 use some variation of the DBSCAN algorithm to identify possible bathymetric signal. The algorithm has the advantages of being robust to noise \cite{} and very computationally efficient. However, one disadvantage is that is is very sensitive to the choice of parameter values, and setting them programmatically so that they work on a global scale basis is difficult \cite{} \pdfcomment{does this need better support?}, and many of the previous studies employing this method used a manual review after classification to remove clusters of noise incorrectly labeled as signal \parencite{} \pdfcomment{add citation}. Also, methods based on DBSCAN label points as either likely signal or noise, but then require further interpolation to calculate a sea surface value from the 
 
 
 \subsection{Filter to subsurface photons}
