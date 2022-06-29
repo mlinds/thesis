@@ -8,6 +8,9 @@ from sklearn.metrics import mean_squared_error
 from atl_module.geospatial_functions import to_refr_corrected_gdf
 from atl_module.raster_interaction import query_raster
 
+# TODO refactor function names to be more descriptive
+# TODO add docstrings to functions
+
 
 def add_true_elevation(bathy_points, true_data_path):
     gdf = to_refr_corrected_gdf(bathy_points, crs="EPSG:32617")
