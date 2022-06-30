@@ -110,13 +110,13 @@ The elevation value reported in ATL03 does not include the geoid or any tides. T
 
 \subsection{Signal Photon Identification}
 \label{subsec:denoising}
-The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} \pdfcomment{add reference here} and can be used to filter out points at or above the sea surface. 
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} \pdfcomment{add reference here - need to find all icesat papers and search each one to figure out where I read this} and can be used to filter out points at or above the sea surface. 
 
-To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data. There are several different techniques proposed in the literature.  Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016}. Other researchers have used implementations of DBSCAN \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. These density-based methods are premised expectation that signal photons are closer together than noise photons. \parencite{Neuenschwander2019}.
+To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data. There are several different techniques proposed in the literature.  Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016}. Other researchers have used implementations of the density-based spatial clustering for applications with Noise (DBSCAN) algorithm \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. These density-based methods are premised on the assumption that signal photons are closer together than noise photons. \parencite{Neuenschwander2019}.
 
 
 \section{Satellite Derived bathymetry}
-There are several established methods for calculating bathymetric data from passive optical and SAR satellite data, and recent advances in cloud computing capabilities like Google Earth Engine (GEE) \parencite{Gorelick2017a} make large catalogs of remote sensing data more accessible \parencite{Pike2019,Turner2021}. The  approaches can be broadly classified into wave-kinematic and optical inversion techniques.
+There are several established methods for calculating bathymetric data from passive optical and SAR satellite data, and recent advances in cloud computing capabilities like Google Earth Engine (GEE) \parencite{Gorelick2017a} make large catalogs of remote sensing data more accessible \parencite{Pike2019,Turner2021}. The approaches can be broadly classified into \emph{wave-kinematic} and \emph{optical inversion} techniques.
 
 \subsection{Wave-Kinematic Bathymetry}
 This approach uses the hydrodynamic properties of a wave field to estimate the bathymetry. The hydrodynamic variables like wave celerity and wave length are estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation \cite{Almar2021e}. The major advantage of this method is that the results do not depend on the turbidity, which can be a significant limitation to optical SDB along many coastlines. The downsides to this approach are that the horizontal resolution is limited compared to optical methods, and the depth that it can reach is limited by the wavelength: longer waves feel the bottom earlier, so only in areas with significant swells can deeper bathymetry measurements be found \parencite{Almar2021e}.
@@ -127,7 +127,7 @@ Optical remote sensing is a passive technique, as it detects light from the sun 
 Because of the ability to incorporate in-situ data and the computational ease, empirical methods are considered for this project.
 
 \subsection{Active-passive Sensor Fusion: The best of both worlds}
-\cite{Parrish2019} conclude that the best way to use ICESat-2 data for bathymetric survey is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
+\cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
 
 There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, finding bathymetric signal points, and combining the lidar data with optical techniques.
 
@@ -165,7 +165,7 @@ The studies that have used some version of the proposed technique are summarized
 
 \subsection{Bathymetric Data Assimilation}
 
-\subsubsection*{temp notes}
+% \subsubsection*{temp notes}
 \begin{itemize}
       \color{blue}
       \item Ensemble Kalman Filter represents distributions by an ensemble, which is propagated using the temporal evolution model and updated via a linear shift based on new observations \parencite{Jurek2021}.
