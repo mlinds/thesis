@@ -1,5 +1,6 @@
 # %%
 from atl_module import icesat_bathymetry
+from pyrsistent import l
 from sklearn.neighbors import KernelDensity
 import pandas as pd
 import numpy as np
@@ -11,6 +12,33 @@ from atl_module.refraction_correction import correct_refr
 import matplotlib
 
 plt.rcParams["font.family"] = "Sans Serif"
+# %% [markdown]
+# # Plots of Filtering Process
+
+# %%
+beamdata = icesat_bathymetry.load_beam_array_ncds('../data/test_sites/Martinique/ATL03/processed_ATL03_20191002144812_00870507_005_01.nc','gt2r')
+beamdata = icesat_bathymetry.add_along_track_dist(beamdata)
+
+def get_photon_plot_axis():
+    fig,ax = plt.subplots(figsize=(10,5))
+    ax.set_xlabel('Distance along transect [m]')
+    ax.set_ylabel('Geoidal elevation [m]')
+    return fig,ax
+
+fig,ax = get_photon_plot_axis() 
+
+ax.scatter(beamdata.dist_or,beamdata.Z,s=1,label='All Photons from beam',alpha=0.2)
+ax.set_title('Photon Filtering results')
+ax.legend()
+fig.savefig('../document/figures/unfiltered_transect.jpg',facecolor='white',bbox_inches='tight')
+beamdata = icesat_bathymetry._filter_points(beamdata)
+ax.scatter(beamdata.dist_or,beamdata.Z,c='red',s=1,label='Geolocated photons after filtering',alpha=0.2)
+ax.legend()
+fig.savefig('../document/figures/filtered_vs_unfiltered.jpg',facecolor='white',bbox_inches='tight')
+fig,ax = get_photon_plot_axis() 
+ax.set_title('Photons after filtering')
+ax.scatter(beamdata.dist_or,beamdata.Z,c='red',s=1,label='Photons')
+fig.savefig('../document/figures/photons_after_filtering.jpg',facecolor='white',bbox_inches='tight')
 
 
 # %% [markdown]
