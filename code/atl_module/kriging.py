@@ -32,8 +32,8 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
             thinned_array["X"], thinned_array["Y"], crs="EPSG:32617"
         ),
     )
-    pts_gdf.to_file("../data/resample_test/keys_testpts.gpkg")
-    pipeline = pdal.Writer.las(filename="../data/resample_test/filtered.laz").pipeline(
+    pts_gdf.to_file(folderpath + "/keys_testpts.gpkg")
+    pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
         thinned_array
     )
     print(pipeline.execute(), "Points written to output LAZ and geopackage files")
@@ -41,7 +41,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     return pts_gdf
 
 
-def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_model):
+def krige_bathy(krmodel, folderpath, npts, variogram_model):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -53,10 +53,10 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_
     # TODO raise an error if CRSs don't match
 
     # load the points for kriging
-    pts_gdf = prepare_pt_subset_for_kriging(pointfolder_path, npts)
+    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts)
 
     # open the interpolated raster to get the coordinates
-    with rasterio.open(initial_raster_path) as ras:
+    with rasterio.open(folderpath + "/bilinear.tif") as ras:
         ar = rioxarray.open_rasterio(ras)
         gridx = ar.x.data
         gridy = ar.y.data
@@ -80,7 +80,7 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_
 
     # save the results as a raster with band 1 and the Z value and band 2 as the uncertainty
     with rasterio.open(
-        "../data/resample_test/interp_OK.tif",
+        folderpath + "/kriging_output.tif",
         mode="w+",
         crs=ras.crs,
         width=ras.width,
@@ -97,9 +97,8 @@ def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_
 
 if __name__ == "__main__":
     krige_bathy(
-        krmodel=OrdinaryKriging,
-        variogram_model="linear",
-        initial_raster_path="../data/resample_test/bilinear.tif",
-        pointfolder_path="../data/test_sites/florida_keys",
+        krmodel=UniversalKriging,
+        variogram_model="spherical",
+        folderpath="../data/test_sites/florida_keys",
         npts=2000,
     )

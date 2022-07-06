@@ -8,6 +8,8 @@ from sklearn.metrics import mean_squared_error
 from atl_module.geospatial_functions import to_refr_corrected_gdf
 from atl_module.raster_interaction import query_raster
 
+import dask.array as da
+
 # TODO refactor function names to be more descriptive
 # TODO add docstrings to functions
 
@@ -101,24 +103,24 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     return errordict
 
 
-# def main():
-#     print("calculating RMSE with naive interpolation")
-#     truth_vs_bi = raster_RMSE(
-#         "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-#         "../data/resample_test/bilinear.tif",
-#     )
-#     print("calculating RMSE kalman updated bathymetry")
-#     truth_vs_kalman = raster_RMSE(
-#         "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-#         "../data/resample_test/kalman_updated.tif",
-#     )
-#     print(
-#         {
-#             "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
-#             "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
-#         }
-#     )
+def main():
+    # print("calculating RMSE with naive interpolation")
+    # truth_vs_bi = raster_RMSE(
+    #     "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
+    #     "../data/resample_test/bilinear.tif",
+    # )
+    print("calculating RMSE kalman updated bathymetry")
+    truth_vs_kalman = raster_RMSE(
+        "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
+        "../data/resample_test/kalman_updated.tif",
+    )
+    print(
+        {
+            # "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
+            "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
+        }
+    )
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

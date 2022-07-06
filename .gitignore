@@ -598,4 +598,4 @@ code/OTPS_model/OTPS/extract_local_model
 code/OTPS_model/OTPS/DATA/Model_Mex
 code/OTPS_model/OTPS/DATA/MEX/grid_Mex
 code/OTPS_model/OTPS/DATA/MEX/h_Mex2010
-*.jpeg
+document/figures/1d_kriging_section.jpeg

@@ -3,6 +3,10 @@ from subprocess import PIPE, Popen
 
 import numpy as np
 import pandas as pd
+import geopandas as gpd
+import rasterio as rio
+import numpy as np
+from osgeo import gdal
 
 
 def _assign_na_values(inpval):
@@ -58,3 +62,41 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
         beam_df.loc[:, (demname)] = values_at_pt
 
     return beam_df
+
+
+def subset_gebco(folderpath):
+    # constant that defines location of the GEBCO raster
+    GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
+    # get the trackline GDF
+    tracklines = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
+    # get the boundaries
+    bounds_utm = tracklines.geometry.total_bounds
+    bounds_wgs84 = tracklines.to_crs("EPSG:4326").geometry.total_bounds
+    # get the number of the EPSG crs (should be the local UTM zone!!)
+    epsg_no = tracklines.crs.to_epsg()
+
+    out_raster_path = f"{folderpath}/bilinear.tif"
+    options = gdal.WarpOptions(
+        outputBounds=bounds_wgs84,
+        outputBoundsSRS="EPSG:4326",
+        srcSRS="EPSG:4326",
+        dstSRS=f"EPSG:{epsg_no}",
+        xRes=50,
+        yRes=50,
+        resampleAlg="bilinear",
+        srcNodata=-32767,
+        dstNodata=-32767,
+        outputType=gdal.GDT_Float64,
+        # format='GTiff'
+    )
+    ds = gdal.Warp(out_raster_path, GEBCO_LOCATION, options=options)
+    ds = None
+
+    # reopen with rasterio to mask out the values out of range
+    with rio.open(out_raster_path, mode="r+") as reprojected_raster:
+        raw_data = reprojected_raster.read(1, masked=True)
+        raw_data[raw_data > 2] = np.NaN
+        raw_data[raw_data < -40] = np.NaN
+        reprojected_raster.write(raw_data, 1)
+
+    return None

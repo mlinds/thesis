@@ -1,44 +1,68 @@
 # %%
-from atl_module import icesat_bathymetry
-# from pyrsistent import l
-from sklearn.neighbors import KernelDensity
-import pandas as pd
-import numpy as np
+import geopandas as gpd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, ConnectionPatch
+# from pyrsistent import l
+import numpy as np
+import rasterio
+from matplotlib.patches import ConnectionPatch, Rectangle
 from mpl_toolkits.mplot3d import art3d
-from atl_module.point_dataframe_filters import _interpolate_dataframe
+from scipy.stats import gaussian_kde
+
+from atl_module import icesat_bathymetry
 from atl_module.refraction_correction import correct_refr
-import matplotlib
 
 plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
 # # Plots of Filtering Process
 
 # %%
-beamdata = icesat_bathymetry.load_beam_array_ncds('../data/test_sites/Martinique/ATL03/processed_ATL03_20191002144812_00870507_005_01.nc','gt2r')
+beamdata = icesat_bathymetry.load_beam_array_ncds(
+    "../data/test_sites/Martinique/ATL03/processed_ATL03_20191002144812_00870507_005_01.nc",
+    "gt2r",
+)
 beamdata = icesat_bathymetry.add_along_track_dist(beamdata)
 
+
 def get_photon_plot_axis():
-    fig,ax = plt.subplots(figsize=(10,5))
-    ax.set_xlabel('Distance along transect [m]')
-    ax.set_ylabel('Geoidal elevation [m]')
-    return fig,ax
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.set_xlabel("Distance along transect [m]")
+    ax.set_ylabel("Geoidal elevation [m]")
+    return fig, ax
 
-fig,ax = get_photon_plot_axis() 
 
-ax.scatter(beamdata.dist_or,beamdata.Z,s=1,label='All Photons from beam',alpha=0.2)
-ax.set_title('Photon Filtering results')
+fig, ax = get_photon_plot_axis()
+
+ax.scatter(beamdata.dist_or, beamdata.Z, s=1, label="All Photons from beam", alpha=0.2)
+ax.set_title("Photon Filtering results")
 ax.legend()
-fig.savefig('../document/figures/unfiltered_transect.jpg',facecolor='white',bbox_inches='tight')
+fig.savefig(
+    "../document/figures/unfiltered_transect.jpg",
+    facecolor="white",
+    bbox_inches="tight",
+)
 beamdata = icesat_bathymetry._filter_points(beamdata)
-ax.scatter(beamdata.dist_or,beamdata.Z,c='red',s=1,label='Geolocated photons after filtering',alpha=0.2)
+ax.scatter(
+    beamdata.dist_or,
+    beamdata.Z,
+    c="red",
+    s=1,
+    label="Geolocated photons after filtering",
+    alpha=0.2,
+)
 ax.legend()
-fig.savefig('../document/figures/filtered_vs_unfiltered.jpg',facecolor='white',bbox_inches='tight')
-fig,ax = get_photon_plot_axis() 
-ax.set_title('Photons after filtering')
-ax.scatter(beamdata.dist_or,beamdata.Z,c='red',s=1,label='Photons')
-fig.savefig('../document/figures/photons_after_filtering.jpg',facecolor='white',bbox_inches='tight')
+fig.savefig(
+    "../document/figures/filtered_vs_unfiltered.jpg",
+    facecolor="white",
+    bbox_inches="tight",
+)
+fig, ax = get_photon_plot_axis()
+ax.set_title("Photons after filtering")
+ax.scatter(beamdata.dist_or, beamdata.Z, c="red", s=1, label="Photons")
+fig.savefig(
+    "../document/figures/photons_after_filtering.jpg",
+    facecolor="white",
+    bbox_inches="tight",
+)
 
 
 # %% [markdown]
@@ -82,7 +106,7 @@ point_dataframe = point_dataframe.query("dist_or > 2000 and dist_or < 6000")
 #
 
 # %%
-from scipy.stats import gaussian_kde
+
 
 # %%
 def getkde(start, window):
@@ -283,7 +307,67 @@ fig.show()
 fig.savefig("../document/figures/3d_kde_function.png")
 
 
+# %% [markdown]
+# # Kriging figures
+# %%
+pts = gpd.read_file("../data/test_sites/florida_keys/keys_testpts.gpkg")
+pts_all = gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg")
+
+with rasterio.open("../data/test_sites/florida_keys/interp_OK.tif") as krigedras:
+    elevation = krigedras.read(1)
+    uncertainty = krigedras.read(2)
+    width = elevation.shape[1]
+    height = elevation.shape[0]
+    cols, rows = np.meshgrid(np.arange(width), np.arange(height))
+    xs, ys = rasterio.transform.xy(krigedras.transform, rows, cols)
+    xvals = np.array(xs)
+    yvals = np.array(ys)
+
 # %%
 
+row = 151
+oned_elev = elevation[row, :]
+oned_uncert = uncertainty[row, :]
+oned_xvals = xvals[row, :]
+oned_yvals = yvals[row, :]
 
+resolution = oned_xvals[1] - oned_xvals[0]
+
+pts_in_area = pts.loc[
+    (pts.Y > oned_yvals.min() - resolution / 2)
+    & (pts.Y < oned_yvals.min() + resolution / 2)
+]
+pts_all_in_area = pts_all.loc[
+    (pts_all.northing > oned_yvals.min() - resolution / 2)
+    & (pts_all.northing < oned_yvals.min() + resolution / 2)
+]
+fig, ax = plt.subplots(figsize=(10, 7))
+ax.set_title("1D section of Kriging results")
+
+ax.plot(oned_xvals, oned_elev, label="Interpolated Line")
+ax.fill_between(
+    oned_xvals,
+    oned_elev - np.sqrt(oned_uncert),
+    oned_elev + np.sqrt(oned_uncert),
+    color="gray",
+    alpha=0.2,
+    label="Uncertainty",
+)
+ax.scatter(
+    x=pts_all_in_area.easting,
+    y=pts_all_in_area.z_kde,
+    color="green",
+    s=1,
+    label="ICESat-2 Photons",
+)
+ax.scatter(
+    x=pts_in_area.X,
+    y=pts_in_area.Z,
+    color="red",
+    s=1,
+    label="Selected photons after subsampling",
+)
+
+ax.legend(loc="lower left")
+fig.savefig('../document/figures/1d_kriging_section.jpg',dpi=500,bbox_inches='tight',facecolor='white')
 # %%
