@@ -123,7 +123,7 @@ def getkde(start, window):
 
 # setup a figure to put the plots on
 fig = plt.figure(figsize=(20, 16))
-fig.suptitle("2D KDE windowing function")
+# fig.suptitle("2D KDE windowing function")
 # setup a 2 subplot first
 
 ax2d = fig.add_subplot(2, 2, 1)
@@ -145,7 +145,7 @@ ax2d.scatter(
 )
 
 
-for startpt in [800, 1200]:
+for startpt in [1200]:
     # find the x lodcation of the middle of the box, by taking average of start and end x coordinate
     s = (
         point_dataframe.dist_or.iloc[startpt]
@@ -163,7 +163,7 @@ for startpt in [800, 1200]:
         - point_dataframe.dist_or.iloc[startpt]
     )
     subsetdf = point_dataframe[startpt : startpt + 100]
-    ax2d.scatter(
+    photons_in_window = ax2d.scatter(
         subsetdf.dist_or,
         subsetdf.Z_g,
         label="Photons within window",
@@ -181,14 +181,14 @@ for startpt in [800, 1200]:
         label="Window",
     )
 
-    ax2d.add_patch(rec)
+    rectangle = ax2d.add_patch(rec)
     # get the max Z value of the kde
     kdemax_z = kdez.max()
     # find the corresponding y value
     kdemax_y = kdey[kdez.argmax()]
 
     # add the seafloor location
-    ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
+    sf_elev = ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
 
     path = ConnectionPatch(
         xyA=(kdemax_z, kdemax_y),
@@ -204,7 +204,7 @@ for startpt in [800, 1200]:
 ax2d.set_ylim(-50, 5)
 ax2dkde.set_ylim(-50, 5)
 
-ax2d.legend(["All Points", "Z elevation of Maximum KDE", "All points"])
+ax2d.legend(handles = [rectangle,photons_in_window,sf_elev])
 ax2d.set_title("Geolocated Photon Returns")
 ax2dkde.set_title("Kernel Density with Horizonal windowing")
 fig.show()
@@ -312,8 +312,8 @@ fig.savefig("../document/figures/3d_kde_function.png")
 # %%
 pts = gpd.read_file("../data/test_sites/florida_keys/keys_testpts.gpkg")
 pts_all = gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg")
-
-with rasterio.open("../data/test_sites/florida_keys/interp_OK.tif") as krigedras:
+# %%
+with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as krigedras:
     elevation = krigedras.read(1)
     uncertainty = krigedras.read(2)
     width = elevation.shape[1]
@@ -323,9 +323,7 @@ with rasterio.open("../data/test_sites/florida_keys/interp_OK.tif") as krigedras
     xvals = np.array(xs)
     yvals = np.array(ys)
 
-# %%
-
-row = 151
+row = 230
 oned_elev = elevation[row, :]
 oned_uncert = uncertainty[row, :]
 oned_xvals = xvals[row, :]
@@ -334,14 +332,15 @@ oned_yvals = yvals[row, :]
 resolution = oned_xvals[1] - oned_xvals[0]
 
 pts_in_area = pts.loc[
-    (pts.Y > oned_yvals.min() - resolution / 2)
-    & (pts.Y < oned_yvals.min() + resolution / 2)
+    (pts.Y > oned_yvals.min() - resolution /2 )
+    & (pts.Y < oned_yvals.min() + resolution /2 )
 ]
 pts_all_in_area = pts_all.loc[
-    (pts_all.northing > oned_yvals.min() - resolution / 2)
-    & (pts_all.northing < oned_yvals.min() + resolution / 2)
+    (pts_all.northing > oned_yvals.min() - resolution )
+    & (pts_all.northing < oned_yvals.min() + resolution )
 ]
-fig, ax = plt.subplots(figsize=(10, 7))
+# %%
+fig, ax = plt.subplots(figsize=(20, 10))
 ax.set_title("1D section of Kriging results")
 
 ax.plot(oned_xvals, oned_elev, label="Interpolated Line")
@@ -353,21 +352,57 @@ ax.fill_between(
     alpha=0.2,
     label="Uncertainty",
 )
-ax.scatter(
-    x=pts_all_in_area.easting,
-    y=pts_all_in_area.z_kde,
-    color="green",
-    s=1,
-    label="ICESat-2 Photons",
-)
+
 ax.scatter(
     x=pts_in_area.X,
     y=pts_in_area.Z,
     color="red",
-    s=1,
-    label="Selected photons after subsampling",
+    label="Remaining points after subsampling",
 )
 
 ax.legend(loc="lower left")
 fig.savefig('../document/figures/1d_kriging_section.jpg',dpi=500,bbox_inches='tight',facecolor='white')
+
+with rasterio.open('../data/test_sites/florida_keys/bilinear.tif') as bilinear:
+    gebco_elev = bilinear.read(1,masked=True)
+    oned_gebco = gebco_elev[row, :]
+
+
+
+ax.plot(oned_xvals,oned_gebco)
+
 # %%
+
+fig, ax = plt.subplots(figsize=(20, 10))
+ax.set_title("Combination via Kalman Filter - 1D view")
+
+ax.plot(oned_xvals, oned_elev, label="Kriged ICESat-2 Surface")
+ax.fill_between(
+    oned_xvals,
+    oned_elev - np.sqrt(oned_uncert),
+    oned_elev + np.sqrt(oned_uncert),
+    color="#1f77b4",
+    alpha=0.1,
+    label="Kriged ICESat-2 Uncertainty",
+)
+
+with rasterio.open('../data/test_sites/florida_keys/bilinear.tif') as bilinear:
+    gebco_elev = bilinear.read(1,masked=True)
+    oned_gebco = gebco_elev[row, :]
+
+
+
+ax.plot(oned_xvals,oned_gebco,label='GEBCO Interpolation',color='#ff7f0e')
+ax.fill_between(oned_xvals,oned_gebco-0.5,oned_gebco+0.5,alpha=0.1,color='#ff7f0e',label='GEBCO Uncertainty')
+
+with rasterio.open('../data/test_sites/florida_keys/kalman_updated.tif') as kalman_raster:
+    kalman_elev = kalman_raster.read(1)
+    oned_kalman = kalman_elev[row,:]
+
+
+ax.plot(oned_xvals,oned_kalman,label='Estimate with Kalman Filter',linewidth=3,color='#2ca02c')
+ax.legend(loc="lower left")
+ax.set_ylabel('Elevation [m]')
+ax.set_xlabel('Easting [m UTM 17N]')
+fig.savefig('../document/figures/kalman_1d_section.jpg',dpi=500,bbox_inches='tight',facecolor='white')
+
