@@ -1,6 +1,7 @@
 # %%
 import geopandas as gpd
 import matplotlib.pyplot as plt
+
 # from pyrsistent import l
 import numpy as np
 import rasterio
@@ -188,7 +189,9 @@ for startpt in [1200]:
     kdemax_y = kdey[kdez.argmax()]
 
     # add the seafloor location
-    sf_elev = ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
+    sf_elev = ax2d.scatter(
+        s, kdemax_y, label="Calculated Seafloor elev in middle of window"
+    )
 
     path = ConnectionPatch(
         xyA=(kdemax_z, kdemax_y),
@@ -204,7 +207,7 @@ for startpt in [1200]:
 ax2d.set_ylim(-50, 5)
 ax2dkde.set_ylim(-50, 5)
 
-ax2d.legend(handles = [rectangle,photons_in_window,sf_elev])
+ax2d.legend(handles=[rectangle, photons_in_window, sf_elev])
 ax2d.set_title("Geolocated Photon Returns")
 ax2dkde.set_title("Kernel Density with Horizonal windowing")
 fig.show()
@@ -332,12 +335,12 @@ oned_yvals = yvals[row, :]
 resolution = oned_xvals[1] - oned_xvals[0]
 
 pts_in_area = pts.loc[
-    (pts.Y > oned_yvals.min() - resolution /2 )
-    & (pts.Y < oned_yvals.min() + resolution /2 )
+    (pts.Y > oned_yvals.min() - resolution / 2)
+    & (pts.Y < oned_yvals.min() + resolution / 2)
 ]
 pts_all_in_area = pts_all.loc[
-    (pts_all.northing > oned_yvals.min() - resolution )
-    & (pts_all.northing < oned_yvals.min() + resolution )
+    (pts_all.northing > oned_yvals.min() - resolution)
+    & (pts_all.northing < oned_yvals.min() + resolution)
 ]
 # %%
 fig, ax = plt.subplots(figsize=(20, 10))
@@ -361,15 +364,19 @@ ax.scatter(
 )
 
 ax.legend(loc="lower left")
-fig.savefig('../document/figures/1d_kriging_section.jpg',dpi=500,bbox_inches='tight',facecolor='white')
+fig.savefig(
+    "../document/figures/1d_kriging_section.jpg",
+    dpi=500,
+    bbox_inches="tight",
+    facecolor="white",
+)
 
-with rasterio.open('../data/test_sites/florida_keys/bilinear.tif') as bilinear:
-    gebco_elev = bilinear.read(1,masked=True)
+with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
+    gebco_elev = bilinear.read(1, masked=True)
     oned_gebco = gebco_elev[row, :]
 
 
-
-ax.plot(oned_xvals,oned_gebco)
+ax.plot(oned_xvals, oned_gebco)
 
 # %%
 
@@ -386,23 +393,41 @@ ax.fill_between(
     label="Kriged ICESat-2 Uncertainty",
 )
 
-with rasterio.open('../data/test_sites/florida_keys/bilinear.tif') as bilinear:
-    gebco_elev = bilinear.read(1,masked=True)
+with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
+    gebco_elev = bilinear.read(1, masked=True)
     oned_gebco = gebco_elev[row, :]
 
 
+ax.plot(oned_xvals, oned_gebco, label="GEBCO Interpolation", color="#ff7f0e")
+ax.fill_between(
+    oned_xvals,
+    oned_gebco - 0.5,
+    oned_gebco + 0.5,
+    alpha=0.1,
+    color="#ff7f0e",
+    label="GEBCO Uncertainty",
+)
 
-ax.plot(oned_xvals,oned_gebco,label='GEBCO Interpolation',color='#ff7f0e')
-ax.fill_between(oned_xvals,oned_gebco-0.5,oned_gebco+0.5,alpha=0.1,color='#ff7f0e',label='GEBCO Uncertainty')
-
-with rasterio.open('../data/test_sites/florida_keys/kalman_updated.tif') as kalman_raster:
+with rasterio.open(
+    "../data/test_sites/florida_keys/kalman_updated.tif"
+) as kalman_raster:
     kalman_elev = kalman_raster.read(1)
-    oned_kalman = kalman_elev[row,:]
+    oned_kalman = kalman_elev[row, :]
 
 
-ax.plot(oned_xvals,oned_kalman,label='Estimate with Kalman Filter',linewidth=3,color='#2ca02c')
+ax.plot(
+    oned_xvals,
+    oned_kalman,
+    label="Estimate with Kalman Filter",
+    linewidth=3,
+    color="#2ca02c",
+)
 ax.legend(loc="lower left")
-ax.set_ylabel('Elevation [m]')
-ax.set_xlabel('Easting [m UTM 17N]')
-fig.savefig('../document/figures/kalman_1d_section.jpg',dpi=500,bbox_inches='tight',facecolor='white')
-
+ax.set_ylabel("Elevation [m]")
+ax.set_xlabel("Easting [m UTM 17N]")
+fig.savefig(
+    "../document/figures/kalman_1d_section.jpg",
+    dpi=500,
+    bbox_inches="tight",
+    facecolor="white",
+)
