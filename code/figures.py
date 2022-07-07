@@ -17,8 +17,8 @@ plt.rcParams["font.family"] = "Sans Serif"
 
 # %%
 beamdata = icesat_bathymetry.load_beam_array_ncds(
-    "../data/test_sites/Martinique/ATL03/processed_ATL03_20191002144812_00870507_005_01.nc",
-    "gt2r",
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc",
+    "gt3l",
 )
 beamdata = icesat_bathymetry.add_along_track_dist(beamdata)
 
