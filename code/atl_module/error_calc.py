@@ -1,3 +1,4 @@
+import turtle
 import numpy as np
 import rasterio
 from rasterio import warp
@@ -49,6 +50,7 @@ def calc_rms_error(beam_df, column_names: list):
 
     return error_dict
 
+import pathlib
 
 def raster_RMSE(truth_raster_path, measured_rasterpath):
     # open the truth raster, which might be in a different crs than the output than the one being compared
@@ -94,6 +96,9 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
         bilinear_data = bi_vrt.read(1, masked=True)
         # mask out nodata values
+
+    # with rasterio.open('/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys/error.tif',mode='w+',crs=dst_crs,transform=truth_data_tranform,height=dst_height,width=dst_width,count=1,dtype=rasterio.float64,nodata=-999999) as errorras:
+    #     errorras.write((truth_data_reproj - bilinear_data),1)
 
     # return the square root of the average of the squared difference
     errordict = {
