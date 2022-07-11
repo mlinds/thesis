@@ -639,6 +639,11 @@ def request_data_download(product, bbox_in, folderpath):
 if __name__ == "__main__":
     request_data_download(
         "ATL03",
+<<<<<<< HEAD
         "130.7393,-12.6646,131.4256,-11.9790",
         "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/North_aus",
+=======
+        "-61.74737,16.22759,-61.51711,16.47799",
+        "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/Martinique",
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
     )

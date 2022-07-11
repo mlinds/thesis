@@ -32,8 +32,13 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
             thinned_array["X"], thinned_array["Y"], crs="EPSG:32617"
         ),
     )
+<<<<<<< HEAD
     pts_gdf.to_file(folderpath + "/keys_testpts.gpkg")
     pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
+=======
+    pts_gdf.to_file("../data/resample_test/keys_testpts.gpkg")
+    pipeline = pdal.Writer.las(filename="../data/resample_test/filtered.laz").pipeline(
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
         thinned_array
     )
     print(pipeline.execute(), "Points written to output LAZ and geopackage files")
@@ -41,7 +46,11 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     return pts_gdf
 
 
+<<<<<<< HEAD
 def krige_bathy(krmodel, folderpath, npts, variogram_model):
+=======
+def krige_bathy(krmodel, initial_raster_path, pointfolder_path, npts, variogram_model):
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -53,10 +62,17 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model):
     # TODO raise an error if CRSs don't match
 
     # load the points for kriging
+<<<<<<< HEAD
     pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts)
 
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
+=======
+    pts_gdf = prepare_pt_subset_for_kriging(pointfolder_path, npts)
+
+    # open the interpolated raster to get the coordinates
+    with rasterio.open(initial_raster_path) as ras:
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
         ar = rioxarray.open_rasterio(ras)
         gridx = ar.x.data
         gridy = ar.y.data
@@ -80,7 +96,11 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model):
 
     # save the results as a raster with band 1 and the Z value and band 2 as the uncertainty
     with rasterio.open(
+<<<<<<< HEAD
         folderpath + "/kriging_output.tif",
+=======
+        "../data/resample_test/interp_OK.tif",
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
         mode="w+",
         crs=ras.crs,
         width=ras.width,
@@ -97,8 +117,15 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model):
 
 if __name__ == "__main__":
     krige_bathy(
+<<<<<<< HEAD
         krmodel=UniversalKriging,
         variogram_model="spherical",
         folderpath="../data/test_sites/florida_keys",
+=======
+        krmodel=OrdinaryKriging,
+        variogram_model="linear",
+        initial_raster_path="../data/resample_test/bilinear.tif",
+        pointfolder_path="../data/test_sites/florida_keys",
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
         npts=2000,
     )

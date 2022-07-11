@@ -24,9 +24,13 @@ def simple_kalman(z, sigma, z_meas, sigma_meas):
     return znew, sigmanew
 
 
+<<<<<<< HEAD
 def gridded_kalman_update(
     outputfile, start_raster_path, measrasterlist, gebco_uncertainty
 ):
+=======
+def gridded_kalman_update(outputfile, start_raster_path, measrasterlist):
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
     # if there is a single path instead of a list, convert it to a single-element list
     if isinstance(measrasterlist, str):
@@ -37,7 +41,11 @@ def gridded_kalman_update(
         gebco_depth = gebco_interp.read(1)
     # set nodata values to numpy Nodata
     gebco_depth[gebco_depth == -3.2767e04] = np.NaN
+<<<<<<< HEAD
     gebco_uncertainty = np.full_like(gebco_depth, gebco_uncertainty)
+=======
+    gebco_uncertainty = np.full_like(gebco_depth, 2)
+>>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
     # set initial value for first loop
     kalman_depth = gebco_depth
