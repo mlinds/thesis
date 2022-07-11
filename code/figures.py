@@ -15,6 +15,7 @@ from atl_module.refraction_correction import correct_refr
 import contextily as cx
 import rasterio
 from rasterio.plot import show as rastershow
+
 plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
 # # Plots of Filtering Process
@@ -435,16 +436,25 @@ fig.savefig(
 )
 
 # %%
-with rasterio.open('../data/test_sites/florida_keys/kriging_output.tif') as bilinear_raster:
-    fig, ax = plt.subplots(figsize=(20,10))
-    ax.set_xlabel(f'Easting UTM 17N')
-    ax.set_ylabel(f'Northing UTM 17N')
-    ax.set_title('Location of 1D section')
-    cx.add_basemap(ax,source=cx.providers.OpenTopoMap,crs=bilinear_raster.crs)
-    image_hidden = ax.imshow(bilinear_raster.read(1,masked=True), 
-                         cmap='inferno',)
-    rastershow(bilinear_raster,cmap='inferno',ax=ax)
-    ax.axhline(oned_yvals[0],linewidth=5)
+with rasterio.open(
+    "../data/test_sites/florida_keys/kriging_output.tif"
+) as bilinear_raster:
+    fig, ax = plt.subplots(figsize=(20, 10))
+    ax.set_xlabel(f"Easting UTM 17N")
+    ax.set_ylabel(f"Northing UTM 17N")
+    ax.set_title("Location of 1D section")
+    cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bilinear_raster.crs)
+    image_hidden = ax.imshow(
+        bilinear_raster.read(1, masked=True),
+        cmap="inferno",
+    )
+    rastershow(bilinear_raster, cmap="inferno", ax=ax)
+    ax.axhline(oned_yvals[0], linewidth=5)
 
-    fig.colorbar(image_hidden,ax=ax)
-    fig.savefig(fname='../document/figures/horizontal_section.jpg',bbox_inches='tight',facecolor='white',dpi=500)
+    fig.colorbar(image_hidden, ax=ax)
+    fig.savefig(
+        fname="../document/figures/horizontal_section.jpg",
+        bbox_inches="tight",
+        facecolor="white",
+        dpi=500,
+    )

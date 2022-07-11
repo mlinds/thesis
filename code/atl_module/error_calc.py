@@ -50,7 +50,9 @@ def calc_rms_error(beam_df, column_names: list):
 
     return error_dict
 
+
 import pathlib
+
 
 def raster_RMSE(truth_raster_path, measured_rasterpath):
     # open the truth raster, which might be in a different crs than the output than the one being compared
