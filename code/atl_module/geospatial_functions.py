@@ -6,7 +6,6 @@ import pandas as pd
 from shapely.geometry import LineString, Point
 from atl_module.load_netcdf import get_beams, load_beam_array_ncds
 
-
 def to_refr_corrected_gdf(df, crs):
     # make the geometry of the horizontallly corrected point locations
     geometry = gpd.points_from_xy(

@@ -637,8 +637,9 @@ def request_data_download(product, bbox_in, folderpath):
 
 
 if __name__ == "__main__":
+    import sys
     request_data_download(
         "ATL03",
-        "130.7393,-12.6646,131.4256,-11.9790",
-        "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/North_aus",
+        sys.argv[1],
+        sys.argv[2],
     )

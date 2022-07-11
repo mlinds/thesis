@@ -2,8 +2,9 @@
 from atl_module import icesat_bathymetry
 from atl_module import kriging
 from atl_module import kalman
-from atl_module.geospatial_functions import to_refr_corrected_gdf
+from atl_module.geospatial_functions import to_refr_corrected_gdf,make_gdf_from_ncdf_files
 from atl_module import error_calc
+from atl_module import raster_interaction
 
 
 class GebcoUpscaler:
@@ -15,6 +16,14 @@ class GebcoUpscaler:
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
 
+    def get_tracklines_geom(self):
+        self.tracklines = make_gdf_from_ncdf_files(self.folderpath+'/ATL03/*.nc')
+        self.crs = self.tracklines.estimate_utm_crs()
+        self.tracklines.to_file(self.folderpath+'/tracklines.gpkg',overwrite=True)
+    
+    def subset_gebco(self):
+        raster_interaction.subset_gebco(self.folderpath)
+        
     # eventually change this to read from the saved file
     def find_bathy_from_icesat(self, window, threshold_val, req_perc_hconf):
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
@@ -23,7 +32,7 @@ class GebcoUpscaler:
             threshold_val=threshold_val,
             req_perc_hconf=req_perc_hconf,
         )
-        bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs="EPSG:32617")
+        bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs=self.crs)
         if self.truebathy is None:
             self.bathy_pts_gdf = bathy_gdf
         else:
