@@ -9,11 +9,8 @@ from sklearn.metrics import mean_squared_error
 from atl_module.geospatial_functions import to_refr_corrected_gdf
 from atl_module.raster_interaction import query_raster
 
-<<<<<<< HEAD
 import dask.array as da
 
-=======
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 # TODO refactor function names to be more descriptive
 # TODO add docstrings to functions
 
@@ -53,10 +50,7 @@ def calc_rms_error(beam_df, column_names: list):
 
     return error_dict
 
-<<<<<<< HEAD
 import pathlib
-=======
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
 def raster_RMSE(truth_raster_path, measured_rasterpath):
     # open the truth raster, which might be in a different crs than the output than the one being compared
@@ -103,12 +97,9 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         bilinear_data = bi_vrt.read(1, masked=True)
         # mask out nodata values
 
-<<<<<<< HEAD
     # with rasterio.open('/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys/error.tif',mode='w+',crs=dst_crs,transform=truth_data_tranform,height=dst_height,width=dst_width,count=1,dtype=rasterio.float64,nodata=-999999) as errorras:
     #     errorras.write((truth_data_reproj - bilinear_data),1)
 
-=======
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
     # return the square root of the average of the squared difference
     errordict = {
         "RMSE": np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),
@@ -118,19 +109,11 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
 
 # def main():
-<<<<<<< HEAD
 #     # print("calculating RMSE with naive interpolation")
 #     # truth_vs_bi = raster_RMSE(
 #     #     "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
 #     #     "../data/resample_test/bilinear.tif",
 #     # )
-=======
-#     print("calculating RMSE with naive interpolation")
-#     truth_vs_bi = raster_RMSE(
-#         "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-#         "../data/resample_test/bilinear.tif",
-#     )
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 #     print("calculating RMSE kalman updated bathymetry")
 #     truth_vs_kalman = raster_RMSE(
 #         "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
@@ -138,11 +121,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 #     )
 #     print(
 #         {
-<<<<<<< HEAD
 #             # "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
-=======
-#             "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 #             "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
 #         }
 #     )

@@ -1,5 +1,4 @@
 # %%
-<<<<<<< HEAD
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
@@ -68,20 +67,6 @@ fig.savefig(
     facecolor="white",
     bbox_inches="tight",
 )
-=======
-from atl_module import icesat_bathymetry
-from sklearn.neighbors import KernelDensity
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, ConnectionPatch
-from mpl_toolkits.mplot3d import art3d
-from atl_module.point_dataframe_filters import _interpolate_dataframe
-from atl_module.refraction_correction import correct_refr
-import matplotlib
-
-plt.rcParams["font.family"] = "Sans Serif"
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
 
 # %% [markdown]
@@ -125,11 +110,6 @@ point_dataframe = point_dataframe.query("dist_or > 2000 and dist_or < 6000")
 #
 
 # %%
-<<<<<<< HEAD
-
-=======
-from scipy.stats import gaussian_kde
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
 # %%
 def getkde(start, window):
@@ -146,11 +126,7 @@ def getkde(start, window):
 
 # setup a figure to put the plots on
 fig = plt.figure(figsize=(20, 16))
-<<<<<<< HEAD
 # fig.suptitle("2D KDE windowing function")
-=======
-fig.suptitle("2D KDE windowing function")
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 # setup a 2 subplot first
 
 ax2d = fig.add_subplot(2, 2, 1)
@@ -172,11 +148,7 @@ ax2d.scatter(
 )
 
 
-<<<<<<< HEAD
 for startpt in [1200]:
-=======
-for startpt in [800, 1200]:
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
     # find the x lodcation of the middle of the box, by taking average of start and end x coordinate
     s = (
         point_dataframe.dist_or.iloc[startpt]
@@ -194,11 +166,7 @@ for startpt in [800, 1200]:
         - point_dataframe.dist_or.iloc[startpt]
     )
     subsetdf = point_dataframe[startpt : startpt + 100]
-<<<<<<< HEAD
     photons_in_window = ax2d.scatter(
-=======
-    ax2d.scatter(
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
         subsetdf.dist_or,
         subsetdf.Z_g,
         label="Photons within window",
@@ -216,24 +184,16 @@ for startpt in [800, 1200]:
         label="Window",
     )
 
-<<<<<<< HEAD
     rectangle = ax2d.add_patch(rec)
-=======
-    ax2d.add_patch(rec)
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
     # get the max Z value of the kde
     kdemax_z = kdez.max()
     # find the corresponding y value
     kdemax_y = kdey[kdez.argmax()]
 
     # add the seafloor location
-<<<<<<< HEAD
     sf_elev = ax2d.scatter(
         s, kdemax_y, label="Calculated Seafloor elev in middle of window"
     )
-=======
-    ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 
     path = ConnectionPatch(
         xyA=(kdemax_z, kdemax_y),
@@ -249,11 +209,7 @@ for startpt in [800, 1200]:
 ax2d.set_ylim(-50, 5)
 ax2dkde.set_ylim(-50, 5)
 
-<<<<<<< HEAD
 ax2d.legend(handles=[rectangle, photons_in_window, sf_elev])
-=======
-ax2d.legend(["All Points", "Z elevation of Maximum KDE", "All points"])
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
 ax2d.set_title("Geolocated Photon Returns")
 ax2dkde.set_title("Kernel Density with Horizonal windowing")
 fig.show()
@@ -356,7 +312,6 @@ fig.show()
 fig.savefig("../document/figures/3d_kde_function.png")
 
 
-<<<<<<< HEAD
 # %% [markdown]
 # # Kriging figures
 # %%
@@ -493,9 +448,3 @@ with rasterio.open('../data/test_sites/florida_keys/kriging_output.tif') as bili
 
     fig.colorbar(image_hidden,ax=ax)
     fig.savefig(fname='../document/figures/horizontal_section.jpg',bbox_inches='tight',facecolor='white',dpi=500)
-=======
-# %%
-
-
-# %%
->>>>>>> d54fd8667c869c15d20e6279a500c90ed38c029e
