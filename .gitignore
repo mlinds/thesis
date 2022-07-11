@@ -534,3 +534,8 @@ code/interactive_downloader.ipynb
 document/linked.bib
 document/README.txt
 document/roboto.sty
+*.docx
+*.jpeg
+*.pptx
+code/OTPS_model
+code/atl_module/secret_vars.py
