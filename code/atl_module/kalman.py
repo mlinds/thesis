@@ -68,7 +68,7 @@ def gridded_kalman_update(
     ) as outras:
         outras.write(kalman_depth, 1)
         outras.write(kalman_uncertainty, 2)
-    print("Wrote Kalman Updated Raster")
+    print(f"Wrote Kalman Updated Raster to {outputfile}")
 
     return None
 

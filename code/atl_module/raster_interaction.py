@@ -64,11 +64,12 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
     return beam_df
 
 
-def subset_gebco(folderpath):
+def subset_gebco(folderpath,tracklines):
+    # TODO 
     # constant that defines location of the GEBCO raster
     GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF
-    tracklines = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
+    # tracklines = gpd.read_file(f"{folderpath}/tracklines.gpkg")
     # get the boundaries
     bounds_utm = tracklines.geometry.total_bounds
     bounds_wgs84 = tracklines.to_crs("EPSG:4326").geometry.total_bounds
