@@ -27,15 +27,15 @@ import geopandas as gpd
 import fiona
 import matplotlib.pyplot as plt
 from statistics import mean
-
+from shapely.geometry.polygon import orient
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
-from variablelist import coverage_requested
+from atl_module.variablelist import coverage_requested, segment_vars
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
 
 
-def request_data_download(product, bbox_in, folderpath):
+def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath=None):
     # %% [markdown]
     # ### Input Earthdata Login credentials
     #
@@ -117,10 +117,6 @@ def request_data_download(product, bbox_in, folderpath):
     if aoi == "2":
         # Use geopandas to read in polygon file
         # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
-
-        shapefile_filepath = str(
-            os.getcwd() + "/Shapefile-examples/Jakobshavn_bnd/jakobshavn_bnd.shp"
-        )
 
         # Go from geopandas GeoDataFrame object to an input that is readable by CMR
         gdf = gpd.read_file(shapefile_filepath)
@@ -385,7 +381,7 @@ def request_data_download(product, bbox_in, folderpath):
     #             print(coverage)
     #         else: coverage = ''
 
-    coverage = coverage_requested
+    coverage = vars
 
     # no services selected
     if (
@@ -636,10 +632,23 @@ def request_data_download(product, bbox_in, folderpath):
     # ### To review, we have explored data availability and volume over a region and time of interest, discovered and selected data customization options, constructed an API endpoint for our request, and downloaded data directly to our local machine. You are welcome to request different data sets, areas of interest, and/or customization services by re-running the notebook or starting again at the 'Select a data set of interest' step above.
 
 
-if __name__ == "__main__":
-    import sys
+def request_segments_only(shapefile_filepath, folderpath):
     request_data_download(
         "ATL03",
-        sys.argv[1],
-        sys.argv[2],
+        vars=segment_vars,
+        shapefile_filepath=shapefile_filepath,
+        bbox_in="",
+        folderpath=folderpath,
     )
+
+
+if __name__ == "__main__":
+    import sys
+
+    request_segments_only(sys.argv[1], sys.argv[2])
+
+    # request_data_download(
+    #     "ATL03",
+    #     sys.argv[1],
+    #     sys.argv[2],
+    # )

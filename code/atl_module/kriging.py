@@ -50,7 +50,6 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model):
         pointfolder_path (_type_): path of the location of the bathymetric points
         npts (integer): number of points to subset from the bathymetric points
     """
-    # TODO raise an error if CRSs don't match
 
     # load the points for kriging
     pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts)

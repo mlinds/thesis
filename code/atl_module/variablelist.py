@@ -27,3 +27,9 @@ for beam in beamlist:
         coverage_requested = coverage_requested + beam + "/" + path + ","
 
 # %%
+segment_vars = ""
+for beam in beamlist:
+    segment_vars = (
+        segment_vars
+        + f"/ancillary_data,{beam}/geolocation/reference_photon_lat,{beam}/geolocation/reference_photon_lon,{beam}/geolocation/delta_time,{beam}/geolocation/segment_ph_cnt,{beam}/geolocation/surf_type,"
+    )

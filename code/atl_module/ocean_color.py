@@ -28,11 +28,12 @@ def _setup_globcolor_api_session(
     store = xr.backends.PydapDataStore.open(DAP_URL, session=session)
     return xr.open_dataset(store)
 
+
 # create the dataset when the module is imported
 ds = _setup_globcolor_api_session(COPERNICUS_USERNAME, COPERNICUS_PW, DAP_URL)
 
 
-def get_zsd_info(lat:float, lon:float, dates:str or datetime) -> tuple:
+def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
     """lookup the disk depth info at a certain location and time.
 
     Args:
@@ -42,26 +43,35 @@ def get_zsd_info(lat:float, lon:float, dates:str or datetime) -> tuple:
 
     Returns:
         tuple: tuple of (Disk Depth, Desk Depth uncertainty)
-    """    
-
+    """
+    # required to used a dataarray to get a vectorized index
+    lat_indexer = xr.DataArray(lat, dims=["points"])
+    lon_indexer = xr.DataArray(lon, dims=["points"])
+    date_indexer = xr.DataArray(dates, dims=["points"])
     # load the nearest data within 0.2 degrees of the requested point
-    subset = ds.sel(lat=lat, lon=lon, method="nearest", tolerance=0.2).sel(
+    subset = ds.sel(
+        lat=lat_indexer, lon=lon_indexer, method="nearest", tolerance=0.1
+    ).sel(
         # load the nearest time within 2 days
-        time=dates, method="nearest",tolerance=2
+        time=date_indexer,
+        method="nearest",
+        tolerance=2,
     )
     # get an array of depth and uncertainty
     secchi_depth_array = subset.ZSD.to_numpy()
     secchi_depth_uncertainty_array = subset.ZSD_uncertainty.to_numpy()
     return secchi_depth_array, secchi_depth_uncertainty_array
+    # return secchi_depth_array
 
 
 def get_color_dataframe(lat, lon, dates):
     # select the latitude and longitude
-    subset = ds.sel(lat=lat, lon=lon, method="nearest"
-    # get the closest date
-    ).sel(
-        time=dates, method="nearest"
-    )
+    subset = ds.sel(
+        lat=lat,
+        lon=lon,
+        method="nearest"
+        # get the closest date
+    ).sel(time=dates, method="nearest")
     return subset.to_dataframe()
 
 
@@ -85,7 +95,9 @@ def add_secchi_depth_to_tracklines(df_input: gpd.GeoDataFrame) -> gpd.GeoDataFra
     results_per_track = temp.loc[:, ["xcoord", "ycoord", "date"]].apply(
         # apply a lambda function that returns a series with a floating point value with named columns
         lambda x: pd.Series(
-            get_zsd_info(x.ycoord, x.xcoord, x.date), index=["ZSD", "ZSD_uncertainty"],dtype='float32'
+            get_zsd_info(x.ycoord, x.xcoord, x.date),
+            index=["ZSD", "ZSD_uncertainty"],
+            dtype="float32",
         ),
         # apply to each row
         axis=1,

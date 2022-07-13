@@ -18,7 +18,7 @@ def filter_high_returns(df, level=5):
         pd.DataFrame: output dataframe
     """
     # remove any points above 5m
-    return df.loc[(df.Z_g < 5)]
+    return df.loc[(df.Z_geoid < 5)]
 
 
 def filter_TEP_and_nonassoc(df):
@@ -38,11 +38,15 @@ def filter_TEP_and_nonassoc(df):
 def add_sea_surface_level(df, rolling_window=200):
     # take rolling median of signal points along track distance
     sea_level = (
-        df.loc[df.oc_sig_conf >= 4]["Z_g"].rolling(rolling_window, center=True).median()
+        df.loc[df.oc_sig_conf >= 4]["Z_geoid"]
+        .rolling(rolling_window, center=True)
+        .median()
     )
 
     sigma_sea_level = (
-        df.loc[df.oc_sig_conf == 4]["Z_g"].rolling(rolling_window, center=True).std()
+        df.loc[df.oc_sig_conf == 4]["Z_geoid"]
+        .rolling(rolling_window, center=True)
+        .std()
     )
     sea_level.name = "sea_level"
 
@@ -71,13 +75,15 @@ def add_sea_surface_level(df, rolling_window=200):
 
 def filter_low_points(df, filter_below_z):
     # drop any points with an uncorrected depth greater than a threshold
-    return df.loc[df.sea_level_interp - df.Z_g < filter_below_z]
+    return df.loc[df.sea_level_interp - df.Z_geoid < filter_below_z]
 
 
 def remove_surface_points(df, n=3, min_remove=1):
     # remove all points `n` standard deviations away from the sea level
     sea_level_std_dev = df.sea_level_interp.std()
-    return df.loc[df.Z_g < df.sea_level_interp - max(n * sea_level_std_dev, min_remove)]
+    return df.loc[
+        df.Z_geoid < df.sea_level_interp - max(n * sea_level_std_dev, min_remove)
+    ]
 
 
 def add_gebco(df):
@@ -128,9 +134,9 @@ def _interpolate_dataframe(
 def correct_for_refraction(df):
     # get horizotnal and vertical refraction correction factors
     xcorr, ycorr, zcorr = correct_refr(
-        df.sea_level_interp - df.Z_g,
+        df.sea_level_interp - df.Z_geoid,
         pointing_vector_az=df.p_vec_az,
         pointing_vector_elev=df.p_vec_elev,
     )
     # apply these factors to the dataframe
-    return df.assign(Z_refr=df.Z_g + zcorr, easting_corr=xcorr, northing_corr=ycorr)
+    return df.assign(Z_refr=df.Z_geoid + zcorr, easting_corr=xcorr, northing_corr=ycorr)
