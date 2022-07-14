@@ -140,3 +140,20 @@ def correct_for_refraction(df):
     )
     # apply these factors to the dataframe
     return df.assign(Z_refr=df.Z_geoid + zcorr, easting_corr=xcorr, northing_corr=ycorr)
+
+
+def _counter(series_in, window_distance_meters):
+    center_loc = series_in.index[int(len(series_in) / 2)]
+    series_in = series_in[
+        (series_in.index > center_loc - window_distance_meters / 2)
+        & (series_in.index < center_loc + window_distance_meters / 2)
+    ]
+    return series_in.count()
+
+
+def add_neigbor_count(df, window_distance_pts, window_distance_meters):
+    countseries = df.Z_geoid.rolling(window=window_distance_pts, center=True).apply(
+        lambda x: _counter(x, window_distance_meters=window_distance_meters)
+    )
+    df.loc[:, f"neighors_within{window_distance_meters}m"] = countseries
+    return df

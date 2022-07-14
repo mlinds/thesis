@@ -65,7 +65,8 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
 
 def subset_gebco(folderpath, tracklines, epsg_no):
-    # TODO
+    # TODO mask first, before interpolation
+
     # constant that defines location of the GEBCO raster
     GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF

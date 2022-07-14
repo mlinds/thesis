@@ -34,6 +34,7 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         .pipe(dfilt.filter_high_returns)
         .pipe(dfilt.filter_TEP_and_nonassoc)
         .pipe(dfilt.correct_for_refraction)
+        # .pipe(dfilt.add_neigbor_count, window_distance_pts=200,window_distance_meters=200)
     )
     # reset the distances be zero at the first photon
     # commenting out for now since not needed and makes comparison harder
@@ -45,15 +46,17 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
     return filtered_photon_df
 
 
-def add_rolling_kde(df, window):
+def add_rolling_kde(df, window, window_meters, min_photons):
     # set up the object to keep all the return values
-    accumulator = AccumulateKDEs()
+    accumulator = AccumulateKDEs(window_meters=window_meters, min_photons=min_photons)
     # this series is a key to matching the KDE value and the Z elevation of the Max KDE to the points in original df
     # this is a complicated series of joins but it should support matching any arbitrary indexes
     series_out = (
         # apply the function from the object
         df.Z_refr.rolling(window=window, center=True)
-        .apply(accumulator.calc_kdeval_and_zval, raw=True)
+        .apply(
+            accumulator.calc_kdeval_and_zval,
+        )
         .dropna()
         .astype("int")
     )
@@ -73,7 +76,9 @@ def add_rolling_kde(df, window):
     return df_w_kde
 
 
-def get_all_bathy_from_granule(filename, window, threshold_val, req_perc_hconf):
+def get_all_bathy_from_granule(
+    filename, window, threshold_val, req_perc_hconf, window_meters, min_photons
+):
     """For a single granule (stored in a netcdf4 file), loop over ever single beam, determine if it contains useful bathymetry signal, and return a dataframe just of the bathymetric points
 
     Args:
@@ -95,17 +100,26 @@ def get_all_bathy_from_granule(filename, window, threshold_val, req_perc_hconf):
         metadata_dict = beamarray.dtype.metadata
         # the percentage of high confidence ocean photons is a proxy for the overall quality of the signal
         if metadata_dict["ocean_high_conf_perc"] < req_perc_hconf:
+            # go to the next one of the quality isn't high enough
             continue
         # convert numpy array to a geodataframe with the along-track distance
         point_df = geofn.add_track_dist_meters(beamarray)
         # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
         subsurface_return_pts = _filter_points(point_df)
-
-        bathy_pts = add_rolling_kde(subsurface_return_pts, window=window)
+        # find the bathymetry points using the KDE function
+        bathy_pts = add_rolling_kde(
+            subsurface_return_pts,
+            window=window,
+            min_photons=min_photons,
+            window_meters=window_meters,
+        )
+        # find the minimum KDE strength
         thresholdval = (
             bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
         )
+        # find the
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
+        # TODO could this be assigned to another function? not directly related to this function
         bathy_pts = bathy_pts.assign(
             atm_profile=metadata_dict["atmosphere_profile"],
             beamtype=metadata_dict["atlas_beam_type"],
@@ -126,7 +140,9 @@ def bathy_from_all_tracks(path):
     return pd.concat(dflist)
 
 
-def bathy_from_all_tracks_parallel(folderpath, window, threshold_val, req_perc_hconf):
+def bathy_from_all_tracks_parallel(
+    folderpath, window, threshold_val, req_perc_hconf, window_meters, min_photons
+):
     """Run the kde function for every single granule in parallel
 
     Args:
@@ -148,12 +164,16 @@ def bathy_from_all_tracks_parallel(folderpath, window, threshold_val, req_perc_h
             itertools.repeat(window),
             itertools.repeat(threshold_val),
             itertools.repeat(req_perc_hconf),
+            itertools.repeat(window_meters),
+            itertools.repeat(min_photons),
         )
     )
     with Pool() as pool:
         result = pool.starmap(get_all_bathy_from_granule, filenamelist)
+    # catch the case where there is no bathymetry found in the granule
     if len(result) > 1:
         return pd.concat(result)
+    # catch the case where there is only one, so no concatenation is required
     elif len(result) == 1:
         return result
 

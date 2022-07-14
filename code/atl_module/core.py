@@ -1,32 +1,43 @@
 # going to keep the namespace as clean as possible
-from atl_module import icesat_bathymetry
-from atl_module import kriging
-from atl_module import kalman
-from atl_module.geospatial_functions import (
-    to_refr_corrected_gdf,
-    make_gdf_from_ncdf_files,
-)
-from atl_module import error_calc
-from atl_module import raster_interaction
-from atl_module import ocean_color
+import os
 
 import geopandas as gpd
 from fiona.errors import DriverError
 
+from atl_module import (
+    error_calc,
+    icesat_bathymetry,
+    kalman,
+    kriging,
+    ocean_color,
+    raster_interaction,
+)
+from atl_module.geospatial_functions import (
+    make_gdf_from_ncdf_files,
+    to_refr_corrected_gdf,
+)
+
 
 class GebcoUpscaler:
+    """Object that contains a test site, and optionally a truth raster for comparison"""
+
     def __init__(self, folderpath, truebathy=None):
         self.folderpath = folderpath
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
         # set up the paths of the relevant vector files:
-        self.trackline_path = self.folderpath + "/tracklines.gpkg"
-        self.bathymetric_point_path = self.folderpath + "/all_bathy_pts.gpkg"
+        self.trackline_path = os.path.join(self.folderpath, "/tracklines.gpkg")
+        self.bathymetric_point_path = os.path.join(
+            self.folderpath, "/all_bathy_pts.gpkg"
+        )
         # raster paths
-        self.kalman_update_raster_path = self.folderpath + "/kalman_updated.tif"
-        self.bilinear_gebco_raster_path = self.folderpath + "/bilinear.tif"
-        self.kriged_raster_path = self.folderpath + "/kriging_output.tif"
+        self.kalman_update_raster_path = os.path.join(
+            self.folderpath, "/kalman_updated.tif"
+        )
+        self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "/bilinear.tif")
+        self.kriged_raster_path = os.path.join(self.folderpath, "/kriging_output.tif")
         # setup the files needed
+        # try to add the tracklines, recalculate them if they're not present
         try:
             self.tracklines = gpd.read_file(self.trackline_path)
             self.crs = self.tracklines.estimate_utm_crs()
@@ -34,6 +45,7 @@ class GebcoUpscaler:
         except DriverError:
             print("Trackline geodata not found - recalculating from netcdf files")
             self.get_tracklines_geom()
+        #  try to add bathymetry points, print a message if they're not found
         try:
             self.bathy_pts_gdf = gpd.read_file(self.bathymetric_point_path)
         except:
@@ -52,15 +64,19 @@ class GebcoUpscaler:
             folderpath=self.folderpath, tracklines=self.tracklines, epsg_no=self.epsg
         )
 
-    def find_bathy_from_icesat(self, window, threshold_val, req_perc_hconf):
+    def find_bathy_from_icesat(
+        self, window, threshold_val, req_perc_hconf, min_photons, window_meters
+    ):
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
             window=window,
             threshold_val=threshold_val,
             req_perc_hconf=req_perc_hconf,
+            min_photons=min_photons,
+            window_meters=window_meters,
         )
         bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs=self.crs)
-        # if there is no
+        # if there is no truth data, just assign, otherwise add the true elevation then add it
         if self.truebathy is None:
             self.bathy_pts_gdf = bathy_gdf
         else:
