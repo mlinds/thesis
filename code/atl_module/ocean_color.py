@@ -91,21 +91,10 @@ def add_secchi_depth_to_tracklines(df_input: gpd.GeoDataFrame) -> gpd.GeoDataFra
         ycoord=df_input.to_crs("EPSG:4326").centroid.y,
         date=pd.to_datetime(df_input.date).dt.date,
     )
-    # get a series of the depth an uncertainty values
-    results_per_track = temp.loc[:, ["xcoord", "ycoord", "date"]].apply(
-        # apply a lambda function that returns a series with a floating point value with named columns
-        lambda x: pd.Series(
-            get_zsd_info(x.ycoord, x.xcoord, x.date),
-            index=["ZSD", "ZSD_uncertainty"],
-            dtype="float32",
-        ),
-        # apply to each row
-        axis=1,
-        # make each one a new column
-        result_type="expand",
-    )
+    # get a series of the depth and uncertainty values
+    zsd_vals,zsd_sigma_vals = get_zsd_info(temp.ycoord.values,temp.xcoord.values,temp.date.values)
     # add the series to the original dataframe and return
     return df_input.assign(
-        secchi_depth=results_per_track.ZSD,
-        secchi_depth_unc=results_per_track.ZSD_uncertainty,
+        secchi_depth=zsd_vals,
+        secchi_depth_unc=zsd_sigma_vals,
     )
