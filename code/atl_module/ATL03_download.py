@@ -294,9 +294,7 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
                 bbox = ""
         if subdict["spatialSubsettingShapefile"] == "true" and aoi == "2":
             bbox = ""
-            ps = input(
-                "Subsetting by geospatial file (Esri Shapefile, KML, etc.) is available. Would you like to request this service? (y/n)"
-            )
+            ps = "y"
             if ps == "y":
                 Boundingshape = geojson
             else:
@@ -313,9 +311,7 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
             time_var = ""
         if len(format_vals) > 0:
             print("These reformatting options are available:", format_vals)
-            reformat = input(
-                "If you would like to reformat, copy and paste the reformatting option you would like (make sure to omit quotes, e.g. GeoTIFF), otherwise leave blank."
-            )
+            reformat = "NetCDF4-CF"
             if reformat == "n":
                 reformat = ""  # Catch user input of 'n' instead of leaving blank
         else:
@@ -642,10 +638,20 @@ def request_segments_only(shapefile_filepath, folderpath):
     )
 
 
+def request_full_data_shapefile(shapefile_filepath, folderpath):
+    request_data_download(
+        "ATL03",
+        vars=coverage_requested,
+        shapefile_filepath=shapefile_filepath,
+        bbox_in="",
+        folderpath=folderpath,
+    )
+
+
 if __name__ == "__main__":
     import sys
 
-    request_segments_only(sys.argv[1], sys.argv[2])
+    # request_segments_only(sys.argv[1], sys.argv[2])
 
     # request_data_download(
     #     "ATL03",

@@ -92,7 +92,9 @@ def add_secchi_depth_to_tracklines(df_input: gpd.GeoDataFrame) -> gpd.GeoDataFra
         date=pd.to_datetime(df_input.date).dt.date,
     )
     # get a series of the depth and uncertainty values
-    zsd_vals,zsd_sigma_vals = get_zsd_info(temp.ycoord.values,temp.xcoord.values,temp.date.values)
+    zsd_vals, zsd_sigma_vals = get_zsd_info(
+        temp.ycoord.values, temp.xcoord.values, temp.date.values
+    )
     # add the series to the original dataframe and return
     return df_input.assign(
         secchi_depth=zsd_vals,
