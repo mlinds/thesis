@@ -81,7 +81,9 @@ class GebcoUpscaler:
         if self.truebathy is None:
             self.bathy_pts_gdf = bathy_gdf
         else:
-            self.bathy_pts_gdf = error_calc.add_true_elevation(bathy_gdf, truebathy)
+            self.bathy_pts_gdf = error_calc.add_true_elevation(
+                bathy_gdf, self.truebathy
+            )
 
         self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
 
@@ -91,7 +93,7 @@ class GebcoUpscaler:
             folderpath=self.folderpath,
             npts=npts,
             variogram_model="spherical",
-            crs=self.crs
+            crs=self.crs,
         )
 
     def kalman(self, gebco_st):

@@ -1,15 +1,32 @@
 from atl_module.core import GebcoUpscaler
-import sys
+import argparse
 
-sitename = sys.argv[1]
 
+parser = argparse.ArgumentParser()
+parser.add_argument("sitename", help="name of test site")
+parser.add_argument(
+    "-r",
+    "--recalc",
+    action="store_true",
+    default=False,
+    help="Force recalculation of all the intermediate steps",
+)
+parser.add_argument("-v", "--verbose", action="store_true", default=False)
+
+args = parser.parse_args()
 site = GebcoUpscaler(
-    f"/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/{sitename}/",
-    f"/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/{sitename}/in-situ-DEM/truth.vrt",
+    f"../data/test_sites/{args.sitename}/",
+    f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
 )
 
-# site.find_bathy_from_icesat(window=100,threshold_val=0.0,req_perc_hconf=0,window_meters=None,min_photons=None)
-# site.subset_gebco()
-# site.kriging(npts=1000)
-site.kalman(1)
-# site.rmse_error()
+site.find_bathy_from_icesat(
+    window=100,
+    threshold_val=0.0,
+    req_perc_hconf=0,
+    window_meters=None,
+    min_photons=None,
+)
+site.subset_gebco()
+site.kriging(npts=300)
+site.kalman(1.5)
+site.rmse_error()
