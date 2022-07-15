@@ -1,12 +1,14 @@
 from os.path import basename
 from subprocess import PIPE, Popen
 
+import geopandas as gpd
 import numpy as np
 import pandas as pd
-import geopandas as gpd
 import rasterio as rio
-import numpy as np
+from logzero import setup_logger
 from osgeo import gdal
+
+detail_logger = setup_logger(name="details")
 
 
 def _assign_na_values(inpval):
@@ -54,6 +56,7 @@ def query_raster(dataframe: pd.DataFrame, src: str):
     return [_assign_na_values(inpval) for inpval in outlist[:-1]]
 
 
+# TODO maybe delete
 def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
     for dempath in demlist:
@@ -101,4 +104,7 @@ def subset_gebco(folderpath, tracklines, epsg_no):
         raw_data[raw_data < -40] = np.NaN
         reprojected_raster.write(raw_data, 1)
 
+    detail_logger.debug(
+        f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}"
+    )
     return None

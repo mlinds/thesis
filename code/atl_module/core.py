@@ -2,7 +2,10 @@
 import os
 
 import geopandas as gpd
+import pandas as pd
 from fiona.errors import DriverError
+import logzero
+from logzero import setup_logger
 
 from atl_module import (
     error_calc,
@@ -17,6 +20,7 @@ from atl_module.geospatial_functions import (
     to_refr_corrected_gdf,
 )
 
+run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 # TODO add a RMS error between the points and truth data
 # TODO add a function to automatically append the site error data to a table
 class GebcoUpscaler:
@@ -44,7 +48,9 @@ class GebcoUpscaler:
             self.crs = self.tracklines.estimate_utm_crs()
             self.epsg = self.crs.to_epsg()
         except DriverError:
-            print("Trackline geodata not found - recalculating from netcdf files")
+            run_logger.info(
+                "Trackline geodata not found - recalculating from netcdf files"
+            )
             self.get_tracklines_geom()
         #  try to add bathymetry points, print a message if they're not found
         try:
@@ -68,6 +74,16 @@ class GebcoUpscaler:
     def find_bathy_from_icesat(
         self, window, threshold_val, req_perc_hconf, min_photons, window_meters
     ):
+        run_logger.info(
+            "Starting bathymetry signal finding with parameters:",
+            {
+                "window_size_photons": window,
+                "threshhold value": threshold_val,
+                "Required percentage high confidence ocean photons": req_perc_hconf,
+                "minimum photons in distance window": min_photons,
+                "window_horizontal": window_meters,
+            },
+        )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
             window=window,
@@ -82,7 +98,7 @@ class GebcoUpscaler:
             self.bathy_pts_gdf = bathy_gdf
         else:
             self.bathy_pts_gdf = error_calc.add_true_elevation(
-                bathy_gdf, self.truebathy
+                bathy_gdf, self.truebathy, self.crs
             )
 
         self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
@@ -95,6 +111,7 @@ class GebcoUpscaler:
             variogram_model="spherical",
             crs=self.crs,
         )
+        run_logger.info(f"Kriging using {npts} points with crs {self.crs}")
 
     def kalman(self, gebco_st):
         kalman.gridded_kalman_update(
@@ -103,8 +120,12 @@ class GebcoUpscaler:
             self.kriged_raster_path,
             gebco_st,
         )
+        run_logger.info(
+            f"Updating GEBCO bathymetry using a gebco standard deviation of {gebco_st}"
+        )
 
     def rmse_error(self):
+        run_logger.info("")
         if self.truebathy is None:
             raise ValueError(
                 "You need to provide a ground truth raster calculate the RMS error"
@@ -123,5 +144,6 @@ class GebcoUpscaler:
             orient="index",
         )
         print(raster_summary)
+        run_logger.info(raster_summary)
 
     # def

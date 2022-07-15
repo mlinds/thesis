@@ -1,15 +1,16 @@
-# %%
+# from pykrige.rk import RegressionKriging
+import geopandas as gpd
+import pdal
+import rasterio
+import rioxarray
+from logzero import setup_logger
 from pykrige.ok import OrdinaryKriging
 from pykrige.uk import UniversalKriging
 
-# from pykrige.rk import RegressionKriging
-import geopandas as gpd
-import rasterio
-import rioxarray
-import pdal
+detail_logger = setup_logger(name="details")
 
 
-def prepare_pt_subset_for_kriging(folderpath, npts,crs):
+def prepare_pt_subset_for_kriging(folderpath, npts, crs):
     pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
 
     # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (Z,Y,Z)
@@ -21,27 +22,28 @@ def prepare_pt_subset_for_kriging(folderpath, npts,crs):
 
     # 1st pdal pipeline culls the dataset to a fixed number of points
     pipeline = pdal.Filter.relaxationdartthrowing(count=npts).pipeline(pdal_array)
-
-    print(pipeline.execute(), "points remaining after relaxation dart throwing culling")
+    npts = pipeline.execute()
+    detail_logger.debug(
+        f"{npts} points remaining after relaxation dart throwing culling"
+    )
     # get the thinned points from the output
     thinned_array = pipeline.arrays[0]
     #
     pts_gdf = gpd.GeoDataFrame(
         thinned_array,
-        geometry=gpd.points_from_xy(
-            thinned_array["X"], thinned_array["Y"], crs=crs
-        ),
+        geometry=gpd.points_from_xy(thinned_array["X"], thinned_array["Y"], crs=crs),
     )
     pts_gdf.to_file(folderpath + "/kriging_pts.gpkg")
     pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
         thinned_array
     )
-    print(pipeline.execute(), "Points written to output LAZ and geopackage files")
+    npts = pipeline.execute()
+    detail_logger.debug(f"{npts} Points written to output LAZ and geopackage files")
 
     return pts_gdf
 
 
-def krige_bathy(krmodel, folderpath, npts, variogram_model,crs):
+def krige_bathy(krmodel, folderpath, npts, variogram_model, crs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -52,15 +54,15 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model,crs):
     """
 
     # load the points for kriging
-    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts,crs)
+    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts, crs)
 
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
         ar = rioxarray.open_rasterio(ras)
         gridx = ar.x.data
         gridy = ar.y.data
-    # TODO add check for the same CRS in the gebco raster and in the points dataframe
-    assert pts_gdf.crs==ras.crs
+    # make sure we are in the same CRS
+    assert pts_gdf.crs == ras.crs
     # read the xyz locations of the points
     x_loc = pts_gdf.geometry.x.to_numpy()
     y_loc = pts_gdf.geometry.y.to_numpy()
@@ -77,7 +79,9 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model,crs):
     # get the output Zgrid and uncertainty
     z, ss = krigemodel.execute("grid", gridx, gridy)
 
-    print("finished kriging, now saving the file")
+    detail_logger.debug(
+        f"finished kriging, now saving the output raster to {folderpath + '/bilinear.tif'}"
+    )
 
     # save the results as a raster with band 1 and the Z value and band 2 as the uncertainty
     with rasterio.open(
@@ -93,13 +97,6 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model,crs):
         rasout.write(z, 1)
         rasout.write(ss, 2)
     ras.close()
-    print("Output raster of kriged Z values and uncertainty saved sucessfully")
-
-
-if __name__ == "__main__":
-    krige_bathy(
-        krmodel=UniversalKriging,
-        variogram_model="spherical",
-        folderpath="../data/test_sites/florida_keys",
-        npts=2000,
+    detail_logger.debug(
+        "Output raster of kriged Z values and uncertainty saved sucessfully"
     )

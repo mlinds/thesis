@@ -1,13 +1,18 @@
-from atl_module.kde_peaks_method import get_elev_at_max_density, AccumulateKDEs
-import pandas as pd
-from glob import iglob
-from tqdm import tqdm
-from multiprocessing import Pool
-import numpy as np
-from atl_module import point_dataframe_filters as dfilt
-from atl_module import geospatial_functions as geofn
-from atl_module.load_netcdf import get_beams, load_beam_array_ncds
 import itertools
+from glob import iglob
+from multiprocessing import Pool
+
+import numpy as np
+import pandas as pd
+from logzero import setup_logger
+from tqdm import tqdm
+
+from atl_module import geospatial_functions as geofn
+from atl_module import point_dataframe_filters as dfilt
+from atl_module.kde_peaks_method import AccumulateKDEs, get_elev_at_max_density
+from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+
+detail_logger = setup_logger(name="details")
 
 
 def add_along_track_dist(pointdata):
@@ -177,13 +182,3 @@ def bathy_from_all_tracks_parallel(
     # catch the case where there is only one, so no concatenation is required
     elif len(result) == 1:
         return result
-
-
-def run_multiple(paths):
-
-    for path in paths:
-        print("starting folder", path)
-        outpath = path + "/all_bathy_pts.gpkg"
-        combined_result = bathy_from_all_tracks_parallel(path)
-        combined_result.to_file(outpath)
-        print("wrote results to ", outpath)

@@ -5,18 +5,19 @@ from rasterio import warp
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
 from sklearn.metrics import mean_squared_error
-
+from logzero import setup_logger
 from atl_module.geospatial_functions import to_refr_corrected_gdf
 from atl_module.raster_interaction import query_raster
 
 import dask.array as da
 
+detail_logger = setup_logger(name="details")
 # TODO refactor function names to be more descriptive
 # TODO add docstrings to functions
 
 
-def add_true_elevation(bathy_points, true_data_path):
-    gdf = to_refr_corrected_gdf(bathy_points, crs="EPSG:32617")
+def add_true_elevation(bathy_points, true_data_path, crs):
+    gdf = to_refr_corrected_gdf(bathy_points, crs=crs)
     true_bathy = query_raster(
         gdf,
         src=true_data_path,
@@ -25,9 +26,9 @@ def add_true_elevation(bathy_points, true_data_path):
     return bathy_points.assign(true_elevation=true_bathy)
 
 
-def icesat_rmse(bathy_points, true_data_path):
+def icesat_rmse(bathy_points, true_data_path, crs):
     bathy_points = add_true_elevation(
-        bathy_points=bathy_points, true_data_path=true_data_path
+        bathy_points=bathy_points, true_data_path=true_data_path, crs=crs
     )
     # return the RMS error
     rms = calc_rms_error(bathy_points, ["true_elevation"])
@@ -60,13 +61,15 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         truth_raster_crs = truthras.crs
         truth_data_reproj = truthras.read(1, masked=True)
         truth_data_tranform = truthras.transform
-    print("Opened Truth Raster")
+    detail_logger.debug(
+        f"Opened truth Raster from {truth_raster_path} with CRS {truth_raster_crs.name}"
+    )
     # create a band object that will contain the data plus the metadata (crs, etc)
     # truthband = rasterio.band(truthras, 1)
 
     # open the data to be compared as a rasterio dataset
     measured_ras = rasterio.open(measured_rasterpath)
-    print("opened bilinear raster")
+    detail_logger.debug("opened bilinear raster")
     # going to try to reproject to the same crs as the truth raster to reduce error due to distortion.
 
     # the next block is actually not required since we don't really need to warp the truth raster
@@ -97,14 +100,14 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     # actually make the raster
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
         bilinear_data = bi_vrt.read(1, masked=True)
-        print("Warped bilinear to the truth raster")
+        detail_logger.debug("Warped bilinear gebco interpolation to the truth raster")
         # mask out nodata values
 
     # with rasterio.open('/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys/error.tif',mode='w+',crs=dst_crs,transform=truth_data_tranform,height=dst_height,width=dst_width,count=1,dtype=rasterio.float64,nodata=-999999) as errorras:
     #     errorras.write((truth_data_reproj - bilinear_data),1)
 
     # return the square root of the average of the squared difference
-    print("calculating rms error")
+    detail_logger.debug("Calculating rms error")
     errordict = {
         "RMSE": np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),
         "MAE": np.nanmean(np.abs(truth_data_reproj - bilinear_data)),
@@ -114,7 +117,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
 
 def main():
-    print("calculating RMSE with naive interpolation")
+    detail_logger.debug("calculating RMSE with naive interpolation")
     truth_vs_bi = raster_RMSE(
         "../data/test_sites/florida_keys/in-situ-DEM/truth.vrt",
         "../data/test_sites/florida_keys/bilinear.tif",

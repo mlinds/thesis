@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 from shapely.geometry import LineString, Point
 from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+from logzero import setup_logger
+
+detail_logger = setup_logger(name="details")
 
 
 def to_refr_corrected_gdf(df, crs):
