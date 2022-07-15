@@ -46,6 +46,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             varname: str(values[:])
             for varname, values in ds.groups["ancillary_data"].variables.items()
         }
+        metadata["beam"] = beam
         # add the beam-level metadata by looping over attribute names and getting them from the
         # netcdf group
         for attribute_name in ds.groups[beam].ncattrs():
