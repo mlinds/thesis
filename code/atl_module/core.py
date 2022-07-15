@@ -1,6 +1,7 @@
 # going to keep the namespace as clean as possible
 import os
-from atl_module.geospatial_utils import icesat_bathymetry, raster_interaction
+from atl_module.bathymetry_extraction import icesat_bathymetry
+from atl_module.geospatial_utils import raster_interaction
 
 import geopandas as gpd
 import pandas as pd
