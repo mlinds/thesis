@@ -114,26 +114,3 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     }
     measured_ras.close()
     return errordict
-
-
-def main():
-    detail_logger.debug("calculating RMSE with naive interpolation")
-    truth_vs_bi = raster_RMSE(
-        "../data/test_sites/florida_keys/in-situ-DEM/truth.vrt",
-        "../data/test_sites/florida_keys/bilinear.tif",
-    )
-    # print("calculating RMSE kalman updated bathymetry")
-    # truth_vs_kalman = raster_RMSE(
-    #     "../data/test_sites/florida_keys/in-situ-DEM/truth.vrt",
-    #     "../data/resample_test/kalman_updated.tif",
-    # )
-    print(
-        {
-            "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
-            # "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
-        }
-    )
-
-
-if __name__ == "__main__":
-    main()
