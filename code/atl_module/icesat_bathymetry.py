@@ -121,6 +121,7 @@ def get_all_bathy_from_granule(
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
         # TODO could this be assigned to another function? not directly related to this function
         bathy_pts = bathy_pts.assign(
+            beam=metadata_dict["beam"],
             atm_profile=metadata_dict["atmosphere_profile"],
             beamtype=metadata_dict["atlas_beam_type"],
             oc_hconf_perc=metadata_dict["ocean_high_conf_perc"],
