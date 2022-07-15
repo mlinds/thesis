@@ -9,7 +9,7 @@ import rioxarray
 import pdal
 
 
-def prepare_pt_subset_for_kriging(folderpath, npts):
+def prepare_pt_subset_for_kriging(folderpath, npts,crs):
     pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
 
     # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (Z,Y,Z)
@@ -29,10 +29,10 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     pts_gdf = gpd.GeoDataFrame(
         thinned_array,
         geometry=gpd.points_from_xy(
-            thinned_array["X"], thinned_array["Y"], crs="EPSG:32617"
+            thinned_array["X"], thinned_array["Y"], crs=crs
         ),
     )
-    pts_gdf.to_file(folderpath + "/keys_testpts.gpkg")
+    pts_gdf.to_file(folderpath + "/kriging_pts.gpkg")
     pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
         thinned_array
     )
@@ -41,7 +41,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts):
     return pts_gdf
 
 
-def krige_bathy(krmodel, folderpath, npts, variogram_model):
+def krige_bathy(krmodel, folderpath, npts, variogram_model,crs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -52,13 +52,15 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model):
     """
 
     # load the points for kriging
-    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts)
+    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts,crs)
 
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
         ar = rioxarray.open_rasterio(ras)
         gridx = ar.x.data
         gridy = ar.y.data
+    # TODO add check for the same CRS in the gebco raster and in the points dataframe
+    assert pts_gdf.crs==ras.crs
     # read the xyz locations of the points
     x_loc = pts_gdf.geometry.x.to_numpy()
     y_loc = pts_gdf.geometry.y.to_numpy()
