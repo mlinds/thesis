@@ -91,6 +91,7 @@ class GebcoUpscaler:
             folderpath=self.folderpath,
             npts=npts,
             variogram_model="spherical",
+            crs=self.crs
         )
 
     def kalman(self, gebco_st):
