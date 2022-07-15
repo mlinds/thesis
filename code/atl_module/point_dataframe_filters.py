@@ -151,9 +151,9 @@ def _counter(series_in, window_distance_meters):
     return series_in.count()
 
 
-def add_neigbor_count(df, window_distance_pts, window_distance_meters):
+def add_neighbor_count(df, window_distance_pts, window_distance_meters):
     countseries = df.Z_geoid.rolling(window=window_distance_pts, center=True).apply(
         lambda x: _counter(x, window_distance_meters=window_distance_meters)
     )
-    df.loc[:, f"neighors_within{window_distance_meters}m"] = countseries
+    df.loc[:, f"neighbors_within_{window_distance_meters}m"] = countseries
     return df
