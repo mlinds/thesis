@@ -6,8 +6,8 @@ from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
 from sklearn.metrics import mean_squared_error
 from logzero import setup_logger
-from atl_module.geospatial_functions import to_refr_corrected_gdf
-from atl_module.raster_interaction import query_raster
+from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
+from atl_module.geospatial_utils.raster_interaction import query_raster
 
 import dask.array as da
 

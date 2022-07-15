@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from statistics import mean
 from shapely.geometry.polygon import orient
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
-from atl_module.variablelist import coverage_requested, segment_vars
+from atl_module.io.variablelist import coverage_requested, segment_vars
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"

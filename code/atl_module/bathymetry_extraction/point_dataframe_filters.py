@@ -1,10 +1,10 @@
 import pandas as pd
-from atl_module.raster_interaction import query_raster
-from atl_module.refraction_correction import correct_refr
+from atl_module.geospatial_utils.raster_interaction import query_raster
+from atl_module.bathymetry_extraction.refraction_correction import correct_refr
 from pathlib import Path
 import numpy as np
 
-p = Path(__file__).parents[2]
+p = Path(__file__).parents[3]
 
 
 def filter_high_returns(df, level=5):

@@ -1,5 +1,6 @@
 # going to keep the namespace as clean as possible
 import os
+from atl_module.geospatial_utils import icesat_bathymetry, raster_interaction
 
 import geopandas as gpd
 import pandas as pd
@@ -9,13 +10,11 @@ from logzero import setup_logger
 
 from atl_module import (
     error_calc,
-    icesat_bathymetry,
     kalman,
     kriging,
     ocean_color,
-    raster_interaction,
 )
-from atl_module.geospatial_functions import (
+from atl_module.geospatial_utils.geospatial_functions import (
     make_gdf_from_ncdf_files,
     to_refr_corrected_gdf,
 )

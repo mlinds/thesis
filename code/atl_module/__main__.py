@@ -32,7 +32,7 @@ site.find_bathy_from_icesat(
     window_meters=None,
     min_photons=None,
 )
-site.subset_gebco()
-site.kriging(npts=300)
-site.kalman(1.5)
+# site.subset_gebco()
+# site.kriging(npts=300)
+# site.kalman(1.5)
 # site.rmse_error()
