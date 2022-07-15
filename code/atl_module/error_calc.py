@@ -56,29 +56,30 @@ import pathlib
 
 def raster_RMSE(truth_raster_path, measured_rasterpath):
     # open the truth raster, which might be in a different crs than the output than the one being compared
-    truthras = rasterio.open(truth_raster_path)
+    with rasterio.open(truth_raster_path) as truthras:
+        truth_raster_crs = truthras.crs
+        truth_data_reproj = truthras.read(1, masked=True)
+        truth_data_tranform = truthras.transform
+    print('Opened Truth Raster')
     # create a band object that will contain the data plus the metadata (crs, etc)
-    truthband = rasterio.band(truthras, 1)
+    # truthband = rasterio.band(truthras, 1)
 
     # open the data to be compared as a rasterio dataset
     measured_ras = rasterio.open(measured_rasterpath)
-
+    print('opened bilinear raster')
     # going to try to reproject to the same crs as the truth raster to reduce error due to distortion.
-    dst_crs = truthras.crs
 
     # the next block is actually not required since we don't really need to warp the truth raster
 
     # First we reproject the truth raster to the same CRS as the kalman update (i.e. )
-    truth_data_reproj, truth_data_tranform = warp.reproject(
-        truthband, dst_crs=dst_crs, resampling=Resampling.bilinear
-    )
-    # drop the firstlayer of the ndarray
-    truth_data_reproj = truth_data_reproj[0]
-    # mask the NA values from the numpy array
-    truth_data_reproj[(truth_data_reproj == truthras.nodata)] = np.nan
+    # truth_data_reproj, truth_data_tranform = warp.reproject(
+    #     truthband, dst_crs=dst_crs, resampling=Resampling.bilinear
+    # )
+    # # drop the firstlayer of the ndarray
+    # truth_data_reproj = truth_data_reproj[0]
+    # # mask the NA values from the numpy array
+    # truth_data_reproj[(truth_data_reproj == truthras.nodata)] = np.nan
 
-    truth_data_reproj = truthras.read(1, masked=True)
-    truth_data_tranform = truthras.transform
 
     # get the dimensions we need the output raster to be
     dst_height = truth_data_reproj.shape[0]
@@ -88,7 +89,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     # set up the parameters
     vrt_options = {
         "resampling": Resampling.bilinear,
-        "crs": dst_crs,
+        "crs": truth_raster_crs,
         "transform": truth_data_tranform,
         "height": dst_height,
         "width": dst_width,
@@ -97,37 +98,40 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
     # actually make the raster
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
         bilinear_data = bi_vrt.read(1, masked=True)
+        print('Warped bilinear to the truth raster')
         # mask out nodata values
 
     # with rasterio.open('/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys/error.tif',mode='w+',crs=dst_crs,transform=truth_data_tranform,height=dst_height,width=dst_width,count=1,dtype=rasterio.float64,nodata=-999999) as errorras:
     #     errorras.write((truth_data_reproj - bilinear_data),1)
 
     # return the square root of the average of the squared difference
+    print('calculating rms error')
     errordict = {
         "RMSE": np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),
         "MAE": np.nanmean(np.abs(truth_data_reproj - bilinear_data)),
     }
+    measured_ras.close()
     return errordict
 
 
-# def main():
-#     # print("calculating RMSE with naive interpolation")
-#     # truth_vs_bi = raster_RMSE(
-#     #     "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-#     #     "../data/resample_test/bilinear.tif",
-#     # )
-#     print("calculating RMSE kalman updated bathymetry")
-#     truth_vs_kalman = raster_RMSE(
-#         "../data/test_sites/florida_keys/in-situ-DEM/2019_irma.vrt",
-#         "../data/resample_test/kalman_updated.tif",
-#     )
-#     print(
-#         {
-#             # "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
-#             "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
-#         }
-#     )
+def main():
+    print("calculating RMSE with naive interpolation")
+    truth_vs_bi = raster_RMSE(
+        "../data/test_sites/florida_keys/in-situ-DEM/truth.vrt",
+        "../data/test_sites/florida_keys/bilinear.tif",
+    )
+    # print("calculating RMSE kalman updated bathymetry")
+    # truth_vs_kalman = raster_RMSE(
+    #     "../data/test_sites/florida_keys/in-situ-DEM/truth.vrt",
+    #     "../data/resample_test/kalman_updated.tif",
+    # )
+    print(
+        {
+            "RMSE between truth data and simple bilinear interpolation:": truth_vs_bi,
+            # "RMSE between truth data and kalman-updated gebco:": truth_vs_kalman,
+        }
+    )
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
