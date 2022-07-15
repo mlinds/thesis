@@ -4,7 +4,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from shapely.geometry import LineString, Point
-from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
 from logzero import setup_logger
 
 detail_logger = setup_logger(name="details")

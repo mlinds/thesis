@@ -10,15 +10,15 @@ from tqdm import tqdm
 from atl_module import geospatial_functions as geofn
 from atl_module import point_dataframe_filters as dfilt
 from atl_module.kde_peaks_method import AccumulateKDEs, get_elev_at_max_density
-from atl_module.load_netcdf import get_beams, load_beam_array_ncds
+from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
 
 detail_logger = setup_logger(name="details")
 
 
-def add_along_track_dist(pointdata):
-    if isinstance(pointdata, pd.DataFrame):
-        pointdata = pointdata.to_records()
-    return geofn.add_track_dist_meters(pointdata)
+# def add_along_track_dist(pointdata):
+#     if isinstance(pointdata, pd.DataFrame):
+#         pointdata = pointdata.to_records()
+#     return geofn.add_track_dist_meters(pointdata)
 
 
 def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
