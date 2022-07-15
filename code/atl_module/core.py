@@ -17,7 +17,8 @@ from atl_module.geospatial_functions import (
     to_refr_corrected_gdf,
 )
 
-
+# TODO add a RMS error between the points and truth data
+# TODO add a function to automatically append the site error data to a table
 class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
@@ -26,16 +27,16 @@ class GebcoUpscaler:
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
         # set up the paths of the relevant vector files:
-        self.trackline_path = os.path.join(self.folderpath, "/tracklines.gpkg")
+        self.trackline_path = os.path.join(self.folderpath, "tracklines.gpkg")
         self.bathymetric_point_path = os.path.join(
-            self.folderpath, "/all_bathy_pts.gpkg"
+            self.folderpath, "all_bathy_pts.gpkg"
         )
         # raster paths
         self.kalman_update_raster_path = os.path.join(
-            self.folderpath, "/kalman_updated.tif"
+            self.folderpath, "kalman_updated.tif"
         )
-        self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "/bilinear.tif")
-        self.kriged_raster_path = os.path.join(self.folderpath, "/kriging_output.tif")
+        self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "bilinear.tif")
+        self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
         # setup the files needed
         # try to add the tracklines, recalculate them if they're not present
         try:
@@ -55,7 +56,7 @@ class GebcoUpscaler:
     def get_tracklines_geom(self):
         self.tracklines = make_gdf_from_ncdf_files(self.folderpath + "/ATL03/*.nc")
         self.crs = self.tracklines.estimate_utm_crs()
-        self.tracklines = ocean_color.add_secchi_depth_to_tracklines(self.tracklines)
+        # self.tracklines = ocean_color.add_secchi_depth_to_tracklines(self.tracklines)
         self.tracklines.to_file(self.trackline_path, overwrite=True)
 
     def subset_gebco(self):
