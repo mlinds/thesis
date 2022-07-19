@@ -2,15 +2,7 @@
 # from https://raw.githubusercontent.com/nsidc/NSIDC-Data-Access-Notebook/master/notebooks/Customize%20and%20Access%20NSIDC%20Data.ipynb
 # it might be difficult to understand and debug, just be warned
 
-
-# %% [markdown]
-# # Customize and Access NSIDC DAAC Data
-#
-# This notebook will walk you through how to programmatically access data from the NASA National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC) using spatial and temporal filters, as well as how to request customization services including subsetting, reformatting, and reprojection. No Python experience is necessary; each code cell will prompt you with the information needed to configure your data request. The notebook will print the resulting API command that can be used in a command line, browser, or in Python as executed below.
-
-# %% [markdown]
-# ### Import packages
-#
+# TODO abstract the actual API interaction into functions
 
 # %%
 import requests
@@ -29,13 +21,13 @@ import matplotlib.pyplot as plt
 from statistics import mean
 from shapely.geometry.polygon import orient
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
-from atl_module.io.variablelist import coverage_requested, segment_vars
+from atl_module.io.variablelist import atl_03_vars, segment_vars,atl09_vars
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
 
 
-def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath=None):
+def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=None):
     # %% [markdown]
     # ### Input Earthdata Login credentials
     #
@@ -119,7 +111,7 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
         # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
 
         # Go from geopandas GeoDataFrame object to an input that is readable by CMR
-        gdf = gpd.read_file(shapefile_filepath)
+        gdf = gpd.read_file(bounds_filepath)
 
         # CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
 
@@ -377,7 +369,7 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
     #             print(coverage)
     #         else: coverage = ''
 
-    coverage = vars
+    coverage = vars_
 
     # no services selected
     if (
@@ -493,7 +485,7 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
     # %%
     # Create an output folder if the folder does not already exist.
 
-    path = folderpath + "/ATL03"
+    path = folderpath + "/" + product
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -631,8 +623,8 @@ def request_data_download(product, bbox_in, folderpath, vars, shapefile_filepath
 def request_segments_only(shapefile_filepath, folderpath):
     request_data_download(
         "ATL03",
-        vars=segment_vars,
-        shapefile_filepath=shapefile_filepath,
+        vars_=segment_vars,
+        bounds_filepath=shapefile_filepath,
         bbox_in="",
         folderpath=folderpath,
     )
@@ -641,20 +633,29 @@ def request_segments_only(shapefile_filepath, folderpath):
 def request_full_data_shapefile(shapefile_filepath, folderpath):
     request_data_download(
         "ATL03",
-        vars=coverage_requested,
-        shapefile_filepath=shapefile_filepath,
+        vars_=atl_03_vars,
+        bounds_filepath=shapefile_filepath,
         bbox_in="",
         folderpath=folderpath,
     )
-
+# TODO run and debug as needed
+# might require some significant abstraction of the request_data_download function
+def request_ATL09_shapefile(bounds_filepath, folderpath):
+    request_data_download(
+        "ATL09",
+        vars_=atl_03_vars,
+        bounds_filepath=bounds_filepath,
+        bbox_in="",
+        folderpath=folderpath,
+    )
 
 if __name__ == "__main__":
     import sys
 
     # request_segments_only(sys.argv[1], sys.argv[2])
 
-    # request_data_download(
-    #     "ATL03",
-    #     sys.argv[1],
-    #     sys.argv[2],
-    # )
+    request_data_download(
+        "ATL03",
+        sys.argv[1],
+        sys.argv[2],
+    )
