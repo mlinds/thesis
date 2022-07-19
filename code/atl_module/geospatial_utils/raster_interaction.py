@@ -1,11 +1,10 @@
 from os.path import basename
 from subprocess import PIPE, Popen
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio as rio
-from logzero import setup_logger
+from logzero import setup_logger, logger
 from osgeo import gdal
 
 detail_logger = setup_logger(name="details")
@@ -46,7 +45,7 @@ def query_raster(dataframe: pd.DataFrame, src: str):
     pipeinput = bytes(coordlist, "utf-8")
 
     # gdal location info command with arguments
-    cmd = ["gdallocationinfo", "-geoloc", "-valonly", src]
+    cmd = ["gdallocationinfo", "-wgs84", "-valonly", src]
     # open a pipe to these commands
     with Popen(cmd, stdout=PIPE, stdin=PIPE) as p:
         # feed in our bytestring
@@ -71,7 +70,7 @@ def subset_gebco(folderpath, tracklines, epsg_no):
     # TODO mask first, before interpolation
 
     # constant that defines location of the GEBCO raster
-    GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
+    GEBCO_LOCATION = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF
     # tracklines = gpd.read_file(f"{folderpath}/tracklines.gpkg")
     # get the boundaries
@@ -90,7 +89,7 @@ def subset_gebco(folderpath, tracklines, epsg_no):
         yRes=50,
         resampleAlg="bilinear",
         srcNodata=-32767,
-        dstNodata=-32767,
+        dstNodata=-999999,
         outputType=gdal.GDT_Float64,
         # format='GTiff'
     )
@@ -104,7 +103,7 @@ def subset_gebco(folderpath, tracklines, epsg_no):
         raw_data[raw_data < -40] = np.NaN
         reprojected_raster.write(raw_data, 1)
 
-    detail_logger.debug(
+    logger.debug(
         f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}"
     )
     return None
