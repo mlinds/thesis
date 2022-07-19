@@ -1,4 +1,5 @@
 # %%
+from atl_module.geospatial_utils import geospatial_functions
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
@@ -9,8 +10,8 @@ from matplotlib.patches import ConnectionPatch, Rectangle
 from mpl_toolkits.mplot3d import art3d
 from scipy.stats import gaussian_kde
 
-from atl_module import icesat_bathymetry
-from atl_module.refraction_correction import correct_refr
+from atl_module.bathymetry_extraction import icesat_bathymetry
+from atl_module.bathymetry_extraction.refraction_correction import correct_refr
 
 import contextily as cx
 import rasterio
@@ -20,12 +21,34 @@ plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
 # # Plots of Filtering Process
 
+#%%
+site = 'florida_keys'
+with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
+    fig, ax = plt.subplots(figsize=(20, 17))
+    ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
+    ax.set_ylabel(f"Degrees latitude in {femaras.crs}")
+    ax.set_title("FEMA 2019 post-Irma topobathymetric Lidar data")
+    # cx.add_basemap(ax,source=cx.providers.OpenTopoMap,crs=femaras.crs)
+    image_hidden = ax.imshow(
+        femaras.read(1, masked=True),
+        cmap="inferno",
+    )
+    rastershow(femaras, cmap="inferno", ax=ax)
+
+    fig.colorbar(image_hidden, ax=ax)
+# %%
+fig.savefig(
+    "../document/figures/{site}_ras.jpg",
+    dpi=500,
+    facecolor="white",
+    bbox_inches="tight",
+)
 # %%
 beamdata = icesat_bathymetry.load_beam_array_ncds(
     "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc",
     "gt3l",
 )
-beamdata = icesat_bathymetry.add_along_track_dist(beamdata)
+beamdata = geospatial_functions.add_track_dist_meters(beamdata)
 
 
 def get_photon_plot_axis():
@@ -87,7 +110,9 @@ ax.plot(Zcorr, depth)
 # ax.plot(Ycorr,depth)
 
 # %%
-atl03_testfile = "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc"
+atl03_testfile = (
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc"
+)
 beam = "gt3l"
 
 beamdata = icesat_bathymetry.load_beam_array_ncds(atl03_testfile, beam)
@@ -113,8 +138,9 @@ point_dataframe = point_dataframe.query("dist_or > 2000 and dist_or < 6000")
 # %%
 
 # %%
+# TODO switch to distance based windowing function
 def getkde(start, window):
-    dataset = point_dataframe.Z_g[start : start + window]
+    dataset = point_dataframe.Z_geoid[start : start + window]
     dataset = dataset.dropna()
     kde = gaussian_kde(dataset)
     xvals = np.linspace(0, -40, 1000)
@@ -142,7 +168,7 @@ ax2dkde.set_ylabel("Photon Elevation [m +msl]")
 
 ax2d.scatter(
     point_dataframe.dist_or,
-    point_dataframe.Z_g,
+    point_dataframe.Z_geoid,
     label="Neighboring Photons",
     zorder=-1,
     alpha=0.3,
@@ -151,10 +177,7 @@ ax2d.scatter(
 
 for startpt in [1200]:
     # find the x lodcation of the middle of the box, by taking average of start and end x coordinate
-    s = (
-        point_dataframe.dist_or.iloc[startpt]
-        + point_dataframe.dist_or.iloc[startpt + 100]
-    ) / 2
+    s = (point_dataframe.dist_or.iloc[startpt] + point_dataframe.dist_or.iloc[startpt + 100]) / 2
     # find the y,z values of the kde graph
     kdey, kdez = getkde(startpt, 200)
 
@@ -163,13 +186,12 @@ for startpt in [1200]:
     # get the rectangle geometry first
     window_startpt = (point_dataframe.dist_or.iloc[startpt], point_dataframe.Z_g.min())
     window_width = (
-        point_dataframe.dist_or.iloc[startpt + 100]
-        - point_dataframe.dist_or.iloc[startpt]
+        point_dataframe.dist_or.iloc[startpt + 100] - point_dataframe.dist_or.iloc[startpt]
     )
     subsetdf = point_dataframe[startpt : startpt + 100]
     photons_in_window = ax2d.scatter(
         subsetdf.dist_or,
-        subsetdf.Z_g,
+        subsetdf.Z_geoid,
         label="Photons within window",
     )
 
@@ -192,9 +214,7 @@ for startpt in [1200]:
     kdemax_y = kdey[kdez.argmax()]
 
     # add the seafloor location
-    sf_elev = ax2d.scatter(
-        s, kdemax_y, label="Calculated Seafloor elev in middle of window"
-    )
+    sf_elev = ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
 
     path = ConnectionPatch(
         xyA=(kdemax_z, kdemax_y),
@@ -230,7 +250,7 @@ ax = fig.add_subplot(1, 1, 1, projection="3d")
 
 ax.scatter(
     xs=point_dataframe.dist_or,
-    ys=point_dataframe.Z_g,
+    ys=point_dataframe.Z_geoid,
     label="Photons in bathymetric returns",
     zorder=-1,
 )
@@ -241,10 +261,7 @@ startpt = 1000
 
 for startpt in range(0, len(point_dataframe) - 100, 50):
     # find the x lodcation of the middle of the box, by taking average of start and end x coordinate
-    s = (
-        point_dataframe.dist_or.iloc[startpt]
-        + point_dataframe.dist_or.iloc[startpt + 100]
-    ) / 2
+    s = (point_dataframe.dist_or.iloc[startpt] + point_dataframe.dist_or.iloc[startpt + 100]) / 2
     # find the y,z values of the kde graph
     kdey, kdez = getkde(startpt, 200)
 
@@ -253,8 +270,7 @@ for startpt in range(0, len(point_dataframe) - 100, 50):
     # get the rectangle geometry first
     window_startpt = (point_dataframe.dist_or.iloc[startpt], -40)
     window_width = (
-        point_dataframe.dist_or.iloc[startpt + 100]
-        - point_dataframe.dist_or.iloc[startpt]
+        point_dataframe.dist_or.iloc[startpt + 100] - point_dataframe.dist_or.iloc[startpt]
     )
     window_height = 40
     # add the filter rectangle to the plot
@@ -316,7 +332,7 @@ fig.savefig("../document/figures/3d_kde_function.png")
 # %% [markdown]
 # # Kriging figures
 # %%
-pts = gpd.read_file("../data/test_sites/florida_keys/keys_testpts.gpkg")
+pts = gpd.read_file("../data/test_sites/florida_keys/kriging_pts.gpkg")
 pts_all = gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg")
 # %%
 with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as krigedras:
@@ -338,8 +354,7 @@ oned_yvals = yvals[row, :]
 resolution = oned_xvals[1] - oned_xvals[0]
 
 pts_in_area = pts.loc[
-    (pts.Y > oned_yvals.min() - resolution / 2)
-    & (pts.Y < oned_yvals.min() + resolution / 2)
+    (pts.Y > oned_yvals.min() - resolution / 2) & (pts.Y < oned_yvals.min() + resolution / 2)
 ]
 pts_all_in_area = pts_all.loc[
     (pts_all.northing > oned_yvals.min() - resolution)
@@ -411,9 +426,7 @@ ax.fill_between(
     label="GEBCO Uncertainty",
 )
 
-with rasterio.open(
-    "../data/test_sites/florida_keys/kalman_updated.tif"
-) as kalman_raster:
+with rasterio.open("../data/test_sites/florida_keys/kalman_updated.tif") as kalman_raster:
     kalman_elev = kalman_raster.read(1)
     oned_kalman = kalman_elev[row, :]
 
@@ -436,9 +449,7 @@ fig.savefig(
 )
 
 # %%
-with rasterio.open(
-    "../data/test_sites/florida_keys/kriging_output.tif"
-) as bilinear_raster:
+with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bilinear_raster:
     fig, ax = plt.subplots(figsize=(20, 10))
     ax.set_xlabel(f"Easting UTM 17N")
     ax.set_ylabel(f"Northing UTM 17N")
