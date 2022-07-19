@@ -135,6 +135,9 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
+        # TODO use scipy.interpolate? 
+        # or maybe not: " Calling interp1d with NaNs present in input values results in undefined behaviour." from scipy.interpolate docs
+        # TODO combine these into a dataframe - might make this more cpu/memory efficient
         # create a time-index series of the variables we want to interpolate
         geoid_series = pd.Series(geoid_segment, index=delta_time_geophys).sort_index()
         tide_ocean_series = pd.Series(
