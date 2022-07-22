@@ -5,6 +5,7 @@
 # TODO abstract the actual API interaction into functions
 
 # %%
+from gzip import READ
 import requests
 import json
 import zipfile
@@ -22,205 +23,53 @@ from statistics import mean
 from shapely.geometry.polygon import orient
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
 from atl_module.io.variablelist import atl_03_vars, segment_vars,atl09_vars
+from xml.etree import ElementTree as ET
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
 
+BASE_URL = "https://n5eil02u.ecs.nsidc.org/egi/request"
+CMR_COLLECTIONS_URL = "https://cmr.earthdata.nasa.gov/search/collections.json"
+GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 
-def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=None):
-    # %% [markdown]
-    # ### Input Earthdata Login credentials
-    #
-    # An Earthdata Login account is required to access data from the NSIDC DAAC. If you do not already have an Earthdata Login account, visit http://urs.earthdata.nasa.gov to register.
 
-    # %%
-    uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
-
-    # %%
-    pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
-
-    # %%
-    email = EMAIL  # Enter Earthdata login email
-
-    # %% [markdown]
-    # ### Select data set and determine version number
-    #
-    # Data sets are selected by data set IDs (e.g. MOD10A1), whic are also referred to as a "short name". These short names are located at the top of each NSIDC data set landing page in gray above the full title.
-
-    # %%
-    # Input data set short name (e.g. ATL03) of interest here.
-
-    short_name = product
-
-    # %%
-    # Get json response from CMR collection metadata
-
-    params = {"short_name": short_name}
-
-    cmr_collections_url = "https://cmr.earthdata.nasa.gov/search/collections.json"
-    response = requests.get(cmr_collections_url, params=params)
+def get_product_metadata(params):
+    response = requests.get(CMR_COLLECTIONS_URL, params=params)
     results = json.loads(response.content)
 
     # Find all instances of 'version_id' in metadata and print most recent version number
     versions = [el["version_id"] for el in results["feed"]["entry"]]
     latest_version = versions[-1]
-    print("The most recent version of ", short_name, " is ", versions[-1])
+    return latest_version
 
-    # %% [markdown]
-    # ### Select time period of interest
+def file_to_search_polygons(bounds_filepath):
+    # Use geopandas to read in polygon file
+    # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
 
-    # %%
-    # Input temporal range
+    # Go from geopandas GeoDataFrame object to an input that is readable by CMR
+    gdf = gpd.read_file(bounds_filepath)
 
-    # start_date = input('Input start date in yyyy-MM-dd format: ')
-    # start_time = input('Input start time in HH:mm:ss format: ')
-    # end_date = input('Input end date in yyyy-MM-dd format: ')
-    # end_time = input('Input end time in HH:mm:ss format: ')
+    # CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
 
-    # temporal = start_date + 'T' + start_time + 'Z' + ',' + end_date + 'T' + end_time + 'Z'
-    temporal = ""
-    # %% [markdown]
-    # ### Select area of interest
-    #
-    # #### Select bounding box or shapefile entry
-    #
-    # For all data sets, you can enter a bounding box to be applied to your file search. If you are interested in ICESat-2 data, you may also apply a spatial boundary based on a vector-based spatial data file.
+    # Simplify polygon for complex shapes in order to pass a reasonable request length to CMR. The larger the tolerance value, the more simplified the polygon.
+    # Orient counter-clockwise: CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
 
-    # %%
-    # Enter spatial coordinates in decimal degrees, with west longitude and south latitude reported as negative degrees. Do not include spaces between coordinates.
-    # Example over the state of Colorado: -109,37,-102,41
+    poly = orient(gdf.simplify(0.05, preserve_topology=False).loc[0], sign=1.0)
 
-    # bounding_box = input('Input spatial coordinates in the following order: lower left longitude,lower left latitude,upper right longitude,upper right latitude. Leave blank if you wish to provide a vector-based spatial file for ICESat-2 search and subsetting:')
-    bounding_box = bbox_in
-    # %% [markdown]
-    # #### Shapefile input for ICESat-2 search and subset
-    #
-    # For ICESat-2 data only, you may also provide a geospatial file, including Esri Shapefile or KML/KMZ, to be applied to both your file search and subsetting request. Note that currently only files containing a single shape can be applied to the search.
-    #
-    # An example shapefile 'jacobshavn_bnd.shp' is included in this repository under the Shapefile_examples folder, demonstrated below. A shapefile of Pine Island glacier ('glims_polygons.shp') is also available, which was acquired from the NSIDC Global Land Ice Measurements from Space (GLIMS) database. Direct download access available from http://www.glims.org/maps/info.html?anlys_id=528486. If you would like to use a different geospatial file, you will need to adjust the filepath in the code block below.
+    geojson = gpd.GeoSeries(poly).to_json()  # Convert to geojson
+    geojson = geojson.replace(" ", "")  # remove spaces for API call
 
-    # %%
-    # aoi value used for filtering and subsetting logic below
-    if bounding_box == "":
-        aoi = "2"
-    else:
-        aoi = "1"
+    # Format dictionary to polygon coordinate pairs for CMR polygon filtering
+    polygon = ",".join([str(c) for xy in zip(*poly.exterior.coords.xy) for c in xy])
+    return polygon,geojson
 
-    if aoi == "2":
-        # Use geopandas to read in polygon file
-        # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
-
-        # Go from geopandas GeoDataFrame object to an input that is readable by CMR
-        gdf = gpd.read_file(bounds_filepath)
-        # for buffering we need to do this.
-        gdf = gdf.to_crs(crs=gdf.estimate_utm_crs())
-
-        # CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
-
-        # Simplify polygon for complex shapes in order to pass a reasonable request length to CMR. The larger the tolerance value, the more simplified the polygon.
-        # Orient counter-clockwise: CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
-
-        poly = orient(gdf.simplify(0.05, preserve_topology=False).loc[0], sign=1.0)
-
-        geojson = gpd.GeoSeries(poly).to_json()  # Convert to geojson
-        geojson = geojson.replace(" ", "")  # remove spaces for API call
-
-        # Format dictionary to polygon coordinate pairs for CMR polygon filtering
-        polygon = ",".join([str(c) for xy in zip(*poly.exterior.coords.xy) for c in xy])
-
-        print("Simplified polygon coordinates based on shapefile input:", polygon)
-    # %% [markdown]
-    # ### Determine how many granules exist over this time and area of interest.
-
-    # %%
-    # Create CMR parameters used for granule search. Modify params depending on bounding_box or polygon input.
-
-    granule_search_url = "https://cmr.earthdata.nasa.gov/search/granules"
-
-    if aoi == "1":
-        # bounding box input:
-        search_params = {
-            "short_name": short_name,
-            "version": latest_version,
-            "temporal": temporal,
-            "page_size": 100,
-            "page_num": 1,
-            "bounding_box": bounding_box,
-        }
-    else:
-        # If polygon file input:
-        search_params = {
-            "short_name": short_name,
-            "version": latest_version,
-            "temporal": temporal,
-            "page_size": 100,
-            "page_num": 1,
-            "polygon": polygon,
-        }
-
-    granules = []
-    headers = {"Accept": "application/json"}
-    while True:
-        response = requests.get(
-            granule_search_url, params=search_params, headers=headers
-        )
-        results = json.loads(response.content)
-
-        if len(results["feed"]["entry"]) == 0:
-            # Out of results, so break out of loop
-            break
-
-        # Collect results and increment page_num
-        granules.extend(results["feed"]["entry"])
-        search_params["page_num"] += 1
-
-    print(
-        "There are",
-        len(granules),
-        "granules of",
-        short_name,
-        "version",
-        latest_version,
-        "over my area and time of interest.",
-    )
-
-    # %% [markdown]
-    # ### Determine the average size of those granules as well as the total volume
-
-    # %%
-    granule_sizes = [float(granule["granule_size"]) for granule in granules]
-
-    print(
-        f"The average size of each granule is {mean(granule_sizes):.2f} MB and the total size of all {len(granules)} granules is {sum(granule_sizes):.2f} MB"
-    )
-
-    # %% [markdown]
-    # Note that subsetting, reformatting, or reprojecting can alter the size of the granules if those services are applied to your request.
-
-    # %% [markdown]
-    # ### Select the subsetting, reformatting, and reprojection services enabled for your data set of interest.
-
-    # %% [markdown]
-    # The NSIDC DAAC supports customization services on many of our NASA Earthdata mission collections. Let's discover whether or not our data set has these services available. If services are available, we will also determine the specific service options supported for this data set and select which of these services we want to request.
-
-    # %% [markdown]
-    # ### Query the service capability endpoint to gather service information needed below
-
-    # %%
-    # Query service capability URL
-
-    from xml.etree import ElementTree as ET
-
-    capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{short_name}.{latest_version}.xml"
-
-    # Create session to store cookie and pass credentials to capabilities url
-
-    session = requests.session()
+def request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,geojson):
+    capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{product_short_name}.{latest_version}.xml"
     s = session.get(capability_url)
     response = session.get(s.url, auth=(uid, pswd))
 
     root = ET.fromstring(response.content)
-
+    
     # collect lists with each service option
 
     subagent = [subset_agent.attrib for subset_agent in root.iter("SubsetAgent")]
@@ -245,14 +94,8 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
         # reprojection options
         projections = [Projection.attrib for Projection in root.iter("Projection")]
 
-    # %% [markdown]
-    # ### Select subsetting, reformatting, and reprojection service options, if available.
-
-    # %%
-    # print service information depending on service availability and select service options
-
     if len(subagent) < 1:
-        print("No services exist for", short_name, "version", latest_version)
+        print("No services exist for", product_short_name, "version", latest_version)
         agent = "NO"
         bbox = ""
         time_var = ""
@@ -264,14 +107,14 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
     else:
         agent = ""
         subdict = subagent[0]
-        if subdict["spatialSubsetting"] == "true" and aoi == "1":
+        if subdict["spatialSubsetting"] == "true" and aoi == "bounding_box":
             Boundingshape = ""
             ss = "y"
             if ss == "y":
                 bbox = bounding_box
             else:
                 bbox = ""
-        if subdict["spatialSubsettingShapefile"] == "true" and aoi == "2":
+        if subdict["spatialSubsettingShapefile"] == "true" and aoi == "shapefile":
             bbox = ""
             ps = "y"
             if ps == "y":
@@ -339,26 +182,6 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
             print("No reprojection options are supported with your requested format")
             projection = ""
             projection_parameters = ""
-
-    # %% [markdown]
-    # Because variable subsetting can include a long list of variables to choose from, we will decide on variable subsetting separately from the service options above.
-
-    # %%
-    # Select variable subsetting
-
-    # if len(subagent) > 0 :
-    #     if len(variable_vals) > 0:
-    #         v = input('Variable subsetting is available. Would you like to subset a selection of variables? (y/n)')
-    #         if v == 'y':
-    #             print('The', short_name, 'variables to select from include:')
-    #             print(*variable_vals, sep = "\n")
-    #             coverage = input('If you would like to subset by variable, copy and paste the variables you would like separated by comma (be sure to remove spaces and retain all forward slashes: ')
-    #             print(coverage)
-    #         else: coverage = ''
-
-    coverage = vars_
-
-    # no services selected
     if (
         reformat == ""
         and projection == ""
@@ -369,29 +192,103 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
         and Boundingshape == ""
     ):
         agent = "NO"
+    return reformat,projection,projection_parameters,time_var,bbox,Boundingshape,agent
+    
 
-    # %% [markdown]
-    # ### Select data access configurations
-    #
-    # The data request can be accessed asynchronously or synchronously. The asynchronous option will allow concurrent requests to be queued and processed without the need for a continuous connection. Those requested orders will be delivered to the specified email address, or they can be accessed programmatically as shown below. Synchronous requests will automatically download the data as soon as processing is complete. The granule limits differ between these two options:
-    #
-    # Maximum granules per synchronous request = 100
-    #
-    # Maximum granules per asynchronous request = 2000
-    #
-    # We will set the access configuration depending on the number of granules requested. For requests over 2000 granules, we will produce multiple API endpoints for each 2000-granule order. Please note that synchronous requests may take a long time to complete depending on request parameters, so the number of granules may need to be adjusted if you are experiencing performance issues. The `page_size` parameter can be used to adjust this number.
+
+def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
+    params = {"short_name": product_short_name}
+
+    latest_version =  get_product_metadata(params)
+   
+    print(f"The most recent version of {product_short_name} is {latest_version}" )
 
     # %%
-    # Set NSIDC data access base URL
-    base_url = "https://n5eil02u.ecs.nsidc.org/egi/request"
+    # Input temporal range
 
+    # start_date = input('Input start date in yyyy-MM-dd format: ')
+    # start_time = input('Input start time in HH:mm:ss format: ')
+    # end_date = input('Input end date in yyyy-MM-dd format: ')
+    # end_time = input('Input end time in HH:mm:ss format: ')
+
+    # temporal = start_date + 'T' + start_time + 'Z' + ',' + end_date + 'T' + end_time + 'Z'
+    
+   
+    search_params = {
+            "short_name": product_short_name,
+            "version": latest_version,
+            "temporal": temporal,
+            "page_size": 100,
+            "page_num": 1,
+            "bounding_box": bounding_box,
+        }
+  
+    if bounding_box == "":
+        aoi = "shapefile"
+        polygon,geojson = file_to_search_polygons(bounds_filepath=bounds_filepath)
+        search_params['polygon'] = polygon
+    else:
+        aoi = "bounding_box"
+        search_params['bounding_box'] = bounding_box
+
+    granules = []
+    headers = {"Accept": "application/json"}
+    while True:
+        response = requests.get(
+            GRANULE_SEARCH_URL, params=search_params, headers=headers
+        )
+        results = json.loads(response.content)
+
+        if len(results["feed"]["entry"]) == 0:
+            # Out of results, so break out of loop
+            break
+
+        # Collect results and increment page_num
+        granules.extend(results["feed"]["entry"])
+        search_params["page_num"] += 1
+
+    print(
+        "There are",
+        len(granules),
+        "granules of",
+        product_short_name,
+        "version",
+        latest_version,
+        "over my area and time of interest.",
+    )
+    granule_sizes = [float(granule["granule_size"]) for granule in granules]
+
+    print(
+        f"The average size of each granule is {mean(granule_sizes):.2f} MB and the total size of all {len(granules)} granules is {sum(granule_sizes):.2f} MB"
+    )
+
+    return latest_version,aoi,polygon,geojson,granules
+    
+
+def request_data_download(product_short_name, bounding_box, folderpath, vars_, bounds_filepath=None):
+    
+    uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
+    pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
+    email = EMAIL  # Enter Earthdata login email
+
+    temporal = ""
+
+    latest_version,aoi,polygon,geojson,granules = _data_search(product_short_name=product_short_name,bounding_box=bounding_box,bounds_filepath=bounds_filepath,temporal=temporal)
+
+    # Create session to store cookie and pass credentials to capabilities url
+    session = requests.session()
+    
+    
+
+    reformat,projection,projection_parameters,time_var,bbox,Boundingshape,agent=request_capabilities(session,product_short_name=product_short_name,latest_version=latest_version,uid=uid,pswd=pswd,aoi=aoi,geojson=geojson)
+    coverage = vars_
     # Set the request mode to asynchronous if the number of granules is over 100, otherwise synchronous is enabled by default
     if len(granules) > 100:
-        request_mode = "async"
+        request_async = True
         page_size = 2000
     else:
         page_size = 100
-        request_mode = "stream"
+        request_async = False
 
     # Determine number of orders needed for requests over 2000 granules.
     page_num = math.ceil(len(granules) / page_size)
@@ -400,52 +297,32 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
         "There will be",
         page_num,
         "total order(s) processed for our",
-        short_name,
+        product_short_name,
         "request.",
     )
-
-    # %% [markdown]
-    # ### Create the API endpoint
-    #
-    # Programmatic API requests are formatted as HTTPS URLs that contain key-value-pairs specifying the service operations that we specified above. The following command can be executed via command line, a web browser, or in Python below.
-
-    # %%
-    if aoi == "1":
+    # generic param_dict
+    param_dict = {
+            "short_name": product_short_name,
+            "version": latest_version,
+            "temporal": temporal,
+            "time": time_var,
+            "format": reformat,
+            "projection": projection,
+            "projection_parameters": projection_parameters,
+            "Coverage": coverage,
+            "page_size": page_size,
+            "agent": agent,
+            "email": email,
+        }
+    if aoi == "bounding_box":
         # bounding box search and subset:
-        param_dict = {
-            "short_name": short_name,
-            "version": latest_version,
-            "temporal": temporal,
-            "time": time_var,
-            "bounding_box": bounding_box,
-            "bbox": bbox,
-            "format": reformat,
-            "projection": projection,
-            "projection_parameters": projection_parameters,
-            "Coverage": coverage,
-            "page_size": page_size,
-            "request_mode": request_mode,
-            "agent": agent,
-            "email": email,
-        }
-    else:
-        # If polygon file input:
-        param_dict = {
-            "short_name": short_name,
-            "version": latest_version,
-            "temporal": temporal,
-            "time": time_var,
-            "polygon": polygon,
-            "Boundingshape": Boundingshape,
-            "format": reformat,
-            "projection": projection,
-            "projection_parameters": projection_parameters,
-            "Coverage": coverage,
-            "page_size": page_size,
-            "request_mode": request_mode,
-            "agent": agent,
-            "email": email,
-        }
+        param_dict['bounding_box'] = bounding_box
+        param_dict['bbox'] = bbox
+    elif aoi == "shapefile":
+        param_dict['Boundingshape'] = polygon
+
+    # TODO could reverse this by setting up the dictionary based on available parameters
+    # maybe using a function that only takes kw args
 
     # Remove blank key-value-pairs
     param_dict = {k: v for k, v in param_dict.items() if v != ""}
@@ -456,131 +333,131 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
 
     # Print API base URL + request parameters
     endpoint_list = []
-    for i in range(page_num):
-        page_val = i + 1
-        API_request = api_request = f"{base_url}?{param_string}&page_num={page_val}"
+    for page_val in range(1,page_num+1):
+        API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
         endpoint_list.append(API_request)
 
-    print(*endpoint_list, sep="\n")
+    print('ENDPOINTLIST',*endpoint_list, sep="\n")
 
-    # %% [markdown]
-    # ### Request data
-
-    # %% [markdown]
-    # We will now download data using the Python requests library. The data will be downloaded directly to this notebook directory in a new Outputs folder. The progress of each order will be reported.
-
-    # %%
-    # Create an output folder if the folder does not already exist.
-
-    path = folderpath + "/" + product
+    path = folderpath + "/" + product_short_name
     if not os.path.exists(path):
         os.mkdir(path)
 
-    # Different access methods depending on request mode:
+    if request_async:
+        _request_async_func(page_num,param_dict,session,BASE_URL)
+    else:
+        print('arrived here')
+        _request_streaming(page_num,session,param_dict,BASE_URL)
+        _unzip_output_file(path)
 
-    if request_mode == "async":
-        # Request data service for each page number, and unzip outputs
-        for i in range(page_num):
-            page_val = i + 1
-            print("Order: ", page_val)
+    _clean_output_folders(path)
 
-            # For all requests other than spatial file upload, use get function
-            request = session.get(base_url, params=param_dict)
+def _request_async_func(page_num,session,param_dict,base_url):
+    param_dict['request_mode'] = 'async'
+# Request data service for each page number, and unzip outputs
+    for page_val in range(1,page_num):
+        print("Order: ", page_val)
+        # For all requests other than spatial file upload, use get function
+        request = session.get(base_url, params=param_dict)
+        print("Request HTTP response: ", request.status_code)
 
-            print("Request HTTP response: ", request.status_code)
+        # Raise bad request: Loop will stop for bad response code.
+        request.raise_for_status()
+        print("Order request URL: ", request.url)
+        esir_root = ET.fromstring(request.content)
+        print("Order request response XML content: ", request.content)
+
+        # Look up order ID
+        orderlist = []
+        for order in esir_root.findall("./order/"):
+            orderlist.append(order.text)
+        orderID = orderlist[0]
+        print("order ID: ", orderID)
+
+        # Create status URL
+        statusURL = base_url + "/" + orderID
+        print("status URL: ", statusURL)
+
+        # Find order status
+        request_response = session.get(statusURL)
+        print(
+            "HTTP response from order response URL: ", request_response.status_code
+        )
+
+        # Raise bad request: Loop will stop for bad response code.
+        request_response.raise_for_status()
+        request_root = ET.fromstring(request_response.content)
+        statuslist = []
+        for status in request_root.findall("./requestStatus/"):
+            statuslist.append(status.text)
+        status = statuslist[0]
+        print("Data request ", page_val, " is submitting...")
+        print("Initial request status is ", status)
+
+        # Continue loop while request is still processing
+        while status == "pending" or status == "processing":
+            print("Status is not complete. Trying again.")
+            time.sleep(10)
+            loop_response = session.get(statusURL)
 
             # Raise bad request: Loop will stop for bad response code.
-            request.raise_for_status()
-            print("Order request URL: ", request.url)
-            esir_root = ET.fromstring(request.content)
-            print("Order request response XML content: ", request.content)
+            loop_response.raise_for_status()
+            loop_root = ET.fromstring(loop_response.content)
 
-            # Look up order ID
-            orderlist = []
-            for order in esir_root.findall("./order/"):
-                orderlist.append(order.text)
-            orderID = orderlist[0]
-            print("order ID: ", orderID)
-
-            # Create status URL
-            statusURL = base_url + "/" + orderID
-            print("status URL: ", statusURL)
-
-            # Find order status
-            request_response = session.get(statusURL)
-            print(
-                "HTTP response from order response URL: ", request_response.status_code
-            )
-
-            # Raise bad request: Loop will stop for bad response code.
-            request_response.raise_for_status()
-            request_root = ET.fromstring(request_response.content)
+            # find status
             statuslist = []
-            for status in request_root.findall("./requestStatus/"):
+            for status in loop_root.findall("./requestStatus/"):
                 statuslist.append(status.text)
             status = statuslist[0]
-            print("Data request ", page_val, " is submitting...")
-            print("Initial request status is ", status)
+            print("Retry request status is: ", status)
+            if status == "pending" or status == "processing":
+                continue
 
-            # Continue loop while request is still processing
-            while status == "pending" or status == "processing":
-                print("Status is not complete. Trying again.")
-                time.sleep(10)
-                loop_response = session.get(statusURL)
+        # Order can either complete, complete_with_errors, or fail:
+        # Provide complete_with_errors error message:
+        if status == "complete_with_errors" or status == "failed":
+            messagelist = []
+            for message in loop_root.findall("./processInfo/"):
+                messagelist.append(message.text)
+            print("error messages:")
+            pprint.pprint(messagelist)
 
-                # Raise bad request: Loop will stop for bad response code.
-                loop_response.raise_for_status()
-                loop_root = ET.fromstring(loop_response.content)
-
-                # find status
-                statuslist = []
-                for status in loop_root.findall("./requestStatus/"):
-                    statuslist.append(status.text)
-                status = statuslist[0]
-                print("Retry request status is: ", status)
-                if status == "pending" or status == "processing":
-                    continue
-
-            # Order can either complete, complete_with_errors, or fail:
-            # Provide complete_with_errors error message:
-            if status == "complete_with_errors" or status == "failed":
-                messagelist = []
-                for message in loop_root.findall("./processInfo/"):
-                    messagelist.append(message.text)
-                print("error messages:")
-                pprint.pprint(messagelist)
-
-            # Download zipped order if status is complete or complete_with_errors
-            if status == "complete" or status == "complete_with_errors":
-                downloadURL = "https://n5eil02u.ecs.nsidc.org/esir/" + orderID + ".zip"
-                print("Zip download URL: ", downloadURL)
-                print("Beginning download of zipped output...")
-                zip_response = session.get(downloadURL)
-                # Raise bad request: Loop will stop for bad response code.
-                zip_response.raise_for_status()
-                with zipfile.ZipFile(io.BytesIO(zip_response.content)) as z:
-                    z.extractall(path)
-                print("Data request", page_val, "is complete.")
-            else:
-                print("Request failed.")
-
-    else:
-        for i in range(page_num):
-            page_val = i + 1
-            print("Order: ", page_val)
-            print("Requesting...")
-            request = session.get(base_url, params=param_dict)
-            print("HTTP response from order response URL: ", request.status_code)
-            request.raise_for_status()
-            d = request.headers["content-disposition"]
-            fname = re.findall("filename=(.+)", d)
-            dirname = os.path.join(path, fname[0].strip('"'))
-            print("Downloading...")
-            open(dirname, "wb").write(request.content)
+        # Download zipped order if status is complete or complete_with_errors
+        if status == "complete" or status == "complete_with_errors":
+            downloadURL = "https://n5eil02u.ecs.nsidc.org/esir/" + orderID + ".zip"
+            print("Zip download URL: ", downloadURL)
+            print("Beginning download of zipped output...")
+            zip_response = session.get(downloadURL)
+            # Raise bad request: Loop will stop for bad response code.
+            zip_response.raise_for_status()
+            with zipfile.ZipFile(io.BytesIO(zip_response.content)) as z:
+                z.extractall(path)
             print("Data request", page_val, "is complete.")
+        else:
+            print("Request failed.")
 
-        # Unzip outputs
-        for z in os.listdir(path):
+def _request_streaming(page_num,session,param_dict,base_url):
+    param_dict['request_mode'] = 'stream'
+    print('entering_request_function')
+    print('Page num',page_num)
+    # print(page_num,session,param_dict,base_url)
+    print(param_dict)
+    for page_val in range(1,page_num+1):
+        print("Order: ", page_val)
+        print("Requesting...")
+        request = session.get(base_url, params=param_dict)
+        print("HTTP response from order response URL: ", request.status_code)
+        request.raise_for_status()
+        d = request.headers["content-disposition"]
+        fname = re.findall("filename=(.+)", d)
+        dirname = os.path.join(path, fname[0].strip('"'))
+        print("Downloading...")
+        with open(dirname, "wb") as outfolder:
+            outfolder.write(request.content)
+        print("Data request", page_val, "is complete.")
+
+def _unzip_output_file(path):
+    for z in os.listdir(path):
             if z.endswith(".zip"):
                 zip_name = path + "/" + z
                 zip_ref = zipfile.ZipFile(zip_name)
@@ -588,12 +465,8 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
                 zip_ref.close()
                 os.remove(zip_name)
 
-    # %% [markdown]
-    # ### Finally, we will clean up the Output folder by removing individual order folders:
 
-    # %%
-    # Clean up Outputs folder by removing individual granule folders
-
+def _clean_output_folders(path):
     for root, dirs, files in os.walk(path, topdown=False):
         for file in files:
             try:
@@ -603,16 +476,13 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
         for name in dirs:
             os.rmdir(os.path.join(root, name))
 
-    # %% [markdown]
-    # ### To review, we have explored data availability and volume over a region and time of interest, discovered and selected data customization options, constructed an API endpoint for our request, and downloaded data directly to our local machine. You are welcome to request different data sets, areas of interest, and/or customization services by re-running the notebook or starting again at the 'Select a data set of interest' step above.
-
 
 def request_segments_only(shapefile_filepath, folderpath):
     request_data_download(
         "ATL03",
         vars_=segment_vars,
         bounds_filepath=shapefile_filepath,
-        bbox_in="",
+        bounding_box="",
         folderpath=folderpath,
     )
 
@@ -622,7 +492,7 @@ def request_full_data_shapefile(shapefile_filepath, folderpath):
         "ATL03",
         vars_=atl_03_vars,
         bounds_filepath=shapefile_filepath,
-        bbox_in="",
+        bounding_box="",
         folderpath=folderpath,
     )
 # TODO run and debug as needed
@@ -632,7 +502,7 @@ def request_ATL09_shapefile(bounds_filepath, folderpath):
         "ATL09",
         vars_=atl_03_vars,
         bounds_filepath=bounds_filepath,
-        bbox_in="",
+        bounding_box="",
         folderpath=folderpath,
     )
 
@@ -641,8 +511,7 @@ if __name__ == "__main__":
 
     # request_segments_only(sys.argv[1], sys.argv[2])
 
-    request_data_download(
-        "ATL03",
+    request_full_data_shapefile(
         sys.argv[1],
         sys.argv[2],
     )
