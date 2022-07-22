@@ -29,7 +29,7 @@ def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
     """
     linegeom = _get_single_track_linegeom(outarray)
     return gpd.GeoDataFrame(
-        {"geometry": [linegeom]}, crs="EPSG:7912", geometry="geometry"
+        {"geometry": [linegeom]}, crs="EPSG:4326", geometry="geometry"
     )
 
 
@@ -73,7 +73,6 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
         for beam in get_beams(h5file):
             # get the point array and make it into a linestring
             point_array = load_beam_array_ncds(h5file, beam)
-
             track_geom = _get_single_track_linegeom(point_array)
 
             # write to all the lists
@@ -107,7 +106,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             "beam_type": beam_type_list,
             # "Percentage High confidence Ocean Returns": percent_high_conf,
         },
-        crs="EPSG:7912",
+        crs="EPSG:4326",
         geometry="geometry",
     ).set_index(["file", "beam"])
 
@@ -128,8 +127,8 @@ def add_track_dist_meters(
 ) -> pd.DataFrame or gpd.GeoDataFrame:
     xcoords = df["X"]
     ycoords = df["Y"]
-    geom = gpd.points_from_xy(xcoords, ycoords, crs="EPSG:7912")
-    gdf = gpd.GeoDataFrame(df, geometry=geom, crs="EPSG:7912")
+    geom = gpd.points_from_xy(xcoords, ycoords, crs="EPSG:4326")
+    gdf = gpd.GeoDataFrame(df, geometry=geom, crs="EPSG:4326")
     # to find distance in meters we need to estimate the UTM zone required
     utmzone = gdf.estimate_utm_crs()
     # convert to the UTM zone we found
