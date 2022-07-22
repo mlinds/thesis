@@ -112,6 +112,8 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
 
         # Go from geopandas GeoDataFrame object to an input that is readable by CMR
         gdf = gpd.read_file(bounds_filepath)
+        # for buffering we need to do this.
+        gdf = gdf.to_crs(crs=gdf.estimate_utm_crs())
 
         # CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
 
@@ -127,21 +129,6 @@ def request_data_download(product, bbox_in, folderpath, vars_, bounds_filepath=N
         polygon = ",".join([str(c) for xy in zip(*poly.exterior.coords.xy) for c in xy])
 
         print("Simplified polygon coordinates based on shapefile input:", polygon)
-
-        buffer = gdf.buffer(50)  # create buffer for plot bounds
-        envelope = buffer.envelope
-        bounds = envelope.bounds
-
-        # Load "Natural Earth” countries dataset, bundled with GeoPandas
-        world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-
-        # Overlay glacier outline
-        f, ax = plt.subplots(1, figsize=(12, 6))
-        world.plot(ax=ax, facecolor="white", edgecolor="gray")
-        gdf.plot(ax=ax, cmap="spring")
-        ax.set_ylim([bounds.miny[0], bounds.maxy[0]])
-        ax.set_xlim([bounds.minx[0], bounds.maxx[0]])
-
     # %% [markdown]
     # ### Determine how many granules exist over this time and area of interest.
 
