@@ -1,11 +1,15 @@
 from datetime import datetime
+
+import geopandas as gpd
+import pandas as pd
 import requests
 import xarray as xr
-import pandas as pd
-import geopandas as gpd
-from atl_module.secret_vars import COPERNICUS_USERNAME, COPERNICUS_PW
 
-DAP_URL = "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D"
+from atl_module.secret_vars import COPERNICUS_PW, COPERNICUS_USERNAME
+
+DAP_URL = (
+    "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D"
+)
 
 # setup the session upon import
 def _setup_globcolor_api_session(
@@ -42,7 +46,7 @@ def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
         dates (strordatetime): A string or numpy/python datetime object for a date
 
     Returns:
-        tuple: tuple of (Disk Depth, Desk Depth uncertainty)
+        tuple: tuple of (Disk Depth, Disk Depth uncertainty)
     """
     # required to used a dataarray to get a vectorized index
     lat_indexer = xr.DataArray(lat, dims=["points"])
