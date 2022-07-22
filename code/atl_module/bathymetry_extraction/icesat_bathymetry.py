@@ -2,7 +2,6 @@ import itertools
 from glob import iglob
 from multiprocessing import Pool
 
-import numpy as np
 import pandas as pd
 from logzero import setup_logger
 from tqdm import tqdm
@@ -11,7 +10,6 @@ from atl_module.geospatial_utils import geospatial_functions as geofn
 from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.kde_peaks_method import (
     AccumulateKDEs,
-    get_elev_at_max_density,
 )
 from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
 
