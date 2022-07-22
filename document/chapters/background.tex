@@ -1,23 +1,64 @@
 
 \chapter{Background}
-\section{Mangroves as Coastal Defense}
-Sea level rise, and the resultant increase in flood risk poses a threat to all coastal communities, including many of the world's largest population centers. The risk is even more existential for low-lying tropical that are disproportionately affected by the sea level rise. Low-lying nations often do not have any available high ground to move cities to, and sometimes do not have access to the resources to fully mitigate these risks through hard infrastructure. For these reasons, mangroves forests are an important resource for these communities, providing coastal protection that can adapt to sea level rise by trapping sediment and expanding outward if conditions permit.
-
-One way to adapt to the changing sea levels, and possible increases in extreme weather events is to promote the restoration and expansion of mangrove forests. It is well-established that mangrove forests can reduce wave energy \parencite{Maza2019,Menendez2020,Hadi2003,Sanchez-Nunez2020}, and to a more limited extent, storm surges \parencite{Montgomery2019a,Chen2021,Mcivor2012}. Mangroves also offer many other ecosystem benefits including enhancing fish stocks, improving water quality, storing significant amounts of carbon, and attracting tourism \parencite{Atkinson2016b}. Mangroves also have the unique property of creating their own ecosystem, by trapping sediment and expanding seaward under certain conditions \cite{Gijsman2021}.
-
-\begin{figure}[htbp]
-      \centering
-      \includegraphics[width = 0.7\textwidth]{figures/mangroves_reefs_Losada2018.png}
-      \caption{The protective effects of Mangroves. From \parencite{Losada2018}}
-      \label{mangrove-protection-diagram}
-\end{figure}
-
-Shallow water bathymetry and mangrove height are difficult to survey manually, due to the difficulty of field work in dense mangrove environments \parencite{Gijsman2021}. Current study of the effects of mangroves on wave attenuation are limited by this lack of hydrodynamic data about these ecosystems \parencite{Horstman2014}.  Therefore, finding an automated way of calculating bathymetry anywhere in the world from publicly available data is a improvement when modeling sites that do not have existing survey data, and can be used to as the basis for wave modeling and process-based models. Improved models can allow better characterization of the morphologic response to mechanical factors like sea level rise and sediment supply that need further study to understand the system response to climate change.
-
-One current weakness of mangroves as a flood protection strategy is that their response to long term changes in the biogeomorphic environment is not well understood \parencite{Gijsman2021}. This uncertainty about the long-term persistance of mangrove belts is an impediment to further adoption of mangrove restoration as a coastal protection strategy. More modeling studies are required to fill these knowledge gaps, and an important prerequisite to modeling studies is better bathymetric data of mangrove coasts.
-
 \section{Geodetic Reference Systems for Ocean Observation}
 \pdfcomment{Maybe incorporate this into an appendix about geophysics?}
+\subsection{The Geoid}
+\pdfcomment{split into more subsections}
+The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation accelration as the gradient of a potential field $W$ $g=\Delta W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface. 
+
+The contours of the geoid can be measured using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
+
+The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface with the periodic effect of the earth tides, and the time-averaged effect removed. It can be thought of as a system where the distance to the sun and moon is increased to infinity.  
+
+\begin{figure}[h!]
+      \centering
+      \includegraphics[width=\textwidth]{figures/Meantide_vs_tide_free_comparison_doc.png}
+      \caption{Relative levels of the reference planes}
+      \label{fig:geoids-ellipsoids-graphics}
+\end{figure}
+
+\ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
+
+\begin{equation}
+      H_p = H_{satellite_{ellipsoid}} - H_{satellite_{surface}}
+\end{equation}
+Where:
+\begin{itemize}
+      \item $H_{photon}$ is the height of the photon above the ellipsoid
+      \item $H_{satellite_{ellipsoid}}$ is the height of the satellite above the ellipsoid (the brown line in figure \ref{fig:geoids-ellipsoids-graphics})
+      \item $H_{satellite_{surface}}$ is the height of the satellite above the surface (the green line in \ref{fig:geoids-ellipsoids-graphics})
+\end{itemize}
+
+The quantity $H_{satellite_{surface}}$ is determined by:
+
+\begin{equation}\label{eq:raw_photon_calculation}
+      H_{satellite_{surface}} = c(t_T-t_R)/2
+\end{equation}
+Where:
+\begin{itemize}
+      \item $c$ is the speed of light
+      \item $t_T$ and $t_R$ are the photon transmit and receive times respectively
+\end{itemize}
+
+
+
+
+\subsection{Tide-free geoid}
+
+\subsubsection*{temp notes}
+\begin{itemize}
+      \item The geoid is the theoretical surface of even gravitational acceleration. It is where the ocean would settle if there were no waves and currents \parencite{Hughes2008}
+      \item difference between the geoid and the current surface is called \emph{dynamic topography} \parencite{Hughes2008}
+      \item large scale shape of the geoid can be approximated with an ellipsoid with an equatorial radius 21.4km longer than the polar radius \parencite{Hughes2008}. This is called the reference ellipsoid.
+      \item GPS heights are reported relative to a reference ellipsoid \parencite{}
+      \item gravitational force is the gradient of the potential: $g = \nabla W$, and the geoid is a surface with constant W \parencite{Hughes2008}
+      \item tide-free geoid is good for 3D positioning because the coordinates don't change with time
+      \item Relates the frequency of clocks to potential $\frac{df}{f} = -\frac{dW}{c^2}$ (not sure I can work this into the thesis document but it is interesting)
+      \item Tide-free removes the periodic effects, and permanent effects caused by the nonzero time average of the perioidic effects \parencite{Escapa2020}
+      \item 
+\end{itemize}
+
+
 \subsection{Permanent Tide}
 The ocean tides create a loading on the earth, and cause the planet to deform under their weight. Because the time average of the sun and moon's tidal effect on the earth is nonzero, the time-averaged deformation effect is also non-zero. This time-averaged deformation is referred to as the permanent tide (n.b. here `tide` refers to tidal deformation of the earth rather than the ocean). The \emph{tide-free geoid} is defined as a reference system where this effect is removed \parencite{Makinen2009}.
 
@@ -52,7 +93,7 @@ The ICESat-2 mission is intended to gather high resolution topographic data on a
       \label{fig:icesat-rgts}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. Of the approximately \(10^{14}\) of photons emitted per pulse, up to  10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that are subsequently detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and signal from the sun.
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. Of the approximately \(10^{14}\) of photons emitted per pulse, up to  10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that are subsequently detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun.
 
 \begin{figure}[htbp]
       \centering
@@ -87,7 +128,7 @@ When the instrument is pointed directly at the RGT, the laser beams point nearly
 
 The ATL03 data product reports the photon heights relative to the WGS84 reference ellipsoid. These ellipsoidal heights already include corrections for the solid earth tides, ocean loading, ocean pole tides, and atmospheric delays.
 
-The height provided in ATL03 is calculated by the following equation:
+The height provided in the ATL03 data product is calculated by the following equation:
 
 \[H_{GC} =  H_{P} - H_{OPT} - H_{OL} - H_{SEPT} - H_{SET} - H_{TCA}\]
 
@@ -96,15 +137,27 @@ Where:
 \begin{itemize}
 
       \item \(H_{GC}\) is the geophysically corrected photon height above the WGS84 ellipsoid
-      \item \(H_{P}\) is the raw photon height above the WGS84 ellipsoid
-      \item \(H_{OPT}\) is the height of the Ocean Pole tide
-      \item \(H_{OL}\) is the height of the ocean load tide
-      \item \(H_{SEPT}\) is the height of the solid earth pole \textbf{tide}
-      \item \(H_{SET}\) is the solid earth tide
-      \item \(H_{TCA}\) is the height of the total column atmospheric delay
+      \item \(H_{P}\) is the uncorrected photon height above the WGS84 ellipsoid, from equation \ref{eq:raw_photon_calculation} 
+      \item \(H_{OPT}\) is the height of the ocean pole tide correction, which is the deformation at the poles induces by centrifugal effects of variations in the earth's rotational axis.
+      \item \(H_{OL}\) is the height of the ocean loading tide, which is the deformation of earth's crust due to the weight of ocean tides
+      \item \(H_{SEPT}\) is the height of the solid earth pole tide
+      \item \(H_{SET}\) is the solid earth tide, the deformation of the earth's crust due to the gravitational effects of the sun and the moon
+      \item \(H_{TCA}\) is the height of the total column atmospheric delay, which is the effect of atmospheric conditions the photon travel time.
 \end{itemize}
 
-To correct the Z elevation provided in the dataset, several correction factors can be used. 
+$H_{GC}$ is the height above the WGS84 ellipsoid. To convert this ellipsoidal height into a value that can be used for computing the bathymetry, it needs to be converted into an instantaneous sea surface height. The equation that relates these is:
+\pdfcomment{This isn't entirely right I think. Don't need to convert before kde}
+\begin{equation}
+      H_{inst} = H_{GC} + H_{geoid} + H_{free2mean} + H_{DAC}
+\end{equation}
+
+Where:
+\begin{itemize}
+      \item $H_{geoid}$ is the height of the tide-free geoid above the reference ellipsoid
+      \item $H_{free2mean}$ is the difference between the tide-free and the mean-tide geoid
+      \item $H_{DAC}$ is the dynamic atmospheric correction factor which includes periodic effects like local wind loading \pdfcomment{expand on this a bit}
+      \item 
+\end{itemize}
 
 The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM) \parencite{Buckman2015}, developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
 
@@ -124,7 +177,6 @@ This approach uses the hydrodynamic properties of a wave field to estimate the b
 \subsection{Bathymetry from Optical Remote Sensing}
 Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it gives very high resolution data of the seafloor. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements, and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to apply.
 
-Because of the ability to incorporate in-situ data and the computational ease, empirical methods are considered for this project.
 
 \subsection{Active-passive Sensor Fusion: The best of both worlds}
 \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.

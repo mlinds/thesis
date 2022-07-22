@@ -1,10 +1,12 @@
 \chapter{Methodology}
+This section lays our the methodology behind the signal detection of ICESat-2 signal, the interpolation of the sparse signal points into depth and uncertainty grids, and how these grids are combined with GEBCO to produce an upscaled version.
+\section{Test Cases}
+\subsection{Florida keys}
+\subsubsection{validation data}
 
 
-
-
-\section{Identification of signal points} \label{sec:kdesignalfinding}
-Most of the studies that try to find bathymetric points from Icesat-2 use some variation of the DBSCAN algorithm to identify possible bathymetric signal. The algorithm has the advantages of being robust to noise \cite{} and computationally efficient. However, one disadvantage is that is is very sensitive to the choice of parameter values, and setting them programmatically so that they work on a global scale basis is difficult. \pdfcomment{does this statement need better support?}, and some previous studies employing the DBSCAN method used a manual correction after classification to remove clusters of noise incorrectly labeled as signal (e.g. \cite{Ma2020}). Also, methods based on DBSCAN label points as either likely signal or noise, but then require interpolation of the Z values to calculate a sea surface value from the identified signal photons. Therefore, a novel \pdfcomment{verify this?} method is proposed to find areas of likely signal and extract the seafloor elevation in a single step, based on a kernel density estimation algorithm that is applied along a rolling window along the transect.
+\section{Identification of bathymetric signal in ICESat-2 data} \label{sec:kdesignalfinding}
+Most of the studies that try to find bathymetric points from ICEsat-2 use some variation of the DBSCAN algorithm to identify possible bathymetric signal. The algorithm has the advantages of being robust to noise \cite{} and computationally efficient. However, one disadvantage is that is is very sensitive to the choice of parameter values, and setting them programmatically so that they work on a global scale basis is difficult. \pdfcomment{does this statement need better support?}, and some previous studies employing the DBSCAN method used a manual correction after classification to remove clusters of noise incorrectly labeled as signal (e.g. \cite{Ma2020}). Also, methods based on DBSCAN label points as either likely signal or noise, but then require interpolation of the Z values to calculate a sea surface value from the identified signal photons. Therefore, a novel \pdfcomment{nope} method is proposed to find areas of likely signal and extract the seafloor elevation in a single step, based on a kernel density estimation algorithm that is applied along a rolling window along the transect.
 
 The proposed steps of this method are:
 \subsection{Filter to subsurface photons}
