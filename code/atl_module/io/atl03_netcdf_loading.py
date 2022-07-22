@@ -121,10 +121,16 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             .variables["ref_azimuth"][:]
             .filled(np.NaN)
         )
-        pointing_vec_elev = (
+        pointing_vec_elev_segment = (
             ds.groups[beam]
             .groups["geolocation"]
             .variables["ref_elev"][:]
+            .filled(np.NaN)
+        )
+        dac_correction_segment = (
+            ds.groups[beam]
+            .groups["geophys_corr"]
+            .variables["dac"][:]
             .filled(np.NaN)
         )
 
@@ -150,7 +156,10 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             pointing_vec_az, index=delta_time_geophys
         ).sort_index()
         p_vec_elev_series = pd.Series(
-            pointing_vec_elev, index=delta_time_geophys
+            pointing_vec_elev_segment, index=delta_time_geophys
+        ).sort_index()
+        dac_series = pd.Series(
+            dac_correction_segment  , index=delta_time_geophys
         ).sort_index()
 
         # get the value for every single photon
@@ -159,8 +168,10 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         geof2m = geo_f2m_series.asof(delta_time).to_numpy()
         p_vec_az = p_vec_az_series.asof(delta_time).to_numpy()
         p_vec_elev = p_vec_elev_series.asof(delta_time).to_numpy()
+        dac_corr = dac_series.asof(delta_time).to_numpy()
 
-        correction = geoid + geof2m + tide_ocean
+
+        correction = geoid + geof2m + tide_ocean + dac_corr
         # print(len(correction))
         # get the corrected Z vals
         Z_corrected = Z - correction
@@ -187,6 +198,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("land_sig_conf", "<i4"),
                 ("p_vec_az", "<f8"),
                 ("p_vec_elev", "<f8"),
+                ("dac_corr", "<f8"),
             ],
             metadata=metadata,
         )
@@ -204,5 +216,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["land_sig_conf"] = land_sig
         photon_data["p_vec_az"] = p_vec_az
         photon_data["p_vec_elev"] = p_vec_elev
+        photon_data["dac_corr"] = dac_corr
 
         return photon_data
