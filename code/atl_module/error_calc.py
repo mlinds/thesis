@@ -1,14 +1,12 @@
-import turtle
 import numpy as np
 import rasterio
-from rasterio import warp
+from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
 from sklearn.metrics import mean_squared_error
-from logzero import setup_logger
+
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
-
 import dask.array as da
 
 detail_logger = setup_logger(name="details")
@@ -26,91 +24,127 @@ def add_true_elevation(bathy_points, true_data_path, crs):
     return bathy_points.assign(true_elevation=true_bathy)
 
 
-def icesat_rmse(bathy_points, true_data_path, crs):
-    bathy_points = add_true_elevation(
-        bathy_points=bathy_points, true_data_path=true_data_path, crs=crs
-    )
+def icesat_rmse(bathy_points):
+    # the function below needs 
+    bathy_points = bathy_points.loc[:,['z_kde','true_elevation']].dropna()
     # return the RMS error
-    rms = calc_rms_error(bathy_points, ["true_elevation"])
+    rms = mean_squared_error(bathy_points.z_kde, bathy_points.true_elevation)
     return rms
 
+# def detailed_lidar_rmse(beam_df):
+#     beam_df
 
-def calc_rms_error(beam_df, column_names: list):
+
+def calc_rms_error(beam_df):
     error_dict = {}
     # go over the each DEM, and find the RMS error with the calculated seafloor
-    for column in column_names:
-        # get a subset of the dataframe that is the seafloor and the column of interest
-        comp_columns = beam_df.loc[:, ["z_kde", column]].dropna()
-        if len(comp_columns) == 0:
-            error_dict[str(column) + "_error"] = np.NaN
-        else:
-            rms_error = mean_squared_error(
-                comp_columns.loc[:, column], comp_columns.loc[:, "z_kde"]
-            )
-            error_dict[str(column) + "_error"] = rms_error
+    # get a subset of the dataframe that is the seafloor and the column of interest
+
+    rms_error = icesat_rmse(beam_df)
+
+    error_dict["MAE"] = beam_df.eval("error=abs(k_zde-true_elevation)").error.mean()
+    error_dict["RMSE"] = rms_error
 
     return error_dict
 
 
-import pathlib
-
-
 def raster_RMSE(truth_raster_path, measured_rasterpath):
+    # TODO change to rioxarray
     # open the truth raster, which might be in a different crs than the output than the one being compared
     with rasterio.open(truth_raster_path) as truthras:
         truth_raster_crs = truthras.crs
-        truth_data_reproj = truthras.read(1, masked=True)
-        truth_data_tranform = truthras.transform
-    detail_logger.debug(
-        f"Opened truth Raster from {truth_raster_path} with CRS {truth_raster_crs.name}"
-    )
-    # create a band object that will contain the data plus the metadata (crs, etc)
-    # truthband = rasterio.band(truthras, 1)
+        truth_data = truthras.read(1, masked=True)
+        truth_raster_transform = truthras.transform
+    detail_logger.debug(f"Opened truth Raster from {truth_raster_path} with CRS {truth_raster_crs}")
 
     # open the data to be compared as a rasterio dataset
     measured_ras = rasterio.open(measured_rasterpath)
-    detail_logger.debug("opened bilinear raster")
+    detail_logger.debug(f"Opened measured raster from {measured_rasterpath}")
     # going to try to reproject to the same crs as the truth raster to reduce error due to distortion.
 
-    # the next block is actually not required since we don't really need to warp the truth raster
-
-    # First we reproject the truth raster to the same CRS as the kalman update (i.e. )
-    # truth_data_reproj, truth_data_tranform = warp.reproject(
-    #     truthband, dst_crs=dst_crs, resampling=Resampling.bilinear
-    # )
-    # # drop the firstlayer of the ndarray
-    # truth_data_reproj = truth_data_reproj[0]
-    # # mask the NA values from the numpy array
-    # truth_data_reproj[(truth_data_reproj == truthras.nodata)] = np.nan
-
     # get the dimensions we need the output raster to be
-    dst_height = truth_data_reproj.shape[0]
-    dst_width = truth_data_reproj.shape[1]
+    dst_height = truth_data.shape[0]
+    dst_width = truth_data.shape[1]
+
+    # the above might be wrong
+    # dst_transform, dst_height, dst_width = warp.calculate_default_transform(
+    #     src_crs=measured_ras.crs,
+    #     dst_crs=truth_raster_crs,
+    #     width=measured_ras.width,
+    #     height=measured_ras.height,
+    #     resolution=truthras.res,
+    #     left=measured_ras.bounds.left,
+    #     right=measured_ras.bounds.right,
+    #     top=measured_ras.bounds.top,
+    #     bottom=measured_ras.bounds.bottom,
+    # )
 
     # create an in memory VRT object with the same crs and the same resolution as the truth raster
     # set up the parameters
     vrt_options = {
         "resampling": Resampling.bilinear,
         "crs": truth_raster_crs,
-        "transform": truth_data_tranform,
+        "transform": truth_raster_transform,
         "height": dst_height,
         "width": dst_width,
+        # "resolution":truthras.res,
         "src_nodata": measured_ras.nodata,
     }
     # actually make the raster
+    # TODO 
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
-        bilinear_data = bi_vrt.read(1, masked=True)
+        dst_window = bi_vrt.window(
+            left=truthras.bounds.left,
+            right=truthras.bounds.right,
+            bottom=truthras.bounds.bottom,
+            top=truthras.bounds.top,
+        )
+
+        bilinear_data = bi_vrt.read(1, masked=True, window=dst_window)
+        bilinear_data = np.ma.filled(bilinear_data, np.nan)
+        detail_logger.debug(f"{bilinear_data.nbytes} bytes in reprojected bilinear array")
+        detail_logger.debug(f"Interpolated raster shape is {bilinear_data.shape}")
         detail_logger.debug("Warped bilinear gebco interpolation to the truth raster")
         # mask out nodata values
 
-    # with rasterio.open('/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/test_sites/florida_keys/error.tif',mode='w+',crs=dst_crs,transform=truth_data_tranform,height=dst_height,width=dst_width,count=1,dtype=rasterio.float64,nodata=-999999) as errorras:
-    #     errorras.write((truth_data_reproj - bilinear_data),1)
+    # with rasterio.open(
+    #     "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/test_sites/oahu/bilinear_reproj.tif",
+    #     compress="lzw",
+    #     mode="w+",
+    #     crs=truth_raster_crs,
+    #     transform=truth_raster_transform,
+    #     height=dst_height,
+    #     width=dst_width,
+    #     count=1,
+    #     dtype=rasterio.float32,
+    #     nodata=-999999,
+    # ) as errorras:
+    #     errorras.write(bilinear_data, 1)
 
     # return the square root of the average of the squared difference
+    detail_logger.debug(f"{truth_data.nbytes} bytes in truth_array")
     detail_logger.debug("Calculating rms error")
     errordict = {
-        "RMSE": np.nanmean((truth_data_reproj - bilinear_data) ** 2) ** (0.5),
-        "MAE": np.nanmean(np.abs(truth_data_reproj - bilinear_data)),
+        "RMSE": np.nanmean((truth_data - bilinear_data) ** 2) ** (0.5),
+        "MAE": np.nanmean(np.abs(truth_data - bilinear_data)),
     }
     measured_ras.close()
+
     return errordict
+
+
+def main(truth, measured):
+    raster_RMSE(truth, measured)
+
+
+if __name__ == "__main__":
+    # import argparse
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('truth',type=str)
+    # parser.add_argument('measured',type=str)
+    # args = parser.parse_args()
+    # # print(args.truth)
+    main(
+        "./data/test_sites/oahu/in-situ-DEM/Job751453_usace2013_oahu_lmsl_dem_000_001.tif",
+        "./data/test_sites/oahu/bilinear.tif",
+    )
