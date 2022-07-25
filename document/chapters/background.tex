@@ -19,6 +19,10 @@ The surface of the geoid changes with time due to deformation of the earth. Thes
 
 \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
 
+
+\begin{equation}\label{eq:raw_photon_calculation}
+      H_{satellite_{surface}} = c(t_T-t_R)/2
+\end{equation}
 \begin{equation}
       H_p = H_{satellite_{ellipsoid}} - H_{satellite_{surface}}
 \end{equation}
@@ -27,20 +31,9 @@ Where:
       \item $H_{photon}$ is the height of the photon above the ellipsoid
       \item $H_{satellite_{ellipsoid}}$ is the height of the satellite above the ellipsoid (the brown line in figure \ref{fig:geoids-ellipsoids-graphics})
       \item $H_{satellite_{surface}}$ is the height of the satellite above the surface (the green line in \ref{fig:geoids-ellipsoids-graphics})
-\end{itemize}
-
-The quantity $H_{satellite_{surface}}$ is determined by:
-
-\begin{equation}\label{eq:raw_photon_calculation}
-      H_{satellite_{surface}} = c(t_T-t_R)/2
-\end{equation}
-Where:
-\begin{itemize}
       \item $c$ is the speed of light
       \item $t_T$ and $t_R$ are the photon transmit and receive times respectively
 \end{itemize}
-
-
 
 
 \subsection{Tide-free geoid}
