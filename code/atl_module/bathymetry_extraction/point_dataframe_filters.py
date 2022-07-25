@@ -108,32 +108,33 @@ def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
     return df
 
 
-def _interpolate_dataframe(
-    point_dataframe: pd.DataFrame, spacing: float
-) -> pd.DataFrame:
-    """Adds regularly-spaced horizontal points that can then be interpolated to fill the NA values
+# def _interpolate_dataframe(
+#     point_dataframe: pd.DataFrame, spacing: float
+# ) -> pd.DataFrame:
+#     """Adds regularly-spaced horizontal points that can then be interpolated to fill the NA values
 
-    Args:
-        point_dataframe (pd.DataFrame): Dataframe of photon returns
-        spacing (float): The distance to add the extra points in meters
+#     Args:
+#         point_dataframe (pd.DataFrame): Dataframe of photon returns
+#         spacing (float): The distance to add the extra points in meters
 
-    Returns:
-        pd.DataFrame: Dataframe with the old points, plus the added regularly-spaced NA values
-    """
+#     Returns:
+#         pd.DataFrame: Dataframe with the old points, plus the added regularly-spaced NA values
+#     """
 
-    # make a new df with the distance as the index
-    interpdf = point_dataframe.set_index("dist_or")
-    # create a new index with a point every 10 m
-    xindex_interp = np.arange(interpdf.index.min(), interpdf.index.max(), spacing)
-    # the new index is the combo of the 10m index with the old index
-    newindex = interpdf.index.union(xindex_interp)
-    # set the new index and return the dataframe
-    return interpdf.reindex(newindex)
+#     # make a new df with the distance as the index
+#     interpdf = point_dataframe.set_index("dist_or")
+#     # create a new index with a point every 10 m
+#     xindex_interp = np.arange(interpdf.index.min(), interpdf.index.max(), spacing)
+#     # the new index is the combo of the 10m index with the old index
+#     newindex = interpdf.index.union(xindex_interp)
+#     # set the new index and return the dataframe
+#     return interpdf.reindex(newindex)
 
 
 def correct_for_refraction(df):
     # get horizotnal and vertical refraction correction factors
     xcorr, ycorr, zcorr = correct_refr(
+        # this is the depth, the sea level is referenced to the geoid
         df.sea_level_interp - df.Z_geoid,
         pointing_vector_az=df.p_vec_az,
         pointing_vector_elev=df.p_vec_elev,
