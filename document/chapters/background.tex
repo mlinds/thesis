@@ -8,7 +8,7 @@ The geoid is defined as a level surface of that is normal to the gravitational a
 
 The contours of the geoid can be measured using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
 
-The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface with the periodic effect of the earth tides, and the time-averaged effect removed. It can be thought of as a system where the distance to the sun and moon is increased to infinity.  
+The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.  
 
 \begin{figure}[h!]
       \centering
@@ -60,15 +60,23 @@ Where:
 
 
 \subsection{Permanent Tide}
-The ocean tides create a loading on the earth, and cause the planet to deform under their weight. Because the time average of the sun and moon's tidal effect on the earth is nonzero, the time-averaged deformation effect is also non-zero. This time-averaged deformation is referred to as the permanent tide (n.b. here `tide` refers to tidal deformation of the earth rather than the ocean). The \emph{tide-free geoid} is defined as a reference system where this effect is removed \parencite{Makinen2009}.
+The same gravitational forcing that drives ocean tides also creates a deformation of the earth itself. Because the time average of the sun and moon's tidal effect on the earth is nonzero, the mean effect of the solid earth tides is also non-zero. This time-averaged deformation is referred to as the permanent tide (n.b. here `tide` refers to earth tide rather than ocean tides).
 
-\pdfcomment{add picture of the geoid reference models}
+The \emph{tide-free geoid} is defined as a reference system where the permanent tide effect is removed \parencite{Makinen2009}.
 
-\subsection{Solid Earth Tides}
 
 \subsection{Inverted barometer effect}
-Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\pdfcomment{find a published reference for this}. The dynamic atmospheric correction (DAC) 
+Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\pdfcomment{find a published reference for this}. Spatial gradients in air pressure caused by weather (high and low pressure systems) are equalized by gradients in the water surface height. NASA includes a factor to remove this effect from the local sea surface. 
+
+\subsection{Dynamic Atmosphere Correction}
+In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are very high frequency, 
+
+The ICESat-2 ATL03 data includes a correction factor for that includes the effects of both wind and the atmospheric pressure. It is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It has a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution, and is interpolated spatially and temporally for inclusion in the ATL03 data. 
+
 \subsection{Ocean Tides}
+
+\pdfcomment{This should maybe be moved into the ICESat-2 section}
+
 
 The ocean tides contribute 70\% of the variance to the sea surface \parencite{icesat2 comparison guide}.
 
