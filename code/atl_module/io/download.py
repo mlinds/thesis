@@ -33,7 +33,7 @@ CMR_COLLECTIONS_URL = "https://cmr.earthdata.nasa.gov/search/collections.json"
 GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 
 
-def get_product_metadata(params):
+def _get_product_metadata(params):
     response = requests.get(CMR_COLLECTIONS_URL, params=params)
     results = json.loads(response.content)
 
@@ -42,7 +42,7 @@ def get_product_metadata(params):
     latest_version = versions[-1]
     return latest_version
 
-def file_to_search_polygons(bounds_filepath):
+def _prepare_geo_file(bounds_filepath):
     # Use geopandas to read in polygon file
     # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
 
@@ -63,7 +63,7 @@ def file_to_search_polygons(bounds_filepath):
     polygon = ",".join([str(c) for xy in zip(*poly.exterior.coords.xy) for c in xy])
     return polygon,geojson
 
-def request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,geojson):
+def _request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,geojson):
     capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{product_short_name}.{latest_version}.xml"
     s = session.get(capability_url)
     response = session.get(s.url, auth=(uid, pswd))
@@ -199,7 +199,7 @@ def request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,
 def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
     params = {"short_name": product_short_name}
 
-    latest_version =  get_product_metadata(params)
+    latest_version =  _get_product_metadata(params)
    
     print(f"The most recent version of {product_short_name} is {latest_version}" )
 
@@ -225,7 +225,7 @@ def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
   
     if bounding_box == "":
         aoi = "shapefile"
-        polygon,geojson = file_to_search_polygons(bounds_filepath=bounds_filepath)
+        polygon,geojson = _prepare_geo_file(bounds_filepath=bounds_filepath)
         search_params['polygon'] = polygon
     else:
         aoi = "bounding_box"
@@ -264,93 +264,6 @@ def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
 
     return latest_version,aoi,polygon,geojson,granules
     
-
-def request_data_download(product_short_name, bounding_box, folderpath, vars_, bounds_filepath=None):
-    
-    uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
-    pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
-    email = EMAIL  # Enter Earthdata login email
-
-    temporal = ""
-
-    latest_version,aoi,polygon,geojson,granules = _data_search(product_short_name=product_short_name,bounding_box=bounding_box,bounds_filepath=bounds_filepath,temporal=temporal)
-
-    # Create session to store cookie and pass credentials to capabilities url
-    session = requests.session()
-    
-    
-
-    reformat,projection,projection_parameters,time_var,bbox,Boundingshape,agent=request_capabilities(session,product_short_name=product_short_name,latest_version=latest_version,uid=uid,pswd=pswd,aoi=aoi,geojson=geojson)
-    coverage = vars_
-    # Set the request mode to asynchronous if the number of granules is over 100, otherwise synchronous is enabled by default
-    if len(granules) > 100:
-        request_async = True
-        page_size = 2000
-    else:
-        page_size = 100
-        request_async = False
-
-    # Determine number of orders needed for requests over 2000 granules.
-    page_num = math.ceil(len(granules) / page_size)
-
-    print(
-        "There will be",
-        page_num,
-        "total order(s) processed for our",
-        product_short_name,
-        "request.",
-    )
-    # generic param_dict
-    param_dict = {
-            "short_name": product_short_name,
-            "version": latest_version,
-            "temporal": temporal,
-            "time": time_var,
-            "format": reformat,
-            "projection": projection,
-            "projection_parameters": projection_parameters,
-            "Coverage": coverage,
-            "page_size": page_size,
-            "agent": agent,
-            "email": email,
-        }
-    if aoi == "bounding_box":
-        # bounding box search and subset:
-        param_dict['bounding_box'] = bounding_box
-        param_dict['bbox'] = bbox
-    elif aoi == "shapefile":
-        param_dict['Boundingshape'] = polygon
-
-    # TODO could reverse this by setting up the dictionary based on available parameters
-    # maybe using a function that only takes kw args
-
-    # Remove blank key-value-pairs
-    param_dict = {k: v for k, v in param_dict.items() if v != ""}
-
-    # Convert to string
-    param_string = "&".join("{!s}={!r}".format(k, v) for (k, v) in param_dict.items())
-    param_string = param_string.replace("'", "")
-
-    # Print API base URL + request parameters
-    endpoint_list = []
-    for page_val in range(1,page_num+1):
-        API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
-        endpoint_list.append(API_request)
-
-    print('ENDPOINTLIST',*endpoint_list, sep="\n")
-
-    path = folderpath + "/" + product_short_name
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-    if request_async:
-        _request_async_func(page_num,param_dict,session,BASE_URL)
-    else:
-        print('arrived here')
-        _request_streaming(page_num,session,param_dict,BASE_URL)
-        _unzip_output_file(path)
-
-    _clean_output_folders(path)
 
 def _request_async_func(page_num,session,param_dict,base_url):
     param_dict['request_mode'] = 'async'
@@ -465,7 +378,6 @@ def _unzip_output_file(path):
                 zip_ref.close()
                 os.remove(zip_name)
 
-
 def _clean_output_folders(path):
     for root, dirs, files in os.walk(path, topdown=False):
         for file in files:
@@ -477,6 +389,92 @@ def _clean_output_folders(path):
             os.rmdir(os.path.join(root, name))
 
 
+def request_data_download(product_short_name, bounding_box, folderpath, vars_, bounds_filepath=None):
+    
+    uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
+    pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
+    email = EMAIL  # Enter Earthdata login email
+
+    temporal = ""
+
+    latest_version,aoi,polygon,geojson,granules = _data_search(product_short_name=product_short_name,bounding_box=bounding_box,bounds_filepath=bounds_filepath,temporal=temporal)
+
+    # Create session to store cookie and pass credentials to capabilities url
+    session = requests.session()
+    
+    reformat,projection,projection_parameters,time_var,bbox,Boundingshape,agent=_request_capabilities(session,product_short_name=product_short_name,latest_version=latest_version,uid=uid,pswd=pswd,aoi=aoi,geojson=geojson)
+    coverage = vars_
+    # Set the request mode to asynchronous if the number of granules is over 100, otherwise synchronous is enabled by default
+    if len(granules) > 100:
+        request_async = True
+        page_size = 2000
+    else:
+        page_size = 100
+        request_async = False
+
+    # Determine number of orders needed for requests over 2000 granules.
+    page_num = math.ceil(len(granules) / page_size)
+
+    print(
+        "There will be",
+        page_num,
+        "total order(s) processed for our",
+        product_short_name,
+        "request.",
+    )
+    # generic param_dict
+    param_dict = {
+            "short_name": product_short_name,
+            "version": latest_version,
+            "temporal": temporal,
+            "time": time_var,
+            "format": reformat,
+            "projection": projection,
+            "projection_parameters": projection_parameters,
+            "Coverage": coverage,
+            "page_size": page_size,
+            "agent": agent,
+            "email": email,
+        }
+    if aoi == "bounding_box":
+        # bounding box search and subset:
+        param_dict['bounding_box'] = bounding_box
+        param_dict['bbox'] = bbox
+    elif aoi == "shapefile":
+        param_dict['Boundingshape'] = polygon
+
+    # TODO could reverse this by setting up the dictionary based on available parameters
+    # maybe using a function that only takes kw args
+
+    # Remove blank key-value-pairs
+    param_dict = {k: v for k, v in param_dict.items() if v != ""}
+
+    # Convert to string
+    param_string = "&".join("{!s}={!r}".format(k, v) for (k, v) in param_dict.items())
+    param_string = param_string.replace("'", "")
+
+    # Print API base URL + request parameters
+    endpoint_list = []
+    for page_val in range(1,page_num+1):
+        API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
+        endpoint_list.append(API_request)
+
+    print('ENDPOINTLIST',*endpoint_list, sep="\n")
+
+    path = folderpath + "/" + product_short_name
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    if request_async:
+        _request_async_func(page_num,param_dict,session,BASE_URL)
+    else:
+        print('arrived here')
+        _request_streaming(page_num,session,param_dict,BASE_URL)
+        _unzip_output_file(path)
+
+    _clean_output_folders(path)
+
+
 def request_segments_only(shapefile_filepath, folderpath):
     request_data_download(
         "ATL03",
@@ -485,7 +483,6 @@ def request_segments_only(shapefile_filepath, folderpath):
         bounding_box="",
         folderpath=folderpath,
     )
-
 
 def request_full_data_shapefile(shapefile_filepath, folderpath):
     request_data_download(
