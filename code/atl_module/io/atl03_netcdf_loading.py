@@ -163,7 +163,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         ).sort_index()
 
         # get the value for every single photon
-        geoid = geoid_series.asof(delta_time).to_numpy()
+        geoid_tide_free = geoid_series.asof(delta_time).to_numpy()
         tide_ocean = tide_ocean_series.asof(delta_time).to_numpy()
         geof2m = geo_f2m_series.asof(delta_time).to_numpy()
         p_vec_az = p_vec_az_series.asof(delta_time).to_numpy()
@@ -171,7 +171,8 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         dac_corr = dac_series.asof(delta_time).to_numpy()
 
 
-        correction = geoid + geof2m + tide_ocean + dac_corr
+        correction = geoid_tide_free + geof2m + tide_ocean 
+        # + dac_corr
         # print(len(correction))
         # get the corrected Z vals
         Z_corrected = Z - correction
@@ -187,18 +188,18 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             [
                 ("X", "<f8"),
                 ("Y", "<f8"),
-                ("Z_ellip", "<f8"),
-                ("Z_geoid", "<f8"),
-                ("geoid_corr", "<f8"),
-                ("tide_ocean_corr", "<f8"),
-                ("geof2m_corr", "<f8"),
+                ("Z_ellip", "<f4"),
+                ("Z_geoid", "<f4"),
+                ("geoid_corr", "<f4"),
+                ("tide_ocean_corr", "<f4"),
+                ("geof2m_corr", "<f4"),
                 # TODO there is still a rounding error on the times here
                 ("delta_time", "<M8[us]"),
-                ("oc_sig_conf", "<i4"),
-                ("land_sig_conf", "<i4"),
-                ("p_vec_az", "<f8"),
-                ("p_vec_elev", "<f8"),
-                ("dac_corr", "<f8"),
+                ("oc_sig_conf", "<i1"),
+                ("land_sig_conf", "<i1"),
+                ("p_vec_az", "<f4"),
+                ("p_vec_elev", "<f4"),
+                ("dac_corr", "<f4"),
             ],
             metadata=metadata,
         )
@@ -207,7 +208,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["X"] = X
         photon_data["Y"] = Y
         photon_data["Z_ellip"] = Z
-        photon_data["geoid_corr"] = geoid
+        photon_data["geoid_corr"] = geoid_tide_free
         photon_data["tide_ocean_corr"] = tide_ocean
         photon_data["geof2m_corr"] = geof2m
         photon_data["Z_geoid"] = Z_corrected
