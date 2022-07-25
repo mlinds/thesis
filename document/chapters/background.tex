@@ -125,6 +125,41 @@ The locations calculated by the data products from the satellite do not correct 
 
 When the instrument is pointed directly at the RGT, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is approximately 9cm \parencite{Parrish2019}, which for bathymetric purposes is negligible. However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir (equal to 43km away from the RGT \parencite{Magruder2021}). During offpointing, the horizontal error is much more significant and must be corrected for measurement accuracy \parencite{Parrish2019}.\citeauthor{Parrish2019} propose an method to correct for both horizontal and vertical error that is widely cited in future research. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}. Some studies only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law. This is referred to as \emph{first order} refraction correction in the summary table.
 
+\begin{equation}
+      \theta_2 = \sin^{-1}{\frac{n_1 \sin{\theta_1}}{n_2}}
+\end{equation}
+
+\begin{equation}
+      R = \frac{S n_1}{n_2}
+\end{equation}
+
+\begin{equation}
+      S = \frac{D}{\cos{\theta_1}}
+\end{equation}
+
+\begin{equation}
+      \gamma = \frac{\pi}{2} - \theta_1
+\end{equation}
+
+\begin{equation}
+      \alpha = \sin^{-1}{\frac{R \sin{\phi}}{P}}
+\end{equation}
+
+\begin{equation}
+      P = \sqrt{R^2 + S^2 - 2RS \cos{(\theta_1 - \theta_2)}}
+\end{equation}
+
+\begin{equation}
+      \beta = \gamma - \alpha
+\end{equation}
+
+\begin{align}
+      \Delta Y &= P \cos{\beta} \\
+      \Delta Z &= P \sin{\beta} \\
+      \Delta E &= \Delta Y \sin{\kappa} \\
+      \Delta N &= \Delta Y \cos{\kappa}
+\end{align}
+
 \subsection{Vertical Height Reference}
 
 The ATL03 data product reports the photon heights relative to the WGS84 reference ellipsoid. These ellipsoidal heights already include corrections for the solid earth tides, ocean loading, ocean pole tides, and atmospheric delays.
