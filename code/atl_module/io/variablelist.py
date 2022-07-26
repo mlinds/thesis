@@ -26,7 +26,7 @@ varpaths = [
     "geophys_corr/dac",
 ]
 
-atl_03_vars = "/ancillary_data/start_rgt/,/ancillary_data/end_rgt/,/ancillary_data/data_start_utc/,/ancillary_data/data_end_utc/,/quality_assessment/qa_granule_pass_fail/,/quality_assessment/gt1l/,/quality_assessment/gt1r/,/quality_assessment/gt2l/,/quality_assessment/gt2r,/quality_assessment/gt3l/,/quality_assessment/gt3r,/orbit_info/"
+atl_03_vars = "/ancillary_data/start_rgt/,/ancillary_data/end_rgt/,/ancillary_data/data_start_utc/,/ancillary_data/data_end_utc/,/quality_assessment/qa_granule_pass_fail/,/quality_assessment/gt1l/,/quality_assessment/gt1r/,/quality_assessment/gt2l/,/quality_assessment/gt2r,/quality_assessment/gt3l,/quality_assessment/gt3r,/orbit_info"
 for beam in beamlist:
     for path in varpaths:
         atl_03_vars = atl_03_vars + beam + "/" + path + ","
