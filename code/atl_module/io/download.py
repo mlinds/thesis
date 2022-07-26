@@ -2,7 +2,7 @@
 # from https://raw.githubusercontent.com/nsidc/NSIDC-Data-Access-Notebook/master/notebooks/Customize%20and%20Access%20NSIDC%20Data.ipynb
 # it might be difficult to understand and debug, just be warned
 
-# TODO abstract the actual API interaction into functions
+# TODO change the blank strings thing to use kwargs
 
 # %%
 from gzip import READ
@@ -48,6 +48,7 @@ def _prepare_geo_file(bounds_filepath):
 
     # Go from geopandas GeoDataFrame object to an input that is readable by CMR
     gdf = gpd.read_file(bounds_filepath)
+    # gdf.to_crs(epsg=4326,inplace=True)
 
     # CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
 
@@ -238,7 +239,6 @@ def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
             GRANULE_SEARCH_URL, params=search_params, headers=headers
         )
         results = json.loads(response.content)
-
         if len(results["feed"]["entry"]) == 0:
             # Out of results, so break out of loop
             break
@@ -441,7 +441,7 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
         param_dict['bounding_box'] = bounding_box
         param_dict['bbox'] = bbox
     elif aoi == "shapefile":
-        param_dict['Boundingshape'] = polygon
+        param_dict['Boundingshape'] = Boundingshape
 
     # TODO could reverse this by setting up the dictionary based on available parameters
     # maybe using a function that only takes kw args
@@ -459,7 +459,7 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
         API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
         endpoint_list.append(API_request)
 
-    print('ENDPOINTLIST',*endpoint_list, sep="\n")
+    # print('ENDPOINTLIST',*endpoint_list, sep="\n")
 
     path = folderpath + "/" + product_short_name
     if not os.path.exists(path):
@@ -468,7 +468,6 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
     if request_async:
         _request_async_func(page_num,param_dict,session,BASE_URL)
     else:
-        print('arrived here')
         _request_streaming(page_num,session,param_dict,BASE_URL)
         _unzip_output_file(path)
 
