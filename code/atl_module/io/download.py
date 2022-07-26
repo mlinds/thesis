@@ -33,9 +33,10 @@ CMR_COLLECTIONS_URL = "https://cmr.earthdata.nasa.gov/search/collections.json"
 GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 
 
-def _get_product_metadata(params):
-    response = requests.get(CMR_COLLECTIONS_URL, params=params)
+def _get_product_metadata(product_short_name):
+    response = requests.get(CMR_COLLECTIONS_URL, params={"short_name": product_short_name})
     results = json.loads(response.content)
+    print(results)
 
     # Find all instances of 'version_id' in metadata and print most recent version number
     versions = [el["version_id"] for el in results["feed"]["entry"]]
@@ -64,7 +65,7 @@ def _prepare_geo_file(bounds_filepath):
     polygon = ",".join([str(c) for xy in zip(*poly.exterior.coords.xy) for c in xy])
     return polygon,geojson
 
-def _request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,geojson):
+def _request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi,geojson,bounding_box=""):
     capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{product_short_name}.{latest_version}.xml"
     s = session.get(capability_url)
     response = session.get(s.url, auth=(uid, pswd))
@@ -198,9 +199,9 @@ def _request_capabilities(session,product_short_name,latest_version,uid,pswd,aoi
 
 
 def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
-    params = {"short_name": product_short_name}
+   
 
-    latest_version =  _get_product_metadata(params)
+    latest_version =  _get_product_metadata(product_short_name)
    
     print(f"The most recent version of {product_short_name} is {latest_version}" )
 
@@ -231,6 +232,8 @@ def _data_search(product_short_name,bounding_box,temporal,bounds_filepath=None):
     else:
         aoi = "bounding_box"
         search_params['bounding_box'] = bounding_box
+        polygon = ""
+        geojson = ""
 
     granules = []
     headers = {"Accept": "application/json"}
@@ -349,20 +352,22 @@ def _request_async_func(page_num,session,param_dict,base_url):
         else:
             print("Request failed.")
 
-def _request_streaming(page_num,session,param_dict,base_url):
+def _request_streaming(page_num,session,param_dict,base_url,path):
+    print('entering streaming request function')
     param_dict['request_mode'] = 'stream'
-    print('entering_request_function')
-    print('Page num',page_num)
-    # print(page_num,session,param_dict,base_url)
-    print(param_dict)
+    print('Starting Streaming request with param dict',param_dict)
+    # print(param_dict)
     for page_val in range(1,page_num+1):
         print("Order: ", page_val)
         print("Requesting...")
         request = session.get(base_url, params=param_dict)
+        print(request.headers)
+        print(request.url)
         print("HTTP response from order response URL: ", request.status_code)
         request.raise_for_status()
         d = request.headers["content-disposition"]
         fname = re.findall("filename=(.+)", d)
+        
         dirname = os.path.join(path, fname[0].strip('"'))
         print("Downloading...")
         with open(dirname, "wb") as outfolder:
@@ -387,7 +392,6 @@ def _clean_output_folders(path):
                 pass
         for name in dirs:
             os.rmdir(os.path.join(root, name))
-
 
 def request_data_download(product_short_name, bounding_box, folderpath, vars_, bounds_filepath=None):
     
@@ -439,7 +443,7 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
     if aoi == "bounding_box":
         # bounding box search and subset:
         param_dict['bounding_box'] = bounding_box
-        param_dict['bbox'] = bbox
+        param_dict['Bbox'] = bounding_box
     elif aoi == "shapefile":
         param_dict['Boundingshape'] = Boundingshape
 
@@ -459,7 +463,7 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
         API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
         endpoint_list.append(API_request)
 
-    # print('ENDPOINTLIST',*endpoint_list, sep="\n")
+    print('ENDPOINTLIST: ',*endpoint_list, sep="\n")
 
     path = folderpath + "/" + product_short_name
     if not os.path.exists(path):
@@ -468,7 +472,7 @@ def request_data_download(product_short_name, bounding_box, folderpath, vars_, b
     if request_async:
         _request_async_func(page_num,param_dict,session,BASE_URL)
     else:
-        _request_streaming(page_num,session,param_dict,BASE_URL)
+        _request_streaming(page_num,session,param_dict,BASE_URL,path)
         _unzip_output_file(path)
 
     _clean_output_folders(path)
@@ -504,10 +508,10 @@ def request_ATL09_shapefile(bounds_filepath, folderpath):
 
 if __name__ == "__main__":
     import sys
-
+    request_data_download(product_short_name='ATL03',bounding_box='4.59754,52.70586,4.68409,52.81602',folderpath='../data/test_sites/petten',bounds_filepath="",vars_=atl_03_vars)
     # request_segments_only(sys.argv[1], sys.argv[2])
 
-    request_full_data_shapefile(
-        sys.argv[1],
-        sys.argv[2],
-    )
+    # request_full_data_shapefile(
+    #     sys.argv[1],
+    #     sys.argv[2],
+    # )
