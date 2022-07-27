@@ -4,7 +4,7 @@ import rasterio
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
-from sklearn.metrics import mean_squared_error,mean_absolute_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
@@ -28,18 +28,20 @@ def add_true_elevation(bathy_points, true_data_path, crs):
 
 
 def icesat_rmse(bathy_points):
-    # the function below needs 
-    bathy_points = bathy_points.loc[:,['z_kde','true_elevation']].dropna()
+    # the function below needs
+    bathy_points = bathy_points.loc[:, ["z_kde", "true_elevation"]].dropna()
     # return the RMS error
-    rms = mean_squared_error(bathy_points.z_kde, bathy_points.true_elevation)**0.5
+    rms = mean_squared_error(bathy_points.z_kde, bathy_points.true_elevation) ** 0.5
     return rms
 
+
 def icesat_mae(bathy_points):
-    # the function below needs 
-    bathy_points = bathy_points.loc[:,['z_kde','true_elevation']].dropna()
+    # the function below needs
+    bathy_points = bathy_points.loc[:, ["z_kde", "true_elevation"]].dropna()
     # return the RMS error
     mae = mean_absolute_error(bathy_points.z_kde, bathy_points.true_elevation)
     return mae
+
 
 def icesat_error_rms_mae(beam_df):
     # TODO could be deleted, might not be needed
@@ -60,42 +62,42 @@ def raster_RMSE_blocked(truth_raster_path, measured_rasterpath):
     with rasterio.open(truth_raster_path) as truthras:
         # get the parameters of the truth raster
         vrt_options = {
-        "resampling": Resampling.bilinear,
-        "crs": truthras.crs,
-        "transform": truthras.transform,
-        "height": truthras.height,
-        "width": truthras.width,
-        "src_nodata": measured_ras.nodata,
-         }
+            "resampling": Resampling.bilinear,
+            "crs": truthras.crs,
+            "transform": truthras.transform,
+            "height": truthras.height,
+            "width": truthras.width,
+            "src_nodata": measured_ras.nodata,
+        }
         # create a virtual version of the original raster
         bi_vrt = WarpedVRT(measured_ras, **vrt_options)
-        # set up empty lists  
+        # set up empty lists
         out_ms = []
         out_mae = []
         # iterate over the blocks in the truth raster
         for ji, window in truthras.block_windows(1):
             # read the truth data by the window and fill the masked values with nans
-            truth_data = truthras.read(1,masked=True,window=window)
+            truth_data = truthras.read(1, masked=True, window=window)
             truth_data = np.ma.filled(truth_data, np.nan)
             # if there is no valid data in the block, skip it.
             if np.count_nonzero(~np.isnan(truth_data)) == 0:
                 continue
-            # read the measured data by window 
+            # read the measured data by window
             bilinear_data = bi_vrt.read(1, masked=True, window=window)
             bilinear_data = np.ma.filled(bilinear_data, np.nan)
             # get the mean squared error of the block
-            mse = np.nanmean((truth_data - bilinear_data) ** 2) 
+            mse = np.nanmean((truth_data - bilinear_data) ** 2)
             # get the mean absolute error
             mae = np.nanmean(np.abs(truth_data - bilinear_data))
             out_ms.append(mse)
-            out_mae.append(mae) 
+            out_mae.append(mae)
 
     errordict = {
         # get the average the average mean sqaured errors and get the root of it
-        "RMSE": np.nanmean(out_ms)**(0.5),
+        "RMSE": np.nanmean(out_ms) ** (0.5),
         "MAE": np.nanmean(out_mae),
     }
-  
+
     return errordict
 
 
@@ -110,7 +112,9 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         # TODO loading this twice is too slow
         # truth_data = truthras.read(1, masked=True,window=truth_data_window)
         truth_raster_transform = truthras.transform
-    detail_logger.debug(f"Opened truth Raster from {truth_raster_path} with CRS {truth_raster_crs}")
+    detail_logger.debug(
+        f"Opened truth Raster from {truth_raster_path} with CRS {truth_raster_crs}"
+    )
 
     # open the data to be compared as a rasterio dataset
     measured_ras = rasterio.open(measured_rasterpath)
@@ -146,7 +150,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         "src_nodata": measured_ras.nodata,
     }
     # actually make the raster
-    # TODO 
+    # TODO
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
         dst_window = bi_vrt.window(
             left=truthras.bounds.left,
@@ -158,17 +162,16 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
         bilinear_data = bi_vrt.read(1, masked=True, window=dst_window)
         bilinear_data = np.ma.filled(bilinear_data, np.nan)
-        detail_logger.debug(f"{bilinear_data.nbytes} bytes in reprojected bilinear array")
+        detail_logger.debug(
+            f"{bilinear_data.nbytes} bytes in reprojected bilinear array"
+        )
         detail_logger.debug(f"Interpolated raster shape is {bilinear_data.shape}")
         detail_logger.debug("Warped bilinear gebco interpolation to the truth raster")
         # mask out nodata values
 
-
     # return the square root of the average of the squared difference
     detail_logger.debug(f"{truth_data.nbytes} bytes in truth_array")
     detail_logger.debug("Calculating rms error")
-
-
 
     errordict = {
         "RMSE": np.nanmean((truth_data - bilinear_data) ** 2) ** (0.5),
@@ -180,8 +183,8 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
 
 def main(truth, measured):
-    print('block verson',raster_RMSE_blocked(truth, measured))
-    print('original version',raster_RMSE(truth, measured))
+    print("block verson", raster_RMSE_blocked(truth, measured))
+    print("original version", raster_RMSE(truth, measured))
 
 
 if __name__ == "__main__":

@@ -7,9 +7,7 @@ import xarray as xr
 
 from atl_module.secret_vars import COPERNICUS_PW, COPERNICUS_USERNAME
 
-DAP_URL = (
-    "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D"
-)
+DAP_URL = "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D"
 
 # setup the session upon import
 def _setup_globcolor_api_session(

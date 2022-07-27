@@ -17,7 +17,7 @@ def _assign_na_values(inpval):
 
     Anything else will return the input coerced to a float
     """
-    return np.NaN if inpval in ["", "-999999","-9999"] else float(inpval)
+    return np.NaN if inpval in ["", "-999999", "-9999"] else float(inpval)
 
 
 # function that gets values from rasters for each lidar photon
@@ -52,7 +52,7 @@ def query_raster(dataframe: pd.DataFrame, src: str):
         out, err = p.communicate(input=pipeinput)
     outlist = out.decode("utf-8").split("\n")
     # go through and assign NA values as needed. Also discard the extra empty line that the split command induces
-    # TODO this could be changed to use filter() and automatically 
+    # TODO this could be changed to use filter() and automatically
     return [_assign_na_values(inpval) for inpval in outlist[:-1]]
 
 
@@ -67,7 +67,7 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
     return beam_df
 
 
-def subset_gebco(folderpath:str, tracklines, epsg_no:int,hres:int):
+def subset_gebco(folderpath: str, tracklines, epsg_no: int, hres: int):
     """Create a resampled (bilinearly) and reprojected subset of the global GEBCO dataset. Write it to the same input folder
         NB. IMPURE FUNCTION
 
@@ -79,7 +79,7 @@ def subset_gebco(folderpath:str, tracklines, epsg_no:int,hres:int):
 
     Returns:
         None
-    """    
+    """
     # TODO mask first, before interpolation
 
     # constant that defines location of the GEBCO raster
