@@ -10,7 +10,7 @@ import pandas as pd
 from fiona.errors import DriverError
 from logzero import setup_logger, logger
 
-from os.path import exists
+from os.path import exists as file_exists
 
 from atl_module import (
     error_calc,
@@ -41,35 +41,36 @@ class GebcoUpscaler:
         self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
         self.AOI_path = os.path.join(self.folderpath,"AOI.gpkg")
         # setup the files needed
-        # try to add the tracklines, recalculate them if they're not present
-        if exists(self.trackline_path):
+        # try to add the tracklines
+        if file_exists(self.trackline_path):
             self.tracklines = gpd.read_file(self.trackline_path)
             self.crs = self.tracklines.estimate_utm_crs()
             self.epsg = self.crs.to_epsg()
         else:
             run_logger.info("Trackline geodata not found - recalculate from netcdf files")
-           
-        # set the UTM coordinate zone
      
         #  try to add bathymetry points, print a message if they're not found
-        if exists(self.bathymetric_point_path):
+        if file_exists(self.bathymetric_point_path):
             self.bathy_pts_gdf = gpd.read_file(self.bathymetric_point_path)
         else:
             print("Bathy Points geodata not found: run `find_bathy_from_icesat()`")
             # self.find_bathy_from_icesat()
         # check if the interpolated gebco exists
-        if not exists(self.bilinear_gebco_raster_path):
+        if not file_exists(self.bilinear_gebco_raster_path):
             print('should subset gebco')
             #self.subset_gebco()
+            
     def download_ATL03(self):
         request_full_data_shapefile(folderpath=self.folderpath,shapefile_filepath=self.AOI_path)
 
-
-    def get_tracklines_geom(self):
+    def recalc_tracklines_gdf(self):
         self.tracklines = make_gdf_from_ncdf_files(self.folderpath + "/ATL03/*.nc")
-        self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
-        self.tracklines.to_file(self.trackline_path, overwrite=True)
-
+        try: 
+            self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
+        except ValueError:
+            print('Unable to get Secchi depth info')
+        finally: 
+            self.tracklines.to_file(self.trackline_path, overwrite=True)
     def subset_gebco(self,hres):
         # cut out a section of GEBCO, reproject and resample
         raster_interaction.subset_gebco(
@@ -89,7 +90,7 @@ class GebcoUpscaler:
                 "window_horizontal": window_meters,
             },
         )
-        bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
+        bathy_pts = icesat_bathymetry.bathy_from_all_tracks(
             self.folderpath,
             window=window,
             threshold_val=threshold_val,
@@ -98,24 +99,31 @@ class GebcoUpscaler:
             window_meters=window_meters,
         )
         bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs=self.crs)
-        # if there is no truth data, just assign, otherwise add the true elevation then add it
-
-        self.add_truth_to_points()
-        self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
-        run_logger.info(f'The bathymetry was calcualted and saved to {self.bathymetric_point_path}')
+        # assign the resulting datframe to the object
         self.bathy_pts_gdf = bathy_gdf
+        # try to add the elevation from the truth DEM
+        self.add_truth_data()
+        # write the bathymetric points to a file
+        self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
+        run_logger.info(f'The bathymetry was calculated and saved to {self.bathymetric_point_path}')
     
-    def kriging(self, npts):
-        run_logger.info(f"Kriging using {npts} points with crs {self.crs}")
+    def kriging(self, npts,**kwargs):
+        """Subset the points using poisson disk sampling then run the kriging process and save the resulting depth and uncertainty raster to the folder of the site
+            Additional kwargs are passed into the kriging function, so parameters can be supplied to that function
+        Args:
+            npts (int): The number of points to subset
+        """        
+        run_logger.info(f"Kriging using {npts} points with crs {self.crs} with options {kwargs}")
         kriging.krige_bathy(
             krmodel=kriging.UniversalKriging,
             folderpath=self.folderpath,
             npts=npts,
             variogram_model="spherical",
             crs=self.crs,
+            **kwargs,
         )
 
-    def kalman(self, gebco_st):
+    def kalman_update(self, gebco_st):
         run_logger.info(f"Updating GEBCO bathymetry using a gebco standard deviation of {gebco_st}")
         kalman.gridded_kalman_update(
             self.kalman_update_raster_path,
@@ -128,7 +136,8 @@ class GebcoUpscaler:
         self.rmse_icesat = error_calc.icesat_rmse(
             bathy_points=self.bathy_pts_gdf,
         )
-        run_logger.info(f'RMSE btween icesat and truth {self.rmse_icesat}')
+        self.mae_icesat = error_calc.icesat_mae(bathy_points=self.bathy_pts_gdf)
+        run_logger.info(f'RMSE btween icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}')
     
     def add_truth_data(self):
 
@@ -141,8 +150,8 @@ class GebcoUpscaler:
     def raster_rmse(self):
         # run_logger.info("")
         
-        self.rmse_kalman = error_calc.raster_RMSE(self.truebathy, self.kalman_update_raster_path)
-        self.rmse_naive = error_calc.raster_RMSE(self.truebathy, self.bilinear_gebco_raster_path)
+        self.rmse_kalman = error_calc.raster_RMSE_blocked(self.truebathy, self.kalman_update_raster_path)
+        self.rmse_naive = error_calc.raster_RMSE_blocked(self.truebathy, self.bilinear_gebco_raster_path)
         raster_summary = pd.DataFrame.from_dict(
             {
                 "Naive Bilinear Interpolation": self.rmse_naive,
