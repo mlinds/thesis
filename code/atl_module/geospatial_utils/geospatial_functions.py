@@ -11,11 +11,26 @@ detail_logger = setup_logger(name="details")
 
 
 def to_refr_corrected_gdf(df, crs):
+    """Take the original gdf of the bathymetry points, translate them to the local UTM zone, and changes the points based on the calculated refraction
+
+    Args:
+        df (pd.DataFrame): input point dataframe
+        crs (str): crs string or CRS object
+
+    Returns:
+        pd.DataFram: dataframe with the corrected data
+    """
     # make the geometry of the horizontallly corrected point locations
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.X, df.Y), crs="EPSG:4326")
+    reprojected = gdf.to_crs(crs)
+    easting = reprojected.geometry.x
+    northing = reprojected.geometry.y
     geometry = gpd.points_from_xy(
-        (df.easting + df.easting_corr), (df.northing + df.northing_corr), crs=crs
+        (easting + df.easting_corr), (northing + df.northing_corr), crs=crs
     )
-    return gpd.GeoDataFrame(df, geometry=geometry)
+    return gpd.GeoDataFrame(df, geometry=geometry).assign(
+        easting_raw=easting, northing_raw=northing
+    )
 
 
 def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
