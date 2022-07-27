@@ -18,7 +18,7 @@ def filter_high_returns(df, level=5):
         pd.DataFrame: output dataframe
     """
     # remove any points above 5m
-    return df.loc[(df.Z_geoid < 5)]
+    return df.loc[(df.Z_geoid < level)]
 
 
 def filter_TEP_and_nonassoc(df):
@@ -75,8 +75,11 @@ def add_sea_surface_level(df, rolling_window=200):
 
 def filter_low_points(df, filter_below_z):
     # drop any points with an uncorrected depth greater than a threshold
-    return df.loc[df.sea_level_interp - df.Z_geoid < filter_below_z]
+    return df.loc[df.Z_geoid > filter_below_z]
 
+def filter_depth(df, filter_below_depth):
+    # drop any points with an uncorrected depth greater than a threshold
+    return df.loc[(df.Z_geoid - df.sea_level_interp) > filter_below_depth]
 
 def remove_surface_points(df, n=3, min_remove=1):
     # remove all points `n` standard deviations away from the sea level
@@ -106,29 +109,6 @@ def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
     df = df[df.gebco_elev > low_limit]
     df = df[df.gebco_elev < high_limit]
     return df
-
-
-# def _interpolate_dataframe(
-#     point_dataframe: pd.DataFrame, spacing: float
-# ) -> pd.DataFrame:
-#     """Adds regularly-spaced horizontal points that can then be interpolated to fill the NA values
-
-#     Args:
-#         point_dataframe (pd.DataFrame): Dataframe of photon returns
-#         spacing (float): The distance to add the extra points in meters
-
-#     Returns:
-#         pd.DataFrame: Dataframe with the old points, plus the added regularly-spaced NA values
-#     """
-
-#     # make a new df with the distance as the index
-#     interpdf = point_dataframe.set_index("dist_or")
-#     # create a new index with a point every 10 m
-#     xindex_interp = np.arange(interpdf.index.min(), interpdf.index.max(), spacing)
-#     # the new index is the combo of the 10m index with the old index
-#     newindex = interpdf.index.union(xindex_interp)
-#     # set the new index and return the dataframe
-#     return interpdf.reindex(newindex)
 
 
 def correct_for_refraction(df):
