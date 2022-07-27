@@ -13,7 +13,7 @@ detail_logger = setup_logger(name="details")
 def prepare_pt_subset_for_kriging(folderpath, npts, crs):
     pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
 
-    # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (Z,Y,Z)
+    # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
     pdal_array = (
         pts_gdf_all.loc[:, ["northing", "easting", "z_kde"]]
         .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
@@ -39,7 +39,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs):
     return pts_gdf
 
 
-def krige_bathy(krmodel, folderpath, npts, variogram_model, crs):
+def krige_bathy(krmodel, folderpath, npts, variogram_model, crs,**kwargs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -71,6 +71,7 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model, crs):
         variogram_model=variogram_model,
         verbose=True,
         # coordinates_type="euclidean",
+        **kwargs,
     )
     # get the output Zgrid and uncertainty
     z, ss = krigemodel.execute("grid", gridx, gridy)
