@@ -65,7 +65,8 @@ def add_sea_surface_level(df, rolling_window=200):
     )
 
     interp_sea_surf_elev = (
-        pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
+        # pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
+        pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
         .interpolate(method="index")
         .to_numpy()
     )
@@ -77,9 +78,11 @@ def filter_low_points(df, filter_below_z):
     # drop any points with an uncorrected depth greater than a threshold
     return df.loc[df.Z_geoid > filter_below_z]
 
+
 def filter_depth(df, filter_below_depth):
     # drop any points with an uncorrected depth greater than a threshold
     return df.loc[(df.Z_geoid - df.sea_level_interp) > filter_below_depth]
+
 
 def remove_surface_points(df, n=3, min_remove=1):
     # remove all points `n` standard deviations away from the sea level
