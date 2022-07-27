@@ -180,7 +180,8 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
 
 def main(truth, measured):
-    print(raster_RMSE_blocked(truth, measured))
+    print('block verson',raster_RMSE_blocked(truth, measured))
+    print('original version',raster_RMSE(truth, measured))
 
 
 if __name__ == "__main__":
