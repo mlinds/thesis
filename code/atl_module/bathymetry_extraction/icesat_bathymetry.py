@@ -22,7 +22,7 @@ def add_along_track_dist(pointdata):
     return geofn.add_track_dist_meters(pointdata)
 
 
-def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
+def _filter_points(raw_photon_df: pd.DataFrame, verbose=False) -> pd.DataFrame:
     """Remove points outside of the gebco nearshore zone, points that are invalied, or too high. Also calculate refraction corrections and add them to the dataframe
 
     Args:
@@ -35,7 +35,8 @@ def _filter_points(raw_photon_df: pd.DataFrame) -> pd.DataFrame:
         raw_photon_df.pipe(dfilt.add_gebco)
         .pipe(dfilt.filter_gebco, low_limit=-40, high_limit=2)
         .pipe(dfilt.add_sea_surface_level)
-        .pipe(dfilt.filter_low_points, filter_below_z=40)
+        .pipe(dfilt.filter_low_points, filter_below_z=-40)
+        .pipe(dfilt.filter_depth, filter_below_depth=-40)
         .pipe(dfilt.remove_surface_points, n=1)
         .pipe(dfilt.filter_high_returns)
         .pipe(dfilt.filter_TEP_and_nonassoc)
@@ -109,7 +110,8 @@ def get_all_bathy_from_granule(
             # go to the next one of the quality isn't high enough
             continue
         # convert numpy array to a geodataframe with the along-track distance
-        point_df = geofn.add_track_dist_meters(beamarray)
+        # point_df = geofn.add_track_dist_meters(beamarray)
+        point_df = pd.DataFrame(beamarray)
         # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
         subsurface_return_pts = _filter_points(point_df)
         # find the bathymetry points using the KDE function
@@ -140,10 +142,21 @@ def get_all_bathy_from_granule(
         return pd.concat(granulelist)
 
 
-def bathy_from_all_tracks(path):
+def bathy_from_all_tracks(
+    folderpath, window, threshold_val, req_perc_hconf, window_meters, min_photons
+):
     dflist = []
-    for filename in tqdm(iglob(path + "/ATL03/*.nc")):
-        dflist.append(get_all_bathy_from_granule(filename))
+    for filename in tqdm(iglob(folderpath + "/ATL03/*.nc")):
+        dflist.append(
+            get_all_bathy_from_granule(
+                filename,
+                window,
+                threshold_val,
+                req_perc_hconf,
+                window_meters,
+                min_photons,
+            )
+        )
     return pd.concat(dflist)
 
 

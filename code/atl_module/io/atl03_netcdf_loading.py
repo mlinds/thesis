@@ -115,7 +115,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             .variables["tide_ocean"][:]
             .filled(np.NaN)
         )
-        pointing_vec_az = (
+        pointing_vec_az_segment = (
             ds.groups[beam]
             .groups["geolocation"]
             .variables["ref_azimuth"][:]
@@ -128,10 +128,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             .filled(np.NaN)
         )
         dac_correction_segment = (
-            ds.groups[beam]
-            .groups["geophys_corr"]
-            .variables["dac"][:]
-            .filled(np.NaN)
+            ds.groups[beam].groups["geophys_corr"].variables["dac"][:].filled(np.NaN)
         )
 
         # combine the corrections into one
@@ -141,37 +138,49 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         # to do this we can align them using the pandas asof
 
         # switch into pandas to use as_of function
-        # TODO use scipy.interpolate? 
+        # TODO use scipy.interpolate?
         # or maybe not: " Calling interp1d with NaNs present in input values results in undefined behaviour." from scipy.interpolate docs
         # TODO combine these into a dataframe - might make this more cpu/memory efficient
         # create a time-index series of the variables we want to interpolate
-        geoid_series = pd.Series(geoid_segment, index=delta_time_geophys).sort_index()
-        tide_ocean_series = pd.Series(
-            tide_ocean_segment, index=delta_time_geophys
-        ).sort_index()
-        geo_f2m_series = pd.Series(
-            geo_f2m_segment, index=delta_time_geophys
-        ).sort_index()
-        p_vec_az_series = pd.Series(
-            pointing_vec_az, index=delta_time_geophys
-        ).sort_index()
-        p_vec_elev_series = pd.Series(
-            pointing_vec_elev_segment, index=delta_time_geophys
-        ).sort_index()
-        dac_series = pd.Series(
-            dac_correction_segment  , index=delta_time_geophys
+        # geoid_series = pd.Series(geoid_segment, index=delta_time_geophys).sort_index()
+        # tide_ocean_series = pd.Series(
+        #     tide_ocean_segment, index=delta_time_geophys
+        # ).sort_index()
+        # geo_f2m_series = pd.Series(
+        #     geo_f2m_segment, index=delta_time_geophys
+        # ).sort_index()
+        # p_vec_az_series = pd.Series(
+        #     pointing_vec_az_segment, index=delta_time_geophys
+        # ).sort_index()
+        # p_vec_elev_series = pd.Series(
+        #     pointing_vec_elev_segment, index=delta_time_geophys
+        # ).sort_index()
+        # dac_series = pd.Series(
+        #     dac_correction_segment  , index=delta_time_geophys
+        # ).sort_index()
+
+        segment_level_df = pd.DataFrame(
+            {
+                "geoid_correction": geoid_segment,
+                "tide_ocean": tide_ocean_segment,
+                "geo_f2m": geo_f2m_segment,
+                "pointing_vec_az": pointing_vec_az_segment,
+                "pointing_vec_elev": pointing_vec_elev_segment,
+                "dac_correction": dac_correction_segment,
+            },
+            index=delta_time_geophys,
         ).sort_index()
 
+        interpolated_df = segment_level_df.asof(delta_time).to_records()
         # get the value for every single photon
-        geoid_tide_free = geoid_series.asof(delta_time).to_numpy()
-        tide_ocean = tide_ocean_series.asof(delta_time).to_numpy()
-        geof2m = geo_f2m_series.asof(delta_time).to_numpy()
-        p_vec_az = p_vec_az_series.asof(delta_time).to_numpy()
-        p_vec_elev = p_vec_elev_series.asof(delta_time).to_numpy()
-        dac_corr = dac_series.asof(delta_time).to_numpy()
+        geoid_tide_free = interpolated_df["geoid_correction"]
+        tide_ocean = interpolated_df["tide_ocean"]
+        geof2m = interpolated_df["geo_f2m"]
+        p_vec_az = interpolated_df["pointing_vec_az"]
+        p_vec_elev = interpolated_df["pointing_vec_elev"]
+        dac_corr = interpolated_df["dac_correction"]
 
-
-        correction = geoid_tide_free + geof2m + tide_ocean 
+        correction = geoid_tide_free + geof2m + tide_ocean
         # + dac_corr
         # print(len(correction))
         # get the corrected Z vals
