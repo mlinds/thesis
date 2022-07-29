@@ -84,7 +84,7 @@ def add_rolling_kde(df, window, window_meters, min_photons):
 
 
 def get_all_bathy_from_granule(
-    filename, window, threshold_val, req_perc_hconf, window_meters, min_photons
+    filename, window, threshold_val, req_perc_hconf, window_meters, min_photons, min_kde
 ):
     """For a single granule (stored in a netcdf4 file), loop over ever single beam, determine if it contains useful bathymetry signal, and return a dataframe just of the bathymetric points
 
@@ -126,7 +126,7 @@ def get_all_bathy_from_granule(
             bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
         )
         # find the
-        bathy_pts = bathy_pts.loc[bathy_pts.kde_val > thresholdval]
+        bathy_pts = bathy_pts.loc[bathy_pts.kde_val > max(thresholdval, min_kde)]
         # TODO could this be assigned to another function? not directly related to this function
         bathy_pts = bathy_pts.assign(
             beam=metadata_dict["beam"],
@@ -143,7 +143,13 @@ def get_all_bathy_from_granule(
 
 
 def bathy_from_all_tracks(
-    folderpath, window, threshold_val, req_perc_hconf, window_meters, min_photons
+    folderpath,
+    window,
+    threshold_val,
+    req_perc_hconf,
+    window_meters,
+    min_photons,
+    min_kde,
 ):
     dflist = []
     for filename in tqdm(iglob(folderpath + "/ATL03/*.nc")):
@@ -161,7 +167,13 @@ def bathy_from_all_tracks(
 
 
 def bathy_from_all_tracks_parallel(
-    folderpath, window, threshold_val, req_perc_hconf, window_meters, min_photons
+    folderpath,
+    window,
+    threshold_val,
+    req_perc_hconf,
+    window_meters,
+    min_photons,
+    min_kde,
 ):
     """Run the kde function for every single granule in parallel
 
@@ -186,8 +198,10 @@ def bathy_from_all_tracks_parallel(
             itertools.repeat(req_perc_hconf),
             itertools.repeat(window_meters),
             itertools.repeat(min_photons),
+            itertools.repeat(min_kde),
         )
     )
+
     with Pool() as pool:
         result = pool.starmap(get_all_bathy_from_granule, filenamelist)
     # catch the case where there is no bathymetry found in the granule

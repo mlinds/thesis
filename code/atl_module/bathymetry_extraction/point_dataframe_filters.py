@@ -1,5 +1,7 @@
 import pandas as pd
 from atl_module.geospatial_utils.raster_interaction import query_raster
+
+# from atl_module.geospatial_utils.geospatial_functions import add_track_dist_meters
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
 from pathlib import Path
 import numpy as np
@@ -49,7 +51,6 @@ def add_sea_surface_level(df, rolling_window=200):
         .std()
     )
     sea_level.name = "sea_level"
-
     newgdf = df.merge(
         right=sea_level,
         how="left",
@@ -65,10 +66,9 @@ def add_sea_surface_level(df, rolling_window=200):
     )
 
     interp_sea_surf_elev = (
-        # pd.Series(data=newgdf.sea_level.array, index=newgdf.dist_or.array)
         pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-        .interpolate(method="index")
-        .to_numpy()
+        # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+        .interpolate(method="index").to_numpy()
     )
 
     return df.assign(sea_level_interp=interp_sea_surf_elev).dropna()

@@ -15,7 +15,10 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs):
 
     # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
     pdal_array = (
-        pts_gdf_all.loc[:, ["northing", "easting", "z_kde"]]
+        pts_gdf_all.assign(
+            easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
+        )
+        .loc[:, ["northing", "easting", "z_kde"]]
         .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
         .to_records(index=False)
     )
@@ -23,7 +26,9 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs):
     # 1st pdal pipeline culls the dataset to a fixed number of points
     pipeline = pdal.Filter.relaxationdartthrowing(count=npts).pipeline(pdal_array)
     npts = pipeline.execute()
-    detail_logger.debug(f"{npts} points remaining after relaxation dart throwing culling")
+    detail_logger.debug(
+        f"{npts} points remaining after relaxation dart throwing culling"
+    )
     # get the thinned points from the output
     thinned_array = pipeline.arrays[0]
     #
@@ -32,14 +37,18 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs):
         geometry=gpd.points_from_xy(thinned_array["X"], thinned_array["Y"], crs=crs),
     )
     pts_gdf.to_file(folderpath + "/kriging_pts.gpkg")
-    pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(thinned_array)
+    # write the points to a LAZ file
+    pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
+        thinned_array
+    )
     npts = pipeline.execute()
+    # log the info
     detail_logger.debug(f"{npts} Points written to output LAZ and geopackage files")
 
     return pts_gdf
 
 
-def krige_bathy(krmodel, folderpath, npts, variogram_model, crs,**kwargs):
+def krige_bathy(krmodel, folderpath, npts, variogram_model, crs, **kwargs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -94,4 +103,6 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model, crs,**kwargs):
         rasout.write(z, 1)
         rasout.write(ss, 2)
     ras.close()
-    detail_logger.debug("Output raster of kriged Z values and uncertainty saved sucessfully")
+    detail_logger.debug(
+        "Output raster of kriged Z values and uncertainty saved sucessfully"
+    )

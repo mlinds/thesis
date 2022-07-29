@@ -90,7 +90,6 @@ def subset_gebco(folderpath: str, tracklines, epsg_no: int, hres: int):
     # bounds_utm = tracklines.geometry.total_bounds
     bounds_wgs84 = tracklines.to_crs("EPSG:4326").geometry.total_bounds
     # get the number of the EPSG crs (should be the local UTM zone!!)
-    # epsg_no = tracklines.crs.to_epsg()
 
     out_raster_path = f"{folderpath}/bilinear.tif"
     options = gdal.WarpOptions(
@@ -103,7 +102,7 @@ def subset_gebco(folderpath: str, tracklines, epsg_no: int, hres: int):
         resampleAlg="bilinear",
         srcNodata=-32767,
         dstNodata=-999999,
-        outputType=gdal.GDT_Float64,
+        outputType=gdal.GDT_Float32,
         # format='GTiff'
     )
     ds = gdal.Warp(out_raster_path, GEBCO_LOCATION, options=options)

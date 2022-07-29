@@ -56,7 +56,7 @@ def icesat_error_rms_mae(beam_df):
     return error_dict
 
 
-def raster_RMSE_blocked(truth_raster_path, measured_rasterpath):
+def raster_RMSE_blocked(truth_raster_path, measured_rasterpath, error_out=False):
     measured_ras = rasterio.open(measured_rasterpath)
     # open the truth raster, which might be in a different crs than the output than the one being compared
     with rasterio.open(truth_raster_path) as truthras:
@@ -74,21 +74,36 @@ def raster_RMSE_blocked(truth_raster_path, measured_rasterpath):
         # set up empty lists
         out_ms = []
         out_mae = []
+        if error_out:
+            print(truthras.meta)
+            out_options = truthras.meta
+            # have to remove the driver option so we can write a tif
+            out_options.pop("driver")
+            outras = rasterio.open(
+                "../data/test_sites/oahu/error_out.tif",
+                mode="w+",
+                **out_options,
+                compress="lzw",
+            )
         # iterate over the blocks in the truth raster
         for ji, window in truthras.block_windows(1):
             # read the truth data by the window and fill the masked values with nans
             truth_data = truthras.read(1, masked=True, window=window)
             truth_data = np.ma.filled(truth_data, np.nan)
+            truth_data[truth_data > 1] = np.nan
             # if there is no valid data in the block, skip it.
             if np.count_nonzero(~np.isnan(truth_data)) == 0:
                 continue
             # read the measured data by window
             bilinear_data = bi_vrt.read(1, masked=True, window=window)
             bilinear_data = np.ma.filled(bilinear_data, np.nan)
+            error_data = truth_data - bilinear_data
+            if error_out:
+                outras.write(error_data, window=window, indexes=1)
             # get the mean squared error of the block
-            mse = np.nanmean((truth_data - bilinear_data) ** 2)
+            mse = np.nanmean(error_data**2)
             # get the mean absolute error
-            mae = np.nanmean(np.abs(truth_data - bilinear_data))
+            mae = np.nanmean(np.abs(error_data))
             out_ms.append(mse)
             out_mae.append(mae)
 
