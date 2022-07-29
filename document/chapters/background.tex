@@ -4,11 +4,11 @@
 \pdfcomment{Maybe incorporate this into an appendix about geophysics?}
 \subsection{The Geoid}
 \pdfcomment{split into more subsections}
-The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation accelration as the gradient of a potential field $W$ $g=\Delta W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface. 
+The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation accelration as the gradient of a potential field $W$ $g=\Delta W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface.
 
 The contours of the geoid can be measured using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
 
-The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.  
+The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.
 
 \begin{figure}[h!]
       \centering
@@ -48,7 +48,7 @@ Where:
       \item tide-free geoid is good for 3D positioning because the coordinates don't change with time
       \item Relates the frequency of clocks to potential $\frac{df}{f} = -\frac{dW}{c^2}$ (not sure I can work this into the thesis document but it is interesting)
       \item Tide-free removes the periodic effects, and permanent effects caused by the nonzero time average of the perioidic effects \parencite{Escapa2020}
-      \item 
+      \item
 \end{itemize}
 
 
@@ -59,12 +59,12 @@ The \emph{tide-free geoid} is defined as a reference system where the permanent 
 
 
 \subsection{Inverted barometer effect}
-Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\pdfcomment{find a published reference for this}. Spatial gradients in air pressure caused by weather (high and low pressure systems) are equalized by gradients in the water surface height. NASA includes a factor to remove this effect from the local sea surface. 
+Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{comparison guide}\pdfcomment{find a published reference for this}. Spatial gradients in air pressure caused by weather (high and low pressure systems) are equalized by gradients in the water surface height. NASA includes a factor to remove this effect from the local sea surface.
 
 \subsection{Dynamic Atmosphere Correction}
-In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are very high frequency, 
+In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are very high frequency,
 
-The ICESat-2 ATL03 data includes a correction factor for that includes the effects of both wind and the atmospheric pressure. It is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It has a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution, and is interpolated spatially and temporally for inclusion in the ATL03 data. 
+The ICESat-2 ATL03 data includes a correction factor for that includes the effects of both wind and the atmospheric pressure. It is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It has a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution, and is interpolated spatially and temporally for inclusion in the ATL03 data.
 
 \subsection{Ocean Tides}
 
@@ -110,7 +110,7 @@ To locate the position of each photon in 3D space, the time of flight of the pho
 
 \subsection{Weak vs. Strong Beams}
 
-The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements. The strong beams have been found to provide the better data for lidar bathymetry measurements, but there weak beams can still contain useful bathymetry data \parencite{add citation}. 
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements. The strong beams have been found to provide the better data for lidar bathymetry measurements, but there weak beams can still contain useful bathymetry data \parencite{add citation}.
 
 \subsection{Refraction Correction}
 \pdfcomment{Make a figure with refraction correction amount on the x axis, depth on the y, and then multiple lines for different pointing vectors}
@@ -124,6 +124,8 @@ The locations calculated by the data products from the satellite do not correct 
 \end{figure}
 
 When the instrument is pointed directly at the RGT, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is approximately 9cm \parencite{Parrish2019}, which for bathymetric purposes is negligible. However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir (equal to 43km away from the RGT \parencite{Magruder2021}). During offpointing, the horizontal error is much more significant and must be corrected for measurement accuracy \parencite{Parrish2019}.\citeauthor{Parrish2019} propose an method to correct for both horizontal and vertical error that is widely cited in future research. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}. Some studies only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law. This is referred to as \emph{first order} refraction correction in the summary table.
+
+\subsection{Parrish method}
 
 \begin{equation}
       \theta_2 = \sin^{-1}{\frac{n_1 \sin{\theta_1}}{n_2}}
@@ -154,10 +156,10 @@ When the instrument is pointed directly at the RGT, the laser beams point nearly
 \end{equation}
 
 \begin{align}
-      \Delta Y &= P \cos{\beta} \\
-      \Delta Z &= P \sin{\beta} \\
-      \Delta E &= \Delta Y \sin{\kappa} \\
-      \Delta N &= \Delta Y \cos{\kappa}
+      \Delta Y & = P \cos{\beta}         \\
+      \Delta Z & = P \sin{\beta}         \\
+      \Delta E & = \Delta Y \sin{\kappa} \\
+      \Delta N & = \Delta Y \cos{\kappa}
 \end{align}
 
 \subsection{Vertical Height Reference}
@@ -171,9 +173,8 @@ The height provided in the ATL03 data product is calculated by the following equ
 Where:
 
 \begin{itemize}
-
       \item \(H_{GC}\) is the geophysically corrected photon height above the WGS84 ellipsoid
-      \item \(H_{P}\) is the uncorrected photon height above the WGS84 ellipsoid, from equation \ref{eq:raw_photon_calculation} 
+      \item \(H_{P}\) is the uncorrected photon height above the WGS84 ellipsoid, from equation \ref{eq:raw_photon_calculation}
       \item \(H_{OPT}\) is the height of the ocean pole tide correction, which is the deformation at the poles induces by centrifugal effects of variations in the earth's rotational axis.
       \item \(H_{OL}\) is the height of the ocean loading tide, which is the deformation of earth's crust due to the weight of ocean tides
       \item \(H_{SEPT}\) is the height of the solid earth pole tide
@@ -191,15 +192,14 @@ Where:
 \begin{itemize}
       \item $H_{geoid}$ is the height of the tide-free geoid above the reference ellipsoid
       \item $H_{free2mean}$ is the difference between the tide-free and the mean-tide geoid
-      \item $H_{DAC}$ is the dynamic atmospheric correction factor which includes periodic effects like local wind loading \pdfcomment{expand on this a bit}
-      \item 
+      \item $H_{DAC}$ is the dynamic atmospheric correction factor which includes periodic effects like local wind forcing
 \end{itemize}
 
 The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}. Therefore, it is proposed to use the data from the operational runs of the Global Tide and Surge Model (GTSM) \parencite{Buckman2015}, developed by Deltares, to convert the mean tide geoid elevation to the water depth at the date and time of the satellite pass.
 
 \subsection{Signal Photon Identification}
 \label{subsec:denoising}
-The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} \pdfcomment{add reference here - need to find all icesat papers and search each one to figure out where I read this} and can be used to filter out points at or above the sea surface. 
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no official classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} \pdfcomment{add reference here - need to find all icesat papers and search each one to figure out where I read this} and can be used to filter out points at or above the sea surface.
 
 To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is applied to this data. There are several different techniques proposed in the literature.  Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016}. Other researchers have used implementations of the density-based spatial clustering for applications with Noise (DBSCAN) algorithm \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. These density-based methods are premised on the assumption that signal photons are closer together than noise photons. \parencite{Neuenschwander2019}.
 
@@ -258,24 +258,24 @@ The studies that have used some version of the proposed technique are summarized
       \color{blue}
       \item Ensemble Kalman Filter represents distributions by an ensemble, which is propagated using the temporal evolution model and updated via a linear shift based on new observations \parencite{Jurek2021}.
       \item When ignoring the temporal dimension, using the sparsity assumption with an ensemble kalman filter allows for faster computation \parencite{Jurek2021}
-      \item The approach in \citeauthor{Jurek2021} seems better for if I need a temporal dimension 
+      \item The approach in \citeauthor{Jurek2021} seems better for if I need a temporal dimension
       \item Data Assimilation is a an inverse modeling technique, that uses statistical optimization to find the most likely true value given the known uncertainties and correlations in uncertainties \parencite{Salim2021}
       \item Interpolation from discrete points induces 2 types of error, aliasing of subgrid features and measurement errors \parencite{Plant2002}
-   
-      \item  Extended Kalman filter from \parencite{Ghorbanidehno2019}
-       \begin{itemize}
-            \item The idea behind the extended kalman is you have unknowns in a state vector $x_{t+1} = f(x_t) + w_t$, where $f(...)$ is the forward transition model and $w_t$ is the model error or noise and is modeled as a multivariate gaussian random vector 
-            \item Measurements in the system are defined as $y_t = h(x_{t+1}) + v_t$
-            \item EKF gives the posterior mean ($X_{t+1 | t+1}$)
-            \item EKF gives accurate results in the least-squares sense, but its not practical due to the amount of matrix multiplication of large matrices and the cost of computing jacobian matricies.
-      \end{itemize}
-      \item This EKF can be made more efficient using Compressed-state Kalman filter (Also from \parencite{Ghorbanidehno2019})
-      \begin{itemize}
-            \item use low-rank approximation to reduce amount of memory
-            \item the covariance matrix can be approximated using data compression algorithms.
-            \item To get the covariance matrix back from compression you do $P_t \approx A C_t A_T$ where A is a matrix defining a subspace of the original matrix that provides a good approximation (ie you project the state onto this subspace and its reasonably close to the actual state)
 
-      \end{itemize}
+      \item  Extended Kalman filter from \parencite{Ghorbanidehno2019}
+            \begin{itemize}
+                  \item The idea behind the extended kalman is you have unknowns in a state vector $x_{t+1} = f(x_t) + w_t$, where $f(...)$ is the forward transition model and $w_t$ is the model error or noise and is modeled as a multivariate gaussian random vector
+                  \item Measurements in the system are defined as $y_t = h(x_{t+1}) + v_t$
+                  \item EKF gives the posterior mean ($X_{t+1 | t+1}$)
+                  \item EKF gives accurate results in the least-squares sense, but its not practical due to the amount of matrix multiplication of large matrices and the cost of computing jacobian matricies.
+            \end{itemize}
+      \item This EKF can be made more efficient using Compressed-state Kalman filter (Also from \parencite{Ghorbanidehno2019})
+            \begin{itemize}
+                  \item use low-rank approximation to reduce amount of memory
+                  \item the covariance matrix can be approximated using data compression algorithms.
+                  \item To get the covariance matrix back from compression you do $P_t \approx A C_t A_T$ where A is a matrix defining a subspace of the original matrix that provides a good approximation (ie you project the state onto this subspace and its reasonably close to the actual state)
+
+            \end{itemize}
 \end{itemize}
 
 

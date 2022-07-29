@@ -1,6 +1,22 @@
 \chapter{Results}
 
-\section{Florida Keys test site}
+\section{Florida Keys Test Site}
+
+\subsection{Site Conditions}
+\pdfcomment{Make this in pandas for consistency}
+\begin{table}[htbp]
+    \centering\begin{tabular}{c c c}
+
+        location & -81.04472,24.72868 & N/A \\
+        Tidal Range & 0.51 m & \citeauthor{tidal_data_reanalysis2022} \\
+        Average Secchi Depth & \pdfcomment{calculate} & \citeauthor{ACRI-STGlobColourTeam2020}    \\ 
+        Validation Data bathymetric vertical RMS error & 0.056 m& \cite{Keys2019Lidar}\\
+        Validation Data Horizontal Resolution & $9.4*10^{-6} $ degrees $\approx 0.95 m$ & \cite{Keys2019Lidar}\\
+    \end{tabular}
+    \caption{Site conditions for the Florida Keys Test Site}
+    \label{table:floridasitestats}
+\end{table}
+
 \subsection{ICESat-2 Transects within AOI}
 The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below. 
 \begin{figure}[h!]
@@ -20,9 +36,9 @@ The AOI used the validate the method is shown in figure \ref{fig:keys_transects}
 \end{figure}
 \subsection{Error in lidar photon data}
 
-% \input{tables/rms_by_atm.tex}
+\input{tables/rms_by_atm.tex}
 
-% \input{tables/rms_by_type.tex}
+\input{tables/rms_by_type.tex}
 
 \subsection{Bathymetric photons}
 \ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
