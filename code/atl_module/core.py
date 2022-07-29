@@ -182,11 +182,11 @@ class GebcoUpscaler:
         self.rmse_naive = error_calc.raster_RMSE_blocked(
             self.truebathy, self.bilinear_gebco_raster_path
         )
-        raster_summary = pd.DataFrame.from_dict(
+        self.raster_error_summary = pd.DataFrame.from_dict(
             {
                 "Naive Bilinear Interpolation": self.rmse_naive,
                 "Kalman Updated Raster": self.rmse_kalman,
             },
             orient="index",
         )
-        run_logger.info(raster_summary.to_json())
+        run_logger.info(self.raster_error_summary.to_json())
