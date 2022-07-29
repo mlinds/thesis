@@ -100,6 +100,7 @@ class GebcoUpscaler:
                 "Required percentage high confidence ocean photons": req_perc_hconf,
                 "minimum photons in distance window": min_photons,
                 "window_horizontal": window_meters,
+                "Minimum KDE to be considered": min_kde,
             },
         )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
@@ -157,7 +158,7 @@ class GebcoUpscaler:
         )
         self.mae_icesat = error_calc.icesat_mae(bathy_points=self.bathy_pts_gdf)
         run_logger.info(
-            f"RMSE btween icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
+            f"RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
 
     def add_truth_data(self):
