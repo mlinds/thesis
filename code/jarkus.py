@@ -1,35 +1,19 @@
 # %%
 import xarray as xr
 import geopandas as gpd
-
+import pdal 
 # %%
 jarkus_path = "/home/mlinds/wsl_data/transect.nc"
 ds = xr.open_dataset(jarkus_path)
 # get a dataframe of the 2021 data
-recent = ds.sel(time="2021-07-01T00:00:00.000000000").to_dataframe().dropna()
-
-# %%
-subset = ds.where(
-    ds.areaname
-    == b"Zeeuws-Vlaanderen                                                                                   ",
-    drop=True,
-)
-subset_array = (
-    subset.altitude.to_dataframe()
-    .dropna()
-    .reset_index()
-    .rename(columns={"lat": "Y", "lon": "X", "altitude": "Z"})
-    .drop(columns=["alongshore", "cross_shore"])
-    .to_records(index=False)
-)
-
-# %%
-ds.altitude.to_netcdf("/home/mlinds/wsl_data/transect_ncdf4.nc")
+recent = ds.sel(time="2021-07-01T00:00:00.000000000").to_dataframe().dropna().rename(columns={"lat": "Y", "lon": "X", "altitude": "Z"})
 
 # %%
 gdf = gpd.GeoDataFrame(
     recent,
-    geometry=gpd.points_from_xy(recent.lon, recent.lat, recent.altitude, crs="EPSG:4326"),
+    geometry=gpd.points_from_xy(
+        recent.X, recent.Y, recent.Z, crs="EPSG:4326"
+    ),
 )
 # normalize the name strings and overwrite the dataframe
 gdf = gdf.assign(
