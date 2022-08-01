@@ -38,6 +38,24 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
     return pts_gdf
 
 
+def _prepare_random_sample(pts_gdf_all, npts, crs):
+    # get rename the columns and sample npts rows from the dataframe
+    pts_gdf_sample = (
+        pts_gdf_all.assign(
+            easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
+        )
+        .loc[:, ["northing", "easting", "z_kde"]]
+        .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
+        .sample(npts)
+    )
+    # write it to a gdf since the original geometry was lost
+    pts_gdf = gpd.GeoDataFrame(
+        pts_gdf_sample,
+        geometry=gpd.points_from_xy(pts_gdf_sample["X"], pts_gdf_sample["Y"], crs=crs),
+    )
+    return pts_gdf
+
+
 def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
     # path for the output geopackage
     outpath = folderpath + "/kriging_pts.gpkg"
@@ -48,7 +66,8 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
     if samplemethod == "dart":
         pts_gdf = _relaxation_dart_throwing(pts_gdf_all, npts, crs)
     elif samplemethod == "random":
-        pts_gdf = pts_gdf_all.sample(npts)
+        pts_gdf = _prepare_random_sample(pts_gdf_all, npts, crs)
+
     else:
         raise ValueError('`samplemethod` must be either "dart" or "random"')
 
