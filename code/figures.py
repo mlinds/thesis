@@ -342,6 +342,10 @@ fig.savefig("../document/figures/3d_kde_function.png")
 # %%
 pts = gpd.read_file("../data/test_sites/florida_keys/kriging_pts.gpkg")
 pts_all = gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg").eval('northing=northing_raw+northing_corr').eval('easting=easting_raw+easting_corr')
+
+# %%
+
+
 # %%
 with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as krigedras:
     elevation = krigedras.read(1)
