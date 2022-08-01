@@ -72,7 +72,9 @@ def gridded_kalman_update(
     ) as outras:
         outras.write(kalman_depth, 1)
         outras.write(kalman_uncertainty, 2)
-    run_logger.info(f"Wrote Kalman Updated Raster with GEBCO uncertainty {gebco_uncertainty_in} to {outputfile}")
+    run_logger.info(
+        f"Wrote Kalman Updated Raster with GEBCO uncertainty {gebco_uncertainty_in} to {outputfile}"
+    )
 
     return None
 
