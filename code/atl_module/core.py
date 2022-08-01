@@ -31,7 +31,9 @@ class GebcoUpscaler:
     def __init__(self, site, truebathy=None):
         # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
+        # set up the site name
         self.site = site
+        # base folderpath to join with others
         self.folderpath = f"../data/test_sites/{site}"
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
@@ -222,7 +224,7 @@ class GebcoUpscaler:
             self.rmse_kriged = error_calc.raster_RMSE_blocked(
                 self.truebathy, self.kriged_raster_path
             )
-        # if this is not required, set a dicionary saying that
+        # if this is not requested, set a dicionary saying that
         else:
             self.rmse_kriged = {"RMSE": "Not Calculated", "MAE": "Not Calculated"}
 
