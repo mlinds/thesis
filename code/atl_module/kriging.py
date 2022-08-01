@@ -1,4 +1,5 @@
 # from pykrige.rk import RegressionKriging
+from random import sample
 import geopandas as gpd
 import pdal
 import rasterio
@@ -10,9 +11,7 @@ from pykrige.uk import UniversalKriging
 detail_logger = setup_logger(name="details")
 
 
-def prepare_pt_subset_for_kriging(folderpath, npts, crs):
-    pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
-
+def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
     # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
     pdal_array = (
         pts_gdf_all.assign(
@@ -36,14 +35,29 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs):
         thinned_array,
         geometry=gpd.points_from_xy(thinned_array["X"], thinned_array["Y"], crs=crs),
     )
-    pts_gdf.to_file(folderpath + "/kriging_pts.gpkg")
-    # write the points to a LAZ file
-    pipeline = pdal.Writer.las(filename=folderpath + "/filtered.laz").pipeline(
-        thinned_array
-    )
-    npts = pipeline.execute()
+    return pts_gdf
+
+
+def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
+    # path for the output geopackage
+    outpath = folderpath + "/kriging_pts.gpkg"
+
+    # read in all bathy points
+    pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
+
+    if samplemethod == "dart":
+        pts_gdf = _relaxation_dart_throwing(pts_gdf_all, npts, crs)
+    elif samplemethod == "random":
+        pts_gdf = pts_gdf_all.sample(npts)
+    else:
+        raise ValueError('`samplemethod` must be either "dart" or "random"')
+
+    pts_gdf.to_file(outpath)
+
     # log the info
-    detail_logger.debug(f"{npts} Points written to output LAZ and geopackage files")
+    detail_logger.debug(
+        f"{npts} points selected with {samplemethod} written to {outpath}"
+    )
 
     return pts_gdf
 
@@ -59,7 +73,9 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model, crs, **kwargs):
     """
 
     # load the points for kriging
-    pts_gdf = prepare_pt_subset_for_kriging(folderpath, npts, crs)
+    pts_gdf = prepare_pt_subset_for_kriging(
+        folderpath, npts, crs, samplemethod=kwargs.get("samplemethod")
+    )
 
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
@@ -80,13 +96,13 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model, crs, **kwargs):
         variogram_model=variogram_model,
         verbose=True,
         # coordinates_type="euclidean",
-        **kwargs,
+        variogram_parameters=kwargs.get("variogram_parameters"),
     )
     # get the output Zgrid and uncertainty
     z, ss = krigemodel.execute("grid", gridx, gridy)
 
     detail_logger.debug(
-        f"finished kriging, now saving the output raster to {folderpath + 'kalman.tif'}"
+        f"finished kriging, now saving the output raster to {folderpath + '/kriging_output.tif'}"
     )
 
     # save the results as a raster with band 1 and the Z value and band 2 as the uncertainty
