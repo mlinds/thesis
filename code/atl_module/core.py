@@ -93,18 +93,15 @@ class GebcoUpscaler:
     def find_bathy_from_icesat(
         self, window, threshold_val, req_perc_hconf, min_photons, window_meters, min_kde,save_result=True
     ):
-        run_logger.info(f"site: {self.site} - Starting bathymetry signal finding with parameters:")
-        run_logger.info(
-            {
-                "Site Name":self.site,
+        run_params = {
                 "window_size_photons": window,
                 "threshhold value": threshold_val,
                 "Required percentage high confidence ocean photons": req_perc_hconf,
                 "minimum photons in distance window": min_photons,
                 "window_horizontal": window_meters,
                 "Minimum KDE to be considered": min_kde,
-            },
-        )
+            }
+        run_logger.info(f"site: {self.site} - Starting bathymetry signal finding with parameters: {run_params}")
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
             window=window,
@@ -123,7 +120,7 @@ class GebcoUpscaler:
         if save_result: 
             self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
             run_logger.info(
-                f"The bathymetry for {self.site} was calculated and saved to {self.bathymetric_point_path}"
+                f"The bathymetry for {self.site} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
             )
 
     def kriging(self, npts, **kwargs):
