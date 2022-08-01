@@ -22,6 +22,7 @@ from atl_module.geospatial_utils.geospatial_functions import (
     to_refr_corrected_gdf,
 )
 
+# TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 
 
@@ -177,16 +178,15 @@ class GebcoUpscaler:
             f"Sucessful Kalman update of GEBCO bathymetry for {self.site} using a gebco standard deviation of {gebco_std} saved to {self.kalman_update_raster_path}"
         )
 
-    def lidar_error(self):
+    def lidar_error(self) -> dict:
         """Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it"""
-        self.rmse_icesat = error_calc.icesat_rmse(
-            bathy_points=self.bathy_pts_gdf,
-        )
-        self.mae_icesat = error_calc.icesat_mae(bathy_points=self.bathy_pts_gdf)
+        lidar_err_dict = error_calc.icesat_error_rms_mae(beam_df=self.bathy_pts_gdf)
+        self.rmse_icesat = lidar_err_dict.get("RMSE")
+        self.mae_icesat = lidar_err_dict.get("MAE")
         run_logger.info(
             f"{self.site}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
-        return {"Lidar RMSE": self.rmse_icesat, "Lidar MAE": self.mae_icesat}
+        return pd.DataFrame(lidar_err_dict,index=[self.site])
 
     def add_truth_data(self):
 
