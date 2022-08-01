@@ -22,18 +22,18 @@ if args.verbose:
 
 
 site = GebcoUpscaler(
-    f"../data/test_sites/{args.sitename}/",
+    f"args.sitename",
     f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
 )
 
-# site.find_bathy_from_icesat(
-#     window=100,
-#     threshold_val=0.0,
-#     req_perc_hconf=70,
-#     window_meters=None,
-#     min_photons=None,
-# )
-# site.kriging(npts=1000)
-# site.kalman(1.5)
-site.lidar_rmse()
+site.find_bathy_from_icesat(
+    window=100,
+    threshold_val=0.0,
+    req_perc_hconf=70,
+    window_meters=None,
+    min_photons=None,
+)
+site.kriging(npts=1000,samplemethod='dart')
+site.kalman(1.5)
+site.lidar_error()
 site.raster_rmse()

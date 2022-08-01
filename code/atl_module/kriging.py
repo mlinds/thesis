@@ -19,9 +19,12 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
         )
         .loc[:, ["northing", "easting", "z_kde"]]
         .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
+        # pdal understands record arrays, so use a record array
         .to_records(index=False)
     )
-
+    detail_logger.debug(
+        f"The types of the numpy array that is sent to PDAL poisson dart throwing are: {pdal_array.dtypes}"
+    )
     # 1st pdal pipeline culls the dataset to a fixed number of points
     pipeline = pdal.Filter.relaxationdartthrowing(count=npts).pipeline(pdal_array)
     npts = pipeline.execute()

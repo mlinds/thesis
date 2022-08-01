@@ -70,11 +70,13 @@ class GebcoUpscaler:
             # self.subset_gebco()
 
     def download_ATL03(self):
+        """Request a data download with the extent determined by the AOI.gpkg in the folder"""
         request_full_data_shapefile(
             folderpath=self.folderpath, shapefile_filepath=self.AOI_path
         )
 
     def recalc_tracklines_gdf(self):
+        """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
         self.tracklines = make_gdf_from_ncdf_files(self.folderpath + "/ATL03/*.nc")
         try:
             self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
@@ -83,7 +85,12 @@ class GebcoUpscaler:
         finally:
             self.tracklines.to_file(self.trackline_path, overwrite=True)
 
-    def subset_gebco(self, hres):
+    def subset_gebco(self, hres: int):
+        """Take a subset of GEBCO with the area determined by the extent of the tracklines.gpkg file in the main folder, resampled bilinearly to the requested resolution
+
+        Args:
+            hres (int): the horizontal (x and y) resolution of the subset
+        """
         # cut out a section of GEBCO, reproject and resample
         raster_interaction.subset_gebco(
             folderpath=self.folderpath,
@@ -152,18 +159,24 @@ class GebcoUpscaler:
             **kwargs,
         )
 
-    def kalman_update(self, gebco_st):
-        run_logger.info(
-            f"Updating GEBCO bathymetry for {self.site} using a gebco standard deviation of {gebco_st}"
-        )
+    def kalman_update(self, gebco_std: float) -> None:
+        """Performed a kalman update assuming a certain constant value for the standard deviation of GEBCO
+
+        Args:
+            gebco_std (float): The assumed measurement error (standard deviation in meters) of GEBCO data
+        """
         kalman.gridded_kalman_update(
             self.kalman_update_raster_path,
             self.bilinear_gebco_raster_path,
             self.kriged_raster_path,
-            gebco_st,
+            gebco_std,
+        )
+        run_logger.info(
+            f"Sucessful Kalman update of GEBCO bathymetry for {self.site} using a gebco standard deviation of {gebco_std} saved to {self.kalman_update_raster_path}"
         )
 
-    def lidar_rmse(self):
+    def lidar_error(self):
+        """Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it"""
         self.rmse_icesat = error_calc.icesat_rmse(
             bathy_points=self.bathy_pts_gdf,
         )
@@ -171,6 +184,7 @@ class GebcoUpscaler:
         run_logger.info(
             f"{self.site}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
+        return {"Lidar RMSE": self.rmse_icesat, "Lidar MAE": self.mae_icesat}
 
     def add_truth_data(self):
 
@@ -221,3 +235,4 @@ class GebcoUpscaler:
             orient="index",
         )
         run_logger.info(self.raster_error_summary.to_json())
+        return self.raster_error_summary
