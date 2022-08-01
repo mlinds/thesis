@@ -29,8 +29,10 @@ class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
     def __init__(self, site, truebathy=None):
+        # rmse_naive is the RMSE error between the bilinear interpolation and the truth
+        self.rmse_naive = None
         self.site = site
-        self.folderpath = f'../data/test_sites/{site}'
+        self.folderpath = f"../data/test_sites/{site}"
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
         # set up the paths of the relevant vector files:
@@ -91,17 +93,26 @@ class GebcoUpscaler:
         )
 
     def find_bathy_from_icesat(
-        self, window, threshold_val, req_perc_hconf, min_photons, window_meters, min_kde,save_result=True
+        self,
+        window,
+        threshold_val,
+        req_perc_hconf,
+        min_photons,
+        window_meters,
+        min_kde,
+        save_result=True,
     ):
         run_params = {
-                "window_size_photons": window,
-                "threshhold value": threshold_val,
-                "Required percentage high confidence ocean photons": req_perc_hconf,
-                "minimum photons in distance window": min_photons,
-                "window_horizontal": window_meters,
-                "Minimum KDE to be considered": min_kde,
-            }
-        run_logger.info(f"site: {self.site} - Starting bathymetry signal finding with parameters: {run_params}")
+            "window_size_photons": window,
+            "threshhold value": threshold_val,
+            "Required percentage high confidence ocean photons": req_perc_hconf,
+            "minimum photons in distance window": min_photons,
+            "window_horizontal": window_meters,
+            "Minimum KDE to be considered": min_kde,
+        }
+        run_logger.info(
+            f"site: {self.site} - Starting bathymetry signal finding with parameters: {run_params}"
+        )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
             window=window,
@@ -117,7 +128,7 @@ class GebcoUpscaler:
         # try to add the elevation from the truth DEM
         self.add_truth_data()
         # write the bathymetric points to a file
-        if save_result: 
+        if save_result:
             self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
             run_logger.info(
                 f"The bathymetry for {self.site} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
@@ -171,25 +182,39 @@ class GebcoUpscaler:
             self.bathy_pts_gdf = error_calc.add_true_elevation(
                 self.bathy_pts_gdf, self.truebathy, self.crs
             )
-            run_logger.info(f"Truth data added to Bathymetric Points dataframe for site: {self.site}")
+            run_logger.info(
+                f"Truth data added to Bathymetric Points dataframe for site: {self.site}"
+            )
 
-    def raster_rmse(self):
-        # run_logger.info("")
+    def raster_rmse(self, check_kriged=False):
+        """Calculate the raster error metrics for the various rasters (the naive bilinear raster, then kalman updated raster, and the post-kriging raster)
+
+        Because each operation is very expensive, they are only run when required/requested.
+
+        Args:
+            check_kriged (bool, optional): Calculate the RMSE and MAE error between the kriged raster and the truth raster. This is. Defaults to False.
+        """
 
         self.rmse_kalman = error_calc.raster_RMSE_blocked(
             self.truebathy, self.kalman_update_raster_path
         )
-        self.rmse_naive = error_calc.raster_RMSE_blocked(
-            self.truebathy, self.bilinear_gebco_raster_path
-        )
-        self.rmse_kriged = error_calc.raster_RMSE_blocked(
-            self.truebathy, self.kriged_raster_path
-        )
+        # this only needs to be calculated once, so only do it if this is the first time this object has been created
+        if self.rmse_naive is None:
+            self.rmse_naive = error_calc.raster_RMSE_blocked(
+                self.truebathy, self.bilinear_gebco_raster_path
+            )
+        # only check this RMSE if required
+        if check_kriged:
+            self.rmse_kriged = error_calc.raster_RMSE_blocked(
+                self.truebathy, self.kriged_raster_path
+            )
+        else:
+            self.rmse_kriged = "Not Calculated"
         self.raster_error_summary = pd.DataFrame.from_dict(
             {
                 "Naive Bilinear Interpolation": self.rmse_naive,
                 "Kalman Updated Raster": self.rmse_kalman,
-                "Kriged Raster": self.rmse_kriged   ,
+                "Kriged Raster": self.rmse_kriged,
             },
             orient="index",
         )
