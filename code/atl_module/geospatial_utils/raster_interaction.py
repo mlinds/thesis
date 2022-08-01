@@ -67,9 +67,8 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
     return beam_df
 
 
-def subset_gebco(folderpath: str, tracklines, epsg_no: int, hres: int):
+def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     """Create a resampled (bilinearly) and reprojected subset of the global GEBCO dataset. Write it to the same input folder
-        NB. IMPURE FUNCTION
 
     Args:
         folderpath (str): The root folder of the test site
@@ -88,7 +87,7 @@ def subset_gebco(folderpath: str, tracklines, epsg_no: int, hres: int):
     # tracklines = gpd.read_file(f"{folderpath}/tracklines.gpkg")
     # get the boundaries
     # bounds_utm = tracklines.geometry.total_bounds
-    bounds_wgs84 = tracklines.to_crs("EPSG:4326").geometry.total_bounds
+    bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
     # get the number of the EPSG crs (should be the local UTM zone!!)
 
     out_raster_path = f"{folderpath}/bilinear.tif"
