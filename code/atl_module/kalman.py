@@ -57,7 +57,6 @@ def gridded_kalman_update(
             kalman_depth, kalman_uncertainty, measurement_depths, measurement_sigma
         )
 
-    # TODO consider abstracting this into another function
     # write the output to a raster file
     with rasterio.open(
         outputfile,

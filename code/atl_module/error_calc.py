@@ -13,17 +13,28 @@ from rasterio.windows import get_data_window
 import dask.array as da
 
 detail_logger = setup_logger(name="details")
-# TODO refactor function names to be more descriptive
 # TODO add docstrings to functions
 
 
 def add_true_elevation(bathy_points, true_data_path, crs):
+    """takes a bathy points dataframe and add a column called 'true elevation' that contains elevation value of the truth raster at each point
+
+    Args:
+        bathy_points (pd.DataFrame): Dataframe of the bathymetryic points, must having X and Y data in the format required
+        true_data_path (str): path to a GDAL-readable raster
+        crs (str): a string readable by geopandas/prproj that contains the coordinate reference system for the bathymetric points
+
+    Returns:
+        pd.Dataframe: the input dataframe with a new column with the true elevation values
+    """
+    # create a new geodataframe that is updated based on the horizontal error induced by refraction
     gdf = to_refr_corrected_gdf(bathy_points, crs=crs)
+    # return a series of the elevation from the truth raster at each point
     true_bathy = query_raster(
         gdf,
         src=true_data_path,
     )
-    # assign the series to the dataframe
+    # assign the series to the dataframe and return
     return bathy_points.assign(true_elevation=true_bathy)
 
 
@@ -90,7 +101,7 @@ def raster_RMSE_blocked(
         out_mae = []
         # if error output is requested, set up an empty geotiff raster to hold the output
         if error_out:
-            raise NotImplementedError('fix this function before use')
+            raise NotImplementedError("fix this function before use")
             out_options = truthras.meta
             # have to remove the driver option so we can write a tif
             out_options.pop("driver")
@@ -106,10 +117,10 @@ def raster_RMSE_blocked(
             # read the truth data by the window and fill the masked values with nans
             truth_data = truthras.read(1, masked=True, window=window)
             truth_data = np.ma.filled(truth_data, np.nan)
-            
+
             # don't look on land
             truth_data[truth_data > 1] = np.nan
-            
+
             # count how many non-nan values are in the block.
             # If there are 0 non-nan values, skip it.
             if np.count_nonzero(~np.isnan(truth_data)) == 0:
@@ -187,7 +198,6 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         "src_nodata": measured_ras.nodata,
     }
     # actually make the raster
-    # TODO
     with WarpedVRT(measured_ras, **vrt_options) as bi_vrt:
         dst_window = bi_vrt.window(
             left=truthras.bounds.left,

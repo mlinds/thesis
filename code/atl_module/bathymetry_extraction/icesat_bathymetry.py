@@ -1,6 +1,7 @@
 import itertools
 from glob import iglob
 from multiprocessing import Pool
+
 # TODO try thread based parallelism with:
 # from multiprocessing.dummy import Pool
 
