@@ -1,6 +1,9 @@
 # %%
 import numpy as np
 import rasterio
+from logzero import setup_logger
+
+run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 
 
 def simple_kalman(z, sigma, z_meas, sigma_meas):
@@ -25,7 +28,7 @@ def simple_kalman(z, sigma, z_meas, sigma_meas):
 
 
 def gridded_kalman_update(
-    outputfile, start_raster_path, measrasterlist, gebco_uncertainty
+    outputfile, start_raster_path, measrasterlist, gebco_uncertainty_in
 ):
 
     # if there is a single path instead of a list, convert it to a single-element list
@@ -37,7 +40,7 @@ def gridded_kalman_update(
         gebco_depth = gebco_interp.read(1, masked=True)
     # set nodata values to numpy Nodata
     gebco_depth[gebco_depth == -3.2767e04] = np.NaN
-    gebco_uncertainty = np.full_like(gebco_depth, gebco_uncertainty)
+    gebco_uncertainty = np.full_like(gebco_depth, gebco_uncertainty_in)
 
     # set initial value for first loop
     kalman_depth = gebco_depth
@@ -69,7 +72,7 @@ def gridded_kalman_update(
     ) as outras:
         outras.write(kalman_depth, 1)
         outras.write(kalman_uncertainty, 2)
-    print(f"Wrote Kalman Updated Raster to {outputfile}")
+    run_logger.info(f"Wrote Kalman Updated Raster with GEBCO uncertainty {gebco_uncertainty_in} to {outputfile}")
 
     return None
 
