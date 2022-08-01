@@ -24,7 +24,7 @@ from atl_module.geospatial_utils.geospatial_functions import (
 
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 
-# TODO add a function to automatically append the site error data to a table
+
 class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
@@ -210,7 +210,7 @@ class GebcoUpscaler:
             )
         # if this is not required, set a dicionary saying that
         else:
-            self.rmse_kriged = {"RMSE":"Not Calculated","MAE":"Not Calculated"}
+            self.rmse_kriged = {"RMSE": "Not Calculated", "MAE": "Not Calculated"}
 
         self.raster_error_summary = pd.DataFrame.from_dict(
             {
