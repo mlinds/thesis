@@ -174,7 +174,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         #     metadata[varname + "_land"] = values[:].data[0][0]
 
         # creating a structured array
-        # TODO change Z to Z_ellip and Z_g to Z_geoid or something
         dtype = np.dtype(
             [
                 ("X", "<f8"),
