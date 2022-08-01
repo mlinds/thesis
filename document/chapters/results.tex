@@ -2,32 +2,39 @@
 
 \section{Florida Keys Test Site}
 
-\subsection{Site Conditions}
+\subsection{Site Conditions Summary}
 \pdfcomment{Make this in pandas for consistency}
-\begin{table}[htbp]
-    \centering\begin{tabular}{c c c}
 
-        location & -81.04472,24.72868 & N/A \\
-        Tidal Range & 0.51 m & \citeauthor{tidal_data_reanalysis2022} \\
-        Average Secchi Depth & \pdfcomment{calculate} & \citeauthor{ACRI-STGlobColourTeam2020}    \\ 
-        Validation Data bathymetric vertical RMS error & 0.056 m& \cite{Keys2019Lidar}\\
-        Validation Data Horizontal Resolution & $9.4*10^{-6} $ degrees $\approx 0.95 m$ & \cite{Keys2019Lidar}\\
-    \end{tabular}
-    \caption{Site conditions for the Florida Keys Test Site}
+
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                      & \textbf{Value}                                 \\
+            \hline
+            Location                                                       & -81.04472,24.72868                             \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}               & \qty{0.51}{m}                                  \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020}      & \qty{0.0}{m}                                   \\
+            Validation Data vertical RMS error \footcite{Keys2019Lidar}    & \qty{0.056}{m}                                 \\
+            Validation Data Horizontal Resolution \footcite{Keys2019Lidar} & \qty{9.4e-6}{ \degree} $\approx$ \qty{0.95}{m} \\
+            Vertical Datum \footcite{Keys2019Lidar}                        & local MSL                                      \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
     \label{table:floridasitestats}
 \end{table}
 
+
 \subsection{ICESat-2 Transects within AOI}
-The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below. 
+The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/study_site_tracklines.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/study_site_tracklines.jpg}
     % \input{figures/study_site_tracklines.pgf}
     \caption{Location of ICESat-2 Transects in Florida keys Study Area}
     \label{fig:keys_transects}
 \end{figure}
-\subsection{Comparison Data}
-
+\subsection{Validation Data}
+The validation data used for this site is from a detailed lidar survey of the area performed in 2018 and 2019 by Quantum Spatial, Inc. \parencite{Keys2019Lidar}. The survey was performed using a Riegl VQ-880-G hydrographic airborne laser scanner. The instrument is designed for high bathymetric accuracy in shallow water.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
@@ -35,13 +42,19 @@ The AOI used the validate the method is shown in figure \ref{fig:keys_transects}
     \label{fig:truebathy}
 \end{figure}
 \subsection{Error in lidar photon data}
+After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/florida_estimated_vs_truth.jpg}
+    \caption{Comparison between depth calculated with ICESat-2 and true bathty}
+    \label{fig:fl_truth_vs_measured_points}
+\end{figure}
+% \input{tables/rms_by_atm.tex}
 
-\input{tables/rms_by_atm.tex}
-
-\input{tables/rms_by_type.tex}
+% \input{tables/rms_by_type.tex}
 
 \subsection{Bathymetric photons}
-\ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
+Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
 \pdfcomment{change colorbars to match}
 \begin{figure}[h!]
     \centering
@@ -51,7 +64,7 @@ The AOI used the validate the method is shown in figure \ref{fig:keys_transects}
 \end{figure}
 
 \subsection{Lidar updated GEBCO vs. simple bilinear Interpolation}
-
+The results when comparing a raw interpolation of GEBCO to 
 \input{tables/total_raster_error_kalman_vs_bi.tex}
 \section{Geographic Distribution of Results}
 \section{Distribution of error at test sites}
