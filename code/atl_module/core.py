@@ -28,8 +28,9 @@ run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
-    def __init__(self, folderpath, truebathy=None):
-        self.folderpath = folderpath
+    def __init__(self, site, truebathy=None):
+        self.site = site
+        self.folderpath = f'../data/test_sites/{site}'
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy = truebathy
         # set up the paths of the relevant vector files:
@@ -90,11 +91,12 @@ class GebcoUpscaler:
         )
 
     def find_bathy_from_icesat(
-        self, window, threshold_val, req_perc_hconf, min_photons, window_meters, min_kde
+        self, window, threshold_val, req_perc_hconf, min_photons, window_meters, min_kde,save_result=True
     ):
-        run_logger.info("Starting bathymetry signal finding with parameters:")
+        run_logger.info(f"site: {self.site} - Starting bathymetry signal finding with parameters:")
         run_logger.info(
             {
+                "Site Name":self.site,
                 "window_size_photons": window,
                 "threshhold value": threshold_val,
                 "Required percentage high confidence ocean photons": req_perc_hconf,
@@ -118,10 +120,11 @@ class GebcoUpscaler:
         # try to add the elevation from the truth DEM
         self.add_truth_data()
         # write the bathymetric points to a file
-        self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
-        run_logger.info(
-            f"The bathymetry was calculated and saved to {self.bathymetric_point_path}"
-        )
+        if save_result: 
+            self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
+            run_logger.info(
+                f"The bathymetry for {self.site} was calculated and saved to {self.bathymetric_point_path}"
+            )
 
     def kriging(self, npts, **kwargs):
         """Subset the points using poisson disk sampling then run the kriging process and save the resulting depth and uncertainty raster to the folder of the site
@@ -130,7 +133,7 @@ class GebcoUpscaler:
             npts (int): The number of points to subset
         """
         run_logger.info(
-            f"Kriging using {npts} points with crs {self.crs} with options {kwargs}"
+            f"Kriging {self.site} site using {npts} points with crs {self.crs} with options {kwargs}"
         )
         kriging.krige_bathy(
             krmodel=kriging.UniversalKriging,
@@ -143,7 +146,7 @@ class GebcoUpscaler:
 
     def kalman_update(self, gebco_st):
         run_logger.info(
-            f"Updating GEBCO bathymetry using a gebco standard deviation of {gebco_st}"
+            f"Updating GEBCO bathymetry for {self.site} using a gebco standard deviation of {gebco_st}"
         )
         kalman.gridded_kalman_update(
             self.kalman_update_raster_path,
@@ -158,20 +161,20 @@ class GebcoUpscaler:
         )
         self.mae_icesat = error_calc.icesat_mae(bathy_points=self.bathy_pts_gdf)
         run_logger.info(
-            f"RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
+            f"{self.site}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
 
     def add_truth_data(self):
 
         if self.truebathy is None:
             run_logger.info(
-                "No truth data is available, so one was added to the bathymetry dataframe"
+                "No truth data is available, so none was added to the bathymetry dataframe"
             )
         else:
             self.bathy_pts_gdf = error_calc.add_true_elevation(
                 self.bathy_pts_gdf, self.truebathy, self.crs
             )
-            run_logger.info("Truth data added to Bathymetric Points dataframe")
+            run_logger.info(f"Truth data added to Bathymetric Points dataframe for site: {self.site}")
 
     def raster_rmse(self):
         # run_logger.info("")
@@ -182,10 +185,14 @@ class GebcoUpscaler:
         self.rmse_naive = error_calc.raster_RMSE_blocked(
             self.truebathy, self.bilinear_gebco_raster_path
         )
+        self.rmse_kriged = error_calc.raster_RMSE_blocked(
+            self.truebathy, self.kriged_raster_path
+        )
         self.raster_error_summary = pd.DataFrame.from_dict(
             {
                 "Naive Bilinear Interpolation": self.rmse_naive,
                 "Kalman Updated Raster": self.rmse_kalman,
+                "Kriged Raster": self.rmse_kriged   ,
             },
             orient="index",
         )
