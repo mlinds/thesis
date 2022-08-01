@@ -56,7 +56,21 @@ def icesat_error_rms_mae(beam_df):
     return error_dict
 
 
-def raster_RMSE_blocked(truth_raster_path, measured_rasterpath, error_out=False):
+def raster_RMSE_blocked(
+    truth_raster_path: str, measured_rasterpath: str, error_out=False
+) -> dict:
+    """Create a dictionary summarizing the error metrics between two rasters. The measured raster is projected into the same CRS and resolution as the truth raster, and then the RMSE and MAE area calculated.
+
+    This function will perform the function for each GDAL block within the truth raster, which will significantly decrease the memory footprint of the function at the expense of increasing i/o
+
+    Args:
+        truth_raster_path (str): The path of the truth raster
+        measured_rasterpath (str): the path of the measurement raster, which will be reprojected to the same grid as the truth raster
+        error_out (bool, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
+
+    Returns:
+        dict: a dictionary with the keys 'RMSE' and 'MAE', whose values are a float of the respective error value
+    """
     measured_ras = rasterio.open(measured_rasterpath)
     # open the truth raster, which might be in a different crs than the output than the one being compared
     with rasterio.open(truth_raster_path) as truthras:
@@ -71,33 +85,41 @@ def raster_RMSE_blocked(truth_raster_path, measured_rasterpath, error_out=False)
         }
         # create a virtual version of the original raster
         bi_vrt = WarpedVRT(measured_ras, **vrt_options)
-        # set up empty lists
+        # set up empty to store the mean sqaured error and the mean absolute error
         out_ms = []
         out_mae = []
+        # if error output is requested, set up an empty geotiff raster to hold the output
         if error_out:
-            print(truthras.meta)
+            raise NotImplementedError('fix this function before use')
             out_options = truthras.meta
             # have to remove the driver option so we can write a tif
             out_options.pop("driver")
             outras = rasterio.open(
-                "../data/test_sites/oahu/error_out.tif",
+                # "../data/test_sites/oahu/error_out.tif",
                 mode="w+",
                 **out_options,
                 compress="lzw",
             )
         # iterate over the blocks in the truth raster
+        # if the block contains no data in either of the rasters, the result of the operation will be np.nan
         for ji, window in truthras.block_windows(1):
             # read the truth data by the window and fill the masked values with nans
             truth_data = truthras.read(1, masked=True, window=window)
             truth_data = np.ma.filled(truth_data, np.nan)
+            
+            # don't look on land
             truth_data[truth_data > 1] = np.nan
-            # if there is no valid data in the block, skip it.
+            
+            # count how many non-nan values are in the block.
+            # If there are 0 non-nan values, skip it.
             if np.count_nonzero(~np.isnan(truth_data)) == 0:
                 continue
+
             # read the measured data by window
             bilinear_data = bi_vrt.read(1, masked=True, window=window)
             bilinear_data = np.ma.filled(bilinear_data, np.nan)
             error_data = truth_data - bilinear_data
+            # if requested, write the error data do a new file
             if error_out:
                 outras.write(error_data, window=window, indexes=1)
             # get the mean squared error of the block

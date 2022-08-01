@@ -29,7 +29,7 @@ class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
     def __init__(self, site, truebathy=None):
-        # rmse_naive is the RMSE error between the bilinear interpolation and the truth
+        # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
         self.site = site
         self.folderpath = f"../data/test_sites/{site}"
@@ -208,8 +208,10 @@ class GebcoUpscaler:
             self.rmse_kriged = error_calc.raster_RMSE_blocked(
                 self.truebathy, self.kriged_raster_path
             )
+        # if this is not required, set a dicionary saying that
         else:
-            self.rmse_kriged = "Not Calculated"
+            self.rmse_kriged = {"RMSE":"Not Calculated","MAE":"Not Calculated"}
+
         self.raster_error_summary = pd.DataFrame.from_dict(
             {
                 "Naive Bilinear Interpolation": self.rmse_naive,
