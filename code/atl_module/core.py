@@ -4,6 +4,7 @@ from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.geospatial_utils import raster_interaction
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import add_secchi_depth_to_tracklines
+from atl_module.plotting import error_lidar_pt_vs_truth_pt
 
 import geopandas as gpd
 import pandas as pd
@@ -33,11 +34,11 @@ class GebcoUpscaler:
         # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
         # set up the site name
-        self.site = site
+        self.site_name = site.capitalize()
         # base folderpath to join with others
         self.folderpath = f"../data/test_sites/{site}"
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
-        self.truebathy = truebathy
+        self.truebathy_path = truebathy
         # set up the paths of the relevant vector files:
         self.trackline_path = os.path.join(self.folderpath, "tracklines.gpkg")
         self.bathymetric_point_path = os.path.join(
@@ -94,10 +95,12 @@ class GebcoUpscaler:
         Args:
             hres (int): the horizontal (x and y) resolution of the subset
         """
+        if self.bathy_pts_gdf is None:
+            raise FileExistsError('Calculate bathymetry first')
         # cut out a section of GEBCO, reproject and resample
         raster_interaction.subset_gebco(
             folderpath=self.folderpath,
-            tracklines=self.tracklines,
+            bathy_pts=self.bathy_pts_gdf,
             epsg_no=self.epsg,
             hres=hres,
         )
@@ -121,7 +124,7 @@ class GebcoUpscaler:
             "Minimum KDE to be considered": min_kde,
         }
         run_logger.info(
-            f"site: {self.site} - Starting bathymetry signal finding with parameters: {run_params}"
+            f"site: {self.site_name} - Starting bathymetry signal finding with parameters: {run_params}"
         )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
@@ -141,20 +144,20 @@ class GebcoUpscaler:
         if save_result:
             self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
             run_logger.info(
-                f"The bathymetry for {self.site} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
+                f"The bathymetry for {self.site_name} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
             )
 
-    def kriging(self, npts, **kwargs):
+    def kriging(self, npts,kr_model, **kwargs):
         """Subset the points using poisson disk sampling then run the kriging process and save the resulting depth and uncertainty raster to the folder of the site
             Additional kwargs are passed into the kriging function, so parameters can be supplied to that function
         Args:
             npts (int): The number of points to subset
         """
         run_logger.info(
-            f"Kriging {self.site} site using {npts} points with crs {self.crs} with options {kwargs}"
+            f"Kriging {self.site_name} site using {npts} points with crs {self.crs} with options {kwargs}"
         )
         kriging.krige_bathy(
-            krmodel=kriging.UniversalKriging,
+            kr_model=kr_model,
             folderpath=self.folderpath,
             npts=npts,
             variogram_model="spherical",
@@ -175,7 +178,7 @@ class GebcoUpscaler:
             gebco_std,
         )
         run_logger.info(
-            f"Sucessful Kalman update of GEBCO bathymetry for {self.site} using a gebco standard deviation of {gebco_std} saved to {self.kalman_update_raster_path}"
+            f"Sucessful Kalman update of GEBCO bathymetry for {self.site_name} using a gebco standard deviation of {gebco_std} saved to {self.kalman_update_raster_path}"
         )
 
     def lidar_error(self) -> dict:
@@ -184,25 +187,25 @@ class GebcoUpscaler:
         self.rmse_icesat = lidar_err_dict.get("RMSE")
         self.mae_icesat = lidar_err_dict.get("MAE")
         run_logger.info(
-            f"{self.site}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
+            f"{self.site_name}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
-        return pd.DataFrame(lidar_err_dict,index=[self.site])
+        return pd.DataFrame(lidar_err_dict,index=[self.site_name])
 
     def add_truth_data(self):
 
-        if self.truebathy is None:
+        if self.truebathy_path is None:
             run_logger.info(
                 "No truth data is available, so none was added to the bathymetry dataframe"
             )
         else:
             self.bathy_pts_gdf = error_calc.add_true_elevation(
-                self.bathy_pts_gdf, self.truebathy, self.crs
+                self.bathy_pts_gdf, self.truebathy_path, self.crs
             )
             run_logger.info(
-                f"Truth data added to Bathymetric Points dataframe for site: {self.site}"
+                f"Truth data added to Bathymetric Points dataframe for site: {self.site_name}"
             )
 
-    def raster_rmse(self, check_kriged=False):
+    def raster_rmse(self, check_kriged=False,error_out=False):
         """Calculate the raster error metrics for the various rasters (the naive bilinear raster, then kalman updated raster, and the post-kriging raster)
 
         Because each operation is very expensive, they are only run when required/requested.
@@ -212,17 +215,19 @@ class GebcoUpscaler:
         """
 
         self.rmse_kalman = error_calc.raster_RMSE_blocked(
-            self.truebathy, self.kalman_update_raster_path
+            self.truebathy_path, self.kalman_update_raster_path, error_out=error_out
         )
         # this only needs to be calculated once, so only do it if this is the first time this object has been created
         if self.rmse_naive is None:
             self.rmse_naive = error_calc.raster_RMSE_blocked(
-                self.truebathy, self.bilinear_gebco_raster_path
+                self.truebathy_path, self.bilinear_gebco_raster_path,
             )
+        else:
+            print('GEBCO vs Truth RMSE already calculated, skipping')
         # only check this RMSE if required
         if check_kriged:
             self.rmse_kriged = error_calc.raster_RMSE_blocked(
-                self.truebathy, self.kriged_raster_path
+                self.truebathy_path, self.kriged_raster_path
             )
         # if this is not requested, set a dicionary saying that
         else:
@@ -238,3 +243,15 @@ class GebcoUpscaler:
         )
         run_logger.info(self.raster_error_summary.to_json())
         return self.raster_error_summary
+
+    def plot_lidar_error(self):
+        # the below can be moved to the object
+        outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.jpg"
+        error_lidar_pt_vs_truth_pt(self.bathy_pts_gdf,self.site_name).get_figure().savefig(
+            outpath,
+            facecolor="white",
+            bbox_inches="tight",
+            dpi=800,
+        )
+        run_logger.info(f'{self.site_name}: Saved lidar error plot to {outpath}')
+
