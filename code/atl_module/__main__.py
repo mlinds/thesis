@@ -25,7 +25,9 @@ site = GebcoUpscaler(
     f"args.sitename",
     f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
 )
-
+# site.download_ATL03()
+# site.recalc_tracklines_gdf()
+# site.subset_gebco(hres=50)
 site.find_bathy_from_icesat(
     window=100,
     threshold_val=0.0,
@@ -33,7 +35,7 @@ site.find_bathy_from_icesat(
     window_meters=None,
     min_photons=None,
 )
+print(site.lidar_error())
 site.kriging(npts=1000,samplemethod='dart')
-site.kalman(1.5)
-site.lidar_error()
-site.raster_rmse()
+site.kalman_update(1.5)
+print(site.raster_rmse())
