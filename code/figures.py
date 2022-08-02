@@ -38,7 +38,7 @@ with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femara
     fig.colorbar(image_hidden, ax=ax)
 # %%
 fig.savefig(
-    "../document/figures/{site}_ras.jpg",
+    f"../document/figures/{site}_ras.jpg",
     dpi=500,
     facecolor="white",
     bbox_inches="tight",
@@ -60,7 +60,9 @@ def get_photon_plot_axis():
 
 fig, ax = get_photon_plot_axis()
 
-ax.scatter(beamdata.dist_or, beamdata.Z_geoid, s=1, label="All Photons from beam", alpha=0.2)
+ax.scatter(
+    beamdata.dist_or, beamdata.Z_geoid, s=1, label="All Photons from beam", alpha=0.2
+)
 ax.set_title("Photon Filtering results")
 ax.legend()
 fig.savefig(
@@ -185,7 +187,10 @@ for startpt in [1200]:
     ax2dkde.plot(kdez, kdey)
     # add rectangle showing the filter area
     # get the rectangle geometry first
-    window_startpt = (point_dataframe.dist_or.iloc[startpt], point_dataframe.Z_geoid.min())
+    window_startpt = (
+        point_dataframe.dist_or.iloc[startpt],
+        point_dataframe.Z_geoid.min(),
+    )
     window_width = (
         point_dataframe.dist_or.iloc[startpt + 100]
         - point_dataframe.dist_or.iloc[startpt]
@@ -341,7 +346,11 @@ fig.savefig("../document/figures/3d_kde_function.png")
 # # Kriging figures
 # %%
 pts = gpd.read_file("../data/test_sites/florida_keys/kriging_pts.gpkg")
-pts_all = gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg").eval('northing=northing_raw+northing_corr').eval('easting=easting_raw+easting_corr')
+pts_all = (
+    gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg")
+    .eval("northing=northing_raw+northing_corr")
+    .eval("easting=easting_raw+easting_corr")
+)
 
 # %%
 
