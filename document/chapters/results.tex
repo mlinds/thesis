@@ -2,6 +2,8 @@
 
 \section{Florida Keys Test Site}
 
+
+
 \subsection{Site Conditions Summary}
 \pdfcomment{Make this in pandas for consistency}
 
@@ -45,8 +47,8 @@ The validation data used for this site is from a detailed lidar survey of the ar
 After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/florida_estimated_vs_truth.jpg}
-    \caption{Comparison between depth calculated with ICESat-2 and true bathty}
+    \includegraphics[width=0.7\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
+    \caption{Comparison between depth calculated with ICESat-2 and true bathy}
     \label{fig:fl_truth_vs_measured_points}
 \end{figure}
 % \input{tables/rms_by_atm.tex}
@@ -64,7 +66,44 @@ Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric dep
 \end{figure}
 
 \subsection{Lidar updated GEBCO vs. simple bilinear Interpolation}
-The results when comparing a raw interpolation of GEBCO to 
+The results when comparing a raw interpolation of GEBCO to
 \input{tables/total_raster_error_kalman_vs_bi.tex}
-\section{Geographic Distribution of Results}
-\section{Distribution of error at test sites}
+\
+\section{Petten Test Site}
+Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
+
+However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
+
+\subsection{Site Conditions Summary}
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                      & \textbf{Value}          \\
+            \hline
+            Location                                                       &                         \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}               & \qty{}{m}               \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020}      & \qty{3.86}{m}               \\
+            Validation Data vertical RMS error \footcite{Keys2019Lidar}    & \qty{}{m}               \\
+            Validation Data Horizontal Resolution \footcite{Keys2019Lidar} & \qty{}{m}               \\
+            Vertical Datum \footcite{Keys2019Lidar}                        & Normaal Amsterdams Peil \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:floridasitestats}
+\end{table}
+
+\subsection{Validation data}
+The validation data for this site was from a 2021 survey performed by Van Oord.
+\subsection{Error between Jarkus Vs. Survey}
+There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
+\input{tables/Jarkus_vs_survey_data_error.tex}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
+    \caption{Jarkus Survey points vs same location on Van Oord Survey data}
+    \label{fig:jarkus_vs_survey}
+\end{figure}
+
+\subsection{Jarkus Data kriging and kalman Update}
+\input{tables/jarkus_kalman_rms_error-table.tex}
+\section{Maldives test site}
