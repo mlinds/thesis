@@ -1,8 +1,12 @@
 \chapter{Methodology}
 This section lays our the methodology behind the signal detection of ICESat-2 signal, the interpolation of the sparse signal points into depth and uncertainty grids, and how these grids are combined with GEBCO to produce an upscaled version.
 \section{Test Cases}
-\subsection{Florida keys}
-\subsubsection{validation data}
+To test the methodology, a series of test sites were selected, based on the suitability of the site (i.e. very clear water), and the availablity of high-resolution in-situ bathymetry. Additionally, to test the kriging interpolation accuracy, a test site in Petten, The Netherlands was used.
+\subsection{Petten, NL}
+The Netherlands provides a dataset called Jarkus that contains surveyed measurements of the nearshore zone and the dunes along a set of fixed transects along the dutch coast. Additionaly, a recently-surveyed, high-resolution bathymetric grid of the coast off Petten, NL was provided by Van Oord. Using this data, the kriging interpolation method, and the Kalman update was tested to see if it can increase the accuracy of resampled GEBCO. 
+\subsection{Florida Keys, FL, USA}
+\subsection{Oahu, HI, USA}
+\subsection{Maldives}
 
 
 \section{Identification of bathymetric signal in ICESat-2 data} \label{sec:kdesignalfinding}
@@ -36,7 +40,7 @@ An example input to the process above is shown in \ref{fig:filtering_results}. T
     \centering
     \includegraphics[width=\textwidth]{figures/photons_after_filtering.jpg}
     \caption{Points remaining after filtering}
-    \label{fig:filtering_results}
+    \label{fig:filtered_pts_only}
 \end{figure}
 
 The filtering steps reduce the dataset to just photon locations that are in the subsurface zone. To determine if there is bathymetric signal present, further processing is required. There have been several methods for separating bathymetric signal photons from noise, which are explained in section \ref{subsec:denoising}. For this project\pdfcomment{reword?}, a new method is proposed based on a Gaussian Kernel Density Estimation (KDE) function. A function is created that returns the maximum kernel density, and the Z location at which it occurs. Figure \ref{fig:kdefunc} shows the KDE function as applied to two different windows, and the resulting kernel density plots. The KDE function is highly influenced by the \emph{Bandwidth} parameter. For this implementation, the Scott method \parencite{Scott2015} is used to estimate the required bandwidth based on the data. 
@@ -59,7 +63,7 @@ The input parameters to the signal finding function are:
 
 \section{Interpolation of signal points to a raster dataset}
 
-After the bathymetric signal points are indentified per the method in \ref{}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. To convert these densely-spaced vector point locations to a raster of elevation data, and a raster of uncertainty data, geostatistical measures are used.
+After the bathymetric signal points are identified per the method in \ref{}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. To convert these densely-spaced vector point locations to a raster of elevation data, and a raster of uncertainty data, geostatistical measures are used.
 
 \subsection{Subsampling of Bathymetric points using Poisson Disk Sampling} \label{subsec:poissonsubsampling}
 The bathymetric points are extremely densely spaced, and kriging algorithms are computationally expensive. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the poisson disk sampling technique. 
