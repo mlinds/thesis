@@ -286,7 +286,7 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
     return latest_version, aoi, polygon, geojson, granules
 
 
-def _request_async_func(page_num, session, param_dict, base_url):
+def _request_async_func(page_num, session, param_dict, base_url,path):
     param_dict["request_mode"] = "async"
     # Request data service for each page number, and unzip outputs
     # print(page_num,session,param_dict,base_url)
@@ -515,7 +515,7 @@ def request_data_download(
 
     if request_async:
         print('requesting async')
-        _request_async_func(page_num, session,param_dict, BASE_URL)
+        _request_async_func(page_num, session,param_dict, BASE_URL,path)
     else:
         _request_streaming(page_num, session, param_dict, BASE_URL, path)
         _unzip_output_file(path)
