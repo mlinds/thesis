@@ -84,7 +84,7 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
     return pts_gdf
 
 
-def krige_bathy(krmodel, folderpath, npts, variogram_model, crs, **kwargs):
+def krige_bathy(kr_model, folderpath, npts, variogram_model, crs, **kwargs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -93,6 +93,13 @@ def krige_bathy(krmodel, folderpath, npts, variogram_model, crs, **kwargs):
         pointfolder_path (_type_): path of the location of the bathymetric points
         npts (integer): number of points to subset from the bathymetric points
     """
+    # TODO fix variable naming
+    if kr_model =='uk':
+        krmodel=UniversalKriging
+    elif kr_model == 'ok':
+        krmodel = OrdinaryKriging
+    else: 
+        raise ValueError('kr_model parameter must be either `uk` or `ok`')
 
     # load the points for kriging
     pts_gdf = prepare_pt_subset_for_kriging(
