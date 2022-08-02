@@ -289,7 +289,8 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
 def _request_async_func(page_num, session, param_dict, base_url):
     param_dict["request_mode"] = "async"
     # Request data service for each page number, and unzip outputs
-    for page_val in range(1, page_num):
+    # print(page_num,session,param_dict,base_url)
+    for page_val in range(1, page_num+1):
         print("Order: ", page_val)
         # For all requests other than spatial file upload, use get function
         request = session.get(base_url, params=param_dict)
@@ -299,7 +300,7 @@ def _request_async_func(page_num, session, param_dict, base_url):
         request.raise_for_status()
         print("Order request URL: ", request.url)
         esir_root = ET.fromstring(request.content)
-        print("Order request response XML content: ", request.content)
+        # print("Order request response XML content: ", request.content)
 
         # Look up order ID
         orderlist = []
@@ -506,14 +507,15 @@ def request_data_download(
         API_request = f"{BASE_URL}?{param_string}&page_num={page_val}"
         endpoint_list.append(API_request)
 
-    print("ENDPOINTLIST: ", *endpoint_list, sep="\n")
+    # print("ENDPOINTLIST: ", *endpoint_list, sep="\n")
 
     path = folderpath + "/" + product_short_name
     if not os.path.exists(path):
         os.mkdir(path)
 
     if request_async:
-        _request_async_func(page_num, param_dict, session, BASE_URL)
+        print('requesting async')
+        _request_async_func(page_num, session,param_dict, BASE_URL)
     else:
         _request_streaming(page_num, session, param_dict, BASE_URL, path)
         _unzip_output_file(path)
