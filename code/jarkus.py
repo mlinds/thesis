@@ -1,19 +1,23 @@
 # %%
 import xarray as xr
 import geopandas as gpd
-import pdal 
+import pdal
+
 # %%
 jarkus_path = "/home/mlinds/wsl_data/transect.nc"
 ds = xr.open_dataset(jarkus_path)
 # get a dataframe of the 2021 data
-recent = ds.sel(time="2021-07-01T00:00:00.000000000").to_dataframe().dropna().rename(columns={"lat": "Y", "lon": "X", "altitude": "Z"})
+recent = (
+    ds.sel(time="2021-07-01T00:00:00.000000000")
+    .to_dataframe()
+    .dropna()
+    .rename(columns={"lat": "Y", "lon": "X", "altitude": "Z"})
+)
 
 # %%
 gdf = gpd.GeoDataFrame(
     recent,
-    geometry=gpd.points_from_xy(
-        recent.X, recent.Y, recent.Z, crs="EPSG:4326"
-    ),
+    geometry=gpd.points_from_xy(recent.X, recent.Y, recent.Z, crs="EPSG:4326"),
 )
 # normalize the name strings and overwrite the dataframe
 gdf = gdf.assign(
