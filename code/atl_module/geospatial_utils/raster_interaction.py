@@ -3,8 +3,15 @@ from subprocess import PIPE, Popen
 
 import numpy as np
 import pandas as pd
+# from pyproj import transform
 import rasterio as rio
+from rasterio.warp import reproject
 from logzero import setup_logger, logger
+
+from rasterio.enums import Resampling
+
+# TODO this needs to be refactored to use rasterio since import gdal and rasterio can cause issues
+
 from osgeo import gdal
 
 detail_logger = setup_logger(name="details")
@@ -67,6 +74,7 @@ def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
     return beam_df
 
 
+# TODO change this function to take the bounds as in input instead of the dataframe
 def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     """Create a resampled (bilinearly) and reprojected subset of the global GEBCO dataset. Write it to the same input folder
 
@@ -110,6 +118,7 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     # reopen with rasterio to mask out the values out of range
     with rio.open(out_raster_path, mode="r+") as reprojected_raster:
         raw_data = reprojected_raster.read(1, masked=True)
+        # set values outside of our range to nan
         raw_data[raw_data > 2] = np.NaN
         raw_data[raw_data < -40] = np.NaN
         reprojected_raster.write(raw_data, 1)
@@ -117,4 +126,20 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     logger.debug(
         f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}"
     )
-    return None
+
+    # ------------ below this is expermental code---------------
+    # with rio.open(GEBCO_LOCATION, mode="r",crs="EPSG:4326") as gebco:
+    #     print('crs of gebco: ',gebco.crs)
+    #     window = rio.windows.from_bounds(*bounds_wgs84, transform=gebco.transform)
+    #     print(window)
+    #     print(bounds_wgs84)
+    #     gebco_data = gebco.read(1, window=window, masked=True)
+    #     gebco_data[gebco_data > 2] = np.ma.masked
+    #     gebco_data[gebco_data < -40] = np.ma.masked
+
+    #     with rio.io.MemoryFile() as memfile:
+    #         newmetadata = gebco.meta.copy()
+    #         print(newmetadata)
+    #         with memfile.open():
+    #             pass
+    #     return None
