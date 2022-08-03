@@ -78,14 +78,14 @@ However, The Dutch government provides a dataset of point surveys of the Dutch c
 \begin{table}[htbp]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
-            Parameter                                                 & \textbf{Value}          \\
+            Parameter                                                 & \textbf{Value}                  \\
             \hline
-            Location                                                  &                         \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{}{m}               \\
-            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}           \\
-            Validation Data vertical RMS error                        & \qty{}{m}               \\
-            Validation Data Horizontal Resolution                     & \qty{}{m}               \\
-            Vertical Datum                                            & Normaal Amsterdams Peil \\
+            Location                                                  &                                 \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{}{m}                       \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
+            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{unknown?} \\
+            Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{unknown?} \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
         \end{tabular}
     \end{minipage}
     \caption{Site conditions for the Florida Keys site}
@@ -106,4 +106,24 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 
 \subsection{Jarkus Data kriging and kalman Update}
 \input{tables/jarkus_kalman_rms_error-table.tex}
+\section{Oahu}
+
+\subsection{Site Conditions Summary}
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                 & \textbf{Value}                  \\
+            \hline
+            Location                                                  &                                 \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{}{m}                       \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}                   \\
+            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{unknown?} \\
+            Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{unknown?} \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:floridasitestats}
+\end{table}
+
 \section{Maldives test site}
