@@ -93,7 +93,6 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     # constant that defines location of the GEBCO raster
     GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF
-    # tracklines = gpd.read_file(f"{folderpath}/tracklines.gpkg")
     # get the boundaries
     # bounds_utm = tracklines.geometry.total_bounds
     bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
