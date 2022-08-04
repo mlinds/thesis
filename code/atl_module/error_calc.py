@@ -1,4 +1,4 @@
-from re import M
+from os import path
 import numpy as np
 import rasterio
 from logzero import setup_logger
@@ -101,12 +101,15 @@ def raster_RMSE_blocked(
         out_mae = []
         # if error output is requested, set up an empty geotiff raster to hold the output
         if error_out:
-            raise NotImplementedError("fix this function before use")
+            folder = path.dirname(measured_rasterpath)
+            outpath = path.join(folder, "error_out.tif")
+            print(folder, outpath)
+            # raise NotImplementedError("fix this function before use")
             out_options = truthras.meta
             # have to remove the driver option so we can write a tif
             out_options.pop("driver")
             outras = rasterio.open(
-                # "../data/test_sites/oahu/error_out.tif",
+                outpath,
                 mode="w+",
                 **out_options,
                 compress="lzw",
