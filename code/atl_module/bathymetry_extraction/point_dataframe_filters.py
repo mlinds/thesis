@@ -9,7 +9,7 @@ import numpy as np
 p = Path(__file__).parents[3]
 
 
-def filter_high_returns(df, level=5):
+def filter_high_returns(df, max_geoid_high_z):
     """Remove returns above *level* which is an elevation in meters
 
     Args:
@@ -20,7 +20,7 @@ def filter_high_returns(df, level=5):
         pd.DataFrame: output dataframe
     """
     # remove any points above 5m
-    return df.loc[(df.Z_geoid < level)]
+    return df.loc[(df.Z_geoid < max_geoid_high_z)]
 
 
 def filter_TEP_and_nonassoc(df):
@@ -37,7 +37,7 @@ def filter_TEP_and_nonassoc(df):
 
 
 # TODO rewrite this to include NAs for non-high-confience photons
-def add_sea_surface_level(df, rolling_window=200):
+def add_sea_surface_level(df, max_sea_surf_elev, rolling_window=200):
     # take rolling median of signal points along track distance
     sea_level = (
         df.loc[df.oc_sig_conf >= 4]["Z_geoid"]
@@ -70,8 +70,10 @@ def add_sea_surface_level(df, rolling_window=200):
         # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
         .interpolate(method="index").to_numpy()
     )
+    sealevel_df = df.assign(sea_level_interp=interp_sea_surf_elev)
+    sealevel_df = sealevel_df.loc[sealevel_df.sea_level_interp < max_sea_surf_elev]
 
-    return df.assign(sea_level_interp=interp_sea_surf_elev).dropna()
+    return sealevel_df.dropna()
 
 
 def filter_low_points(df, filter_below_z):

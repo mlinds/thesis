@@ -26,7 +26,17 @@ def add_along_track_dist(pointdata):
     return geofn.add_track_dist_meters(pointdata)
 
 
-def _filter_points(raw_photon_df: pd.DataFrame, verbose=False) -> pd.DataFrame:
+def _filter_points(
+    raw_photon_df: pd.DataFrame,
+    low_limit,
+    high_limit,
+    rolling_window,
+    max_sea_surf_elev,
+    filter_below_z,
+    filter_below_depth,
+    n,
+    max_geoid_high_z,
+) -> pd.DataFrame:
     """Remove points outside of the gebco nearshore zone, points that are invalied, or too high. Also calculate refraction corrections and add them to the dataframe
 
     Args:
@@ -37,23 +47,20 @@ def _filter_points(raw_photon_df: pd.DataFrame, verbose=False) -> pd.DataFrame:
     """
     filtered_photon_df = (
         raw_photon_df.pipe(dfilt.add_gebco)
-        .pipe(dfilt.filter_gebco, low_limit=-40, high_limit=2)
-        .pipe(dfilt.add_sea_surface_level)
-        .pipe(dfilt.filter_low_points, filter_below_z=-40)
-        .pipe(dfilt.filter_depth, filter_below_depth=-40)
-        .pipe(dfilt.remove_surface_points, n=1)
-        .pipe(dfilt.filter_high_returns)
+        .pipe(dfilt.filter_gebco, low_limit=low_limit, high_limit=high_limit)
+        .pipe(
+            dfilt.add_sea_surface_level,
+            rolling_window=rolling_window,
+            max_sea_surf_elev=max_sea_surf_elev,
+        )
+        .pipe(dfilt.filter_low_points, filter_below_z=filter_below_z)
+        .pipe(dfilt.filter_depth, filter_below_depth=filter_below_depth)
+        .pipe(dfilt.remove_surface_points, n=n)
+        .pipe(dfilt.filter_high_returns, max_geoid_high_z=max_geoid_high_z)
         .pipe(dfilt.filter_TEP_and_nonassoc)
         .pipe(dfilt.correct_for_refraction)
         # .pipe(dfilt.add_neigbor_count, window_distance_pts=200,window_distance_meters=200)
     )
-    # reset the distances be zero at the first photon
-    # commenting out for now since not needed and makes comparison harder
-
-    # filtered_photon_df["dist_or"] = (
-    #     filtered_photon_df.dist_or - filtered_photon_df.dist_or.min()
-    # )
-
     return filtered_photon_df
 
 
@@ -88,7 +95,21 @@ def add_rolling_kde(df, window, window_meters, min_photons):
 
 
 def get_all_bathy_from_granule(
-    filename, window, threshold_val, req_perc_hconf, window_meters, min_photons, min_kde
+    filename,
+    window,
+    threshold_val,
+    req_perc_hconf,
+    window_meters,
+    min_photons,
+    min_kde,
+    low_limit,
+    high_limit,
+    rolling_window,
+    max_sea_surf_elev,
+    filter_below_z,
+    filter_below_depth,
+    n,
+    max_geoid_high_z,
 ):
     """For a single granule (stored in a netcdf4 file), loop over ever single beam, determine if it contains useful bathymetry signal, and return a dataframe just of the bathymetric points
 
@@ -117,7 +138,17 @@ def get_all_bathy_from_granule(
         # point_df = geofn.add_track_dist_meters(beamarray)
         point_df = pd.DataFrame(beamarray)
         # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
-        subsurface_return_pts = _filter_points(point_df)
+        subsurface_return_pts = _filter_points(
+            point_df,
+            low_limit,
+            high_limit,
+            rolling_window,
+            max_sea_surf_elev,
+            filter_below_z,
+            filter_below_depth,
+            n,
+            max_geoid_high_z,
+        )
         # find the bathymetry points using the KDE function
         bathy_pts = add_rolling_kde(
             subsurface_return_pts,
@@ -178,6 +209,14 @@ def bathy_from_all_tracks_parallel(
     window_meters,
     min_photons,
     min_kde,
+    low_limit,
+    high_limit,
+    rolling_window,
+    max_sea_surf_elev,
+    filter_below_z,
+    filter_below_depth,
+    n,
+    max_geoid_high_z,
 ):
     """Run the kde function for every single granule in parallel
 
@@ -203,6 +242,14 @@ def bathy_from_all_tracks_parallel(
             itertools.repeat(window_meters),
             itertools.repeat(min_photons),
             itertools.repeat(min_kde),
+            itertools.repeat(low_limit),
+            itertools.repeat(high_limit),
+            itertools.repeat(rolling_window),
+            itertools.repeat(max_sea_surf_elev),
+            itertools.repeat(filter_below_z),
+            itertools.repeat(filter_below_depth),
+            itertools.repeat(n),
+            itertools.repeat(max_geoid_high_z),
         )
     )
 
