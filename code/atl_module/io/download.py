@@ -130,6 +130,7 @@ def _request_capabilities(
             else:
                 bbox = ""
         if subdict["spatialSubsettingShapefile"] == "true" and aoi == "shapefile":
+            raise NotImplementedError("shapefile downloading is broken right now")
             bbox = ""
             ps = "y"
             if ps == "y":
@@ -489,7 +490,10 @@ def request_data_download(
         param_dict["bounding_box"] = bounding_box
         param_dict["Bbox"] = bounding_box
     elif aoi == "shapefile":
-        param_dict["Boundingshape"] = Boundingshape
+        param_dict[
+            "Boundingshape"
+        ] = '{"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-81.1702643528336,24.60670683315079],[-80.86729082342646,24.700561150552154],[-80.86583988906534,24.856867278480134],[-81.16813685811834,24.75288043664009],[-81.1702643528336,24.60670683315079]]]},"bbox":[-81.1702643528336,24.60670683315079,-80.86583988906534,24.856867278480134]}],"bbox":[-81.1702643528336,24.60670683315079,-80.86583988906534,24.856867278480134]}'
+        # param_dict["shapefile"] = shapebin
 
     # TODO could reverse this by setting up the dictionary based on available parameters
     # maybe using a function that only takes kw args
@@ -560,11 +564,15 @@ if __name__ == "__main__":
 
     request_data_download(
         product_short_name="ATL03",
-        bounding_box="4.59754,52.70586,4.68409,52.81602",
-        folderpath="../data/test_sites/petten",
+        bounding_box="-81.16934,24.60087,-80.85368,24.86860",
+        folderpath="../data/test_sites/florida_keys",
         bounds_filepath="",
         vars_=atl_03_vars,
     )
+    # request_full_data_shapefile(
+    #     shapefile_filepath='../data/test_sites/florida_keys/AOI.gpkg',
+    #     folderpath='../data/test_sites/florida_keys'
+    # )
     # request_segments_only(sys.argv[1], sys.argv[2])
 
     # request_full_data_shapefile(
