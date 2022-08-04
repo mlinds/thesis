@@ -40,7 +40,7 @@ class GebcoUpscaler:
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy_path = truebathy
         # set up the paths of the relevant vector files:
-        self.trackline_path = os.path.join(self.folderpath, "tracklines.gpkg")
+        self.trackline_path = os.path.join(self.folderpath, "tracklines")
         self.bathymetric_point_path = os.path.join(
             self.folderpath, "all_bathy_pts.gpkg"
         )
@@ -50,7 +50,7 @@ class GebcoUpscaler:
         )
         self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "bilinear.tif")
         self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
-        self.AOI_path = os.path.join(self.folderpath, "AOI.gpkg")
+        self.AOI_path = os.path.join(self.folderpath, "AOI")
         # setup the files needed
         # try to add the tracklines
         if file_exists(self.trackline_path):
@@ -82,6 +82,7 @@ class GebcoUpscaler:
     def recalc_tracklines_gdf(self):
         """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
         self.tracklines = make_gdf_from_ncdf_files(self.folderpath + "/ATL03/*.nc")
+        self.crs = self.tracklines.estimate_utm_crs()
         try:
             self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
         except ValueError:
@@ -171,16 +172,18 @@ class GebcoUpscaler:
                 f"The bathymetry for {self.site_name} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
             )
 
-    def kriging(self, npts, kr_model, **kwargs):
+    def kriging(self, npts: int, kr_model: str, **kwargs):
         """Subset the points using poisson disk sampling then run the kriging process and save the resulting depth and uncertainty raster to the folder of the site
             Additional kwargs are passed into the kriging function, so parameters can be supplied to that function
         Args:
             npts (int): The number of points to subset
+
         """
         run_logger.info(
             f"Kriging {self.site_name} site using {npts} points with crs {self.crs} with options {kwargs}"
         )
         kriging.krige_bathy(
+            pts_gdf_all=self.bathy_pts_gdf,
             kr_model=kr_model,
             folderpath=self.folderpath,
             npts=npts,
