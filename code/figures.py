@@ -22,7 +22,7 @@ plt.rcParams["font.family"] = "Sans Serif"
 # # Plots of Filtering Process
 
 #%%
-site = "florida_keys"
+site = "oahu"
 with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
     fig, ax = plt.subplots(figsize=(20, 17))
     ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
