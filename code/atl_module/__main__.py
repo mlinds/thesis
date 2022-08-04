@@ -36,6 +36,6 @@ site.find_bathy_from_icesat(
     min_photons=None,
 )
 print(site.lidar_error())
-site.kriging(npts=1000,samplemethod='dart')
+site.kriging(npts=1000, samplemethod="dart")
 site.kalman_update(1.5)
 print(site.raster_rmse())
