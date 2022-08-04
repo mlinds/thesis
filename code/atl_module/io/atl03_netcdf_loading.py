@@ -130,6 +130,12 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         dac_correction_segment = (
             ds.groups[beam].groups["geophys_corr"].variables["dac"][:].filled(np.NaN)
         )
+        ph_count_segment = (
+            ds.groups[beam]
+            .groups["geolocation"]
+            .variables["segment_ph_cnt"][:]
+            .filled(0)
+        )
 
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
@@ -149,6 +155,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 "pointing_vec_az": pointing_vec_az_segment,
                 "pointing_vec_elev": pointing_vec_elev_segment,
                 "dac_correction": dac_correction_segment,
+                "ph_count_segment": ph_count_segment,
             },
             index=delta_time_geophys,
         ).sort_index()
@@ -161,6 +168,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         p_vec_az = interpolated_df["pointing_vec_az"]
         p_vec_elev = interpolated_df["pointing_vec_elev"]
         dac_corr = interpolated_df["dac_correction"]
+        ph_count_photon_interp = interpolated_df["ph_count_segment"]
 
         correction = geoid_tide_free + geof2m + tide_ocean
         # + dac_corr
@@ -190,6 +198,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("p_vec_az", "<f4"),
                 ("p_vec_elev", "<f4"),
                 ("dac_corr", "<f4"),
+                ("ph_count", "<i1"),
             ],
             metadata=metadata,
         )
@@ -208,5 +217,6 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["p_vec_az"] = p_vec_az
         photon_data["p_vec_elev"] = p_vec_elev
         photon_data["dac_corr"] = dac_corr
+        photon_data["ph_count"] = ph_count_photon_interp
 
         return photon_data
