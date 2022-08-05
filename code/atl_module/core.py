@@ -1,13 +1,17 @@
 # going to keep the namespace as clean as possible
 import os
 from atl_module.bathymetry_extraction import icesat_bathymetry
+from atl_module.bathymetry_extraction.point_dataframe_filters import (
+    add_msl_corrected_seafloor_elev,
+)
 from atl_module.geospatial_utils import raster_interaction
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import add_secchi_depth_to_tracklines
 from atl_module.plotting import error_lidar_pt_vs_truth_pt
 
-import geopandas as gpd
 import pandas as pd
+from pandas import MultiIndex, Int16Dtype
+import geopandas as gpd
 from fiona.errors import DriverError
 from logzero import setup_logger, logger
 
@@ -161,6 +165,7 @@ class GebcoUpscaler:
             max_geoid_high_z=max_geoid_high_z,
         )
         bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs=self.crs)
+        bathy_gdf = add_msl_corrected_seafloor_elev(bathy_gdf)
         # assign the resulting datframe to the object
         self.bathy_pts_gdf = bathy_gdf
         # try to add the elevation from the truth DEM
