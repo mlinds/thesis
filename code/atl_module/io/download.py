@@ -6,6 +6,7 @@
 
 # %%
 from gzip import READ
+from mercantile import bounding_tile
 import requests
 import json
 import zipfile
@@ -16,6 +17,8 @@ import shutil
 import pprint
 import re
 import time
+import pandas as pd
+from pandas import MultiIndex, Int16Dtype
 import geopandas as gpd
 import fiona
 import matplotlib.pyplot as plt
@@ -130,7 +133,7 @@ def _request_capabilities(
             else:
                 bbox = ""
         if subdict["spatialSubsettingShapefile"] == "true" and aoi == "shapefile":
-            raise NotImplementedError("shapefile downloading is broken right now")
+            # raise NotImplementedError("shapefile downloading is broken right now")
             bbox = ""
             ps = "y"
             if ps == "y":
@@ -251,6 +254,7 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
     else:
         aoi = "bounding_box"
         search_params["bounding_box"] = bounding_box
+        search_params["polygon"] = polygon
         polygon = ""
         geojson = ""
 
@@ -490,10 +494,8 @@ def request_data_download(
         param_dict["bounding_box"] = bounding_box
         param_dict["Bbox"] = bounding_box
     elif aoi == "shapefile":
-        param_dict[
-            "Boundingshape"
-        ] = '{"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-81.1702643528336,24.60670683315079],[-80.86729082342646,24.700561150552154],[-80.86583988906534,24.856867278480134],[-81.16813685811834,24.75288043664009],[-81.1702643528336,24.60670683315079]]]},"bbox":[-81.1702643528336,24.60670683315079,-80.86583988906534,24.856867278480134]}],"bbox":[-81.1702643528336,24.60670683315079,-80.86583988906534,24.856867278480134]}'
-        # param_dict["shapefile"] = shapebin
+        param_dict["Boundingshape"] = Boundingshape
+        param_dict["polygon"] = polygon
 
     # TODO could reverse this by setting up the dictionary based on available parameters
     # maybe using a function that only takes kw args
@@ -560,22 +562,8 @@ def request_ATL09_shapefile(bounds_filepath, folderpath):
 
 
 if __name__ == "__main__":
-    import sys
 
-    request_data_download(
-        product_short_name="ATL03",
-        bounding_box="-81.16934,24.60087,-80.85368,24.86860",
-        folderpath="../data/test_sites/florida_keys",
-        bounds_filepath="",
-        vars_=atl_03_vars,
+    request_full_data_shapefile(
+        shapefile_filepath="../data/test_sites/florida_keys/AOI.shp",
+        folderpath="../data/test_sites/florida_keys/atl03_new",
     )
-    # request_full_data_shapefile(
-    #     shapefile_filepath='../data/test_sites/florida_keys/AOI.gpkg',
-    #     folderpath='../data/test_sites/florida_keys'
-    # )
-    # request_segments_only(sys.argv[1], sys.argv[2])
-
-    # request_full_data_shapefile(
-    #     sys.argv[1],
-    #     sys.argv[2],
-    # )
