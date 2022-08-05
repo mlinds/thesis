@@ -1,5 +1,7 @@
 # from pykrige.rk import RegressionKriging
 from random import sample
+import pandas as pd
+from pandas import MultiIndex, Int16Dtype
 import geopandas as gpd
 import pdal
 import rasterio
@@ -17,8 +19,8 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
         pts_gdf_all.assign(
             easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
         )
-        .loc[:, ["northing", "easting", "z_kde"]]
-        .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
+        .loc[:, ["northing", "easting", "sf_elev_MSL"]]
+        .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
         # pdal understands record arrays, so use a record array
         .to_records(index=False)
     )
@@ -47,8 +49,8 @@ def _prepare_random_sample(pts_gdf_all, npts, crs):
         pts_gdf_all.assign(
             easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
         )
-        .loc[:, ["northing", "easting", "z_kde"]]
-        .rename(columns={"northing": "Y", "easting": "X", "z_kde": "Z"})
+        .loc[:, ["northing", "easting", "sf_elev_MSL"]]
+        .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
         .sample(npts)
     )
     # write it to a gdf since the original geometry was lost
@@ -59,12 +61,9 @@ def _prepare_random_sample(pts_gdf_all, npts, crs):
     return pts_gdf
 
 
-def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
+def prepare_pt_subset_for_kriging(pts_gdf_all, folderpath, npts, crs, samplemethod):
     # path for the output geopackage
-    outpath = folderpath + "/kriging_pts.gpkg"
-
-    # read in all bathy points
-    pts_gdf_all = gpd.read_file(f"{folderpath}/all_bathy_pts.gpkg")
+    outpath = folderpath + "/kriging_pts"
 
     if samplemethod == "dart":
         pts_gdf = _relaxation_dart_throwing(pts_gdf_all, npts, crs)
@@ -84,7 +83,9 @@ def prepare_pt_subset_for_kriging(folderpath, npts, crs, samplemethod):
     return pts_gdf
 
 
-def krige_bathy(kr_model, folderpath, npts, variogram_model, crs, **kwargs):
+def krige_bathy(
+    kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, **kwargs
+):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -103,7 +104,11 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, crs, **kwargs):
 
     # load the points for kriging
     pts_gdf = prepare_pt_subset_for_kriging(
-        folderpath, npts, crs, samplemethod=kwargs.get("samplemethod")
+        pts_gdf_all=pts_gdf_all,
+        folderpath=folderpath,
+        npts=npts,
+        crs=crs,
+        samplemethod=kwargs.get("samplemethod"),
     )
 
     # open the interpolated raster to get the coordinates
