@@ -70,7 +70,16 @@ fig.savefig(
     facecolor="white",
     bbox_inches="tight",
 )
-beamdata = icesat_bathymetry._filter_points(beamdata)
+beamdata = icesat_bathymetry._filter_points(
+    beamdatalow_limit=-40,
+    high_limit=2,
+    rolling_window=200,
+    max_sea_surf_elev=1,
+    filter_below_z=-80,
+    filter_below_depth=-80,
+    n=1,
+    max_geoid_high_z=5,
+)
 ax.scatter(
     beamdata.dist_or,
     beamdata.Z_geoid,
@@ -345,7 +354,7 @@ fig.savefig("../document/figures/3d_kde_function.png")
 # %% [markdown]
 # # Kriging figures
 # %%
-pts = gpd.read_file("../data/test_sites/florida_keys/kriging_pts.gpkg")
+pts = gpd.read_file("../data/test_sites/florida_keys/kriging_pts")
 pts_all = (
     gpd.read_file("../data/test_sites/florida_keys/all_bathy_pts.gpkg")
     .eval("northing=northing_raw+northing_corr")
