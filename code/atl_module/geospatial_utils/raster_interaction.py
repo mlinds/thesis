@@ -53,7 +53,7 @@ def query_raster(dataframe: pd.DataFrame, src: str):
     pipeinput = bytes(coordlist, "utf-8")
 
     # gdal location info command with arguments
-    cmd = ["gdallocationinfo", "-wgs84", "-valonly", src]
+    cmd = ["gdallocationinfo", "-wgs84", "-valonly", "-b", "1", src]
     # open a pipe to these commands
     with Popen(cmd, stdout=PIPE, stdin=PIPE) as p:
         # feed in our bytestring
