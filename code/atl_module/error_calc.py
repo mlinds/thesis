@@ -4,7 +4,12 @@ import rasterio
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import (
+    mean_squared_error,
+    mean_absolute_error,
+    mean_absolute_percentage_error,
+    median_absolute_error,
+)
 
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
@@ -40,18 +45,40 @@ def add_true_elevation(bathy_points, true_data_path, crs):
 
 def icesat_rmse(bathy_points):
     # the function below needs
-    bathy_points = bathy_points.loc[:, ["z_kde", "true_elevation"]].dropna()
+    bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
     # return the RMS error
-    rms = mean_squared_error(bathy_points.z_kde, bathy_points.true_elevation) ** 0.5
+    rms = (
+        mean_squared_error(bathy_points.sf_elev_MSL, bathy_points.true_elevation) ** 0.5
+    )
     return rms
 
 
 def icesat_mae(bathy_points):
     # the function below needs
-    bathy_points = bathy_points.loc[:, ["z_kde", "true_elevation"]].dropna()
+    bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
     # return the RMS error
-    mae = mean_absolute_error(bathy_points.z_kde, bathy_points.true_elevation)
+    mae = mean_absolute_error(bathy_points.sf_elev_MSL, bathy_points.true_elevation)
     return mae
+
+
+def icesat_mape(bathy_points):
+    # the function below needs
+    bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
+    # return the RMS error
+    mape = mean_absolute_percentage_error(
+        bathy_points.sf_elev_MSL, bathy_points.true_elevation
+    )
+    return mape
+
+
+def icesat_med_abs_error(bathy_points):
+    # the function below needs
+    bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
+    # return the RMS error
+    med_abs_error = median_absolute_error(
+        bathy_points.sf_elev_MSL, bathy_points.true_elevation
+    )
+    return med_abs_error
 
 
 def icesat_error_rms_mae(beam_df):
@@ -61,8 +88,12 @@ def icesat_error_rms_mae(beam_df):
     # get a subset of the dataframe that is the seafloor and the column of interest
     rms_error = icesat_rmse(beam_df)
     mae_error = icesat_mae(beam_df)
+    mape = icesat_mape(beam_df)
+    med_abs = icesat_med_abs_error(beam_df)
     error_dict["MAE"] = mae_error
     error_dict["RMSE"] = rms_error
+    error_dict["MAPE"] = mape
+    error_dict["Median Abs error"] = med_abs
 
     return error_dict
 
