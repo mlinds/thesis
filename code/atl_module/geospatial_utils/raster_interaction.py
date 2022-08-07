@@ -6,14 +6,13 @@ import pandas as pd
 
 # from pyproj import transform
 import rasterio as rio
-from rasterio.warp import reproject
-from logzero import setup_logger, logger
-
+from logzero import logger, setup_logger
+from osgeo import gdal
 from rasterio.enums import Resampling
+from rasterio.warp import reproject
 
 # TODO this needs to be refactored to use rasterio since import gdal and rasterio can cause issues
 
-from osgeo import gdal
 
 detail_logger = setup_logger(name="details")
 
