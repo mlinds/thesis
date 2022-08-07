@@ -1,21 +1,21 @@
 from os import path
+
+import dask.array as da
 import numpy as np
 import rasterio
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
+from rasterio.windows import get_data_window
 from sklearn.metrics import (
-    mean_squared_error,
     mean_absolute_error,
     mean_absolute_percentage_error,
+    mean_squared_error,
     median_absolute_error,
 )
 
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
-from rasterio.windows import get_data_window
-
-import dask.array as da
 
 detail_logger = setup_logger(name="details")
 # TODO add docstrings to functions
