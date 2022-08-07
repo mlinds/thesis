@@ -1,12 +1,11 @@
 from datetime import datetime
 
-import pandas as pd
-from pandas import MultiIndex, Int16Dtype
 import geopandas as gpd
+import pandas as pd
 import requests
 import xarray as xr
-
 from atl_module.secret_vars import COPERNICUS_PW, COPERNICUS_USERNAME
+from pandas import Int16Dtype, MultiIndex
 
 DAP_URL = "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D"
 
