@@ -1,11 +1,12 @@
 """
 This script runs the clusting logic on every available beam from florida, and compares the errors with available DEMS
 """
+from glob import iglob
+from itertools import islice
+from os.path import basename
+
 # %%
 import atl03_utils
-from glob import iglob
-from os.path import basename
-from itertools import islice
 
 
 def test_florida(filename, beam):

@@ -1,21 +1,18 @@
 # %%
-from atl_module.geospatial_utils import geospatial_functions
+import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
 # from pyrsistent import l
 import numpy as np
 import rasterio
-from matplotlib.patches import ConnectionPatch, Rectangle
-from mpl_toolkits.mplot3d import art3d
-from scipy.stats import gaussian_kde
-
 from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
-
-import contextily as cx
-import rasterio
+from atl_module.geospatial_utils import geospatial_functions
+from matplotlib.patches import ConnectionPatch, Rectangle
+from mpl_toolkits.mplot3d import art3d
 from rasterio.plot import show as rastershow
+from scipy.stats import gaussian_kde
 
 plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
