@@ -2,20 +2,17 @@ import itertools
 from glob import iglob
 from multiprocessing import Pool
 
-# TODO try thread based parallelism with:
-# from multiprocessing.dummy import Pool
-
-
 import pandas as pd
+from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
+from atl_module.bathymetry_extraction.kde_peaks_method import AccumulateKDEs
+from atl_module.geospatial_utils import geospatial_functions as geofn
+from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
 from logzero import setup_logger
 from tqdm import tqdm
 
-from atl_module.geospatial_utils import geospatial_functions as geofn
-from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
-from atl_module.bathymetry_extraction.kde_peaks_method import (
-    AccumulateKDEs,
-)
-from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
+# TODO try thread based parallelism with:
+# from multiprocessing.dummy import Pool
+
 
 detail_logger = setup_logger(name="details")
 

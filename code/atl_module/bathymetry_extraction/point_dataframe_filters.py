@@ -1,16 +1,17 @@
+from pathlib import Path
+
+import numpy as np
 import pandas as pd
-from atl_module.geospatial_utils.raster_interaction import query_raster
 
 # from atl_module.geospatial_utils.geospatial_functions import add_track_dist_meters
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
-from pathlib import Path
-import numpy as np
+from atl_module.geospatial_utils.raster_interaction import query_raster
 
 p = Path(__file__).parents[3]
 
 
 def add_msl_corrected_seafloor_elev(df_in):
-    dac_tide = df_in.z_kde - df_in.dac_corr + df_in.tide_ocean_corr
+    dac_tide = df_in.z_kde  # - df_in.dac_corr - df_in.tide_ocean_corr
     return df_in.assign(sf_elev_MSL=dac_tide)
 
 
