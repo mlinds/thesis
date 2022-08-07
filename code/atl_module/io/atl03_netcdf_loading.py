@@ -5,7 +5,6 @@ import pandas as pd
 from cftime import num2pydate
 from netCDF4 import Dataset
 
-
 beamlist = ["gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"]
 
 

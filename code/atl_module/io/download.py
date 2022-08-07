@@ -4,29 +4,31 @@
 
 # TODO change the blank strings thing to use kwargs
 
-# %%
-from gzip import READ
-from mercantile import bounding_tile
-import requests
-import json
-import zipfile
 import io
+import json
 import math
 import os
-import shutil
 import pprint
 import re
+import shutil
 import time
-import pandas as pd
-from pandas import MultiIndex, Int16Dtype
-import geopandas as gpd
-import fiona
-import matplotlib.pyplot as plt
+import zipfile
+
+# %%
+from gzip import READ
 from statistics import mean
-from shapely.geometry.polygon import orient
-from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
-from atl_module.io.variablelist import atl_03_vars, segment_vars, atl09_vars
 from xml.etree import ElementTree as ET
+
+import fiona
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import pandas as pd
+import requests
+from atl_module.io.variablelist import atl09_vars, atl_03_vars, segment_vars
+from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
+from mercantile import bounding_tile
+from pandas import Int16Dtype, MultiIndex
+from shapely.geometry.polygon import orient
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
 fiona.drvsupport.supported_drivers["LIBKML"] = "rw"
