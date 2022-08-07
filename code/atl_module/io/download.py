@@ -61,8 +61,8 @@ def _prepare_geo_file(bounds_filepath):
 
     # Simplify polygon for complex shapes in order to pass a reasonable request length to CMR. The larger the tolerance value, the more simplified the polygon.
     # Orient counter-clockwise: CMR polygon points need to be provided in counter-clockwise order. The last point should match the first point to close the polygon.
-
-    poly = orient(gdf.simplify(0.05, preserve_topology=False).loc[0], sign=1.0)
+    gdf = gdf.simplify(0.005, preserve_topology=True)
+    poly = orient(gdf.loc[0], sign=1.0)
 
     geojson = gpd.GeoSeries(poly).to_json()  # Convert to geojson
     geojson = geojson.replace(" ", "")  # remove spaces for API call
@@ -253,7 +253,7 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
         search_params["polygon"] = polygon
     else:
         aoi = "bounding_box"
-        search_params["bounding_box"] = bounding_box
+        search_params["bounding_box"] = geojson
         search_params["polygon"] = polygon
         polygon = ""
         geojson = ""
@@ -494,7 +494,7 @@ def request_data_download(
         param_dict["bounding_box"] = bounding_box
         param_dict["Bbox"] = bounding_box
     elif aoi == "shapefile":
-        param_dict["Boundingshape"] = Boundingshape
+        param_dict["Boundingshape"] = geojson
         param_dict["polygon"] = polygon
 
     # TODO could reverse this by setting up the dictionary based on available parameters
