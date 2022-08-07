@@ -1,31 +1,25 @@
 # going to keep the namespace as clean as possible
 import os
+from os.path import exists as file_exists
+
+import geopandas as gpd
+import pandas as pd
+from atl_module import error_calc, kalman, kriging
 from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.bathymetry_extraction.point_dataframe_filters import (
     add_msl_corrected_seafloor_elev,
 )
 from atl_module.geospatial_utils import raster_interaction
-from atl_module.io.download import request_full_data_shapefile
-from atl_module.ocean_color import add_secchi_depth_to_tracklines
-from atl_module.plotting import error_lidar_pt_vs_truth_pt
-
-import pandas as pd
-from pandas import MultiIndex, Int16Dtype
-import geopandas as gpd
-from fiona.errors import DriverError
-from logzero import setup_logger, logger
-
-from os.path import exists as file_exists
-
-from atl_module import (
-    error_calc,
-    kalman,
-    kriging,
-)
 from atl_module.geospatial_utils.geospatial_functions import (
     make_gdf_from_ncdf_files,
     to_refr_corrected_gdf,
 )
+from atl_module.io.download import request_full_data_shapefile
+from atl_module.ocean_color import add_secchi_depth_to_tracklines
+from atl_module.plotting import error_lidar_pt_vs_truth_pt
+from fiona.errors import DriverError
+from logzero import logger, setup_logger
+
 
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
@@ -93,6 +87,8 @@ class GebcoUpscaler:
             run_logger.info(f"Added ocean color data to tracklines")
         except ValueError:
             run_logger.info(f"Unable to get ocean color (Secchi depth) info")
+        except Exception as exception:
+            run_logger.info(f"Secchi depth function raised {exception.__name__}")
         finally:
             self.tracklines.to_file(self.trackline_path, overwrite=True)
             run_logger.info(f"Tracklines written to {self.trackline_path}")
@@ -233,8 +229,12 @@ class GebcoUpscaler:
                 "No truth data is available, so none was added to the bathymetry dataframe"
             )
         else:
-            self.bathy_pts_gdf = error_calc.add_true_elevation(
-                self.bathy_pts_gdf, self.truebathy_path, self.crs
+            self.bathy_pts_gdf = (
+                error_calc.add_true_elevation(
+                    self.bathy_pts_gdf, self.truebathy_path, self.crs
+                )
+                .eval("error = true_elevation - sf_elev_MSL")
+                .eval("error_abs = abs(true_elevation - sf_elev_MSL)")
             )
             run_logger.info(
                 f"Truth data added to Bathymetric Points dataframe for site: {self.site_name}"
