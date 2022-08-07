@@ -54,7 +54,7 @@ class GebcoUpscaler:
         )
         self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "bilinear.tif")
         self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
-        self.AOI_path = os.path.join(self.folderpath, "AOI")
+        self.AOI_path = os.path.join(self.folderpath, "AOI.gpkg")
         # setup the files needed
         # try to add the tracklines
         if file_exists(self.trackline_path):
@@ -82,6 +82,7 @@ class GebcoUpscaler:
         request_full_data_shapefile(
             folderpath=self.folderpath, shapefile_filepath=self.AOI_path
         )
+        run_logger.info(f"ATL03 Data downloaded sucessfully to {self.folderpath}/ATL03")
 
     def recalc_tracklines_gdf(self):
         """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
@@ -89,10 +90,12 @@ class GebcoUpscaler:
         self.crs = self.tracklines.estimate_utm_crs()
         try:
             self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
+            run_logger.info(f"Added ocean color data to tracklines")
         except ValueError:
-            print("Unable to get Secchi depth info")
+            run_logger.info(f"Unable to get ocean color (Secchi depth) info")
         finally:
             self.tracklines.to_file(self.trackline_path, overwrite=True)
+            run_logger.info(f"Tracklines written to {self.trackline_path}")
 
     def subset_gebco(self, hres: int):
         """Take a subset of GEBCO with the area determined by the extent of the tracklines.gpkg file in the main folder, resampled bilinearly to the requested resolution
