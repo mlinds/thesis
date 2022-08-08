@@ -1,6 +1,5 @@
 from os import path
 
-import dask.array as da
 import numpy as np
 import rasterio
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
@@ -186,7 +185,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
         truth_raster_crs = truthras.crs
         truth_data = truthras.read(1, masked=True)
         # get the window after the data is loaded
-        truth_data_window = get_data_window(truth_data)
+        # truth_data_window = get_data_window(truth_data)
         # get the new truthdata window
         # TODO loading this twice is too slow
         # truth_data = truthras.read(1, masked=True,window=truth_data_window)

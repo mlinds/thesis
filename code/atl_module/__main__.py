@@ -2,7 +2,7 @@ import argparse
 
 import logzero
 from atl_module.core import GebcoUpscaler
-from logzero import DEBUG, setup_logger
+from logzero import DEBUG
 
 # runlogger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 parser = argparse.ArgumentParser()

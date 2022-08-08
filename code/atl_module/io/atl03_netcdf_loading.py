@@ -84,7 +84,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         )
         delta_time_geophys = num2pydate(delta_time_geophys_s, "seconds since 2018-01-01")
 
-        ## ----- ASSIGNING SEGMENT-RATE VARIABLES----------- ##
+        # ----- ASSIGNING SEGMENT-RATE VARIABLES----------- #
 
         # some variables are given per 20m segment, so they need to be interpolated to assign the correct one to each photon.
 

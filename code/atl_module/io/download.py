@@ -15,19 +15,14 @@ import time
 import zipfile
 
 # %%
-from gzip import READ
 from statistics import mean
 from xml.etree import ElementTree as ET
 
 import fiona
 import geopandas as gpd
-import matplotlib.pyplot as plt
-import pandas as pd
 import requests
-from atl_module.io.variablelist import atl09_vars, atl_03_vars, segment_vars
+from atl_module.io.variablelist import atl_03_vars, segment_vars
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
-from mercantile import bounding_tile
-from pandas import Int16Dtype, MultiIndex
 from shapely.geometry.polygon import orient
 
 # To read KML files with geopandas, we will need to enable KML support in fiona (disabled by default)
@@ -97,7 +92,7 @@ def _request_capabilities(
         variables = [SubsetVariable.attrib for SubsetVariable in root.iter("SubsetVariable")]
         variables_raw = [variables[i]["value"] for i in range(len(variables))]
         variables_join = [
-            "".join(("/", v)) if v.startswith("/") == False else v for v in variables_raw
+            "".join(("/", v)) if not v.startswith("/") else v for v in variables_raw
         ]
         variable_vals = [v.replace(":", "/") for v in variables_join]
 
@@ -137,14 +132,15 @@ def _request_capabilities(
                 Boundingshape = geojson
             else:
                 Boundingshape = ""
-        if subdict["temporalSubsetting"] == "true":
-            ts = "n"
-            if ts == "y":
-                time_var = start_date + "T" + start_time + "," + end_date + "T" + end_time
-            else:
-                time_var = ""
-        else:
-            time_var = ""
+        # going to comment this out and delete in the future if it doesn't break anything
+        # if subdict["temporalSubsetting"] == "true":
+        #     ts = "n"
+        #     if ts == "y":
+        #         time_var = start_date + "T" + start_time + "," + end_date + "T" + end_time
+        #     else:
+        #         time_var = ""
+        # else:
+        time_var = ""
         if len(format_vals) > 0:
             print("These reformatting options are available:", format_vals)
             reformat = "NetCDF4-CF"

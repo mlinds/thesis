@@ -17,8 +17,7 @@ from atl_module.geospatial_utils.geospatial_functions import (
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import add_secchi_depth_to_tracklines
 from atl_module.plotting import error_lidar_pt_vs_truth_pt
-from fiona.errors import DriverError
-from logzero import logger, setup_logger
+from logzero import setup_logger
 
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")

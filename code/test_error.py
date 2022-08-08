@@ -1,13 +1,10 @@
 # %%
-from glob import iglob
-
 import geopandas as gpd
 import pandas as pd
 from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.error_calc import icesat_error_rms_mae
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
-from sklearn.metrics import mean_absolute_error
 
 # %%
 folderpath = "../data/test_sites/florida_keys"

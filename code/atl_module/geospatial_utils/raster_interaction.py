@@ -8,8 +8,6 @@ import pandas as pd
 import rasterio as rio
 from logzero import logger, setup_logger
 from osgeo import gdal
-from rasterio.enums import Resampling
-from rasterio.warp import reproject
 
 # TODO this needs to be refactored to use rasterio since import gdal and rasterio can cause issues
 

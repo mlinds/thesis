@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 # from atl_module.geospatial_utils.geospatial_functions import add_track_dist_meters
@@ -106,7 +105,7 @@ def add_gebco(df):
 
 def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
     # check for gebco height in the columns
-    if not "gebco_elev" in df.columns:
+    if "gebco_elev" not in df.columns:
         raise ValueError("Make sure to add the gebco elevation before running this function")
     # filter points based on gebco
     df = df[df.gebco_elev > low_limit]

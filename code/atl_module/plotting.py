@@ -1,8 +1,7 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def error_lidar_pt_vs_truth_pt(df_in, site_name):
+def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name):
     ax = df_in.plot.scatter(
         x="true_elevation",
         y="z_kde",

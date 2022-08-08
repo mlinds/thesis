@@ -1,5 +1,4 @@
 # %%
-import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
@@ -18,7 +17,7 @@ plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
 # # Plots of Filtering Process
 
-#%%
+# %%
 site = "oahu"
 with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
     fig, ax = plt.subplots(figsize=(20, 17))
@@ -472,9 +471,8 @@ fig.savefig(
 # %%
 with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bilinear_raster:
     fig, ax = plt.subplots(figsize=(20, 10))
-    ax.set_xlabel(f"Easting UTM 17N")
-
-    ax.set_ylabel(f"Northing UTM 17N")
+    ax.set_xlabel("Easting UTM 17N")
+    ax.set_ylabel("Northing UTM 17N")
     ax.set_title("Location of 1D section")
     # cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bilinear_raster.crs)
     image_hidden = ax.imshow(
