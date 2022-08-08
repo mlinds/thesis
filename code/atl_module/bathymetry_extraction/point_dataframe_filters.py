@@ -11,7 +11,7 @@ p = Path(__file__).parents[3]
 
 
 def add_msl_corrected_seafloor_elev(df_in):
-    dac_tide = df_in.z_kde  # - df_in.dac_corr - df_in.tide_ocean_corr
+    dac_tide = df_in.z_kde + df_in.dac_corr + df_in.tide_ocean_corr
     return df_in.assign(sf_elev_MSL=dac_tide)
 
 
