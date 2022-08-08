@@ -54,6 +54,7 @@ dependencies:
   - certipy=0.1.3=py_0
   - cffi=1.15.0=py39h4bc2ebd_0
   - cfgrib=0.9.10.1=pyhd8ed1ab_0
+  - cfgv=3.3.1=pyhd8ed1ab_0
   - cfitsio=4.1.0=hd9d235c_0
   - cftime=1.6.0=py39hd257fcd_0
   - charls=2.3.4=h9c3ff4c_0
@@ -85,7 +86,9 @@ dependencies:
   - decorator=5.1.1=pyhd8ed1ab_0
   - defusedxml=0.7.1=pyhd8ed1ab_0
   - dill=0.3.4=pyhd8ed1ab_0
+  - distlib=0.3.5=pyhd8ed1ab_0
   - distributed=2022.4.0=pyhd8ed1ab_0
+  - docopt=0.6.2=py_1
   - draco=1.5.2=h924138e_0
   - earthengine-api=0.1.304=pyhd8ed1ab_1
   - eccodes=2.25.0=hc08acdf_0
@@ -104,6 +107,7 @@ dependencies:
   - findlibs=0.0.2=pyhd8ed1ab_0
   - fiona=1.8.21=py39h83acdc4_1
   - flake8=4.0.1=pyhd8ed1ab_2
+  - flask=2.2.0=pyhd8ed1ab_0
   - flit-core=3.7.1=pyhd8ed1ab_0
   - folium=0.12.1.post1=pyhd8ed1ab_1
   - font-ttf-dejavu-sans-mono=2.37=hab24e00_0
@@ -127,8 +131,8 @@ dependencies:
   - geocoder=1.38.1=py_1
   - geographiclib=1.52=pyhd8ed1ab_0
   - geojson=2.5.0=py_0
-  - geopandas=0.11.0=pyhd8ed1ab_0
-  - geopandas-base=0.11.0=pyha770c72_0
+  - geopandas=0.10.2=pyhd8ed1ab_1
+  - geopandas-base=0.10.2=pyha770c72_1
   - geopy=2.2.0=pyhd8ed1ab_0
   - geos=3.10.2=h9c3ff4c_0
   - geotiff=1.7.1=h509b78c_1
@@ -164,9 +168,10 @@ dependencies:
   - holoviews=1.14.8=pyhd8ed1ab_0
   - httplib2=0.20.4=pyhd8ed1ab_0
   - httplib2shim=0.0.3=pyh9f0ad1d_0
-  - hvplot=0.7.3=pyh6c4a22f_0
-  - icepyx=0.6.2=pyhd8ed1ab_0
+  - hvplot=0.8.0=pyh6c4a22f_0
+  - icepyx=0.6.3=pyhd8ed1ab_0
   - icu=69.1=h9c3ff4c_0
+  - identify=2.5.3=pyhd8ed1ab_0
   - idna=3.3=pyhd8ed1ab_0
   - imagecodecs=2022.2.22=py39hd807fc7_1
   - imageio=2.16.1=pyhcf75d05_0
@@ -184,10 +189,11 @@ dependencies:
   - ipython_genutils=0.2.0=py_1
   - ipytree=0.2.1=pyhd8ed1ab_0
   - ipywidgets=7.7.0=pyhd8ed1ab_0
+  - itsdangerous=2.1.2=pyhd8ed1ab_0
   - jasper=2.0.33=ha77e612_0
   - jbig=2.1=h7f98852_2003
   - jedi=0.18.1=py39hf3d152e_1
-  - jinja2=3.1.1=pyhd8ed1ab_0
+  - jinja2=3.1.2=pyhd8ed1ab_1
   - joblib=1.1.0=pyhd8ed1ab_0
   - jpeg=9e=h7f98852_0
   - json-c=0.15=h98cffda_0
@@ -230,13 +236,13 @@ dependencies:
   - libev=4.33=h516909a_1
   - libevent=2.1.10=h9b69904_4
   - libffi=3.4.2=h7f98852_5
-  - libgcc-ng=12.1.0=h8d9b700_16
+  - libgcc-ng=11.2.0=h1d223b6_14
   - libgdal=3.4.2=hd724a2d_4
   - libgfortran-ng=11.2.0=h69a702a_14
   - libgfortran5=11.2.0=h5c6108e_14
   - libglib=2.70.2=h174f98d_4
   - libglu=9.0.0=he1b5a44_1001
-  - libgomp=12.1.0=h8d9b700_16
+  - libgomp=11.2.0=h1d223b6_14
   - libiconv=1.16=h516909a_0
   - libkml=1.3.0=h238a007_1014
   - liblapack=3.9.0=14_linux64_openblas
@@ -273,6 +279,7 @@ dependencies:
   - libxcb=1.13=h7f98852_1004
   - libxkbcommon=1.0.3=he3ba5ed_0
   - libxml2=2.9.12=h885dcf4_1
+  - libxslt=1.1.33=h0ef7038_3
   - libzip=1.8.0=h4de3113_1
   - libzlib=1.2.11=h166bdaf_1014
   - libzopfli=1.0.3=h9c3ff4c_0
@@ -280,6 +287,7 @@ dependencies:
   - llvmlite=0.38.0=py39h7d9a04d_1
   - locket=0.2.0=py_2
   - logzero=1.7.0=py39hf3d152e_1
+  - lxml=4.8.0=py39hb9d737c_2
   - lz4=4.0.0=py39h029007f_1
   - lz4-c=1.9.3=h9c3ff4c_1
   - lzo=2.10=h516909a_1000
@@ -294,6 +302,7 @@ dependencies:
   - mccabe=0.6.1=py_1
   - mercantile=1.2.1=pyhd8ed1ab_0
   - mistune=0.8.4=py39h3811e60_1005
+  - motuclient=1.8.8=pyhd8ed1ab_0
   - mpc=1.2.1=h9f54685_0
   - mpfr=4.1.0=h9202a9a_1
   - mpmath=1.2.1=pyhd8ed1ab_0
@@ -319,6 +328,7 @@ dependencies:
   - nettle=3.6=he412f7d_0
   - networkx=2.7.1=pyhd8ed1ab_1
   - nitro=2.7.dev6=h27087fc_5
+  - nodeenv=1.7.0=pyhd8ed1ab_0
   - nodejs=17.8.0=h784f1fd_0
   - nomkl=1.0=h5ca1d4c_0
   - notebook=6.4.10=pyha770c72_0
@@ -333,13 +343,13 @@ dependencies:
   - openblas=0.3.20=pthreads_h320a7e8_0
   - openh264=2.1.1=h780b84a_0
   - openjpeg=2.4.0=hb52868f_1
-  - openssl=1.1.1p=h166bdaf_0
+  - openssl=1.1.1o=h166bdaf_0
   - packaging=21.3=pyhd8ed1ab_0
   - pamela=1.0.0=py_0
   - pandas=1.4.2=py39h1832856_0
   - pandoc=2.17.1.1=ha770c72_0
   - pandocfilters=1.5.0=pyhd8ed1ab_0
-  - panel=0.12.6=pyhd8ed1ab_0
+  - panel=0.13.1=pyhd8ed1ab_0
   - param=1.12.1=pyh6c4a22f_0
   - parso=0.8.3=pyhd8ed1ab_0
   - partd=1.2.0=pyhd8ed1ab_0
@@ -357,6 +367,7 @@ dependencies:
   - poppler=22.01.0=h1434ded_2
   - poppler-data=0.4.11=hd8ed1ab_0
   - postgresql=14.2=h2510834_0
+  - pre-commit=2.20.0=py39hf3d152e_0
   - proj=9.0.0=h93bde94_1
   - prometheus_client=0.13.1=pyhd8ed1ab_0
   - prompt-toolkit=3.0.29=pyha770c72_0
@@ -375,6 +386,7 @@ dependencies:
   - pyct=0.4.6=py_0
   - pyct-core=0.4.6=py_0
   - pycurl=7.45.1=py39hd73adbb_0
+  - pydap=3.3.0=pyhd8ed1ab_0
   - pyflakes=2.4.0=pyhd8ed1ab_0
   - pygments=2.11.2=pyhd8ed1ab_0
   - pygmt=0.6.1=pyhd8ed1ab_0
@@ -464,13 +476,17 @@ dependencies:
   - tzcode=2022a=h166bdaf_0
   - tzdata=2022a=h191b570_0
   - udunits2=2.2.28=hc3e0081_0
+  - ukkonen=1.0.1=py39hf939315_2
   - unicodedata2=14.0.0=py39hb9d737c_1
   - uritemplate=3.0.1=py_0
   - urllib3=1.26.9=pyhd8ed1ab_0
   - utm=0.7.0=pyhd8ed1ab_0
+  - virtualenv=20.16.3=py39hf3d152e_0
   - wcwidth=0.2.5=pyh9f0ad1d_2
   - webencodings=0.5.1=py_1
+  - webob=1.8.7=pyhd8ed1ab_0
   - websocket-client=1.3.2=pyhd8ed1ab_0
+  - werkzeug=2.2.1=pyhd8ed1ab_0
   - wheel=0.37.1=pyhd8ed1ab_0
   - whitebox=2.1.2=pyhd8ed1ab_0
   - whiteboxgui=0.7.0=pyhd8ed1ab_0
