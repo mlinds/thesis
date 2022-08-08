@@ -22,8 +22,7 @@ def get_beams(granule_netcdf: str or PathLike) -> list:
             return [
                 beam
                 for beam in netcdfdataset.groups
-                if (beam in beamlist)
-                and ("heights" in netcdfdataset.groups[beam].groups)
+                if (beam in beamlist) and ("heights" in netcdfdataset.groups[beam].groups)
             ]
     # i  know pass in an except block is bad coding but i need to find a better way of handling this
     except AttributeError:
@@ -83,9 +82,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         delta_time_geophys_s = (
             ds.groups[beam].groups["geophys_corr"].variables["delta_time"][:]
         )
-        delta_time_geophys = num2pydate(
-            delta_time_geophys_s, "seconds since 2018-01-01"
-        )
+        delta_time_geophys = num2pydate(delta_time_geophys_s, "seconds since 2018-01-01")
 
         ## ----- ASSIGNING SEGMENT-RATE VARIABLES----------- ##
 
@@ -109,31 +106,19 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             ds.groups[beam].groups["geophys_corr"].variables["geoid"][:].filled(np.NaN)
         )
         tide_ocean_segment = (
-            ds.groups[beam]
-            .groups["geophys_corr"]
-            .variables["tide_ocean"][:]
-            .filled(np.NaN)
+            ds.groups[beam].groups["geophys_corr"].variables["tide_ocean"][:].filled(np.NaN)
         )
         pointing_vec_az_segment = (
-            ds.groups[beam]
-            .groups["geolocation"]
-            .variables["ref_azimuth"][:]
-            .filled(np.NaN)
+            ds.groups[beam].groups["geolocation"].variables["ref_azimuth"][:].filled(np.NaN)
         )
         pointing_vec_elev_segment = (
-            ds.groups[beam]
-            .groups["geolocation"]
-            .variables["ref_elev"][:]
-            .filled(np.NaN)
+            ds.groups[beam].groups["geolocation"].variables["ref_elev"][:].filled(np.NaN)
         )
         dac_correction_segment = (
             ds.groups[beam].groups["geophys_corr"].variables["dac"][:].filled(np.NaN)
         )
         ph_count_segment = (
-            ds.groups[beam]
-            .groups["geolocation"]
-            .variables["segment_ph_cnt"][:]
-            .filled(0)
+            ds.groups[beam].groups["geolocation"].variables["segment_ph_cnt"][:].filled(0)
         )
 
         # combine the corrections into one

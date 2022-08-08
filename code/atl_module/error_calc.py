@@ -3,6 +3,8 @@ from os import path
 import dask.array as da
 import numpy as np
 import rasterio
+from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
+from atl_module.geospatial_utils.raster_interaction import query_raster
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
@@ -13,9 +15,6 @@ from sklearn.metrics import (
     mean_squared_error,
     median_absolute_error,
 )
-
-from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
-from atl_module.geospatial_utils.raster_interaction import query_raster
 
 detail_logger = setup_logger(name="details")
 # TODO add docstrings to functions
@@ -47,9 +46,7 @@ def icesat_rmse(bathy_points):
     # the function below needs
     bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
     # return the RMS error
-    rms = (
-        mean_squared_error(bathy_points.sf_elev_MSL, bathy_points.true_elevation) ** 0.5
-    )
+    rms = mean_squared_error(bathy_points.sf_elev_MSL, bathy_points.true_elevation) ** 0.5
     return rms
 
 
@@ -243,9 +240,7 @@ def raster_RMSE(truth_raster_path, measured_rasterpath):
 
         bilinear_data = bi_vrt.read(1, masked=True, window=dst_window)
         bilinear_data = np.ma.filled(bilinear_data, np.nan)
-        detail_logger.debug(
-            f"{bilinear_data.nbytes} bytes in reprojected bilinear array"
-        )
+        detail_logger.debug(f"{bilinear_data.nbytes} bytes in reprojected bilinear array")
         detail_logger.debug(f"Interpolated raster shape is {bilinear_data.shape}")
         detail_logger.debug("Warped bilinear gebco interpolation to the truth raster")
         # mask out nodata values

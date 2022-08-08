@@ -53,9 +53,7 @@ def test_florida(filename, beam):
         return "no signal found"
     signal_pts = atl03_utils.add_raw_seafloor(signal_pts)
 
-    ax = signal_pts.plot.line(
-        x="dist_or", y="sf_refr", title=f"{basename(filename)} - {beam}"
-    )
+    ax = signal_pts.plot.line(x="dist_or", y="sf_refr", title=f"{basename(filename)} - {beam}")
     point_dataframe.plot.scatter(x="dist_or", y="Z_g", ax=ax, color="black", s=0.1)
     signal_pts.plot.scatter(x="dist_or", y="Z_g", ax=ax, color="red", s=0.1)
     point_dataframe.plot.line(x="dist_or", y="2019_irma", ax=ax, color="green")

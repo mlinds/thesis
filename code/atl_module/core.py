@@ -38,13 +38,9 @@ class GebcoUpscaler:
         self.truebathy_path = truebathy
         # set up the paths of the relevant vector files:
         self.trackline_path = os.path.join(self.folderpath, "tracklines")
-        self.bathymetric_point_path = os.path.join(
-            self.folderpath, "all_bathy_pts.gpkg"
-        )
+        self.bathymetric_point_path = os.path.join(self.folderpath, "all_bathy_pts.gpkg")
         # raster paths
-        self.kalman_update_raster_path = os.path.join(
-            self.folderpath, "kalman_updated.tif"
-        )
+        self.kalman_update_raster_path = os.path.join(self.folderpath, "kalman_updated.tif")
         self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "bilinear.tif")
         self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
         self.AOI_path = os.path.join(self.folderpath, "AOI.gpkg")
@@ -57,9 +53,7 @@ class GebcoUpscaler:
             self.crs = self.tracklines.estimate_utm_crs()
             self.epsg = self.crs.to_epsg()
         else:
-            run_logger.info(
-                "Trackline geodata not found - recalculate from netcdf files"
-            )
+            run_logger.info("Trackline geodata not found - recalculate from netcdf files")
 
         #  try to add bathymetry points, print a message if they're not found
         if file_exists(self.bathymetric_point_path):
@@ -300,9 +294,7 @@ class GebcoUpscaler:
     def plot_lidar_error(self):
         # the below can be moved to the object
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.jpg"
-        error_lidar_pt_vs_truth_pt(
-            self.bathy_pts_gdf, self.site_name
-        ).get_figure().savefig(
+        error_lidar_pt_vs_truth_pt(self.bathy_pts_gdf, self.site_name).get_figure().savefig(
             outpath,
             facecolor="white",
             bbox_inches="tight",

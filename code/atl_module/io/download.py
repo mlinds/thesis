@@ -39,9 +39,7 @@ GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 
 
 def _get_product_metadata(product_short_name):
-    response = requests.get(
-        CMR_COLLECTIONS_URL, params={"short_name": product_short_name}
-    )
+    response = requests.get(CMR_COLLECTIONS_URL, params={"short_name": product_short_name})
     results = json.loads(response.content)
     print(results)
 
@@ -96,13 +94,10 @@ def _request_capabilities(
     if len(subagent) > 0:
 
         # variable subsetting
-        variables = [
-            SubsetVariable.attrib for SubsetVariable in root.iter("SubsetVariable")
-        ]
+        variables = [SubsetVariable.attrib for SubsetVariable in root.iter("SubsetVariable")]
         variables_raw = [variables[i]["value"] for i in range(len(variables))]
         variables_join = [
-            "".join(("/", v)) if v.startswith("/") == False else v
-            for v in variables_raw
+            "".join(("/", v)) if v.startswith("/") == False else v for v in variables_raw
         ]
         variable_vals = [v.replace(":", "/") for v in variables_join]
 
@@ -145,9 +140,7 @@ def _request_capabilities(
         if subdict["temporalSubsetting"] == "true":
             ts = "n"
             if ts == "y":
-                time_var = (
-                    start_date + "T" + start_time + "," + end_date + "T" + end_time
-                )
+                time_var = start_date + "T" + start_time + "," + end_date + "T" + end_time
             else:
                 time_var = ""
         else:
@@ -162,16 +155,13 @@ def _request_capabilities(
             projection = ""
             projection_parameters = ""
         if len(projections) > 0:
-            valid_proj = (
-                []
-            )  # select reprojection options based on reformatting selection
+            valid_proj = []  # select reprojection options based on reformatting selection
             for i in range(len(projections)):
                 if "excludeFormat" in projections[i]:
                     exclformats_str = projections[i]["excludeFormat"]
                     exclformats_list = exclformats_str.split(",")
                 if (
-                    "excludeFormat" not in projections[i]
-                    or reformat not in exclformats_list
+                    "excludeFormat" not in projections[i] or reformat not in exclformats_list
                 ) and projections[i]["value"] != "NO_CHANGE":
                     valid_proj.append(projections[i]["value"])
             if len(valid_proj) > 0:
@@ -194,9 +184,7 @@ def _request_capabilities(
                 else:
                     projection_parameters = ""
             else:
-                print(
-                    "No reprojection options are supported with your requested format"
-                )
+                print("No reprojection options are supported with your requested format")
                 projection = ""
                 projection_parameters = ""
         else:
@@ -263,9 +251,7 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
     granules = []
     headers = {"Accept": "application/json"}
     while True:
-        response = requests.get(
-            GRANULE_SEARCH_URL, params=search_params, headers=headers
-        )
+        response = requests.get(GRANULE_SEARCH_URL, params=search_params, headers=headers)
         results = json.loads(response.content)
         if len(results["feed"]["entry"]) == 0:
             # Out of results, so break out of loop

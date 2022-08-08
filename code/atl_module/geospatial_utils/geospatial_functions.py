@@ -44,9 +44,7 @@ def get_track_gdf(outarray: np.ndarray) -> gpd.GeoDataFrame:
         gpd.GeoDataFrame: A geodataframe of a particular track
     """
     linegeom = _get_single_track_linegeom(outarray)
-    return gpd.GeoDataFrame(
-        {"geometry": [linegeom]}, crs="EPSG:4326", geometry="geometry"
-    )
+    return gpd.GeoDataFrame({"geometry": [linegeom]}, crs="EPSG:4326", geometry="geometry")
 
 
 def _get_single_track_linegeom(beamarray: np.ndarray) -> LineString:

@@ -17,9 +17,7 @@ detail_logger = setup_logger(name="details")
 def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
     # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
     pdal_array = (
-        pts_gdf_all.assign(
-            easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
-        )
+        pts_gdf_all.assign(easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y)
         .loc[:, ["northing", "easting", "sf_elev_MSL"]]
         .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
         # pdal understands record arrays, so use a record array
@@ -31,9 +29,7 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
     # 1st pdal pipeline culls the dataset to a fixed number of points
     pipeline = pdal.Filter.relaxationdartthrowing(count=npts).pipeline(pdal_array)
     npts = pipeline.execute()
-    detail_logger.debug(
-        f"{npts} points remaining after relaxation dart throwing culling"
-    )
+    detail_logger.debug(f"{npts} points remaining after relaxation dart throwing culling")
     # get the thinned points from the output
     thinned_array = pipeline.arrays[0]
     #
@@ -47,9 +43,7 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
 def _prepare_random_sample(pts_gdf_all, npts, crs):
     # get rename the columns and sample npts rows from the dataframe
     pts_gdf_sample = (
-        pts_gdf_all.assign(
-            easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y
-        )
+        pts_gdf_all.assign(easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y)
         .loc[:, ["northing", "easting", "sf_elev_MSL"]]
         .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
         .sample(npts)
@@ -77,16 +71,12 @@ def prepare_pt_subset_for_kriging(pts_gdf_all, folderpath, npts, crs, samplemeth
     pts_gdf.to_file(outpath)
 
     # log the info
-    detail_logger.debug(
-        f"{npts} points selected with {samplemethod} written to {outpath}"
-    )
+    detail_logger.debug(f"{npts} points selected with {samplemethod} written to {outpath}")
 
     return pts_gdf
 
 
-def krige_bathy(
-    kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, **kwargs
-):
+def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, **kwargs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -154,6 +144,4 @@ def krige_bathy(
         rasout.write(z, 1)
         rasout.write(ss, 2)
     ras.close()
-    detail_logger.debug(
-        "Output raster of kriged Z values and uncertainty saved sucessfully"
-    )
+    detail_logger.debug("Output raster of kriged Z values and uncertainty saved sucessfully")

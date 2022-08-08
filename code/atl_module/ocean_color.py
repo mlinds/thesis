@@ -52,9 +52,7 @@ def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
     lon_indexer = xr.DataArray(lon, dims=["points"])
     date_indexer = xr.DataArray(dates, dims=["points"])
     # load the nearest data within 0.2 degrees of the requested point
-    subset = ds.sel(
-        lat=lat_indexer, lon=lon_indexer, method="nearest", tolerance=0.1
-    ).sel(
+    subset = ds.sel(lat=lat_indexer, lon=lon_indexer, method="nearest", tolerance=0.1).sel(
         # load the nearest time within 2 days
         time=date_indexer,
         method="nearest",

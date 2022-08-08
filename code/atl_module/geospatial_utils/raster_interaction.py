@@ -122,9 +122,7 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
         raw_data[raw_data < -40] = np.NaN
         reprojected_raster.write(raw_data, 1)
 
-    logger.debug(
-        f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}"
-    )
+    logger.debug(f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}")
 
     # # ------------ below this is expermental code---------------
     # with rio.open(GEBCO_LOCATION, mode="r",crs="EPSG:4326") as gebco:

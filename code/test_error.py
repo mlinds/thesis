@@ -1,14 +1,13 @@
 # %%
-from atl_module.bathymetry_extraction import icesat_bathymetry
-from atl_module.geospatial_utils.raster_interaction import query_raster
-from atl_module.geospatial_utils.geospatial_functions import (
-    to_refr_corrected_gdf,
-)
-import pandas as pd
-from atl_module.error_calc import icesat_error_rms_mae
 from glob import iglob
-from sklearn.metrics import mean_absolute_error
+
 import geopandas as gpd
+import pandas as pd
+from atl_module.bathymetry_extraction import icesat_bathymetry
+from atl_module.error_calc import icesat_error_rms_mae
+from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
+from atl_module.geospatial_utils.raster_interaction import query_raster
+from sklearn.metrics import mean_absolute_error
 
 # %%
 folderpath = "../data/test_sites/florida_keys"
@@ -72,10 +71,7 @@ join2 = (
 merged = pd.merge(join1, join2, right_index=True, left_index=True, how="left")
 
 error_df = (
-    merged.eval("error=error**2")
-    .groupby(["date", "beam"])
-    .mean()
-    .eval("error=error**(0.5)")
+    merged.eval("error=error**2").groupby(["date", "beam"]).mean().eval("error=error**(0.5)")
 )
 
 error_df.plot.scatter(y="error", x="zsd")

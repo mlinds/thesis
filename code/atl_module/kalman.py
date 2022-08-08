@@ -27,9 +27,7 @@ def simple_kalman(z, sigma, z_meas, sigma_meas):
     return znew, sigmanew
 
 
-def gridded_kalman_update(
-    outputfile, start_raster_path, measrasterlist, gebco_uncertainty_in
-):
+def gridded_kalman_update(outputfile, start_raster_path, measrasterlist, gebco_uncertainty_in):
 
     # if there is a single path instead of a list, convert it to a single-element list
     if isinstance(measrasterlist, str):

@@ -154,9 +154,7 @@ def get_all_bathy_from_granule(
             window_meters=window_meters,
         )
         # find the minimum KDE strength
-        thresholdval = (
-            bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
-        )
+        thresholdval = bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
         # find the
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > max(thresholdval, min_kde)]
         # TODO could this be assigned to another function? not directly related to this function
