@@ -126,15 +126,15 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
         f"GEBCO subset raster written to {out_raster_path}, with CRS EPSG:{epsg_no}"
     )
 
-    # ------------ below this is expermental code---------------
+    # # ------------ below this is expermental code---------------
     # with rio.open(GEBCO_LOCATION, mode="r",crs="EPSG:4326") as gebco:
     #     print('crs of gebco: ',gebco.crs)
     #     window = rio.windows.from_bounds(*bounds_wgs84, transform=gebco.transform)
     #     print(window)
     #     print(bounds_wgs84)
     #     gebco_data = gebco.read(1, window=window, masked=True)
-    #     gebco_data[gebco_data > 2] = np.ma.masked
-    #     gebco_data[gebco_data < -40] = np.ma.masked
+    #     gebco_data[gebco_data > 2] = gebco.nodata
+    #     gebco_data[gebco_data < -40] = gebco.nodata
 
     #     with rio.io.MemoryFile() as memfile:
     #         newmetadata = gebco.meta.copy()
