@@ -20,7 +20,6 @@ from atl_module.plotting import error_lidar_pt_vs_truth_pt
 from fiona.errors import DriverError
 from logzero import logger, setup_logger
 
-
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 
@@ -49,6 +48,8 @@ class GebcoUpscaler:
         self.bilinear_gebco_raster_path = os.path.join(self.folderpath, "bilinear.tif")
         self.kriged_raster_path = os.path.join(self.folderpath, "kriging_output.tif")
         self.AOI_path = os.path.join(self.folderpath, "AOI.gpkg")
+
+        self.run_params = {}
         # setup the files needed
         # try to add the tracklines
         if file_exists(self.trackline_path):
@@ -88,7 +89,7 @@ class GebcoUpscaler:
         except ValueError:
             run_logger.info(f"Unable to get ocean color (Secchi depth) info")
         except Exception as exception:
-            run_logger.info(f"Secchi depth function raised {exception.__name__}")
+            run_logger.info(f"Secchi depth function raised {exception}")
         finally:
             self.tracklines.to_file(self.trackline_path, overwrite=True)
             run_logger.info(f"Tracklines written to {self.trackline_path}")
@@ -108,6 +109,8 @@ class GebcoUpscaler:
             epsg_no=self.epsg,
             hres=hres,
         )
+        # set add the horizontal resoltion to the paramter dict
+        self.run_params.update({"Horizontal resolution of upscaled product [m]": hres})
 
     def find_bathy_from_icesat(
         self,
@@ -125,26 +128,30 @@ class GebcoUpscaler:
         filter_below_depth,
         n,
         max_geoid_high_z,
+        min_ph_count,
         save_result=True,
     ):
-        run_params = {
-            "window_size_photons": window,
-            "threshhold value": threshold_val,
-            "Required percentage high confidence ocean photons": req_perc_hconf,
-            "minimum photons in distance window": min_photons,
-            "window_horizontal": window_meters,
-            "Minimum KDE to be considered": min_kde,
-            "lowlimit": low_limit,
-            "high_limit": high_limit,
-            "rolling_window": rolling_window,
-            "max_sea_surf_elev": max_sea_surf_elev,
-            "filter_below_z": filter_below_z,
-            "filter_below_depth": filter_below_depth,
-            "n": n,
-            "max_geoid_high_z": max_geoid_high_z,
-        }
+        self.run_params.update(
+            {
+                "window_size_photons": window,
+                "threshhold value": threshold_val,
+                "Required percentage high confidence ocean photons": req_perc_hconf,
+                "minimum photons in distance window": min_photons,
+                "window_horizontal": window_meters,
+                "Minimum KDE to be considered": min_kde,
+                "lowlimit": low_limit,
+                "high_limit": high_limit,
+                "rolling_window": rolling_window,
+                "max_sea_surf_elev": max_sea_surf_elev,
+                "filter_below_z": filter_below_z,
+                "filter_below_depth": filter_below_depth,
+                "n": n,
+                "max_geoid_high_z": max_geoid_high_z,
+                "minimum segment photons": min_ph_count,
+            }
+        )
         run_logger.info(
-            f"site: {self.site_name} - Starting bathymetry signal finding with parameters: {run_params}"
+            f"site: {self.site_name} - Starting bathymetry signal finding with parameters: {self.run_params}"
         )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
             self.folderpath,
@@ -165,6 +172,8 @@ class GebcoUpscaler:
         )
         bathy_gdf = to_refr_corrected_gdf(bathy_pts, crs=self.crs)
         bathy_gdf = add_msl_corrected_seafloor_elev(bathy_gdf)
+        # TODO this should be abstracted into the module probably.
+        bathy_gdf = bathy_gdf[bathy_gdf.ph_count.abs() > min_ph_count]
         # assign the resulting datframe to the object
         self.bathy_pts_gdf = bathy_gdf
         # try to add the elevation from the truth DEM
@@ -173,7 +182,7 @@ class GebcoUpscaler:
         if save_result:
             self.bathy_pts_gdf.to_file(self.bathymetric_point_path, overwrite=True)
             run_logger.info(
-                f"The bathymetry for {self.site_name} was sucessfully calculated with {run_params} and saved to {self.bathymetric_point_path}"
+                f"The bathymetry for {self.site_name} was sucessfully calculated with {self.run_params} and saved to {self.bathymetric_point_path}"
             )
 
     def kriging(self, npts: int, kr_model: str, **kwargs):
@@ -195,6 +204,13 @@ class GebcoUpscaler:
             crs=self.crs,
             **kwargs,
         )
+        self.run_params.update(
+            {
+                "n points used for kriging": npts,
+                "Kriging Model": kr_model,
+                "other args": kwargs,
+            }
+        )
 
     def kalman_update(self, gebco_std: float) -> None:
         """Performed a kalman update assuming a certain constant value for the standard deviation of GEBCO
@@ -208,6 +224,7 @@ class GebcoUpscaler:
             self.kriged_raster_path,
             gebco_std,
         )
+        self.run_params.update({"Assumed GEBCO Standard deviation": gebco_std})
         run_logger.info(
             f"Sucessful Kalman update of GEBCO bathymetry for {self.site_name} using a gebco standard deviation of {gebco_std} saved to {self.kalman_update_raster_path}"
         )
@@ -292,3 +309,8 @@ class GebcoUpscaler:
             dpi=800,
         )
         run_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
+
+    def run_summary(self):
+        run_logger.info(
+            f"Run Summary: assumed parameters in analysis: {self.run_params}. The lidar RMS error was {self.rmse_icesat}, lidar MAE error {self.mae_icesat}. The raster error was {self.raster_error_summary}"
+        )
