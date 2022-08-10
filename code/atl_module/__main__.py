@@ -8,11 +8,11 @@ from logzero import DEBUG
 parser = argparse.ArgumentParser()
 parser.add_argument("sitename", help="name of test site")
 parser.add_argument(
-    "-r",
-    "--recalc",
+    "-d",
+    "--download_atl03",
     action="store_true",
     default=False,
-    help="Force recalculation of all the intermediate steps",
+    help="(Re)download the ATL03 data",
 )
 parser.add_argument("-v", "--verbose", action="store_true", default=False)
 
@@ -24,10 +24,11 @@ if args.verbose:
 
 site = GebcoUpscaler(
     f"{args.sitename}",
-    f"../data/test_sites/oahu/in-situ-DEM/truth.vrt",
+    # f"../data/test_sites/oahu/in-situ-DEM/truth.vrt",
 )
-# site.download_ATL03()
-# site.recalc_tracklines_gdf()
+if args.download_atl03:
+    site.download_ATL03()
+site.recalc_tracklines_gdf()
 # site.find_bathy_from_icesat(
 #     window=200,
 #     threshold_val=0.0,
@@ -49,6 +50,6 @@ site = GebcoUpscaler(
 # print(site.lidar_error())
 # site.plot_lidar_error()
 # site.kriging(npts=1800, samplemethod="dart", kr_model="uk")
-site.kalman_update(1)
-print(site.raster_rmse())
-site.run_summary()
+# site.kalman_update(1)
+# print(site.raster_rmse())
+# site.run_summary()
