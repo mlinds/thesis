@@ -1,0 +1,162 @@
+\chapter{Results}
+
+
+\section{Subsampling of bathmetric points for input into kriging}
+\subsection{sampling method}
+- random
+- poisson disk dart throwing
+- latin hypercube (maybe)
+\subsection{number of points}
+
+how does the number of points relate to the overall quality of the kriging surface? when compared to 
+
+\section{Validation of Kriging Interpolation and Kalman update of lower resolution data}
+
+To test the results of the combination of a universal kriging interpolator in combination with a Kalman update step, the method was tested using a random sample of points from the surveyed truth raster.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/truthraster_sampling_rasterplot.jpg}
+    \caption{The 1m lidar DEM that was used as input to the random point sampling}
+    \label{fig:randomsample-original-raster-plot}
+\end{figure}
+
+\pdfcomment{Fix this image: add colorbar for depth, add background map}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/pts_sampled_from_truthraster.jpg}
+    \caption{The randomly sampled points on the raster}
+    \label{fig:sampled_points}
+\end{figure}
+
+
+\subsection{error comparison between kriging output, bilinear GEBCO, and the combination of the two}
+
+\input{tables/truth_raster_sample_error.tex}
+
+\section{Florida Keys Test Site}
+
+The Florida keys are an archipelago at the south part of Florida, USA. This area is an ideal test site because there is a recent, high-resolution lidar survey publicly available, and the site has optimal conditions for lidar penetration: a large shelf of less than 20m depth, and extremely clear water. 
+
+\subsection{Site Conditions Summary}
+\pdfcomment{Make this in pandas for consistency}
+
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                      & \textbf{Value}                                 \\
+            \hline
+            Location                                                       & -81.04472,24.72868                             \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}               & \qty{0.51}{m}                                  \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020}      & \qty{0.0}{m}                                   \\
+            Validation Data Vertical RMS error \footcite{Keys2019Lidar}    & \qty{0.056}{m}                                 \\
+            Validation Data Horizontal Resolution \footcite{Keys2019Lidar} & \qty{9.4e-6}{ \degree} $\approx$ \qty{0.95}{m} \\
+            Vertical Datum \footcite{Keys2019Lidar}                        & local MSL                                      \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:floridasitestats}
+\end{table}
+
+
+\subsection{ICESat-2 Transects within AOI}
+The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/study_site_tracklines.jpg}
+    % \input{figures/study_site_tracklines.pgf}
+    \caption{Location of ICESat-2 Transects in Florida keys Study Area}
+    \label{fig:keys_transects}
+\end{figure}
+\subsection{Validation Data}
+The validation data used for this site is from a detailed lidar survey of the area performed in 2018 and 2019 by Quantum Spatial, Inc. \parencite{Keys2019Lidar}. The survey was performed using a Riegl VQ-880-G hydrographic airborne laser scanner. The instrument is designed for high bathymetric accuracy in shallow water.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
+    \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
+    \label{fig:truebathy}
+\end{figure}
+\subsection{Error in lidar photon data}
+After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
+    \caption{Comparison between depth calculated with ICESat-2 and true bathy}
+    \label{fig:fl_truth_vs_measured_points}
+\end{figure}
+% \input{tables/rms_by_atm.tex}
+
+% \input{tables/rms_by_type.tex}
+
+\subsection{Bathymetric photons}
+Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
+\pdfcomment{change colorbars to match}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/florida_test_site_photon_map.jpg}
+    \caption{Geographic distribution of Bathymetric photon data}
+    \label{fig:bathyphotonmap}
+\end{figure}
+
+\subsection{Lidar updated GEBCO vs. Simple bilinear Interpolation}
+The results when comparing a raw interpolation of GEBCO to
+\input{tables/total_raster_error_kalman_vs_bi.tex}
+\
+\section{Petten Test Site}
+Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
+
+However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
+
+\subsection{Site Conditions Summary}
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                 & \textbf{Value}                  \\
+            \hline
+            Location                                                  &                                 \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                       \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
+            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up} \\
+            Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{look up?} \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:Pettensitestats}
+\end{table}
+
+\subsection{Validation data}
+The validation data for this site was from a 2021 survey performed by Van Oord.
+\subsection{Error between Jarkus Vs. Survey}
+There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
+\input{tables/Jarkus_vs_survey_data_error.tex}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
+    \caption{Jarkus Survey points vs same location on Van Oord Survey data}
+    \label{fig:jarkus_vs_survey}
+\end{figure}
+
+\subsection{Jarkus Data kriging and kalman Update}
+\input{tables/jarkus_kalman_rms_error-table.tex}
+\section{Oahu}
+
+\subsection{Site Conditions Summary}
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                 & \textbf{Value}                              \\
+            \hline
+            Location                                                  &                                             \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{0.59}{m}                               \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}                                   \\
+            Validation Data vertical 95\% confidence                  &  $\sqrt[]{0.20^2 + 0.013 * depth}$ m \\
+            Validation Data Horizontal Resolution                     & \qty{1}{m}                                  \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)               \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:Oahusitestats}
+\end{table}
+
+\section{Maldives test site}

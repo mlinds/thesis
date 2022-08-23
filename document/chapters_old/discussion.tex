@@ -1,0 +1,15 @@
+\chapter{Discussion}
+
+How could the accuracy of the method maybe be improved?
+\begin{itemize}
+    \item scale KDE function by distance 
+    \item improve refraction function by including the effect of the local water surface slope
+    \item incorporate the a priori confidence (i.e. KDE value strength) into the kriging estimate (well, this might have only a very marginal effect? most of the error probably comes from places where there is no icesat data at all) 
+\end{itemize}
+
+what are some weaknesses of the method?
+
+\begin{itemize}
+    \item Sometimes shallow bathymetry points are missed due to culling points too close to the sea surface
+    \item GEBCO nearshore accuracy is even lower outside the global north due to lack of multibeam data as an input 
+\end{itemize}
