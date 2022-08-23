@@ -94,8 +94,8 @@ def _request_capabilities(
         variables_join = [
             "".join(("/", v)) if not v.startswith("/") else v for v in variables_raw
         ]
+        # what is happening in this entire block?
         variable_vals = [v.replace(":", "/") for v in variables_join]
-
         # reformatting
         formats = [Format.attrib for Format in root.iter("Format")]
         format_vals = [formats[i]["value"] for i in range(len(formats))]
@@ -239,10 +239,10 @@ def _data_search(product_short_name, bounding_box, temporal, bounds_filepath=Non
         search_params["polygon"] = polygon
     else:
         aoi = "bounding_box"
-        search_params["bounding_box"] = geojson
-        search_params["polygon"] = polygon
         polygon = ""
         geojson = ""
+        search_params["polygon"] = polygon
+        search_params["bounding_box"] = bounding_box
 
     granules = []
     headers = {"Accept": "application/json"}
@@ -547,7 +547,14 @@ def request_ATL09_shapefile(bounds_filepath, folderpath):
 
 if __name__ == "__main__":
 
-    request_full_data_shapefile(
-        shapefile_filepath="../data/test_sites/florida_keys/AOI.shp",
-        folderpath="../data/test_sites/florida_keys/atl03_new",
+    request_data_download(
+        "ATL03",
+        vars_=atl_03_vars,
+        # bounds_filepath=shapefile_filepath,
+        bounding_box="72.6349,-1.1906,73.6788,-0.4042",
+        folderpath="../data/test_sites/addu",
     )
+    # request_full_data_shapefile(
+    #     shapefile_filepath="../data/test_sites/florida_keys/AOI.shp",
+    #     folderpath="../data/test_sites/florida_keys/atl03_new",
+    # )
