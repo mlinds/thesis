@@ -1,0 +1,65 @@
+\chapter{Discussion}
+
+
+\section{Limitations of ICESat-2 bathymetry}
+\subsection{Limited Offpointing in islands}
+The offpointing happens over land but in fiji and the maldives for example all transects are exactly 3km apart
+\subsection{Inherent uncertainty of kde methods}
+Parameters can be fine-tuned if some data is available but otherwise just requires global estimation.
+
+could try global optimization? possible recommendation 
+\subsection{Novel edge cases in photon data}\label{sec:discussion-photon-issues}
+there are a lot of crazy things that can go wrong with ATL03 data including
+
+\pdfcomment{need to decide which of these apply to subsurface data, some will not (i.e. )}
+\begin{itemize}
+    \item clouds
+    \item multiple telemetry bands
+    % \item TEP photons \pdfcomment{Not an issue because I throw out tep i think?}
+    \item photon noise bursts % yes
+    \item apparent multiple surface returns % yes
+    \item specular returns
+    %%\item empty files % probably not an issue since they will just be skipped
+    \item multiple scattering % def an issue, will look at correciton
+    % \item future parameter updates % not an issue 
+    \item TEP misidentified as signal % an issue but hard to avoid and rare (per nasa)
+    % \item reference DEM height errors % i don't use the DEM parameter so not needed (probably)
+    \item errors following DMUs % 
+    \item background count rate and saturation
+    %\item beam steering mechanism % just for a few days in march 2022, not going to worry about it
+    \item data gaps due to TEP crossing surface % filtering mechanism will catch this
+\end{itemize}
+
+\subsubsection{apparent multiple surface returns}
+these could potentially be a huge issue in very still water, and likely \emph{is} negatively affecting results. They artificially increase the density just below the surface so it could easily be misidentified as signal. they occur 2.3 or 4.2 m below the primary surface return.
+
+\subsubsection{specular returns}
+could be an issue though I've never seen them in ocean returns. 
+
+\subsubsection{TEP misclassified as signal}
+this could be an issue that would both a. confound the KDE signal finding or b. create an issue in the sea surface signal finding that could potentially misidentify the water surface.
+
+\subsubsection{errors following DMUs}
+I believe that I have seen this error before, maybe need to check the major activities log to find granules to toss out
+
+
+
+\subsection{Water clarity requirements}
+Most of th world's coasts are sandy and are typically turbid most or all of the year.
+\subsection{Temporal limits}
+While of course the data has a temporal resolution of every 90 days since 2018, there are some practical limitations. One is that not all satellite passes can caputre and subsurface data due to issues with the atmospheric conditions, wave heights, instrument conditions, etc \pdfcomment{include all the data quality issues in the background section}
+
+\section{Limitations of the kriging interpolation}
+the kriging interpolator is very imperfect.
+\subsection{Computational expense}
+requires subsampling, which means throwing away good data
+
+how to fix that? you could limit your area to 2000 points before doing the universal kriging 
+\subsection{heterogenous spatial distribution of input data}
+
+The input data is typically along transects whose orientation varies depending on the coastline, and there are often gaps in these transects due 
+\subsection{difficulty of setting parameters}
+
+\section{Kalman updating}
+Many overlaps with the individual 
+\subsection{Temporal restrictions}
