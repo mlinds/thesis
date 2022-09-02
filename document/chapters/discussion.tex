@@ -2,14 +2,36 @@
 
 
 \section{Limitations of ICESat-2 bathymetry}
-\subsection{Limited Offpointing in islands}
-The offpointing happens over land but in fiji and the maldives for example all transects are exactly 3km apart
-\subsection{Inherent uncertainty of kde methods}
-Parameters can be fine-tuned if some data is available but otherwise just requires global estimation.
+\subsection{Inherent limitations in pointing accuracy}
 
-could try global optimization? possible recommendation 
+\subsection{Errors in refraction correction}
+slope
+
+water temperature
+
+curvature of the earth
+
+
+\subsection{Limited spatial coverage in some islands}
+
+In support of the vegetation mission of ICESat-2, the instrument is sometimes pointed up to several degrees to the side of the reference ground tracks when the satellite passes over land. This increases the spatial density of points at the expense of the temporal resolution. For bathymetric purposes the increased spatial resolution gives a more even  coverage of nearshore zone bathymetry. 
+
+However, the land mask that is used to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Both islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the lack of spatial coverage limits the accuracy of the kriging method.
+
+This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations.
+
+\subsection{Inherent uncertainty of kde methods}
+There are a number of input parameters to the filtering and the density-based bathymetry finding methods. These parameters can be optimized for each site to reduce the RMSE error as much as possible if there is some validation data available. However since the end goal of the project is to be able to improve estimates without using any in situ data, ideally there would be no need for optimization based on the site.
+
+Currently the globally-set parameters are sufficient to extract bathymetry without any tuning for all of the case studies that are investigated. However, the inability to tune in advance is a limitation. 
+
+One possible future step would be to gather even more validation sites, and explore which other variables might influence the best parameter setting. It is possible that there are certain site variables which predict the optimal parameter options. Even so, upscaling of validation sites would allow better insight into 
+
 \subsection{Novel edge cases in photon data}\label{sec:discussion-photon-issues}
-there are a lot of crazy things that can go wrong with ATL03 data including
+
+There are a number of known issues with the ICESat-2 data. They are caused by environmental conditions or are related to the design of the satellite and instrument. Many of them can be detected in advance, and then the effected granule can be thrown out or the issue otherwise corrected for. However, there might be some edge cases related to these issues that cause either false bathymetric signal points, or cause the algorithm to miss valid bathymetric data. 
+
+The following known data issues could effect the results of the KDE signal finding algorithm:
 
 \pdfcomment{need to decide which of these apply to subsurface data, some will not (i.e. )}
 \begin{itemize}
@@ -30,28 +52,37 @@ there are a lot of crazy things that can go wrong with ATL03 data including
     \item data gaps due to TEP crossing surface % filtering mechanism will catch this
 \end{itemize}
 
-\subsubsection{apparent multiple surface returns}
-these could potentially be a huge issue in very still water, and likely \emph{is} negatively affecting results. They artificially increase the density just below the surface so it could easily be misidentified as signal. they occur 2.3 or 4.2 m below the primary surface return.
+\subsubsection{Multiple Telemetry Bands}
+
+
+\subsubsection{Apparent Multiple Surface Returns}
+
+these could potentially be a huge issue in very still water, and likely \emph{is} negatively affecting results. They artificially increase the density just below the surface so it could easily be misidentified as signal. They occur 2.3 or 4.2 m below the primary surface return.
 
 \subsubsection{specular returns}
+
 could be an issue though I've never seen them in ocean returns. 
 
 \subsubsection{TEP misclassified as signal}
+
 this could be an issue that would both a. confound the KDE signal finding or b. create an issue in the sea surface signal finding that could potentially misidentify the water surface.
 
 \subsubsection{errors following DMUs}
+
 I believe that I have seen this error before, maybe need to check the major activities log to find granules to toss out
 
-
-
 \subsection{Water clarity requirements}
+
 Most of th world's coasts are sandy and are typically turbid most or all of the year.
+
 \subsection{Temporal limits}
-While of course the data has a temporal resolution of every 90 days since 2018, there are some practical limitations. One is that not all satellite passes can caputre and subsurface data due to issues with the atmospheric conditions, wave heights, instrument conditions, etc \pdfcomment{include all the data quality issues in the background section}
+
+While of course the data has a temporal resolution of every 90 days since 2018, there are some practical limitations. One is that not all satellite passes can capture and subsurface data due to issues with the atmospheric conditions, wave heights, instrument conditions, etc \pdfcomment{include all the data quality issues in the background section}
 
 \section{Limitations of the kriging interpolation}
-the kriging interpolator is very imperfect.
-\subsection{Computational expense}
+
+The selected universal kriging interpolator provides both an estimate of the surface and the uncertainty. 
+\subsection{Computational Expense}
 requires subsampling, which means throwing away good data
 
 how to fix that? you could limit your area to 2000 points before doing the universal kriging 
