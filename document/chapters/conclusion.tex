@@ -1,14 +1,20 @@
 \chapter{Conclusions}
-\subsection{Research questions}
+\section{Research questions}
 \begin{enumerate}
     \item How can spaceborne lidar transects that contain bathymetry be identified algorithmically?
     
+    One way that a practical improvement could be made is changes to the NSIDC Download API to allow subsetting by variable values. The current API design allows subsetting by time and space, which can drastically reduce download sizes. However, being able to filter based on the data quality before downloading could reduce the bandwidth requiremnts significantly, if certain variables are found that predict bathymetric quality. 
+
+    \rule{\paperwidth}{0.4pt}
+    \color{blue}
     \begin{itemize}
         \item The KDE algorithm is able to generally find spacecraft passes which contain useful data.
         \item One downside is that it requires the full algorithm to be return
         \item another downside is that in medium turbidity waters there is some penetration near the surface, which creates a relatively dense area 
     \end{itemize}
-
+    \color{black}
+    \rule{\paperwidth}{0.4pt}
+    
     \item Once transects with bathymetry are found, how can the seafloor elevation data be extracted?
     The 
     \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
