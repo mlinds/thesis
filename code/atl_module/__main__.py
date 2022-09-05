@@ -41,6 +41,8 @@ parser.add_argument(
 parser.add_argument("-kr", "--kriging", action="store_true", default=False)
 
 parser.add_argument("-rmse", "--raster-rmse", action="store_true", default=False)
+parser.add_argument("-lrmse", "--lidar-rmse", action="store_true", default=False)
+
 
 args = parser.parse_args()
 
@@ -60,23 +62,24 @@ if args.trackline_calc:
 
 if args.bathymetry_points:
     site.find_bathy_from_icesat(
-        window=150,
+        window=100,
         threshold_val=0.0,
         req_perc_hconf=0,
         window_meters=None,
         min_photons=None,
         min_kde=0.1,
         low_limit=-40,
-        high_limit=2,
+        high_limit=10,
         rolling_window=200,
         max_sea_surf_elev=2,
         filter_below_z=-60,
         filter_below_depth=-60,
-        min_ph_count=35,
+        min_ph_count=0,
         n=1,
         max_geoid_high_z=5,
     )
 
+if args.lidar_rmse:
     print(site.lidar_error())
 
 if args.subset_gebco:
