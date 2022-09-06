@@ -66,11 +66,11 @@ def add_sea_surface_level(df, max_sea_surf_elev, rolling_window=200):
         validate="1:1",
     )
 
-    # interp_sea_surf_elev = (
-    #     pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-    #     # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-    #     .interpolate(method="index").to_numpy()
-    # )
+    interp_sea_surf_elev = (
+        pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+        # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+        .interpolate(method="index").to_numpy()
+    )
     constant_sealevel = df.loc[df.oc_sig_conf >= 4]["Z_geoid"].median()
     sealevel_df = df.assign(sea_level_interp=constant_sealevel)
 
