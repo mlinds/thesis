@@ -10,7 +10,7 @@ p = Path(__file__).parents[3]
 
 
 def add_msl_corrected_seafloor_elev(df_in):
-    dac_tide = df_in.z_kde + df_in.dac_corr + df_in.tide_ocean_corr
+    dac_tide = df_in.z_kde - df_in.sea_level_interp + df_in.dac_corr + df_in.tide_ocean_corr
     return df_in.assign(sf_elev_MSL=dac_tide)
 
 
@@ -66,13 +66,17 @@ def add_sea_surface_level(df, max_sea_surf_elev, rolling_window=200):
         validate="1:1",
     )
 
-    interp_sea_surf_elev = (
-        pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-        # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-        .interpolate(method="index").to_numpy()
-    )
-    sealevel_df = df.assign(sea_level_interp=interp_sea_surf_elev)
+    # interp_sea_surf_elev = (
+    #     pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+    #     # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+    #     .interpolate(method="index").to_numpy()
+    # )
+    constant_sealevel = df.loc[df.oc_sig_conf >= 4]["Z_geoid"].median()
+    sealevel_df = df.assign(sea_level_interp=constant_sealevel)
+
+    # sealevel_df = df.assign(sea_level_interp=interp_sea_surf_elev)
     sealevel_df = sealevel_df.loc[sealevel_df.sea_level_interp < max_sea_surf_elev]
+    # sealevel_df = sealevel_df.loc[sealevel_df.sea_level_interp > -1*max_sea_surf_elev]
 
     return sealevel_df.dropna()
 
@@ -84,7 +88,8 @@ def filter_low_points(df, filter_below_z):
 
 def filter_depth(df, filter_below_depth):
     # drop any points with an uncorrected depth greater than a threshold
-    return df.loc[(df.Z_geoid - df.sea_level_interp) > filter_below_depth]
+    depth_series = df.Z_geoid - df.sea_level_interp
+    return df.loc[(depth_series > filter_below_depth)]
 
 
 def remove_surface_points(df, n=3, min_remove=1):
