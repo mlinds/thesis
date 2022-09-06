@@ -67,13 +67,13 @@ if args.bathymetry_points:
         req_perc_hconf=0,
         window_meters=None,
         min_photons=None,
-        min_kde=0.1,
-        low_limit=-40,
-        high_limit=10,
+        min_kde=0.15,
+        low_limit=-50,
+        high_limit=2,
         rolling_window=200,
         max_sea_surf_elev=2,
-        filter_below_z=-60,
-        filter_below_depth=-60,
+        filter_below_z=-40,
+        filter_below_depth=-40,
         min_ph_count=0,
         n=1,
         max_geoid_high_z=5,
@@ -101,5 +101,3 @@ if args.kalman_update:
 if args.raster_rmse:
 
     print(site.raster_rmse())
-
-# site.run_summary()
