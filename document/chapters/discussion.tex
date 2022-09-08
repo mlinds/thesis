@@ -30,19 +30,17 @@ This uncertainty, and the horizontal refraction, are more likely second order ef
 
 \subsection{Errors in Refraction Correction}
 
-The refraction correction method used accounts for the additional horizontal error that is introduced by off-pointing. However, there are several other second-order effects that are not considered by the methodology. One of these is the water temperature; the temperature affects the speed at which the water transmits light. This introduces an error on the order of X.XXm \pdfcomment{Look this up to plug in some numbers to the formula to check}
+The refraction correction method used accounts for the additional horizontal error that is introduced by off-pointing. However, there are several other second-order effects that are not considered by the methodology. One of these is the estimation of the refractive index; the temperature and salinity affect the speed at which the water transmits light. By assuming a default value it introduces an error on the order of X.XXm \pdfcomment{Look this up to plug in some numbers to the formula to check}. This could be corrected by either estimating in advance a value for each local site, or by connecting the algorithm to an API that can provide a temperature and salinity value. 
 
 Another potential source of error is the slope of the water surface. Since there is a slope to the water surface, this affects the bounce angle of the photon. This can be corrected for and some papers that investigate ICESat-2 bathymetry have attempted to correct for it. For this project the magnitude was considered small enough that the effect was within the margin of error of the method.
 
-The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. \pdfcomment{this might be a good to-do for me to add a little later}
+The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. \pdfcomment{Just added this correction and improved error for one site by O 0.001m :|}
 
 \subsection{Limited Spatial Coverage in Islands}
 
 In support of the vegetation mission of ICESat-2, the instrument is sometimes pointed up to several degrees to the side of the reference ground tracks when the satellite passes over land. This increases the spatial density of points at the expense of the temporal resolution. For bathymetric purposes the increased spatial resolution gives a more even  coverage of nearshore zone bathymetry. 
 
-However, the land mask that is used to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Both islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the lack of spatial coverage limits the accuracy of the kriging method.
-
-This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations.
+However, the land mask that is used to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Due to apparently being located within the off-pointing zones, both of the aforementioned islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the further reduction in spatial coverage limits the accuracy of the kriging method. This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations. The tradeoff for this scenario is that the temporal resolution is significantly better, so the spaceborne lidar could be useful for studying the changes over time. 
 
 \subsection{Inherent Uncertainty of KDE Method}
 There are a number of input parameters to the filtering and the density-based bathymetry finding methods. These parameters can be optimized for each site to reduce the RMSE error as much as possible if there is some validation data available. However since the end goal of the project is to be able to improve estimates without using any in situ data, ideally there would be no need for optimization based on the site.
@@ -96,21 +94,23 @@ As with data affected by clouds, photons that are a certain distance away from t
 
 Most granules that are affected by this issue have photon locations that are significantly above or below the geoid. Therefore, granules affected by this issue area almost always filtered out by the filtering step that removes photons that are significantly above or below the geoid. Those remaining are often well-distributed in the nearshore zone, so they do not increase density in one vertical location enough to create a false positive or affect the existing result. 
 
-\subsubsection{Apparent Multiple Surface Returns}
+\subsubsection{Apparent Multiple Surface Returns and Specular Returns}
+
+Apparent multiple surface returns and specular returns are a similar phenomenon and are both caused by a saturation of the photon detection circitry. 
 
 These could potentially be a huge issue in very still water, and likely \emph{is} negatively affecting results. They artificially increase the density just below the surface so it could easily be misidentified as signal. They occur 2.3 or 4.2 m below the primary surface return.
 
-\subsubsection{Specular Returns}
-
-This is an example from iceland \pdfcomment{'data_end_utc': '2019-01-14T14:30:20.721564Z', 'atlas_beam_type': 'strong', 'groundtrack_id': 'gt3l'}
+Figure \ref{fig:multiple-surf-returns} is an example from iceland \pdfcomment{'data_end_utc': '2019-01-14T14:30:20.721564Z', 'atlas_beam_type': 'strong', 'groundtrack_id': 'gt3l'}
 
 \pdfcomment{temporary figure, open in python to add title}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/temp_specular_returns.png}
     \caption{An example of specular returns in a transect with bathymetry signal from Greenland. Bathymetry signal can be seen from 1000-3000m, and the specular returns can be seen from about 2700 to 3800m. From 1 jan 2019, beam gt3l, RGT 262.}
-    \label{fig:bathy}
+    \label{fig:multiple-surf-returns}
 \end{figure}
+
+While these can potentially create a false density that could bias the KDE signal finding function, segments that potentially are affected by these two problems can be flagged based on a parameter that is available as part of the ATL03 data product. 
 
 \subsubsection{TEP Misclassified as Signal}
 
@@ -156,6 +156,13 @@ The input data is typically along transects whose orientation varies depending o
 
 
 \section{Kalman Updating}
-Many overlaps with the individual 
-\subsection{Temporal Restrictions}
-s
+
+
+\subsection{Estimation of in-situ standard deviation for GEBCO}
+
+
+\pdfcomment{Potential section in main body: take all sites with good data, compare the GEBCO RMSE, then compare GEBCO error vs the TID categories}
+Could do this based on the TID grid, so far not attempted and just based the gebco uncertainty based on how far 
+
+\subsection{Introducing spurious shoals/shallows}
+The proposed method does reliably decrease the RMSE in all case study sites where validation data was available. RMSE as an error metric is biased towards significant outliers, so significant decreases can be interpreted to mean that overall, some of the largest magnitude errors were removed from the GEBCO data. However, it is possible that artifacts introduced by  

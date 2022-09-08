@@ -1,23 +1,46 @@
 \chapter{Conclusions}
 \section{Research questions}
 \begin{enumerate}
-    \item How can spaceborne lidar transects that contain bathymetry be identified algorithmically?
+    \item How can ICESat-2 transects that contain bathymetry be identified algorithmically?
     
-    One way that a practical improvement could be made is changes to the NSIDC Download API to allow subsetting by variable values. The current API design allows subsetting by time and space, which can drastically reduce download sizes. However, being able to filter based on the data quality before downloading could reduce the bandwidth requiremnts significantly, if certain variables are found that predict bathymetric quality. 
 
-    \rule{\paperwidth}{0.4pt}
-    \color{blue}
+    % \rule{\paperwidth}{0.4pt}
     \begin{itemize}
         \item The KDE algorithm is able to generally find spacecraft passes which contain useful data.
-        \item One downside is that it requires the full algorithm to be return
-        \item another downside is that in medium turbidity waters there is some penetration near the surface, which creates a relatively dense area 
+        \item Once way to handle this could be to download large geographic areas with only a few specific variable subsets, then based on that could find transects that are most likely to contain useful data.
+        \item One downside is that it requires the full algorithm to find bathymetry
+        \item another downside is that in medium turbidity waters there is some penetration near the surface, which creates a relatively dense area which can create a false positive. This is less common in clear waters where typically there is no partial penetration of the water. 
     \end{itemize}
-    \color{black}
     \rule{\paperwidth}{0.4pt}
     
-    \item Once transects with bathymetry are found, how can the seafloor elevation data be extracted?
-    The 
+    One way that a practical improvement could be made is changes to the NSIDC Download API to allow subsetting by variable values. The current API design allows subsetting by time and space, which can drastically reduce download sizes. However, being able to filter based on the data quality before downloading could reduce the bandwidth requirements significantly, if certain variables are found that predict bathymetric quality. 
+    
+    \item Once transects with bathymetry are found, how can nearshore subsurface photon return data be extracted?
+    
+    \begin{itemize}
+        \item Find the sea surface level by averaging the high-confidence ocean photons, then calculate the depth of each photon.
+        \item Filtering the along-transect points based on GEBCO elevation
+        \item Filtering in the Z direction based on a maximum water depth
+        \item Filtering in the Z direction based on geoidal height
+        
+    \end{itemize}
+    \rule{\paperwidth}{0.4pt}
+    
     \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
+    
+    \begin{itemize}
+        \item The KDE method was effective in extracting bathymetric data from ICESat-2 transects
+    \end{itemize}
+    \rule{\paperwidth}{0.4pt}
+    
     \item How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?
-    \item Under what conditions can remote sensing techniques provide useful improvement on bathymetric data estimates?
+    \begin{itemize}
+        \item A kriging interpolator can be used to convert the series of point measurements into a 
+    \end{itemize}
+    \rule{\paperwidth}{0.4pt}
+    \item Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?
+    \begin{itemize}
+        \item 
+    \end{itemize}
+    \rule{\paperwidth}{0.4pt}
 \end{enumerate}
