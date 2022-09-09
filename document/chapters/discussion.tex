@@ -3,6 +3,8 @@
 
 \section{Limitations of ICESat-2 ATL03 data}
 The starting point of this method is the level 2A product ATL03 data from NASA. It consists of raw photon locations and data about the atmospheric and geophysical parameters. 
+
+\subsection{Tidal model errors}
 \subsection{Misclassified photons in ATL03 data}
 
 This the subsurface finding algorithm depends on the accuracy of the ATL03 signal classification for ocean photons. Excluding the ocean surface signal from the KDE algorithm is crucial because the surface signal is often significantly more dense in the vertical direction than the bathymetric signal.
@@ -56,18 +58,18 @@ There are a number of known issues with the ICESat-2 data. They are either due t
 The following known data issues could effect the results of the KDE signal finding algorithm:
 
 \pdfcomment{need to decide which of these apply to subsurface data, some will not (i.e. )}
-\begin{itemize}
-    \item Clouds
-    \item Multiple telemetry bands
-    \item Photon noise bursts % yes
-    \item Apparent multiple surface returns % yes
-    \item Specular returns
-    \item multiple scattering % def an issue, will look at correction
-    \item TEP misidentified as signal % an issue but hard to avoid and rare (per nasa)
-    \item errors following DMUs % 
-    \item background count rate and saturation
-    \item data gaps due to TEP crossing surface % filtering mechanism will catch this
-\end{itemize}
+% \begin{itemize}
+%     \item Clouds
+%     \item Multiple telemetry bands
+%     \item Photon noise bursts % yes
+%     \item Apparent multiple surface returns % yes
+%     \item Specular returns
+%     \item multiple scattering % def an issue, will look at correction
+%     \item TEP misidentified as signal % an issue but hard to avoid and rare (per nasa)
+%     \item errors following DMUs % 
+%     \item background count rate and saturation
+%     \item data gaps due to TEP crossing surface % filtering mechanism will catch this
+% \end{itemize}
 
 \subsubsection{Clouds}
 
