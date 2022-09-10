@@ -54,7 +54,7 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
     To create an upscaled version of the global GEBCO data that incorporates the lidar data, the GEBCO data is first subset to the area of interest and then is resampled bilinearly to a grid in the local UTM coordinate system with the same resolution as the kriging output. Then, the bilinear data is updated using the Kalman update equation for each grid cell. 
 
-    By incorporating the lidar data, the RMSE between the sites can be reduced by up to \pdfcomment{add}
+    By incorporating the lidar data, the RMSE between the sites can be reduced by up to approximately 30\% at the sites tested.
     
     \item Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?
     
@@ -62,6 +62,11 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
 \end{enumerate}
 
-% \section{Recommendations}
-% \pdfcomment{incorporate optical SDB}
-% \pdfcomment{}
+
+Based on the subquestions evaluted, ICESat-2 data can provide reliable ground-truth bathymetry along tracks in areas with clear water. One method of using this data to upscale low-resolution global bathymetry data is to interpolate the point data along these tracks, and then produce a new, upscaled version of the low resolution data by combining the intepolated lidar data with a kalman filter. This method can produce significant reductions in RMSE when compared to high resolution validation data. 
+
+However, the spatial distribution of ATL03 data can be a significant hinderance to the accuracy of the interpolated data. While this method is practical at the scale of a single site \pdfcomment{add area measurement} there are practical constraints on scaling up the approach to the regional or global scale. One is that downloading and finding the bathymetric signal in the L1a product requires non-trivial amounts of computing resources. Another is the practical computational expense of the kriging algorithm.
+
+\section{Recommendations}
+One of the best ways to promote further research on how to use this data would be for NASA to provide a higher-level data product of the bathymetric data. In addition to the signal finding method proposed in this paper, there have been a number of other methods proposed in the literature to isolate bathymetric signal from ATL03 data. These methods are all fundamentally similar to those used for the other data products, like the global vegetation height data (ATL08), ocean elevation (ATL12), or inland water height (ATL13). By providing a pre-calculated bathymetry data product, further research on the best ways to use this data be much more practical, since the bandwidth and comptational resources required to find the data would be orders of magnitude lower.
+
