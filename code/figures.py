@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 
 # from pyrsistent import l
 import numpy as np
+import pandas as pd
 import rasterio
 from atl_module.bathymetry_extraction import icesat_bathymetry
+from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
 from atl_module.geospatial_utils import geospatial_functions
+from atl_module.io.atl03_netcdf_loading import load_beam_array_ncds
 from matplotlib.patches import ConnectionPatch, Rectangle
 from mpl_toolkits.mplot3d import art3d
 from rasterio.plot import show as rastershow
@@ -489,3 +492,55 @@ with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bili
         facecolor="white",
         dpi=500,
     )
+
+
+# %%
+# example for discussion section of the effect of missclassified photons
+missclass_photons_array = load_beam_array_ncds(
+    "../data/test_sites/garawlah/ATL03/processed_ATL03_20210719132927_03961202_005_01.nc",
+    "gt3r",
+)
+
+missclass_df = pd.DataFrame(missclass_photons_array)
+
+# missclass_ph_figure,missclass_ph_ax = plt.subplots()
+
+ax = missclass_df.astype({"oc_sig_conf": "category"}).plot.scatter(
+    x="delta_time",
+    y="Z_geoid",
+    c="oc_sig_conf",
+    cmap="Dark2",
+    figsize=(20, 7.5),
+    xlabel="Seconds into granule",
+    ylabel="Elevation [m+Geoid]",
+    ylim=(-30, 30),
+)
+# %%
+
+filtering_fig, filtering_ax = plt.subplots()
+
+filtered_photon_df = missclass_df.pipe(dfilt.add_gebco)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_gebco, low_limit=-50, high_limit=100)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid, c="red")
+
+# %%
+filtered_photon_df = filtered_photon_df.pipe(
+    dfilt.add_sea_surface_level,
+    rolling_window=500,
+    max_sea_surf_elev=2,
+)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+# %%
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_low_points, filter_below_z=-40)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_depth, filter_below_depth=-40)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.remove_surface_points, n=1)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_high_returns, max_geoid_high_z=5)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_TEP_and_nonassoc)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.correct_for_refraction)
+filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
