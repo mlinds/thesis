@@ -111,7 +111,7 @@ Xcorr, Ycorr, Zcorr = correct_refr(
     depth=depth, pointing_vector_az=0.75 * np.pi, pointing_vector_elev=0.5 * np.pi
 )
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(10, 5))
 
 ax.plot(Zcorr, depth)
 # ax.plot(Xcorr,depth)
@@ -503,7 +503,7 @@ missclass_photons_array = load_beam_array_ncds(
 
 missclass_df = pd.DataFrame(missclass_photons_array)
 
-# missclass_ph_figure,missclass_ph_ax = plt.subplots()
+# missclass_ph_figure,missclass_ph_ax = plt.subplots(figsize=(10,5))
 
 ax = missclass_df.astype({"oc_sig_conf": "category"}).plot.scatter(
     x="delta_time",
@@ -515,32 +515,111 @@ ax = missclass_df.astype({"oc_sig_conf": "category"}).plot.scatter(
     ylabel="Elevation [m+Geoid]",
     ylim=(-30, 30),
 )
-# %%
-
-filtering_fig, filtering_ax = plt.subplots()
-
-filtered_photon_df = missclass_df.pipe(dfilt.add_gebco)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
-filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_gebco, low_limit=-50, high_limit=100)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid, c="red")
 
 # %%
+filter_example_transect = load_beam_array_ncds(
+    "../data/test_sites/florida_keys/ATL03/processed_ATL03_20210601225346_10561101_005_01.nc",
+    "gt3r",
+)
+
+filtering_example_df = pd.DataFrame(filter_example_transect)
+
+filtering_fig, filtering_ax = plt.subplots(figsize=(10, 3))
+
+filtered_photon_df = filtering_example_df.pipe(dfilt.add_gebco)
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    # alpha=0.3,
+    s=1,
+)
+filtering_ax.plot(
+    filtered_photon_df.X,
+    filtered_photon_df.gebco_elev,
+    c="red",
+    label="GEBCO DEM height",
+)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_gebco, low_limit=-50, high_limit=5)
+# filtering_ax.clear()
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    c="green",
+    label="Remaining photons",
+    s=1,
+)
+filtering_ax.legend()
+
+filtering_ax.set_ylabel("Photon elevation [m +geoid]")
+filtering_ax.set_xlabel("Photon Longitude WGS84")
+filtering_fig.savefig(
+    "../document/figures/methodology_gebco_filtering.jpg", bbox_inches="tight"
+)
+
+filtering_fig, filtering_ax = plt.subplots(figsize=(10, 3))
 filtered_photon_df = filtered_photon_df.pipe(
     dfilt.add_sea_surface_level,
     rolling_window=500,
     max_sea_surf_elev=2,
 )
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
-# %%
-filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_low_points, filter_below_z=-40)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    label="Removed due to depth or absolute height",
+    # alpha=0.3,
+    s=2,
+)
+filtering_ax.plot(
+    filtered_photon_df.X,
+    filtered_photon_df.sea_level_interp,
+    c="red",
+    label="Calculated Sea Surface",
+)
 filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_depth, filter_below_depth=-40)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_low_points, filter_below_z=-40)
+
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    c="green",
+    label="Removed due to being at or above sea surface",
+    # alpha=0.3,
+    s=2,
+)
 filtered_photon_df = filtered_photon_df.pipe(dfilt.remove_surface_points, n=1)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    c="orange",
+    # alpha=0.3,
+    s=2,
+)
+filtering_ax.legend()
+
+filtering_ax.set_ylabel("Photon elevation [m +geoid]")
+filtering_ax.set_xlabel("Photon Longitude WGS84")
+filtering_fig.savefig(
+    "../document/figures/methodology_sealvl_filtering.jpg", bbox_inches="tight"
+)
+# %%
+# %%
 filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_high_returns, max_geoid_high_z=5)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
 filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_TEP_and_nonassoc)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
 filtered_photon_df = filtered_photon_df.pipe(dfilt.correct_for_refraction)
-filtering_ax.scatter(filtered_photon_df.delta_time, filtered_photon_df.Z_geoid)
+
+filtering_fig, filtering_ax = plt.subplots(figsize=(10, 3))
+
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    label="Remaining points after filtering",
+    alpha=0.3,
+    s=2,
+)
+filtering_ax.legend()
+filtering_ax.set_ylabel("Photon elevation [m +geoid]")
+filtering_ax.set_xlabel("Photon Longitude WGS84")
+
+filtering_fig.savefig(
+    "../document/figures/methodology_reminaing_after_filtering.jpg", bbox_inches="tight"
+)
