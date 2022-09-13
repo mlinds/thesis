@@ -7,12 +7,12 @@ from atl_module.geospatial_utils.raster_interaction import query_raster
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT
-from rasterio.windows import get_data_window
 from sklearn.metrics import (
     mean_absolute_error,
     mean_absolute_percentage_error,
     mean_squared_error,
     median_absolute_error,
+    r2_score,
 )
 
 detail_logger = setup_logger(name="details")
@@ -77,7 +77,14 @@ def icesat_med_abs_error(bathy_points):
     return med_abs_error
 
 
-def icesat_error_rms_mae(beam_df):
+def icesat_r2_score(bathy_points):
+    bathy_points = bathy_points.loc[:, ["sf_elev_MSL", "true_elevation"]].dropna()
+    # return the RMS error
+    r2_score_val = r2_score(bathy_points.sf_elev_MSL, bathy_points.true_elevation)
+    return r2_score_val
+
+
+def icesat_error_metrics(beam_df):
     # TODO could be deleted, might not be needed
     error_dict = {}
     # go over the each DEM, and find the RMS error with the calculated seafloor
@@ -90,6 +97,7 @@ def icesat_error_rms_mae(beam_df):
     error_dict["RMSE"] = rms_error
     error_dict["MAPE"] = mape
     error_dict["Median Abs error"] = med_abs
+    error_dict["R2 Score"] = icesat_r2_score(beam_df)
 
     return error_dict
 
