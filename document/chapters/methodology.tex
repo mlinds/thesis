@@ -1,14 +1,14 @@
 \chapter{Data Sources and Methods}
-
+\pdfcomment{provide information about ocean color data}
 \pdfcomment{Explain how my processing chain differs from the NASA one}
 \pdfcomment{make sure to explain how I add the ATL03 parameters to find the geoidal height}
+\pdfcomment{mention the UTM grid reprojection steps if they're not mentioned.}
 \section{Data Sources}
-\subsection{Spaceborne lidar}
+\subsection{Spaceborne Lidar}
+
 The main source of data is NASA's ATL03 V005 data product \parencite{icesat2data}. ATL03 is a level 1 data product that consists of the precise latitude, longitude, and elevation for each received photon. As a level 1 data product, it has already undergone some processing by NASA to correct for instrument errors, to classify photons as likely signal or noise for different surface types, and to correct for some geophysical effects including earth tides to provide provide measurements relative to the WGS-84 ellipsoid. 
 
 Additionally, the data includes variables that allow for further corrections and adjustments to the tide-free geoid reference system. These additional variables include correction factors for the tide, ocean surface depression due to atmospheric pressure, and factors to convert the ellipsoidal elevation to a height relative to the tide-free geoid.
-
-From this 
 
 \subsection{GEBCO Global Grid}
 
@@ -16,15 +16,22 @@ The General Bathymetric Chart of the Ocean (GEBCO) is a global grid of topograph
 
 GEBCO has a limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the bayesian updating approach. 
 
-For this project, the 2021 version of the grid was downloaded in NetCDF format.
+\subsection{GlobColour Daily secchi depth data}
 
-\section{Methods}
+The data from \parencite{Garnesson2019} is also linked to each transect to investigate the relationship between the
+
+\section{Methodology}
 
 To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lidar photon data for the area of interest is downloaded, processed into geoidal heights, subset to only include subsurface photons, find bathymetric signal within the subsurface data, interpolate into a 2D grid, then finally combine the interpolated ICESat-2 data with the resampled GEBCO grid within the area of interest.
 
 \subsection{Processing ATL03}
+To download data for a specific site geographic area of interest is created, and this area is passed to the NSIDC download API to use for spatial subsetting. This allows spatial subsetting of the data download which reduces file size. The NSIDC API also allows subsetting by the variable name, so only the ATL03 variables that are relevant for this research are downloaded, which further reduces the file size for practical download and storage of the ATL03 data. 
 
-\subsection{Filtering ATL03 to only include subsurface returns}
+The three variables that define the 3D location in the WGS-84 reference frame of each photon are $h_ph$,$lat_ph$, and $lon_ph$ are located in the $heights$ group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoid height, the two additive factors $geoid$ and $geoid_free2mean$ are included in the download.
+
+These correction factors are not provided for every single photon, but are provided per each 20m segment. 
+
+\subsection{Filtering ATL03 to subsurface returns}
 
 The bathymetric signal that we are seeking to find is located in the shallow-water nearshore zone. Therefore, photons outside that zone need to be removed reduce processing time and eliminate false positives as much as possible. To reduce the downloaded transect data within the area of interest, the following filtering steps are applied to each transect:
 
@@ -46,7 +53,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     
     
     The results of steps 3-5 \pdfcomment{check} are shown in figure \ref{fig:vert_filtering}
-    
+    \pdfcomment{fix legend on this graph}
     \begin{figure}[h!]
         \centering
         \includegraphics[width=\textwidth]{figures/methodology_sealvl_filtering.jpg}
@@ -84,3 +91,46 @@ The input parameters to the signal finding function are:
     \item The size of the window in \emph{number of points}
     \item the cutoff value for the Kernel Density required for point to be considered signal
 \end{enumerate}
+
+\subsection{Interpolation to a 2D grid}
+After the bathymetric signal points are identified per the method in \ref{}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. To convert these densely-spaced vector point locations to a raster of elevation data, and a raster of uncertainty data, geostatistical measures are used.
+
+\subsubsection{Subsampling of Bathymetric points using Poisson Disk Sampling} \label{subsec:poissonsubsampling}
+The bathymetric points are extremely densely spaced, and kriging algorithms are computationally expensive. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the poisson disk sampling technique. 
+
+\subsubsection{Kriging interpolation}
+Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using Universal Kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. 
+
+
+\subsection{Bayesian Data Assimilation using Kalman Filtering}
+The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consist of a loop of two steps, an \emph{Time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The kalman filter equations, for a state $x_k$ and a vector of measurements of the state $z_k$:
+
+Time Update:
+
+\begin{equation}
+    \hat{x}_{\bar{k}} = A\hat{x}_{k-1} + B\hat{u_{k-1}}
+\end{equation}
+
+\begin{equation}
+    P_{\bar{k}} = A P_{k-1} A^T + Q
+\end{equation}
+
+Measurement Update:
+\begin{equation}
+    K = P_{\bar{k}} H^T(H P_{\bar{k}} H^T + R) ^{-1}
+\end{equation}
+
+\begin{equation}
+    \hat{x}_k = \hat{x}_{\bar{k}} + K(\hat{z}_k - H \hat{x}_{\bar{k}})
+\end{equation}
+
+\begin{equation}
+    P_k = (I - KH)P_{\bar{k}}
+\end{equation}
+
+
+The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a bayesian estimate of the bathymetry.  
+
+\subsection{Error Evaluation}
+\pdfcomment{add RMSE error derivation}
+\subsection{Case Studies}
