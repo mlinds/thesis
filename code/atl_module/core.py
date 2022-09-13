@@ -16,7 +16,7 @@ from atl_module.geospatial_utils.geospatial_functions import (
 )
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import add_secchi_depth_to_tracklines
-from atl_module.plotting import error_lidar_pt_vs_truth_pt
+from atl_module.plotting import error_lidar_pt_vs_truth_pt, map_ground_truth_data
 from logzero import setup_logger
 
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
@@ -78,9 +78,9 @@ class GebcoUpscaler:
         self.crs = self.tracklines.estimate_utm_crs()
         try:
             self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
-            run_logger.info(f"Added ocean color data to tracklines")
+            run_logger.info("Added ocean color data to tracklines")
         except ValueError:
-            run_logger.info(f"Unable to get ocean color (Secchi depth) info")
+            run_logger.info("Unable to get ocean color (Secchi depth) info")
         except Exception as exception:
             run_logger.info(f"Secchi depth function raised {exception}")
         finally:
@@ -224,13 +224,13 @@ class GebcoUpscaler:
 
     def lidar_error(self) -> dict:
         """Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it"""
-        lidar_err_dict = error_calc.icesat_error_rms_mae(beam_df=self.bathy_pts_gdf)
-        self.rmse_icesat = lidar_err_dict.get("RMSE")
-        self.mae_icesat = lidar_err_dict.get("MAE")
+        self.lidar_err_dict = error_calc.icesat_error_metrics(beam_df=self.bathy_pts_gdf)
+        self.rmse_icesat = self.lidar_err_dict.get("RMSE")
+        self.mae_icesat = self.lidar_err_dict.get("MAE")
         run_logger.info(
             f"{self.site_name}: RMSE between icesat and truth {self.rmse_icesat}, MAE: {self.mae_icesat}"
         )
-        return pd.DataFrame(lidar_err_dict, index=[self.site_name])
+        return pd.DataFrame(self.lidar_err_dict, index=[self.site_name])
 
     def add_truth_data(self):
 
@@ -293,13 +293,24 @@ class GebcoUpscaler:
     def plot_lidar_error(self):
         # the below can be moved to the object
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.jpg"
-        error_lidar_pt_vs_truth_pt(self.bathy_pts_gdf, self.site_name).get_figure().savefig(
+        error_lidar_pt_vs_truth_pt(
+            self.bathy_pts_gdf, self.site_name, self.lidar_err_dict
+        ).get_figure().savefig(
             outpath,
             facecolor="white",
             bbox_inches="tight",
             dpi=800,
         )
         run_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
+
+    def plot_truth_data(self, plot_title):
+        truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
+        truthdata_figure.savefig(
+            f"{self.site_name}_truth_raster.jpg",
+            dpi=500,
+            facecolor="white",
+            bbox_inches="tight",
+        )
 
     def run_summary(self):
         run_logger.info(
