@@ -53,6 +53,7 @@ if args.verbose:
 site = GebcoUpscaler(
     f"{args.sitename}",
     f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
+    # f"../data/test_sites/oahu/in-situ-DEM/truth.vrt",
 )
 if args.download_atl03:
     site.download_ATL03()
@@ -69,7 +70,7 @@ if args.bathymetry_points:
         min_photons=None,
         min_kde=0.15,
         low_limit=-50,
-        high_limit=2,
+        high_limit=3,
         rolling_window=200,
         max_sea_surf_elev=2,
         filter_below_z=-40,
@@ -80,7 +81,9 @@ if args.bathymetry_points:
     )
 
 if args.lidar_rmse:
+    site.add_truth_data()
     print(site.lidar_error())
+    site.plot_lidar_error()
 
 if args.subset_gebco:
     requested_hres = args.subset_gebco[0]
