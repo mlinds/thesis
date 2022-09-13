@@ -2,7 +2,7 @@
 import geopandas as gpd
 import pandas as pd
 from atl_module.bathymetry_extraction import icesat_bathymetry
-from atl_module.error_calc import icesat_error_rms_mae
+from atl_module.error_calc import icesat_error_metrics
 from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
 from atl_module.geospatial_utils.raster_interaction import query_raster
 
@@ -34,7 +34,7 @@ for windowval in [150]:
     bathy_points = bathy_points[bathy_points.fema_elev != -9999.0]
 
     bathy_points.eval("error = z_kde-fema_elev", inplace=True)
-    rms = icesat_error_rms_mae(bathy_points, ["fema_elev"])
+    rms = icesat_error_metrics(bathy_points, ["fema_elev"])
     # mae = mean_absolute_error(bathy_points.fema_elev,bathy_points.z_kde)
 
     resultdict["Threshold value"].append(windowval)
