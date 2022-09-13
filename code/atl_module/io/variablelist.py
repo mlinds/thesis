@@ -11,6 +11,8 @@ varpaths = [
     "geolocation/reference_photon_lat",
     "geolocation/delta_time",
     "geolocation/surf_type",
+    "geolocation/full_sat_fract",
+    "geolocation/near_sat_fract",
     "heights/h_ph",
     "heights/lat_ph",
     "heights/lon_ph",
