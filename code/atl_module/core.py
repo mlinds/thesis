@@ -16,7 +16,11 @@ from atl_module.geospatial_utils.geospatial_functions import (
 )
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import add_secchi_depth_to_tracklines
-from atl_module.plotting import error_lidar_pt_vs_truth_pt, map_ground_truth_data
+from atl_module.plotting import (
+    error_lidar_pt_vs_truth_pt,
+    map_ground_truth_data,
+    plot_photon_map,
+)
 from logzero import setup_logger
 
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
@@ -311,6 +315,17 @@ class GebcoUpscaler:
             facecolor="white",
             bbox_inches="tight",
         )
+
+    def plot_icesat_points(self):
+        outpath = f"../document/figures/{self.site_name}_photon_map.jpg"
+        icesat_points_figure = plot_photon_map(self.bathy_pts_gdf)
+        icesat_points_figure.savefig(
+            outpath,
+            dpi=400,
+            bbox_inches="tight",
+            facecolor="white",
+        )
+        run_logger.info(f"Photon output written to {outpath}")
 
     def run_summary(self):
         run_logger.info(

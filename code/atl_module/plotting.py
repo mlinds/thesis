@@ -1,3 +1,4 @@
+import contextily as cx
 import matplotlib.pyplot as plt
 import pandas as pd
 import rasterio
@@ -52,3 +53,19 @@ def map_ground_truth_data(truthdata_path, plottitle):
 
         fig.colorbar(image_hidden, ax=ax)
         return fig
+
+
+def plot_photon_map(bathy_pts_gdf):
+    ax = bathy_pts_gdf.plot(
+        figsize=(20, 10),
+        column="z_kde",
+        cmap="inferno",
+        legend=True,
+        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]"},
+    )
+    cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_pts_gdf.crs)
+
+    ax.set_xlabel(f"Easting in {bathy_pts_gdf.crs.name}")
+    ax.set_ylabel(f"Northing in {bathy_pts_gdf.crs.name}")
+    ax.set_title("Bathymetric photons identified by rolling-window KDE")
+    return ax.get_figure()
