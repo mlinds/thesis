@@ -92,7 +92,7 @@ def filter_depth(df, filter_below_depth):
     return df.loc[(depth_series > filter_below_depth)]
 
 
-def remove_surface_points(df, n=3, min_remove=1):
+def remove_surface_points(df, n=1, min_remove=1):
     # remove all points `n` standard deviations away from the sea level
     sea_level_std_dev = df.sea_level_interp.std()
     return df.loc[df.Z_geoid < df.sea_level_interp - max(n * sea_level_std_dev, min_remove)]
