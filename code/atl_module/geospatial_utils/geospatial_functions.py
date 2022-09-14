@@ -78,6 +78,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     filenamelist = []
     geomlist = []
     beam_type_list = []
+    number_photons_list = []
     # percent_high_conf = []
     for h5file in glob.iglob(directory):
 
@@ -108,6 +109,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
                 rgtlist.append(rgt)
                 datelist.append(date)
                 beam_type_list.append(beamtype)
+                number_photons_list.append(len(point_array))
                 # percent_high_conf.append(p_oc_h_conf)
     # get geodataframe in same CRS as icessat data
     gdf = gpd.GeoDataFrame(
@@ -118,6 +120,7 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             "date": datelist,
             "beam": beamlist,
             "beam_type": beam_type_list,
+            "total_photons_count": number_photons_list
             # "Percentage High confidence Ocean Returns": percent_high_conf,
         },
         crs="EPSG:4326",
