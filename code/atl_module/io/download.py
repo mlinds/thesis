@@ -36,7 +36,7 @@ GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 def _get_product_metadata(product_short_name):
     response = requests.get(CMR_COLLECTIONS_URL, params={"short_name": product_short_name})
     results = json.loads(response.content)
-    print(results)
+    # print(results)
 
     # Find all instances of 'version_id' in metadata and print most recent version number
     versions = [el["version_id"] for el in results["feed"]["entry"]]
@@ -95,7 +95,7 @@ def _request_capabilities(
             "".join(("/", v)) if not v.startswith("/") else v for v in variables_raw
         ]
         # what is happening in this entire block?
-        variable_vals = [v.replace(":", "/") for v in variables_join]
+        # variable_vals = [v.replace(":", "/") for v in variables_join]
         # reformatting
         formats = [Format.attrib for Format in root.iter("Format")]
         format_vals = [formats[i]["value"] for i in range(len(formats))]
@@ -287,7 +287,7 @@ def _request_async_func(page_num, session, param_dict, base_url, path):
 
         # Raise bad request: Loop will stop for bad response code.
         request.raise_for_status()
-        print("Order request URL: ", request.url)
+        # print("Order request URL: ", request.url)
         esir_root = ET.fromstring(request.content)
         # print("Order request response XML content: ", request.content)
 
@@ -406,6 +406,9 @@ def _clean_output_folders(path):
 def request_data_download(
     product_short_name, bounding_box, folderpath, vars_, bounds_filepath=None
 ):
+    path = folderpath + "/" + product_short_name
+    if os.listdir(path):
+        raise FileExistsError("Empty the folder before starting")
 
     uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
     pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
@@ -499,7 +502,6 @@ def request_data_download(
 
     # print("ENDPOINTLIST: ", *endpoint_list, sep="\n")
 
-    path = folderpath + "/" + product_short_name
     if not os.path.exists(path):
         os.mkdir(path)
 
