@@ -43,6 +43,14 @@ parser.add_argument("-kr", "--kriging", action="store_true", default=False)
 parser.add_argument("-rmse", "--raster-rmse", action="store_true", default=False)
 parser.add_argument("-lrmse", "--lidar-rmse", action="store_true", default=False)
 
+parser.add_argument(
+    "-p",
+    "--generate_figures",
+    action="store_true",
+    default=False,
+    help="Generate the summary plots for the site",
+)
+
 
 args = parser.parse_args()
 
@@ -81,8 +89,10 @@ if args.bathymetry_points:
     )
 
 if args.lidar_rmse:
+    # add the new data if its not already there
     site.add_truth_data()
-    print(site.lidar_error())
+    # find the error stats and plot them
+    site.lidar_error()
     site.plot_lidar_error()
 
 if args.subset_gebco:
@@ -90,6 +100,7 @@ if args.subset_gebco:
     site.subset_gebco(hres=requested_hres)
 
 if args.kriging:
+    # run the kriging algorithm if requested from the command line
     site.kriging(
         npts=1800,
         samplemethod="dart",
@@ -98,9 +109,12 @@ if args.kriging:
     )
 
 if args.kalman_update:
+    # get the assumed gebco uncertainty
     gebco_uncertainty = args.kalman_update[0]
     site.kalman_update(gebco_uncertainty)
 
 if args.raster_rmse:
-
     print(site.raster_rmse())
+
+if args.generate_figures:
+    site.plot_icesat_points()
