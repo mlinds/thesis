@@ -80,7 +80,7 @@ def _request_capabilities(
     capability_url = f"https://n5eil02u.ecs.nsidc.org/egi/capabilities/{product_short_name}.{latest_version}.xml"
     s = session.get(capability_url)
     response = session.get(s.url, auth=(uid, pswd))
-
+    # print(response.content)
     root = ET.fromstring(response.content)
 
     # collect lists with each service option
@@ -95,7 +95,7 @@ def _request_capabilities(
             "".join(("/", v)) if not v.startswith("/") else v for v in variables_raw
         ]
         # what is happening in this entire block?
-        # variable_vals = [v.replace(":", "/") for v in variables_join]
+        variable_vals = [v.replace(":", "/") for v in variables_join]
         # reformatting
         formats = [Format.attrib for Format in root.iter("Format")]
         format_vals = [formats[i]["value"] for i in range(len(formats))]
@@ -283,7 +283,7 @@ def _request_async_func(page_num, session, param_dict, base_url, path):
         print("Order: ", page_val)
         # For all requests other than spatial file upload, use get function
         request = session.get(base_url, params=param_dict)
-        print("Request HTTP response: ", request.status_code)
+        print("Request HTTP response from async function: ", request.status_code)
 
         # Raise bad request: Loop will stop for bad response code.
         request.raise_for_status()
@@ -362,7 +362,7 @@ def _request_async_func(page_num, session, param_dict, base_url, path):
 def _request_streaming(page_num, session, param_dict, base_url, path):
     print("entering streaming request function")
     param_dict["request_mode"] = "stream"
-    print("Starting Streaming request with param dict", param_dict)
+    # print("Starting Streaming request with param dict", param_dict)
     # print(param_dict)
     for page_val in range(1, page_num + 1):
         print("Order: ", page_val)
@@ -408,7 +408,8 @@ def request_data_download(
 ):
     path = folderpath + "/" + product_short_name
     if os.listdir(path):
-        raise FileExistsError("Empty the folder before starting")
+        print(f"data already in {path} - delete to re-download")
+        return
 
     uid = EARTHDATA_USERNAME  # Enter Earthdata Login user name
     pswd = EARTHDATA_PASSWORD  # Enter Earthdata Login password
