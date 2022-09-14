@@ -605,3 +605,5 @@ practicalities/gebco.tif
 practicalities/gebco.tif.aux.xml
 practicalities/outras2.tif
 practicalities/reproj.tif
+*.xcf
+*.qgz
