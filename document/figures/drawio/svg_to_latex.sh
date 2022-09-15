@@ -1,5 +1,5 @@
 for d in ./*.svg;
 do 
 echo " $(basename $d)"
-inkscape --export-latex -o "$(basename $d).tex" "$d"
+inkscape -D --export-latex -o "$(basename $d).pdf" "$d"
 done
