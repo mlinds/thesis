@@ -20,6 +20,7 @@ from atl_module.plotting import (
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
     plot_photon_map,
+    plot_tracklines_overview,
 )
 from logzero import setup_logger
 
@@ -326,6 +327,16 @@ class GebcoUpscaler:
             facecolor="white",
         )
         run_logger.info(f"Photon output written to {outpath}")
+
+    def plot_tracklines(self):
+        outpath = f"../document/figures/{self.site_name}_tracklines.jpg"
+        trackline_ax = plot_tracklines_overview(self.tracklines)
+        trackline_ax.get_figure().savefig(
+            outpath,
+            dpi=300,
+            facecolor="white",
+            bbox_inches="tight",
+        )
 
     def run_summary(self):
         run_logger.info(

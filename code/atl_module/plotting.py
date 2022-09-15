@@ -69,3 +69,12 @@ def plot_photon_map(bathy_pts_gdf):
     ax.set_ylabel(f"Northing in {bathy_pts_gdf.crs.name}")
     ax.set_title("Bathymetric photons identified by rolling-window KDE")
     return ax.get_figure()
+
+
+def plot_tracklines_overview(tracklines_gdf):
+    ax = tracklines_gdf.plot(figsize=(20, 10))
+    cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
+    ax.set_xlabel(f"Easting in {tracklines_gdf.crs.name}")
+    ax.set_ylabel(f"Northing in {tracklines_gdf.crs.name}")
+    ax.set_title("Study site and tracklines")
+    return ax
