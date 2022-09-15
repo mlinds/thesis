@@ -64,7 +64,7 @@ Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric dep
 \pdfcomment{change colorbars to match}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/florida_test_site_photon_map.jpg}
+    \includegraphics[width=\textwidth]{figures/Florida_keys_photon_map.jpg}
     \caption{Geographic distribution of Bathymetric photon data}
     \label{fig:bathyphotonmap}
 \end{figure}
@@ -85,9 +85,9 @@ However, The Dutch government provides a dataset of point surveys of the Dutch c
             Parameter                                                 & \textbf{Value}                  \\
             \hline
             Location                                                  &                                 \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                       \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                   \\
             Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
-            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up} \\
+            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up}  \\
             Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{look up?} \\
             Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
         \end{tabular}
@@ -101,6 +101,7 @@ The validation data for this site was from a 2021 survey performed by Van Oord.
 \subsection{Error between Jarkus Vs. Survey}
 There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
 \input{tables/Jarkus_vs_survey_data_error.tex}
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
@@ -110,23 +111,72 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 
 \subsection{Jarkus Data kriging and kalman Update}
 \input{tables/jarkus_kalman_rms_error-table.tex}
+
+\section{St. Croix}
+\section{Charlotte Amalie}
+Another test site is the island of Charlotte Amalie in the US Virgin Islands. Basic details about the test site are in \ref{table:charlotteamalie_datatable}
+\begin{table}[htbp]
+    \begin{minipage}{0.5\textwidth}\pdfcomment{fill in table}
+        \centering\begin{tabular}{r l }
+            Parameter                                                 & \textbf{Value} \\
+            \hline
+            Location                                                  &                \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{}{m}      \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}      \\
+            Validation Data vertical 95\% confidence                  & $x$ m          \\
+            Validation Data Horizontal Resolution                     & \qty{}{m}      \\
+            Vertical Datum                                            & lookup         \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Charlotte Amalie}
+    \label{table:charlotteamalie_datatable}
+\end{table}
+Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Charlotteamalie_tracklines.jpg}
+    \caption{ICESat-2 tracks in the Charlotte Amalie Test site}
+    \label{fig:charlotteamalie-tracklines}
+\end{figure}
+
+\subsection{Lidar Points found for site}
+Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of the points
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Charlotteamalie_photon_map.jpg}
+    \caption{Charlotte Amalie points}
+    \label{fig:point-map-charlotteamalie}
+\end{figure}
+
+The error for the site is shown in \ref{fig:charlotteamalie-lidar-bias}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Charlotteamalie_lidar_estimated_vs_truth.jpg}
+    \caption{Bias plot showing the agreement between the validation data and the lidar points for Charlotte Amalie}
+    \label{fig:charlotteamalie-lidar-bias}
+\end{figure}
+
+
 \section{Oahu}
 
 \subsection{Site Conditions Summary}
 \begin{table}[htbp]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
-            Parameter                                                 & \textbf{Value}                              \\
+            Parameter                                                 & \textbf{Value}                      \\
             \hline
-            Location                                                  &                                             \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{0.59}{m}                               \\
-            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}                                   \\
-            Validation Data vertical 95\% confidence                  &  $\sqrt[]{0.20^2 + 0.013 * depth}$ m \\
-            Validation Data Horizontal Resolution                     & \qty{1}{m}                                  \\
-            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)               \\
+            Location                                                  &                                     \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{0.59}{m}                       \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}                           \\
+            Validation Data vertical 95\% confidence                  & $\sqrt[]{0.20^2 + 0.013 * depth}$ m \\
+            Validation Data Horizontal Resolution                     & \qty{1}{m}                          \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)       \\
         \end{tabular}
     \end{minipage}
-    \caption{Site conditions for the Florida Keys site}
+    \caption{Site conditions for the Petten test site}
     \label{table:Oahusitestats}
 \end{table}
 

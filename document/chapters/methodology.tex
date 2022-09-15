@@ -17,20 +17,39 @@ The General Bathymetric Chart of the Ocean (GEBCO) is a global grid of topograph
 
 GEBCO has a limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the bayesian updating approach. 
 
-\subsection{GlobColour Daily secchi depth data}
+\subsection{GlobColour Daily Secchi Disk Depth Data}
 
-The data from \parencite{Garnesson2019} is also linked to each transect to investigate the relationship between the
+To investigate the relationship between the water clarity and the availablity and quality of the bathymetric data from the spaceborne lidar, data from \citeauthor{Garnesson2019} is also linked to each transect to investigate the relationship between the Secchi Disk Depth \pdfcomment{does this need to be defined in the background section} along the transect. The exact data product used is \cite{dailysecchidata}. The data is accessed via the OPeNDAP protocol hosted by the Copernicus Marine Service, using the Xarray python package \parencite{hoyer_stephan_2022_6323468,hoyer2017xarray}.
+
+
 
 \section{Methodology}
 
+\pdfcomment{add a figure for each image}
+
 To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lidar photon data for the area of interest is downloaded, processed into geoidal heights, subset to only include subsurface photons, find bathymetric signal within the subsurface data, interpolate into a 2D grid, then finally combine the interpolated ICESat-2 data with the resampled GEBCO grid within the area of interest. Then, for the test sites, the change in in the various error metrics between the naive bilinear interpolation is calculated. 
+
+
+\begin{figure}[h!]
+    \centering
+    \import{figures/drawio}{Methodology_overview.drawio.svg.pdf_tex}
+    \caption{Overview of the basic methodology}
+    \label{fig:methodology-overview}
+\end{figure}
 
 \subsection{Processing ATL03}
 To download data for a specific site geographic area of interest is created, and this area is passed to the NSIDC download API to use for spatial subsetting. This allows spatial subsetting of the data download which reduces file size. The NSIDC API also allows subsetting by the variable name, so only the ATL03 variables that are relevant for this research are downloaded, which further reduces the file size for practical download and storage of the ATL03 data. 
 
-The three variables that define the 3D location in the WGS-84 reference frame of each photon are \emph{h\_ph},\emph{lat\_ph}, and \emph{lon\_ph} are located in the \emph{heights} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, the two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download.
+The three variables that define the 3D location in the WGS-84 reference frame of each photon are \emph{h\_ph}, \emph{lat\_ph}, and \emph{lon\_ph} are located in the \emph{heights} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, the two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download.
 
-These correction factors are not provided for every single photon but are provided for each 20m segment because they vary at scales that are longer than the photon rate. To find the correct factor for each photon, we need to link the segment-rate variables to the photon rate variables. This is done using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has many functions for manipulating time-series data. 
+These correction factors are not provided for every photon but are provided for each 20m segment because they vary at scales longer than the nominal 0.7m between each photon. To find the correct adjustments factors for each photon, we need to match the segment-rate variables to the photon rate variables. This is done using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has functions for joining time series data.  The segment-rate variable for each photon is determined using the Pandas dataframe \emph{asof()} method to find the closest segment rate variables in time to each photon. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/reference_photon_plot.jpg}
+    \caption{Relation between the regular photons, and the 20m segment rate variables}
+    \label{fig:reference-photon_match} 
+\end{figure}
 
 \subsection{Filtering ATL03 to subsurface returns}
 
@@ -49,7 +68,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \item To remove any high noise, cloud returns, or any remaining high land points not removed in step 1, any points more than 5m above the geoid are removed, based on the approach in \citeauthor{Ranndal2021}.
     \item The local sea-surface elevation $h_{sea}$ is calculated by taking the median elevation of photons that are classified as high-confidence sea surface photons. The water depth for each photon is then calculated. The standard deviation of the elevation high-confidence photons $\sigma_{h_{sea}}$ is also calculated to estimate the magnitude of the wave height at the time of the observation.
     \item Any points with a water depth greater than 40 meters, and points with an geoidal height  less than -40m are removed, based on the same assumption that they are too deep to by bathymetric points. 
-    \item Any points that are higher than the ocean surface elevation + $max(\sigma_{hconf_oc},1)$ are removed. 
+    \item Any points that are higher than $h_{sea} + max(\sigma_{h_{sea}},1)$ are removed. 
     
     
     The results of steps 3-5 \pdfcomment{check} are shown in figure \ref{fig:vert_filtering}
@@ -62,7 +81,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \end{figure}
 \end{enumerate}
 
-After these filtering steps, the resulting subsurface photons for this example transect are shown in figure \ref{fig:remaing_photons}
+After these filtering steps, the resulting subsurface photons for this example transect are shown in figure \ref{fig:remaing_photons}. The bathymetric signal can be seen clearly throughout the entire transect.
 
 \begin{figure}[h!]
     \centering
@@ -71,16 +90,35 @@ After these filtering steps, the resulting subsurface photons for this example t
     \label{fig:remaing_photons}
 \end{figure}
 
-\subsection{Bathymetric Signal Finding}
+An overview of the entire filtering chain is shown in figure \ref{fig:filtering-flowchart}
+
+\begin{figure}[h!]
+    \centering
+    % \input{figures/drawio/Filtering_algo.drawio.svg.tex}
+    \import{figures/drawio}{Filtering_algo.drawio.svg.pdf_tex}
+    \caption{Filtering Process}
+    \label{fig:filtering-flowchart}
+\end{figure}
+
+Finally, before the signal-finding is applied, the Parrish method of refraction correction is applied to all subsurface photons.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/methodology_refraction.jpg}
+    \caption{The refraction correction applied to the remaining photons}
+    \label{fig:refraction-photons}
+\end{figure}
+
+\subsection{Bathymetric Signal Extraction}\label{sec:kdesignalfinding}
 
 The filtering steps reduce the dataset to just photon that are in the subsurface zone. To determine if there is bathymetric signal present, further processing is required. Some proposed methods for separating bathymetric signal photons from noise are explained in section \ref{subsec:denoising}. For this project\pdfcomment{reword?}, a new method is proposed based on a Gaussian Kernel Density Estimation (KDE) function. A function is created that returns the maximum kernel density, and the Z location at which it occurs. $$ f(\hat{z}_{window}) \rightarrow kde_{max},z_{kde_{max}} $$ Figure \ref{fig:kdefunc} shows the KDE function as applied to an example window, and the resulting kernel density plot. The KDE function is highly influenced by the \emph{Bandwidth} parameter. For this implementation, the Scott method \parencite{Scott2015} is used to estimate the required bandwidth based on the distribution of the data. 
 
-This function is applied on a rolling basis to a window of 200 points. This function returns a value for every single point along the transect, including in areas that do not have any noticeable signal. The kernel density value gives an indication of the strength of the peak. To reject the locations where the signal is weak, any points with a KDE value of less than the median value $$ kde_{50} $$ \pdfcomment{maybe just less than median? that decreases RMS error at the florida site} are assigned an NaN value and are dropped from the analysis.
+This function is applied on a rolling basis to a window of 100 adjacent photons. This function returns a value for every single point along the transect, including in areas that do not have any noticeable signal. The kernel density value gives an indication of the strength of the peak. To reject the locations where the signal is weak, any points with a KDE value of less than the median value $$ kde_{50} $$ \pdfcomment{maybe just less than median? that decreases RMS error at the florida site} are assigned an NaN value and are dropped from the analysis.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{figures/2d_kde_plot.png}
-    \caption{KDE function as applied to 2 different windows}
+    \caption{KDE function as applied to single window}
     \label{fig:kdefunc}
 \end{figure}
 
@@ -92,10 +130,16 @@ The input parameters to the signal finding function are:
 \end{enumerate}
 
 \subsection{Interpolation to a 2D grid}
-After the bathymetric signal points are identified per the method in \ref{}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. To convert these densely-spaced vector point locations to a raster of elevation data, and a raster of uncertainty data, geostatistical measures are used.
+
+After the bathymetric signal points are identified per the method in \ref{sec:kdesignalfinding}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. A number of interpolation techniques have been applied to create bathymetry grids from point data. Commonly, inverse-distance weighting (IDW), tension splines, or loess interpolators have been used \parencite{gebcocookbook,Ferreira2017,}.
+
+To convert these densely-spaced vector point locations to a raster of elevation data, and a raster of uncertainty data, geostatistical techniques are used.
+
+
 
 \subsubsection{Subsampling of Bathymetric points using Poisson Disk Sampling} \label{subsec:poissonsubsampling}
-The bathymetric points are extremely densely spaced, and kriging algorithms are computationally expensive. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the poisson disk sampling technique. 
+The bathymetric points are extremely densely spaced, and kriging algorithms are computationally expensive. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the poisson disk sampling technique. \pdfmargincomment{Need to expand on this quite a bit}
+\pdfcomment{add figure showing points selected vs all points}
 
 \subsubsection{Kriging interpolation}
 Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using Universal Kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. 
@@ -132,4 +176,6 @@ The coastal zone is a highly dynamic system. However, for the purposes of this p
 
 \subsection{Error Evaluation}
 \pdfcomment{add RMSE error derivation}
+\subsection{Evaluating transect-level variables which predict bathymetry}
+\pdfcomment{This could potentially be interesting and also help flesh out my answer to my first research question}
 \subsection{Case Studies}
