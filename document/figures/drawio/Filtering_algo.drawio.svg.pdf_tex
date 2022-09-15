@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{593.25bp}%
+    \setlength{\unitlength}{271.07569391bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,28 +50,28 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,1.3539823)%
+  \begin{picture}(1,1.41381175)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.32237674,1.31731985){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}ATL03 returns\end{tabular}}}}%
+    \put(0.16720678,1.3612434){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}ATL03 returns\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.46776233,1.1403287){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Assign GEBCO value to each photon\end{tabular}}}}%
+    \put(0.30554452,1.18140434){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Assign GEBCO value t...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.66750948,1.31731985){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}GEBCO 2021 grid\end{tabular}}}}%
+    \put(0.49368386,1.3612434){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}GEBCO data\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.24020229,0.88116308){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points from zones that are too deep or too high to conta...\end{tabular}}}}%
+    \put(0.30554452,0.9323964){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points from z...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.24020227,0.60935525){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Find local sea surface on the transect by taking the mean and s...\end{tabular}}}}%
+    \put(0.25020943,0.68338846){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Find local sea surface on...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.75853351,0.88116308){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Assign photon depth at each photon based on distance to sea sur...\end{tabular}}}}%
+    \put(0.72055776,0.9323964){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Assign photon depth...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.7585335,0.60935525){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points that are greater than 40m below the sea surface\end{tabular}}}}%
+    \put(0.72055776,0.68338846){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points that a...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=8]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.24020228,0.35018963){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points within one standard deviation of the average sea...\end{tabular}}}}%
+    \put(0.25020943,0.39287919){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove points within one...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=9]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.7585335,0.35018963){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove all points that are higher than 10m above the geoid, tha...\end{tabular}}}}%
+    \put(0.77589286,0.39287919){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Remove all points that are...\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=10]{Filtering_algo.drawio.svg.pdf}}%
-    \put(0.49936789,0.08470291){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Subsurface photon returns\end{tabular}}}}%
+    \put(0.47154982,0.08300265){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Subsurface photon retur...\end{tabular}}}}%
   \end{picture}%
 \endgroup%
