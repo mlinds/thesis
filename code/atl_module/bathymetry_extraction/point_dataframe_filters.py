@@ -44,39 +44,43 @@ def filter_TEP_and_nonassoc(df):
 # TODO rewrite this to include NAs for non-high-confience photons
 def add_sea_surface_level(df, max_sea_surf_elev, rolling_window=200):
     # take rolling median of signal points along track distance
-    sea_level = (
-        df.loc[df.oc_sig_conf >= 4]["Z_geoid"].rolling(rolling_window, center=True).median()
-    )
+    # sea_level = (
+    #     df.loc[df.oc_sig_conf >= 4]["Z_geoid"].rolling(rolling_window, center=True).median()
+    # )
 
-    sigma_sea_level = (
-        df.loc[df.oc_sig_conf == 4]["Z_geoid"].rolling(rolling_window, center=True).std()
-    )
-    sea_level.name = "sea_level"
-    newgdf = df.merge(
-        right=sea_level,
-        how="left",
-        left_index=True,
-        right_index=True,
-        validate="1:1",
-    ).merge(
-        right=sigma_sea_level,
-        how="left",
-        left_index=True,
-        right_index=True,
-        validate="1:1",
-    )
+    # sigma_sea_level = (
+    #     df.loc[df.oc_sig_conf == 4]["Z_geoid"].rolling(rolling_window, center=True).std()
+    # )
+    # sea_level.name = "sea_level"
+    # newgdf = df.merge(
+    #     right=sea_level,
+    #     how="left",
+    #     left_index=True,
+    #     right_index=True,
+    #     validate="1:1",
+    # ).merge(
+    #     right=sigma_sea_level,
+    #     how="left",
+    #     left_index=True,
+    #     right_index=True,
+    #     validate="1:1",
+    # )
 
-    interp_sea_surf_elev = (
-        pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-        # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-        .interpolate(method="index").to_numpy()
-    )
+    # interp_sea_surf_elev = (
+    #     pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+    #     # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
+    #     .interpolate(method="index").to_numpy()
+    # )
+
+    # find the median sea level
     constant_sealevel = df.loc[df.oc_sig_conf >= 4]["Z_geoid"].median()
-    sealevel_df = df.assign(sea_level_interp=constant_sealevel)
+    # find the std deviation
+    constant_sealevel_std = df.loc[df.oc_sig_conf >= 4]["Z_geoid"].std()
+    sealevel_df = df.assign(
+        sea_level_interp=constant_sealevel, sea_level_std_dev=constant_sealevel_std
+    )
 
-    # sealevel_df = df.assign(sea_level_interp=interp_sea_surf_elev)
     sealevel_df = sealevel_df.loc[sealevel_df.sea_level_interp < max_sea_surf_elev]
-    # sealevel_df = sealevel_df.loc[sealevel_df.sea_level_interp > -1*max_sea_surf_elev]
 
     return sealevel_df.dropna()
 
@@ -94,7 +98,8 @@ def filter_depth(df, filter_below_depth):
 
 def remove_surface_points(df, n=1, min_remove=1):
     # remove all points `n` standard deviations away from the sea level
-    sea_level_std_dev = df.sea_level_interp.std()
+    # its constant so just grab the first one
+    sea_level_std_dev = df.sea_level_interp.mean()
     return df.loc[df.Z_geoid < df.sea_level_interp - max(n * sea_level_std_dev, min_remove)]
 
 
