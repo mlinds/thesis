@@ -14,6 +14,13 @@ Bathymetric data is essential for many aspects of the blue economy, including aq
 
 There have been attempts at global bathymetric datasets, most notably the General Bathymetric Chart of the Ocean (GEBCO), which is an annually-updated global bathymetric and topographic dataset. The bathymetry in GEBCO grids is derived by assimilation many different types of historic data, including  acoustic soundings provided by ships and gravimetric bathymetry measurements \parencite{Cesbron2021}. While it provides useful information about deep oceans, GEBCO accuracy in the nearshore zone is limited because sonar data is limited in many shallow nearshore zones. \parencite{Monteys2015}. Additionally, the horizontal and vertical resolution is not sufficient for accurate numerical studies of wave modeling.
 
+\subsection{Spaceborne Lidar}
+
+NASA launched the Ice, Cloud, and land Elevation Satellite-2 (ICESat-2) mission in September 2018. The primary purpose of the mission is to study the height of the glaciers and ice sheets (i.e. the cryosphere), with a secondary purpose of collecting altimetry data of land, vegetation, and the sea surface \parencite{Markus2017}. The satellite carries a lidar altimeter called the Advanced Topographic Laser Altimeter (ATLAS) which counts individual photon returns. The ability to count photons allows the instrument to continuously take high-density lidar measurements along 3 tracks approximately 3km apart, while having power requirements low enough to be carried on a satellite \parencite{Popescu2018}. 
+
+The geodetic location of each detected photon relative to the WGS-84 ellipsoid is calculated based on the roundtrip time of the photon's path, the GPS location of the satellite, and the pointing vector. Because the photon detector is very sensitive, significant noise photons from the sun also are detected. During processing, each photon is assigned a confidence of being signal or noise. This data is released as a level 2A product called ATL03 \parencite{Neumann2019d}.
+
+Bathymetric measurements were not part of the mission design goals. However after the start of the mission researchers found ICESat-2 laser pulses can penetrate the water surface, and returns from the seabed can be detected in optically shallow water \parencite{Parrish2019}. This has allowed a new source of high-accuracy bathymetric data. However, most coastal transects globally data do not contain any data from the seabed. The ability of the laser pulses to reach the seabed is affected by turbidity, atmospheric conditions, and instrument conditions. The best ways of identifying bathymetric data within the photon returns, and how to use these sparse point measurements to improve bathymetric datasets are still an area of active research
 
 \section{Research Question}
 The primary question that this project intends to answer is:
@@ -28,6 +35,7 @@ To answer this question, the following subquestions will be investigated:
       \item How can ICESat-2 transects that contain bathymetry be identified algorithmically?
       \item Once transects with bathymetry are found, how can nearshore subsurface photon returns that are located in the nearshore zone be extracted?
       \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
+      \item What is the potential to scale up bathymetry detection to a global scale to produce high-level processed bathymetry product using ICESat-2 data?
       \item How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?
       \item Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?
 \end{enumerate}
