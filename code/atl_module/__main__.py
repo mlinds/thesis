@@ -80,7 +80,7 @@ if args.bathymetry_points:
     site.find_bathy_from_icesat(
         window=100,
         threshold_val=0.0,
-        req_perc_hconf=20,
+        req_perc_hconf=0,
         window_meters=None,
         min_photons=None,
         min_kde=0.10,
@@ -91,7 +91,7 @@ if args.bathymetry_points:
         filter_below_z=-40,
         filter_below_depth=-40,
         min_ph_count=0,
-        n=2,
+        n=2.5,
         max_geoid_high_z=5,
     )
 
@@ -101,6 +101,7 @@ if args.lidar_rmse:
     # find the error stats and plot them
     site.lidar_error()
     site.plot_lidar_error()
+    site.write_lidar_error_tables()
 
 if args.subset_gebco:
     requested_hres = args.subset_gebco[0]
@@ -127,6 +128,7 @@ if args.raster_rmse:
             # check_kriged=True
         )
     )
+    site.write_raster_error_tables()
 
 if args.generate_maps:
     # redo the summary maps for the results/maybe an appendix
