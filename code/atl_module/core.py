@@ -26,18 +26,19 @@ from logzero import setup_logger
 
 # TODO could move this into the object __init__ method so that the log file is always in path when the obejct is created
 run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
+detail_logger = setup_logger(name="details")
 
 
 class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
-    def __init__(self, site, truebathy=None):
+    def __init__(self, site, site_name, truebathy=None):
         # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
         # set up the site name
-        self.site_name = site.capitalize()
+        self.site_name = site_name
         # base folderpath to join with others
-        self.folderpath = f"../data/test_sites/{site}"
+        self.folderpath = site
         self.gebco_full_path = "/mnt/c/Users/maxli/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
         self.truebathy_path = truebathy
         # set up the paths of the relevant vector files:
@@ -57,7 +58,7 @@ class GebcoUpscaler:
             self.crs = self.tracklines.estimate_utm_crs()
             self.epsg = self.crs.to_epsg()
         else:
-            run_logger.info("Trackline geodata not found - recalculate from netcdf files")
+            detail_logger.info("Trackline geodata not found - recalculate from netcdf files")
 
         #  try to add bathymetry points, print a message if they're not found
         if file_exists(self.bathymetric_point_path):
@@ -75,7 +76,7 @@ class GebcoUpscaler:
         request_full_data_shapefile(
             folderpath=self.folderpath, shapefile_filepath=self.AOI_path
         )
-        run_logger.info(f"ATL03 Data downloaded sucessfully to {self.folderpath}/ATL03")
+        detail_logger.info(f"ATL03 Data downloaded sucessfully to {self.folderpath}/ATL03")
 
     def recalc_tracklines_gdf(self):
         """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
@@ -83,14 +84,14 @@ class GebcoUpscaler:
         self.crs = self.tracklines.estimate_utm_crs()
         try:
             self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
-            run_logger.info("Added ocean color data to tracklines")
+            detail_logger.info("Added ocean color data to tracklines")
         except ValueError:
-            run_logger.info("Unable to get ocean color (Secchi depth) info")
+            detail_logger.info("Unable to get ocean color (Secchi depth) info")
         except Exception as exception:
-            run_logger.info(f"Secchi depth function raised {exception}")
+            detail_logger.info(f"Secchi depth function raised {exception}")
         finally:
             self.tracklines.to_file(self.trackline_path, overwrite=True)
-            run_logger.info(f"Tracklines written to {self.trackline_path}")
+            detail_logger.info(f"Tracklines written to {self.trackline_path}")
 
     def subset_gebco(self, hres: int):
         """Take a subset of GEBCO with the area determined by the extent of the tracklines.gpkg file in the main folder, resampled bilinearly to the requested resolution
@@ -148,7 +149,7 @@ class GebcoUpscaler:
                 "minimum segment photons": min_ph_count,
             }
         )
-        run_logger.info(
+        detail_logger.info(
             f"site: {self.site_name} - Starting bathymetry signal finding with parameters: {self.run_params}"
         )
         bathy_pts = icesat_bathymetry.bathy_from_all_tracks_parallel(
@@ -240,7 +241,7 @@ class GebcoUpscaler:
     def add_truth_data(self):
 
         if self.truebathy_path is None:
-            run_logger.info(
+            detail_logger.info(
                 "No truth data is available, so none was added to the bathymetry dataframe"
             )
         else:
@@ -251,7 +252,7 @@ class GebcoUpscaler:
                 .eval("error = true_elevation - sf_elev_MSL")
                 .eval("error_abs = abs(true_elevation - sf_elev_MSL)")
             )
-            run_logger.info(
+            detail_logger.info(
                 f"Truth data added to Bathymetric Points dataframe for site: {self.site_name}"
             )
 
@@ -295,6 +296,29 @@ class GebcoUpscaler:
         run_logger.info(f"site:{self.site_name} - {self.raster_error_summary.to_json()}")
         return self.raster_error_summary
 
+    def write_error_tables(self):
+        """Write the ICESat-2 error and updated raster error tables for the site"""
+        raster_error_table_path = f"../document/tables/{self.site_name}_kalman_improvement.tex"
+        self.raster_error_summary.style.to_latex(
+            buf=raster_error_table_path,
+            caption="Improvement in error metrics after appyling Kalman Updating of kriged data",
+            hrules=True,
+            label=f"tab:{self.site_name}_lidar_error",
+        )
+        detail_logger.info(f"raster error table written to {raster_error_table_path}")
+
+        # do the lidar output
+        lidar_error_table_path = f"../document/tables/{self.site_name}_lidar_error_table.tex"
+        pd.DataFrame(self.lidar_err_dict, index=[self.site_name]).style.to_latex(
+            buf=lidar_error_table_path,
+            caption="Error between the point bathymetry and ground-truth data",
+            position="h!",
+            hrules=True,
+            label=f"tab:{self.site_name}_lidar_error",
+        )
+        # print to the console that it has been saved
+        detail_logger.info(f"lidar error table written to {lidar_error_table_path}")
+
     def plot_lidar_error(self):
         # the below can be moved to the object
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.jpg"
@@ -306,7 +330,7 @@ class GebcoUpscaler:
             bbox_inches="tight",
             dpi=800,
         )
-        run_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
+        detail_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
 
     def plot_truth_data(self, plot_title):
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
@@ -326,7 +350,7 @@ class GebcoUpscaler:
             bbox_inches="tight",
             facecolor="white",
         )
-        run_logger.info(f"Photon output written to {outpath}")
+        detail_logger.info(f"Photon output written to {outpath}")
 
     def plot_tracklines(self):
         outpath = f"../document/figures/{self.site_name}_tracklines.jpg"
