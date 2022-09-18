@@ -42,15 +42,21 @@ parser.add_argument("-kr", "--kriging", action="store_true", default=False)
 
 parser.add_argument("-rmse", "--raster-rmse", action="store_true", default=False)
 parser.add_argument("-lrmse", "--lidar-rmse", action="store_true", default=False)
-
 parser.add_argument(
-    "-p",
-    "--generate_figures",
+    "-t",
+    "--table-error-metrics",
     action="store_true",
     default=False,
-    help="Generate the summary plots for the site",
+    help="Write the final error statistics to a latex-formatted table in the tables folder",
 )
 
+parser.add_argument(
+    "-geofig",
+    "--generate-maps",
+    action="store_true",
+    default=False,
+    help="Generate the geographic summary maps for the site for the results section",
+)
 
 args = parser.parse_args()
 
@@ -59,32 +65,33 @@ if args.verbose:
 
 
 site = GebcoUpscaler(
-    f"{args.sitename}",
+    f"../data/test_sites/{args.sitename}",
+    args.sitename,
     f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
-    # f"../data/test_sites/oahu/in-situ-DEM/truth.vrt",
 )
 if args.download_atl03:
     site.download_ATL03()
 
 if args.trackline_calc:
     site.recalc_tracklines_gdf()
+    site.plot_tracklines()
 
 if args.bathymetry_points:
     site.find_bathy_from_icesat(
         window=100,
         threshold_val=0.0,
-        req_perc_hconf=0,
+        req_perc_hconf=20,
         window_meters=None,
         min_photons=None,
-        min_kde=0.15,
+        min_kde=0.10,
         low_limit=-50,
-        high_limit=3,
+        high_limit=1,
         rolling_window=200,
         max_sea_surf_elev=2,
         filter_below_z=-40,
         filter_below_depth=-40,
         min_ph_count=0,
-        n=1,
+        n=2,
         max_geoid_high_z=5,
     )
 
@@ -102,7 +109,7 @@ if args.subset_gebco:
 if args.kriging:
     # run the kriging algorithm if requested from the command line
     site.kriging(
-        npts=1800,
+        npts=2000,
         samplemethod="dart",
         kr_model="uk",
         variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 23},
@@ -114,7 +121,19 @@ if args.kalman_update:
     site.kalman_update(gebco_uncertainty)
 
 if args.raster_rmse:
-    print(site.raster_rmse())
+    print(
+        site.raster_rmse(
+            # error_out=True,
+            # check_kriged=True
+        )
+    )
 
-if args.generate_figures:
+if args.generate_maps:
+    # redo the summary maps for the results/maybe an appendix
     site.plot_icesat_points()
+
+if args.table_error_metrics:
+    # rewrite the error tables
+    site.write_error_tables()
+
+# site.run_summary()
