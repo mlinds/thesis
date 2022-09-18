@@ -292,7 +292,7 @@ class GebcoUpscaler:
             },
             orient="index",
         )
-        run_logger.info(self.raster_error_summary.to_json())
+        run_logger.info(f"site:{self.site_name} - {self.raster_error_summary.to_json()}")
         return self.raster_error_summary
 
     def plot_lidar_error(self):
