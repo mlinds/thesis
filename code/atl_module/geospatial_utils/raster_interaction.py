@@ -90,7 +90,7 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     # TODO mask first, before interpolation
 
     # constant that defines location of the GEBCO raster
-    GEBCO_LOCATION = "/mnt/c/Users/XCB/OneDrive - Van Oord/Documents/thesis/data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
+    GEBCO_LOCATION = "../data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF
 
     # get the boundaries in WGS coordinates
