@@ -89,14 +89,10 @@ def icesat_error_metrics(beam_df):
     error_dict = {}
     # go over the each DEM, and find the RMS error with the calculated seafloor
     # get a subset of the dataframe that is the seafloor and the column of interest
-    rms_error = icesat_rmse(beam_df)
-    mae_error = icesat_mae(beam_df)
-    mape = icesat_mape(beam_df)
-    med_abs = icesat_med_abs_error(beam_df)
-    error_dict["MAE"] = mae_error
-    error_dict["RMSE"] = rms_error
-    error_dict["MAPE"] = mape
-    error_dict["Median Abs error"] = med_abs
+    error_dict["MAE"] = icesat_mae(beam_df)
+    error_dict["RMSE"] = icesat_rmse(beam_df)
+    error_dict["MAPE"] = icesat_mape(beam_df)
+    error_dict["Median Abs error"] = icesat_med_abs_error(beam_df)
     error_dict["R2 Score"] = icesat_r2_score(beam_df)
 
     return error_dict
