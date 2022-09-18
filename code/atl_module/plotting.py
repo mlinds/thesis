@@ -9,27 +9,28 @@ from rasterio.plot import show as rastershow
 def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
     ax = df_in.plot.scatter(
         x="true_elevation",
-        y="z_kde",
+        y="sf_elev_MSL",
         xlabel="True Elevation [m +MSL]",
         ylabel="Calculated Elevation [m +MSL]",
         title=f"Lidar Point Vs. Truth Point: {site_name}",
         figsize=(5, 5),
         alpha=0.3,
+        s=3,
     )
 
-    one_to_one_ln_st = min(df_in.true_elevation.min(), df_in.z_kde.min())
-    one_to_one_ln_end = max(df_in.true_elevation.max(), df_in.z_kde.max())
+    one_to_one_ln_st = min(df_in.true_elevation.min(), df_in.sf_elev_MSL.min())
+    one_to_one_ln_end = max(df_in.true_elevation.max(), df_in.sf_elev_MSL.max())
     ax.plot(
         (one_to_one_ln_st, one_to_one_ln_end),
         (one_to_one_ln_st, one_to_one_ln_end),
         c="red",
-        label="1 = 1",
+        label="1=1",
     )
     ax.text(0.1, 0.9, s=f'$RMSE = {error_dict["RMSE"]:.2f}m$', transform=ax.transAxes)
-    ax.text(0.1, 0.8, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
+    ax.text(0.1, 0.85, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
     # ax.text(0.2,0.1,f'RMSE = {error_dict['RMSE']}')
     # ax.text('MAE')
-    # ax.legend()
+    ax.legend()
 
     return ax
 
