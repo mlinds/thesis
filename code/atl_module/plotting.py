@@ -16,6 +16,7 @@ def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
         figsize=(5, 5),
         alpha=0.3,
         s=3,
+        rasterized=True,
     )
 
     one_to_one_ln_st = min(df_in.true_elevation.min(), df_in.sf_elev_MSL.min())
@@ -26,9 +27,8 @@ def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
         c="red",
         label="1=1",
     )
-    ax.text(0.1, 0.9, s=f'$RMSE = {error_dict["RMSE"]:.2f}m$', transform=ax.transAxes)
-    ax.text(0.1, 0.85, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
-    # ax.text(0.2,0.1,f'RMSE = {error_dict['RMSE']}')
+    ax.text(0.1, 0.8, s=f'$RMSE = {error_dict["RMSE"]:.2f}m$', transform=ax.transAxes)
+    ax.text(0.1, 0.75, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
     # ax.text('MAE')
     ax.legend()
 
