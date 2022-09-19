@@ -58,9 +58,9 @@
     \put(0,0){\includegraphics[width=\unitlength,page=2]{Methodology_overview.drawio.svg.pdf}}%
     \put(0.11669626,0.72563857){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}GEBCO\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{Methodology_overview.drawio.svg.pdf}}%
-    \put(0.5198288,0.72563857){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Photon filtering and signal fin...\end{tabular}}}}%
+    \put(0.51982879,0.72563857){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Photon filtering and signal finding\\\ref{sec:kdesignalfinding}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{Methodology_overview.drawio.svg.pdf}}%
-    \put(0.49648955,0.41798479){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Universal Krig...\end{tabular}}}}%
+    \put(0.49648955,0.41798479){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Universal Kriging\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{Methodology_overview.drawio.svg.pdf}}%
     \put(0.51982881,0.55589855){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Point Measurements of bathymetry\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{Methodology_overview.drawio.svg.pdf}}%
