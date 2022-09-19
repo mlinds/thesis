@@ -88,7 +88,7 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
     ax = axes[0]
     ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp, label="sea surf")
     ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp - 1, label="sea surf - 1m")
-    ax.scatter(x=subsurfacedf.delta_time, y=subsurfacedf.Z_refr, s=4)
+    ax.scatter(x=subsurfacedf.delta_time, y=subsurfacedf.Z_refr, s=4, rasterized=True)
     ax.plot(bathy_df.delta_time, bathy_df.z_kde, c="red", alpha=0.7)
     ax.plot(bathy_df.delta_time, bathy_df.true_elevation, c="black", alpha=0.7)
     ax.legend()

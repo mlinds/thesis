@@ -330,7 +330,7 @@ class GebcoUpscaler:
 
     def plot_lidar_error(self):
         # the below can be moved to the object
-        outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.jpg"
+        outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.pdf"
         error_lidar_pt_vs_truth_pt(
             self.bathy_pts_gdf, self.site_name, self.lidar_err_dict
         ).get_figure().savefig(
@@ -344,14 +344,14 @@ class GebcoUpscaler:
     def plot_truth_data(self, plot_title):
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
         truthdata_figure.savefig(
-            f"{self.site_name}_truth_raster.jpg",
+            f"{self.site_name}_truth_raster.pdf",
             dpi=500,
             facecolor="white",
             bbox_inches="tight",
         )
 
     def plot_icesat_points(self):
-        outpath = f"../document/figures/{self.site_name}_photon_map.jpg"
+        outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
         icesat_points_figure = plot_photon_map(self.bathy_pts_gdf)
         icesat_points_figure.savefig(
             outpath,
@@ -362,7 +362,7 @@ class GebcoUpscaler:
         detail_logger.info(f"Photon output written to {outpath}")
 
     def plot_tracklines(self):
-        outpath = f"../document/figures/{self.site_name}_tracklines.jpg"
+        outpath = f"../document/figures/{self.site_name}_tracklines.pdf"
         trackline_ax = plot_tracklines_overview(self.tracklines)
         trackline_ax.get_figure().savefig(
             outpath,
