@@ -123,12 +123,7 @@ if args.kalman_update:
     site.kalman_update(gebco_uncertainty)
 
 if args.raster_rmse:
-    print(
-        site.raster_rmse(
-            # error_out=True,
-            # check_kriged=True
-        )
-    )
+    print(site.raster_rmse(error_out=True, check_kriged=True))
     site.write_raster_error_tables()
 
 if args.generate_maps:
