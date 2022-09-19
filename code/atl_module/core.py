@@ -15,7 +15,10 @@ from atl_module.geospatial_utils.geospatial_functions import (
     to_refr_corrected_gdf,
 )
 from atl_module.io.download import request_full_data_shapefile
-from atl_module.ocean_color import add_secchi_depth_to_tracklines
+from atl_module.ocean_color import (
+    add_secchi_depth_to_tracklines,
+    create_zsd_points_from_tracklines,
+)
 from atl_module.plotting import (
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
@@ -77,6 +80,11 @@ class GebcoUpscaler:
             folderpath=self.folderpath, shapefile_filepath=self.AOI_path
         )
         detail_logger.info(f"ATL03 Data downloaded sucessfully to {self.folderpath}/ATL03")
+
+    def calc_zsdpoints_by_tracks(self):
+        trackline_pts = create_zsd_points_from_tracklines(self.tracklines)
+        trackline_pts = trackline_pts
+        trackline_pts.to_file(os.path.join(self.folderpath, "secchi_pts.gpkg"))
 
     def recalc_tracklines_gdf(self):
         """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
