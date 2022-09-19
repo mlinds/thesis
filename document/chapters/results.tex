@@ -13,13 +13,13 @@ Most research results show that spaceborne lidar is not effective at retrieving 
 However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
 
 \subsection{Site Conditions Summary}
-\begin{table}[h!]
+\begin{table}[h]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
             Parameter                                                 & \textbf{Value}                  \\
             \hline
             Location                                                  &                                 \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                   \\
+            Tidal Range \footcite{Tidal_data_reanalysis2022}          & \qty{2.24}{m}                   \\
             Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
             Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up}  \\
             Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{look up?} \\
@@ -36,7 +36,7 @@ The validation data for this site was from a 2021 survey performed by Van Oord.
 There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
 \input{tables/Jarkus_vs_survey_data_error.tex}
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
     \caption{Jarkus Survey points vs same location on Van Oord Survey data}
@@ -47,18 +47,16 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 \input{tables/jarkus_kalman_rms_error-table.tex}
 
 
-\section{Florida Keys Test Site}
-\subsection{Site Conditions Summary}
-\pdfcomment{Make this in pandas for consistency}
+\section{Marathon Key Test Site}
+The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area has a wide shelf, a microtidal tidal environment, and very clear water, so it is an ideal site to apply this methodolgy. 
 
-
-\begin{table}[h!]
+\begin{table}[h]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
             Parameter                                                      & \textbf{Value}                                 \\
             \hline
             Location                                                       & -81.04472,24.72868                             \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}               & \qty{0.51}{m}                                  \\
+            Tidal Range \footcite{Tidal_data_reanalysis2022}               & \qty{0.51}{m}                                  \\
             Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020}      & \qty{0.0}{m}                                   \\
             Validation Data Vertical RMS error \footcite{Keys2019Lidar}    & \qty{0.056}{m}                                 \\
             Validation Data Horizontal Resolution \footcite{Keys2019Lidar} & \qty{9.4e-6}{ \degree} $\approx$ \qty{0.95}{m} \\
@@ -72,7 +70,7 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 
 \subsection{ICESat-2 Transects within AOI}
 The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below.
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/study_site_tracklines.jpg}
     % \input{figures/study_site_tracklines.pgf}
@@ -81,7 +79,7 @@ The AOI used the validate the method is shown in figure \ref{fig:keys_transects}
 \end{figure}
 \subsection{Validation Data}
 The validation data used for this site is from a detailed lidar survey of the area performed in 2018 and 2019 by Quantum Spatial, Inc. \parencite{Keys2019Lidar}. The survey was performed using a Riegl VQ-880-G hydrographic airborne laser scanner. The instrument is designed for high bathymetric accuracy in shallow water.
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
     \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
@@ -89,7 +87,7 @@ The validation data used for this site is from a detailed lidar survey of the ar
 \end{figure}
 \subsection{Error in lidar photon data}
 After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
     \caption{Comparison between depth calculated with ICESat-2 and true bathy}
@@ -102,7 +100,7 @@ After extracting the bathymetry from the ICESat-2 transects over the study site,
 \subsection{Bathymetric photons}
 Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
 \pdfcomment{change colorbars to match}
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Florida_keys_photon_map.jpg}
     \caption{Geographic distribution of Bathymetric photon data}
@@ -121,7 +119,7 @@ The results when comparing a raw interpolation of GEBCO to
 
 St. Croix is in the US Virgin Islands. \pdfcomment{flesh out}
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Stcroix_tracklines.jpg}
     \caption{Tracklines in the St. Croix site}
@@ -131,7 +129,7 @@ St. Croix is in the US Virgin Islands. \pdfcomment{flesh out}
 \subsection{ICESat-2 Signal Extraction}
 After downloading the above tracklines and processing them, the points shown in were identified by the algorithm as containing bathymetric measurements.
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Stcroix_photon_map.jpg}
     \caption{Point estimates of bathymetry from KDE algorithm }
@@ -144,19 +142,19 @@ This site showed excellent agreement between the point ICESat-2 estimated lidar 
 
 \subsection{Gebco Updating}
 
-The improvement in error is shown in table ref{}
+The improvement in error is shown in table ref{tab:stcroix-raster-error}
 
 \input{tables/Stcroix_kalman_improvement.tex}
 
 \section{Charlotte Amalie}
 Another test site is the island of Charlotte Amalie in the US Virgin Islands. Basic details about the test site are in \ref{table:charlotteamalie_datatable}
-\begin{table}[h!]
+\begin{table}[h]
     \begin{minipage}{0.5\textwidth}\pdfcomment{fill in table}
         \centering\begin{tabular}{r l }
             Parameter                                                 & \textbf{Value} \\
             \hline
             Location                                                  &                \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{}{m}      \\
+            Tidal Range \footcite{Tidal_data_reanalysis2022}          & \qty{}{m}      \\
             Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}      \\
             Validation Data vertical 95\% confidence                  & $x$ m          \\
             Validation Data Horizontal Resolution                     & \qty{}{m}      \\
@@ -166,9 +164,9 @@ Another test site is the island of Charlotte Amalie in the US Virgin Islands. Ba
     \caption{Site conditions for the Charlotte Amalie}
     \label{table:charlotteamalie_datatable}
 \end{table}
-Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{}.
+Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{fig:charlotteamalie-tracklines}.
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Charlotteamalie_tracklines.jpg}
     \caption{ICESat-2 tracks in the Charlotte Amalie Test site}
@@ -178,7 +176,7 @@ Overall there where X \pdfcomment{lookup number of transects} transects of ICESa
 \subsection{Lidar Points found for site}
 Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of the points
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Charlotteamalie_photon_map.jpg}
     \caption{Charlotte Amalie points}
@@ -187,7 +185,7 @@ Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of 
 
 The error for the site is shown in \ref{fig:charlotteamalie-lidar-bias}
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/Charlotteamalie_lidar_estimated_vs_truth.jpg}
     \caption{Bias plot showing the agreement between the validation data and the lidar points for Charlotte Amalie}
@@ -200,7 +198,7 @@ One test site that was selected based on the clear water and the high quality va
 
 Because of the size of the island, the nearshore zone was divided into 8 different zones, for which the data was downloaded and processed seperately. The results were then combined and summarized. A map of the area that shows the available ICESat-2 tracklines and the subareas used to download the and process the data are shown in figure \ref{fig:oahu-all-sites-transects}
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Oahu_all_tracklines.jpg}
     \caption{Transects and subsite distribution for Oahu Test site}
@@ -211,7 +209,7 @@ Because of the size of the island, the nearshore zone was divided into 8 differe
 
 The data for all 8 subsites was downloaded and the filtering and KDE signal finding steps were applied. Figure \ref{fig:oahu-all-photon-map} shows the spatial distribution
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/Oahu_all_sites_photon_points.jpg}
     \caption{The layout of the identified bathymetry point measurements around Oahu}
@@ -226,10 +224,37 @@ The sites varied significantly in in the accuracy of the ICESat-2 point bathymet
 
 The overall bias plot showing all the subsites is shown in figure \ref{fig:oahu-all-bias-plot}
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/Oahu_combined_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_lidar_estimated_vs_truth.jpg}
     \caption{Bias plot for all Oahu subsites combined}
     \label{fig:oahu-all-bias-plot}
+\end{figure}
+
+The reason the RMSE at site 2 is much higher than the rest is that there was a mountain of 120m tall that was in the validation data. If that is removed, the error drops significantly. \pdfcomment{outlier rejection might be a fix for that.}
+\pdfcomment{these two figures could be combined into subplots probably }
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_mountains_removed_lidar_estimated_vs_truth.jpg}
+    \caption{Oahu - all sites with mountain removed}
+    \label{fig:oahu-bias-no-mountains}
+\end{figure}
+
+To get a clearer distribution of the error, figure \ref{fig:oahu-bias-no-mountains} shows the same datset but any truth values over 0 are removed.
+
+\subsection{Kalman Updating}
+
+
+
+\section{Summary}
+The results of all the test sites that used lidar data were combined into a single bias plot shown in figure \ref{fig:all-sites-biasplot}
+
+\subsection{ICESat-2 error}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/all_site_combined_biasplot.pdf}
+    \caption{All lidar points for all sites with validation data}
+    \label{fig:all-sites-biasplot}
 \end{figure}
 
