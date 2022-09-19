@@ -1,10 +1,50 @@
 \chapter{Results}
 
 
-\section{results summary}
 \pdfcomment{Compare the effect of other physical or atmospheric variables on the error, like include an entire section}
 \pdfcomment{Add a point density per sqaure meter for each site}
 \pdfcomment{average depth for each site?}
+
+\section{Random Sampling vs linear sampling along lines}
+
+\section{Petten Test Site}
+Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
+
+However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
+
+\subsection{Site Conditions Summary}
+\begin{table}[h!]
+    \begin{minipage}{0.5\textwidth}
+        \centering\begin{tabular}{r l }
+            Parameter                                                 & \textbf{Value}                  \\
+            \hline
+            Location                                                  &                                 \\
+            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                   \\
+            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
+            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up}  \\
+            Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{look up?} \\
+            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
+        \end{tabular}
+    \end{minipage}
+    \caption{Site conditions for the Florida Keys site}
+    \label{table:Pettensitestats}
+\end{table}
+
+\subsection{Validation data}
+The validation data for this site was from a 2021 survey performed by Van Oord.
+\subsection{Error Jarkus Vs. Survey}
+There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
+\input{tables/Jarkus_vs_survey_data_error.tex}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
+    \caption{Jarkus Survey points vs same location on Van Oord Survey data}
+    \label{fig:jarkus_vs_survey}
+\end{figure}
+
+\subsection{Jarkus Data kriging and kalman Update}
+\input{tables/jarkus_kalman_rms_error-table.tex}
 
 
 \section{Florida Keys Test Site}
@@ -73,45 +113,7 @@ Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric dep
 The results when comparing a raw interpolation of GEBCO to
 % \input{tables/total_raster_error_kalman_vs_bi.tex}
 \input{tables/Florida_keys_kalman_improvement.tex}
-\
-\section{Petten Test Site}
-Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
 
-However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
-
-\subsection{Site Conditions Summary}
-\begin{table}[h!]
-    \begin{minipage}{0.5\textwidth}
-        \centering\begin{tabular}{r l }
-            Parameter                                                 & \textbf{Value}                  \\
-            \hline
-            Location                                                  &                                 \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{2.24}{m}                   \\
-            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{3.86}{m}                   \\
-            Validation Data vertical RMS error                        & \qty{}{m} \pdfcomment{look up}  \\
-            Validation Data Horizontal Resolution                     & \qty{}{m} \pdfcomment{look up?} \\
-            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)   \\
-        \end{tabular}
-    \end{minipage}
-    \caption{Site conditions for the Florida Keys site}
-    \label{table:Pettensitestats}
-\end{table}
-
-\subsection{Validation data}
-The validation data for this site was from a 2021 survey performed by Van Oord.
-\subsection{Error Jarkus Vs. Survey}
-There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
-\input{tables/Jarkus_vs_survey_data_error.tex}
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
-    \caption{Jarkus Survey points vs same location on Van Oord Survey data}
-    \label{fig:jarkus_vs_survey}
-\end{figure}
-
-\subsection{Jarkus Data kriging and kalman Update}
-\input{tables/jarkus_kalman_rms_error-table.tex}
 
 \section{St. Croix}
 
@@ -145,8 +147,6 @@ This site showed excellent agreement between the point ICESat-2 estimated lidar 
 The improvement in error is shown in table ref{}
 
 \input{tables/Stcroix_kalman_improvement.tex}
-
-
 
 \section{Charlotte Amalie}
 Another test site is the island of Charlotte Amalie in the US Virgin Islands. Basic details about the test site are in \ref{table:charlotteamalie_datatable}
@@ -224,7 +224,7 @@ The sites varied significantly in in the accuracy of the ICESat-2 point bathymet
 
 \input{tables/Oahu_all_sites_RMSE_summary.tex}
 
-The overall bias plot showing all the subsites is shown in
+The overall bias plot showing all the subsites is shown in figure \ref{fig:oahu-all-bias-plot}
 
 \begin{figure}[h!]
     \centering
@@ -233,4 +233,3 @@ The overall bias plot showing all the subsites is shown in
     \label{fig:oahu-all-bias-plot}
 \end{figure}
 
-\section{Random Sampling vs linear sampling along lines}
