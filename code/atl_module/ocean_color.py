@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import requests
 import xarray as xr
@@ -13,7 +14,7 @@ DAP_URL = "https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l
 # setup the session upon import
 def _setup_globcolor_api_session(
     COPERNICUS_USERNAME: str, COPERNICUS_PW: str, DAP_URL: str
-) -> xr.Dataset:
+):
     """Create a dataset of the GlobColour Data using the correct login. The xarray dataset uses lazy loading so it can be generated then values can be looked up as needed.
 
     Args:
@@ -32,11 +33,8 @@ def _setup_globcolor_api_session(
     return xr.open_dataset(store)
 
 
-# create the dataset when the module is imported
-ds = _setup_globcolor_api_session(COPERNICUS_USERNAME, COPERNICUS_PW, DAP_URL)
-
-
 def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
+    ds = _setup_globcolor_api_session(COPERNICUS_USERNAME, COPERNICUS_PW, DAP_URL)
     """lookup the disk depth info at a certain location and time.
 
     Args:
@@ -51,8 +49,8 @@ def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
     lat_indexer = xr.DataArray(lat, dims=["points"])
     lon_indexer = xr.DataArray(lon, dims=["points"])
     date_indexer = xr.DataArray(dates, dims=["points"])
-    # load the nearest data within 0.2 degrees of the requested point
-    subset = ds.sel(lat=lat_indexer, lon=lon_indexer, method="nearest", tolerance=0.1).sel(
+    # load the nearest data within 0.1 degrees of the requested point
+    subset = ds.sel(lat=lat_indexer, lon=lon_indexer, method="nearest",).sel(  # tolerance=0.1
         # load the nearest time within 2 days
         time=date_indexer,
         method="nearest",
@@ -65,15 +63,15 @@ def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:
     # return secchi_depth_array
 
 
-def get_color_dataframe(lat, lon, dates):
-    # select the latitude and longitude
-    subset = ds.sel(
-        lat=lat,
-        lon=lon,
-        method="nearest"
-        # get the closest date
-    ).sel(time=dates, method="nearest")
-    return subset.to_dataframe()
+# def get_color_dataframe(lat, lon, dates,ds):
+#     # select the latitude and longitude
+#     subset = ds.sel(
+#         lat=lat,
+#         lon=lon,
+#         method="nearest"
+#         # get the closest date
+#     ).sel(time=dates, method="nearest")
+#     return subset.to_dataframe()
 
 
 def add_secchi_depth_to_tracklines(df_input: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -101,3 +99,39 @@ def add_secchi_depth_to_tracklines(df_input: gpd.GeoDataFrame) -> gpd.GeoDataFra
         secchi_depth=zsd_vals,
         secchi_depth_unc=zsd_sigma_vals,
     )
+
+
+# def add_secchi_depth_to_photons(df_input: gpd.GeoDataFrame):
+#     rounded_df = df_input.loc[:, ["X", "Y"]].apply(lambda x: round(x * 16) / 16)
+#     rounded_df["date"] = pd.to_datetime(df_input.delta_time).dt.date
+#     rounded_df.drop_duplicates(inplace=True)
+
+
+def _resample_line(linestring):
+    distances = np.arange(0, linestring.length, 0.025)
+    points = [linestring.interpolate(distance) for distance in distances] + [
+        linestring.boundary[1]
+    ]
+    return points
+
+
+def create_zsd_points_from_tracklines(df_input):
+    # change the datetime to only the nearest day
+    df_input["date"] = pd.to_datetime(df_input.date).dt.date
+    # empty list to keep the points and their dates
+    allpts = []
+    for trackline in df_input.itertuples():
+        points = _resample_line(trackline.geometry)
+        date_points = [[trackline.date, pointgeom] for pointgeom in points]
+        allpts = allpts + date_points
+    sample_pts_gdf = gpd.GeoDataFrame(
+        allpts, geometry="geometry", columns=["date", "geometry"], crs="EPSG:4326"
+    )
+    # get the actualy secchi depth info
+    a, b = get_zsd_info(
+        sample_pts_gdf.geometry.y, sample_pts_gdf.geometry.x, sample_pts_gdf.date
+    )
+    sample_pts_gdf = sample_pts_gdf.assign(
+        zsd=a, sigma_zsd=b, date=pd.to_datetime(sample_pts_gdf.date)
+    )
+    return sample_pts_gdf
