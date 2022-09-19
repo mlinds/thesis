@@ -16,32 +16,31 @@ from mpl_toolkits.mplot3d import art3d
 from rasterio.plot import show as rastershow
 from scipy.stats import gaussian_kde
 
-plt.rcParams["font.family"] = "Sans Serif"
 # %% [markdown]
 # # Plots of Filtering Process
 
 # %%
-site = "florida_keys"
-with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
-    fig, ax = plt.subplots(figsize=(20, 17))
-    ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
-    ax.set_ylabel(f"Degrees latitude in {femaras.crs}")
-    ax.set_title("FEMA 2019 post-Irma topobathymetric Lidar data")
-    # cx.add_basemap(ax,source=cx.providers.OpenTopoMap,crs=femaras.crs)
-    image_hidden = ax.imshow(
-        femaras.read(1, masked=True),
-        cmap="inferno",
-    )
-    rastershow(femaras, cmap="inferno", ax=ax)
+# site = "florida_keys"
+# with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
+#     fig, ax = plt.subplots(figsize=(20, 17))
+#     ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
+#     ax.set_ylabel(f"Degrees latitude in {femaras.crs}")
+#     ax.set_title("FEMA 2019 post-Irma topobathymetric Lidar data")
+#     # cx.add_basemap(ax,source=cx.providers.OpenTopoMap,crs=femaras.crs)
+#     image_hidden = ax.imshow(
+#         femaras.read(1, masked=True),
+#         cmap="inferno",
+#     )
+#     rastershow(femaras, cmap="inferno", ax=ax)
 
-    fig.colorbar(image_hidden, ax=ax)
-# %%
-fig.savefig(
-    f"../document/figures/{site}_ras.jpg",
-    dpi=500,
-    facecolor="white",
-    bbox_inches="tight",
-)
+#     fig.colorbar(image_hidden, ax=ax)
+# # %%
+# fig.savefig(
+#     f"../document/figures/{site}_ras.pdf",
+#     dpi=500,
+#     facecolor="white",
+#     bbox_inches="tight",
+# )
 # %%
 beamdata = icesat_bathymetry.load_beam_array_ncds(
     "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc",
@@ -59,11 +58,18 @@ def get_photon_plot_axis():
 
 fig, ax = get_photon_plot_axis()
 
-ax.scatter(beamdata.dist_or, beamdata.Z_geoid, s=1, label="All Photons from beam", alpha=0.2)
+ax.scatter(
+    beamdata.dist_or,
+    beamdata.Z_geoid,
+    s=1,
+    label="All Photons from beam",
+    alpha=0.2,
+    rasterized=True,
+)
 ax.set_title("Photon Filtering results")
 ax.legend()
 fig.savefig(
-    "../document/figures/unfiltered_transect.jpg",
+    "../document/figures/unfiltered_transect.pdf",
     facecolor="white",
     bbox_inches="tight",
 )
@@ -85,10 +91,11 @@ ax.scatter(
     s=1,
     label="Geolocated photons after filtering",
     alpha=0.2,
+    rasterized=True,
 )
 ax.legend()
 fig.savefig(
-    "../document/figures/filtered_vs_unfiltered.jpg",
+    "../document/figures/filtered_vs_unfiltered.pdf",
     facecolor="white",
     bbox_inches="tight",
 )
@@ -96,7 +103,7 @@ fig, ax = get_photon_plot_axis()
 ax.set_title("Photons after filtering")
 ax.scatter(beamdata.dist_or, beamdata.Z_geoid, c="red", s=1, label="Photons")
 fig.savefig(
-    "../document/figures/photons_after_filtering.jpg",
+    "../document/figures/photons_after_filtering.pdf",
     facecolor="white",
     bbox_inches="tight",
 )
@@ -184,12 +191,14 @@ ax2dkde = fig.add_subplot(2, 2, 2)
 ax2dkde.set_xlabel("Probability Density")
 ax2dkde.set_ylabel("Photon Elevation [m +msl]")
 
-ax2d.scatter(
+subsurf_ph = ax2d.scatter(
     point_dataframe.dist_or,
     point_dataframe.Z_geoid,
-    label="Neighboring Photons",
+    label="Subsurface Photons",
     zorder=-1,
     alpha=0.3,
+    rasterized=True,
+    s=4,
 )
 
 
@@ -213,9 +222,7 @@ for startpt in [1200]:
     )
     subsetdf = point_dataframe[startpt : startpt + 100]
     photons_in_window = ax2d.scatter(
-        subsetdf.dist_or,
-        subsetdf.Z_geoid,
-        label="Photons within window",
+        subsetdf.dist_or, subsetdf.Z_geoid, label="Photons within window", s=4
     )
 
     window_height = 50
@@ -253,12 +260,12 @@ for startpt in [1200]:
 ax2d.set_ylim(-50, 5)
 ax2dkde.set_ylim(-50, 5)
 
-ax2d.legend(handles=[rectangle, photons_in_window, sf_elev])
+ax2d.legend(handles=[rectangle, photons_in_window, sf_elev, subsurf_ph])
 ax2d.set_title("Geolocated Photon Returns")
-ax2dkde.set_title("Kernel Density with Horizonal windowing")
+ax2dkde.set_title("Kernel density with horizonal windowing")
 fig.show()
 
-fig.savefig("../document/figures/2d_kde_plot.png", bbox_inches="tight")
+fig.savefig("../document/figures/2d_kde_plot.pdf", bbox_inches="tight")
 
 # %%
 # create a 3d figure showing how the rolling window kde function works to find the max density
@@ -274,8 +281,10 @@ ax = fig.add_subplot(1, 1, 1, projection="3d")
 ax.scatter(
     xs=point_dataframe.dist_or,
     ys=point_dataframe.Z_geoid,
-    label="Photons in bathymetric returns",
+    label="Photons in subsurface zone",
     zorder=-1,
+    rasterized=True,
+    s=4,
 )
 # lims = ax1.get_xlim()
 
@@ -351,7 +360,7 @@ ax.set_ylabel("Depth +MSL [m]")
 ax.set_zlim(0, 0.2)
 ax.set_ylim(-50, 5)
 fig.show()
-fig.savefig("../document/figures/3d_kde_function.png")
+fig.savefig("../document/figures/3d_kde_function.pdf")
 
 
 # %% [markdown]
@@ -416,7 +425,7 @@ ax.scatter(
 
 ax.legend(loc="lower left")
 fig.savefig(
-    "../document/figures/1d_kriging_section.jpg",
+    "../document/figures/1d_kriging_section.pdf",
     dpi=500,
     bbox_inches="tight",
     facecolor="white",
@@ -475,7 +484,7 @@ ax.legend(loc="lower left")
 ax.set_ylabel("Elevation [m]")
 ax.set_xlabel("Easting [m UTM 17N]")
 fig.savefig(
-    "../document/figures/kalman_1d_section.jpg",
+    "../document/figures/kalman_1d_section.pdf",
     dpi=500,
     bbox_inches="tight",
     facecolor="white",
@@ -497,7 +506,7 @@ with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bili
 
     fig.colorbar(image_hidden, ax=ax)
     fig.savefig(
-        fname="../document/figures/horizontal_section.jpg",
+        fname="../document/figures/horizontal_section.pdf",
         bbox_inches="tight",
         facecolor="white",
         dpi=500,
@@ -542,6 +551,7 @@ filtering_ax.scatter(
     filtered_photon_df.Z_geoid,
     # alpha=0.3,
     s=1,
+    rasterized=True,
 )
 filtering_ax.plot(
     filtered_photon_df.X,
@@ -557,13 +567,14 @@ filtering_ax.scatter(
     c="green",
     label="Remaining photons",
     s=1,
+    rasterized=True,
 )
 filtering_ax.legend()
 
 filtering_ax.set_ylabel("Photon elevation [m +geoid]")
 filtering_ax.set_xlabel("Photon Longitude WGS84")
 filtering_fig.savefig(
-    "../document/figures/methodology_gebco_filtering.jpg", bbox_inches="tight"
+    "../document/figures/methodology_gebco_filtering.pdf", bbox_inches="tight"
 )
 
 filtering_fig, filtering_ax = plt.subplots(figsize=(10, 3))
@@ -578,6 +589,7 @@ filtering_ax.scatter(
     label="Removed due to depth or absolute height",
     # alpha=0.3,
     s=2,
+    rasterized=True,
 )
 filtering_ax.plot(
     filtered_photon_df.X,
@@ -595,6 +607,7 @@ filtering_ax.scatter(
     label="Removed due to being at or above sea surface",
     # alpha=0.3,
     s=2,
+    rasterized=True,
 )
 filtered_photon_df = filtered_photon_df.pipe(dfilt.remove_surface_points, n=1)
 filtering_ax.scatter(
@@ -603,13 +616,14 @@ filtering_ax.scatter(
     c="orange",
     # alpha=0.3,
     s=2,
+    rasterized=True,
 )
 filtering_ax.legend()
 
 filtering_ax.set_ylabel("Photon elevation [m +geoid]")
 filtering_ax.set_xlabel("Photon Longitude WGS84")
 filtering_fig.savefig(
-    "../document/figures/methodology_sealvl_filtering.jpg", bbox_inches="tight"
+    "../document/figures/methodology_sealvl_filtering.pdf", bbox_inches="tight"
 )
 # %%
 # %%
@@ -625,11 +639,12 @@ filtering_ax.scatter(
     label="Remaining points after filtering",
     alpha=0.3,
     s=2,
+    rasterized=True,
 )
 filtering_ax.legend()
 filtering_ax.set_ylabel("Photon elevation [m +geoid]")
 filtering_ax.set_xlabel("Photon Longitude WGS84")
 
 filtering_fig.savefig(
-    "../document/figures/methodology_reminaing_after_filtering.jpg", bbox_inches="tight"
+    "../document/figures/methodology_reminaing_after_filtering.pdf", bbox_inches="tight"
 )
