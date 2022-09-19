@@ -94,7 +94,7 @@ The ICESat-2 mission is intended to gather high resolution topographic data on a
       \label{fig:icesat-rgts}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more relflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher int he water column \parencite{Ranndal2021}
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher int he water column \parencite{Ranndal2021}
 
 \begin{figure}[htbp]
       \centering
@@ -280,7 +280,7 @@ Prior research that has used some variation of the proposed technique are summar
                   \item The idea behind the extended kalman is you have unknowns in a state vector $x_{t+1} = f(x_t) + w_t$, where $f(...)$ is the forward transition model and $w_t$ is the model error or noise and is modeled as a multivariate gaussian random vector
                   \item Measurements in the system are defined as $y_t = h(x_{t+1}) + v_t$
                   \item EKF gives the posterior mean ($X_{t+1 | t+1}$)
-                  \item EKF gives accurate results in the least-squares sense, but its not practical due to the amount of matrix multiplication of large matrices and the cost of computing jacobian matricies.
+                  \item EKF gives accurate results in the least-squares sense, but its not practical due to the amount of matrix multiplication of large matrices and the cost of computing jacobian matrices.
             \end{itemize}
       \item This EKF can be made more efficient using Compressed-state Kalman filter (Also from \parencite{Ghorbanidehno2019})
             \begin{itemize}
