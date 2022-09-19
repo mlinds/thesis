@@ -21,7 +21,7 @@ plt.rcParams["font.family"] = "Sans Serif"
 # # Plots of Filtering Process
 
 # %%
-site = "oahu"
+site = "florida_keys"
 with rasterio.open(f"../data/test_sites/{site}/in-situ-DEM/truth.vrt") as femaras:
     fig, ax = plt.subplots(figsize=(20, 17))
     ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
@@ -68,12 +68,13 @@ fig.savefig(
     bbox_inches="tight",
 )
 beamdata = icesat_bathymetry._filter_points(
-    beamdatalow_limit=-40,
+    beamdata,
+    low_limit=-40,
     high_limit=2,
     rolling_window=200,
     max_sea_surf_elev=1,
-    filter_below_z=-80,
-    filter_below_depth=-80,
+    filter_below_z=-40,
+    filter_below_depth=-40,
     n=1,
     max_geoid_high_z=5,
 )
@@ -126,8 +127,17 @@ beam = "gt3l"
 beamdata = icesat_bathymetry.load_beam_array_ncds(atl03_testfile, beam)
 
 raw_data = icesat_bathymetry.add_along_track_dist(beamdata)
-# .pipe(point_dataframe_filters.add_sea_surface_level)
-point_dataframe = icesat_bathymetry._filter_points(raw_data)
+point_dataframe = icesat_bathymetry._filter_points(
+    raw_data,
+    low_limit=-50,
+    high_limit=2,
+    rolling_window=100,
+    max_sea_surf_elev=1,
+    filter_below_z=-40,
+    filter_below_depth=-40,
+    n=2,
+    max_geoid_high_z=5,
+)
 
 # get a 1km
 point_dataframe = point_dataframe.query("dist_or > 2000 and dist_or < 6000")
@@ -497,7 +507,7 @@ with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bili
 # %%
 # example for discussion section of the effect of missclassified photons
 missclass_photons_array = load_beam_array_ncds(
-    "../data/test_sites/garawlah/ATL03/processed_ATL03_20210719132927_03961202_005_01.nc",
+    "../data/unused_sites/garawlah/ATL03/processed_ATL03_20210719132927_03961202_005_01.nc",
     "gt3r",
 )
 
