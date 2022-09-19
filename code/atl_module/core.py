@@ -296,17 +296,18 @@ class GebcoUpscaler:
         run_logger.info(f"site:{self.site_name} - {self.raster_error_summary.to_json()}")
         return self.raster_error_summary
 
-    def write_error_tables(self):
+    def write_raster_error_tables(self):
         """Write the ICESat-2 error and updated raster error tables for the site"""
         raster_error_table_path = f"../document/tables/{self.site_name}_kalman_improvement.tex"
         self.raster_error_summary.style.to_latex(
             buf=raster_error_table_path,
             caption="Improvement in error metrics after appyling Kalman Updating of kriged data",
             hrules=True,
-            label=f"tab:{self.site_name}_lidar_error",
+            label=f"tab:{self.site_name}_gebco_raster_error",
         )
         detail_logger.info(f"raster error table written to {raster_error_table_path}")
 
+    def write_lidar_error_tables(self):
         # do the lidar output
         lidar_error_table_path = f"../document/tables/{self.site_name}_lidar_error_table.tex"
         pd.DataFrame(self.lidar_err_dict, index=[self.site_name]).style.to_latex(
