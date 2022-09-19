@@ -12,7 +12,7 @@
 \pdfcomment{Make this in pandas for consistency}
 
 
-\begin{table}[htbp]
+\begin{table}[h!]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
             Parameter                                                      & \textbf{Value}                                 \\
@@ -49,9 +49,9 @@ The validation data used for this site is from a detailed lidar survey of the ar
 \end{figure}
 \subsection{Error in lidar photon data}
 After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
-\begin{figure}[htbp]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
     \caption{Comparison between depth calculated with ICESat-2 and true bathy}
     \label{fig:fl_truth_vs_measured_points}
 \end{figure}
@@ -71,7 +71,8 @@ Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric dep
 
 \subsection{Lidar updated GEBCO vs. Simple bilinear Interpolation}
 The results when comparing a raw interpolation of GEBCO to
-\input{tables/total_raster_error_kalman_vs_bi.tex}
+% \input{tables/total_raster_error_kalman_vs_bi.tex}
+\input{tables/Florida_keys_kalman_improvement.tex}
 \
 \section{Petten Test Site}
 Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
@@ -79,7 +80,7 @@ Most research results show that spaceborne lidar is not effective at retrieving 
 However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
 
 \subsection{Site Conditions Summary}
-\begin{table}[htbp]
+\begin{table}[h!]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
             Parameter                                                 & \textbf{Value}                  \\
@@ -98,7 +99,7 @@ However, The Dutch government provides a dataset of point surveys of the Dutch c
 
 \subsection{Validation data}
 The validation data for this site was from a 2021 survey performed by Van Oord.
-\subsection{Error between Jarkus Vs. Survey}
+\subsection{Error Jarkus Vs. Survey}
 There was some error between the Jarkus survey points and the Van Oord 1m surveyed grid. The error metrics are shown in table \ref{tab:jarkus_vs_survey_error}, and the distribution of the error is shown in figure
 \input{tables/Jarkus_vs_survey_data_error.tex}
 
@@ -113,9 +114,43 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 \input{tables/jarkus_kalman_rms_error-table.tex}
 
 \section{St. Croix}
+
+\subsection{Site Characteristics}
+
+St. Croix is in the US Virgin Islands. \pdfcomment{flesh out}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Stcroix_tracklines.jpg}
+    \caption{Tracklines in the St. Croix site}
+    \label{fig:st-croix-tracklines}
+\end{figure}
+
+\subsection{ICESat-2 Signal Extraction}
+After downloading the above tracklines and processing them, the points shown in were identified by the algorithm as containing bathymetric measurements.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Stcroix_photon_map.jpg}
+    \caption{Point estimates of bathymetry from KDE algorithm }
+    \label{fig:stcroix-bathy-points}
+\end{figure}
+
+This site showed excellent agreement between the point ICESat-2 estimated lidar and the validaton data. The error metrics are shown in table
+
+\input{tables/Stcroix_lidar_error_table.tex}
+
+\subsection{Gebco Updating}
+
+The improvement in error is shown in table ref{}
+
+\input{tables/Stcroix_kalman_improvement.tex}
+
+
+
 \section{Charlotte Amalie}
 Another test site is the island of Charlotte Amalie in the US Virgin Islands. Basic details about the test site are in \ref{table:charlotteamalie_datatable}
-\begin{table}[htbp]
+\begin{table}[h!]
     \begin{minipage}{0.5\textwidth}\pdfcomment{fill in table}
         \centering\begin{tabular}{r l }
             Parameter                                                 & \textbf{Value} \\
@@ -133,7 +168,7 @@ Another test site is the island of Charlotte Amalie in the US Virgin Islands. Ba
 \end{table}
 Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{}.
 
-\begin{figure}[htbp]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/Charlotteamalie_tracklines.jpg}
     \caption{ICESat-2 tracks in the Charlotte Amalie Test site}
@@ -143,7 +178,7 @@ Overall there where X \pdfcomment{lookup number of transects} transects of ICESa
 \subsection{Lidar Points found for site}
 Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of the points
 
-\begin{figure}[htbp]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/Charlotteamalie_photon_map.jpg}
     \caption{Charlotte Amalie points}
@@ -152,32 +187,50 @@ Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of 
 
 The error for the site is shown in \ref{fig:charlotteamalie-lidar-bias}
 
-\begin{figure}[htbp]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/Charlotteamalie_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/Charlotteamalie_lidar_estimated_vs_truth.jpg}
     \caption{Bias plot showing the agreement between the validation data and the lidar points for Charlotte Amalie}
     \label{fig:charlotteamalie-lidar-bias}
 \end{figure}
 
 
 \section{Oahu}
+One test site that was selected based on the clear water and the high quality validation data is the Island of Oahu, in the US state of Hawai'i. The island has an extremely varied shelf and coastal environment along its length, to it provides the ability to test the results in in areas with a variety of offshore slopes and wave energy environments.
 
-\subsection{Site Conditions Summary}
-\begin{table}[htbp]
-    \begin{minipage}{0.5\textwidth}
-        \centering\begin{tabular}{r l }
-            Parameter                                                 & \textbf{Value}                      \\
-            \hline
-            Location                                                  &                                     \\
-            Tidal Range \footcite{tidal_data_reanalysis2022}          & \qty{0.59}{m}                       \\
-            Average Secchi Depth \footcite{ACRI-STGlobColourTeam2020} & \qty{}{m}                           \\
-            Validation Data vertical 95\% confidence                  & $\sqrt[]{0.20^2 + 0.013 * depth}$ m \\
-            Validation Data Horizontal Resolution                     & \qty{1}{m}                          \\
-            Vertical Datum                                            & Normaal Amsterdams Peil (NAP)       \\
-        \end{tabular}
-    \end{minipage}
-    \caption{Site conditions for the Petten test site}
-    \label{table:Oahusitestats}
-\end{table}
+Because of the size of the island, the nearshore zone was divided into 8 different zones, for which the data was downloaded and processed seperately. The results were then combined and summarized. A map of the area that shows the available ICESat-2 tracklines and the subareas used to download the and process the data are shown in figure \ref{fig:oahu-all-sites-transects}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Oahu_all_tracklines.jpg}
+    \caption{Transects and subsite distribution for Oahu Test site}
+    \label{fig:oahu-all-sites-transects}
+\end{figure}
+
+\subsection{ICESat-2 Signal Extraction}
+
+The data for all 8 subsites was downloaded and the filtering and KDE signal finding steps were applied. Figure \ref{fig:oahu-all-photon-map} shows the spatial distribution
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Oahu_all_sites_photon_points.jpg}
+    \caption{The layout of the identified bathymetry point measurements around Oahu}
+    \label{fig:oahu-all-photon-map}
+\end{figure}
+
+The sites varied significantly in in the accuracy of the ICESat-2 point bathymetry. Some sites showed a significant RMS error due to the precense of mountain peaks up to a few hundred meters high with small horizontal footprint. These features are not captured by the GEBCO grid and therefore photon returns below them are not filtered due to the GEBCO-based horizontal filtering. Table \ref{table:Oahusitestats} contains the compiled error metrics for each site.
+
+\pdfcomment{add to discussion section} \pdfcomment{good to explain with a figure I think}
+
+\input{tables/Oahu_all_sites_RMSE_summary.tex}
+
+The overall bias plot showing all the subsites is shown in
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Oahu_combined_lidar_estimated_vs_truth.jpg}
+    \caption{Bias plot for all Oahu subsites combined}
+    \label{fig:oahu-all-bias-plot}
+\end{figure}
 
 \section{Random Sampling vs linear sampling along lines}
