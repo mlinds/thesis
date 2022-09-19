@@ -73,8 +73,9 @@ if args.download_atl03:
     site.download_ATL03()
 
 if args.trackline_calc:
-    site.recalc_tracklines_gdf()
-    site.plot_tracklines()
+    # site.recalc_tracklines_gdf()
+    site.calc_zsdpoints_by_tracks()
+    # site.plot_tracklines()
 
 if args.bathymetry_points:
     site.find_bathy_from_icesat(
@@ -111,7 +112,7 @@ if args.kriging:
     # run the kriging algorithm if requested from the command line
     site.kriging(
         npts=2000,
-        samplemethod="dart",
+        samplemethod="random",
         kr_model="uk",
         variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 23},
     )
