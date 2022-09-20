@@ -337,7 +337,6 @@ class GebcoUpscaler:
             outpath,
             facecolor="white",
             bbox_inches="tight",
-            dpi=800,
         )
         detail_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
 
@@ -345,7 +344,6 @@ class GebcoUpscaler:
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
         truthdata_figure.savefig(
             f"{self.site_name}_truth_raster.pdf",
-            dpi=500,
             facecolor="white",
             bbox_inches="tight",
         )
@@ -355,7 +353,6 @@ class GebcoUpscaler:
         icesat_points_figure = plot_photon_map(self.bathy_pts_gdf)
         icesat_points_figure.savefig(
             outpath,
-            dpi=400,
             bbox_inches="tight",
             facecolor="white",
         )
@@ -366,10 +363,10 @@ class GebcoUpscaler:
         trackline_ax = plot_tracklines_overview(self.tracklines)
         trackline_ax.get_figure().savefig(
             outpath,
-            dpi=300,
             facecolor="white",
             bbox_inches="tight",
         )
+        detail_logger.info(f"trackline output written to {outpath}")
 
     def run_summary(self):
         run_logger.info(
