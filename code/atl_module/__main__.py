@@ -73,8 +73,8 @@ if args.download_atl03:
     site.download_ATL03()
 
 if args.trackline_calc:
-    # site.recalc_tracklines_gdf()
-    site.calc_zsdpoints_by_tracks()
+    site.recalc_tracklines_gdf()
+    # site.calc_zsdpoints_by_tracks()
     # site.plot_tracklines()
 
 if args.bathymetry_points:
@@ -85,7 +85,7 @@ if args.bathymetry_points:
         window_meters=None,
         min_photons=None,
         min_kde=0.10,
-        low_limit=-50,
+        low_limit=-40,
         high_limit=1,
         rolling_window=200,
         max_sea_surf_elev=2,
@@ -112,7 +112,7 @@ if args.kriging:
     # run the kriging algorithm if requested from the command line
     site.kriging(
         npts=2000,
-        samplemethod="random",
+        samplemethod="dart",
         kr_model="uk",
         variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 23},
     )
@@ -129,6 +129,7 @@ if args.raster_rmse:
 if args.generate_maps:
     # redo the summary maps for the results/maybe an appendix
     site.plot_icesat_points()
+    site.plot_tracklines()
 
 if args.table_error_metrics:
     # rewrite the error tables
