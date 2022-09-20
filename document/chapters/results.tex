@@ -5,7 +5,7 @@
 \pdfcomment{Add a point density per sqaure meter for each site}
 \pdfcomment{average depth for each site?}
 
-\section{Random Sampling vs linear sampling along lines}
+% \section{Random Sampling vs sampling along lines}
 
 \section{Petten Test Site}
 Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
@@ -72,24 +72,25 @@ The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area 
 The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/study_site_tracklines.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/florida_keys_tracklines.pdf}
     % \input{figures/study_site_tracklines.pgf}
     \caption{Location of ICESat-2 Transects in Florida keys Study Area}
     \label{fig:keys_transects}
 \end{figure}
 \subsection{Validation Data}
 The validation data used for this site is from a detailed lidar survey of the area performed in 2018 and 2019 by Quantum Spatial, Inc. \parencite{Keys2019Lidar}. The survey was performed using a Riegl VQ-880-G hydrographic airborne laser scanner. The instrument is designed for high bathymetric accuracy in shallow water.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
-    \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
-    \label{fig:truebathy}
-\end{figure}
+%removing validation data for now, maybe replace this with a contour map 
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
+%     \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
+%     \label{fig:truebathy}
+% \end{figure}
 \subsection{Error in lidar photon data}
 After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/Florida_keys_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/florida_keys_lidar_estimated_vs_truth.pdf}
     \caption{Comparison between depth calculated with ICESat-2 and true bathy}
     \label{fig:fl_truth_vs_measured_points}
 \end{figure}
@@ -102,7 +103,7 @@ Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric dep
 \pdfcomment{change colorbars to match}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Florida_keys_photon_map.jpg}
+    \includegraphics[width=\textwidth]{figures/Florida_keys_photon_map.pdf}
     \caption{Geographic distribution of Bathymetric photon data}
     \label{fig:bathyphotonmap}
 \end{figure}
@@ -121,7 +122,7 @@ St. Croix is in the US Virgin Islands. \pdfcomment{flesh out}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Stcroix_tracklines.jpg}
+    \includegraphics[width=\textwidth]{figures/Stcroix_tracklines.pdf}
     \caption{Tracklines in the St. Croix site}
     \label{fig:st-croix-tracklines}
 \end{figure}
@@ -131,7 +132,7 @@ After downloading the above tracklines and processing them, the points shown in 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Stcroix_photon_map.jpg}
+    \includegraphics[width=\textwidth]{figures/Stcroix_photon_map.pdf}
     \caption{Point estimates of bathymetry from KDE algorithm }
     \label{fig:stcroix-bathy-points}
 \end{figure}
@@ -164,30 +165,30 @@ Another test site is the island of Charlotte Amalie in the US Virgin Islands. Ba
     \caption{Site conditions for the Charlotte Amalie}
     \label{table:charlotteamalie_datatable}
 \end{table}
-Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{fig:charlotteamalie-tracklines}.
+Overall there where X \pdfcomment{lookup number of transects} transects of ICESat-2 data available for the site, and their distribution is shown in figure \ref{fig:charlotteamalietracklines}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Charlotteamalie_tracklines.jpg}
+    \includegraphics[width=\textwidth]{figures/Charlotteamalie_tracklines.pdf}
     \caption{ICESat-2 tracks in the Charlotte Amalie Test site}
-    \label{fig:charlotteamalie-tracklines}
+    \label{fig:charlotteamalietracklines}
 \end{figure}
 
 \subsection{Lidar Points found for site}
-Figure \ref{fig:point-map-charlotteamalie} shows the geographic distribution of the points
+Figure \ref{fig:pointmapcharlotteamalie} shows the geographic distribution of the points
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Charlotteamalie_photon_map.jpg}
+    \includegraphics[width=\textwidth]{figures/Charlotteamalie_photon_map.pdf}
     \caption{Charlotte Amalie points}
-    \label{fig:point-map-charlotteamalie}
+    \label{fig:pointmapcharlotteamalie}
 \end{figure}
 
 The error for the site is shown in \ref{fig:charlotteamalie-lidar-bias}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/Charlotteamalie_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.5\textwidth]{figures/charlotteamalie_lidar_estimated_vs_truth.pdf}
     \caption{Bias plot showing the agreement between the validation data and the lidar points for Charlotte Amalie}
     \label{fig:charlotteamalie-lidar-bias}
 \end{figure}
@@ -200,7 +201,7 @@ Because of the size of the island, the nearshore zone was divided into 8 differe
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Oahu_all_tracklines.jpg}
+    \includegraphics[width=\textwidth]{figures/Oahu_all_tracklines.pdf}
     \caption{Transects and subsite distribution for Oahu Test site}
     \label{fig:oahu-all-sites-transects}
 \end{figure}
@@ -211,7 +212,7 @@ The data for all 8 subsites was downloaded and the filtering and KDE signal find
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/Oahu_all_sites_photon_points.jpg}
+    \includegraphics[width=\textwidth]{figures/Oahu_all_sites_photon_points.pdf}
     \caption{The layout of the identified bathymetry point measurements around Oahu}
     \label{fig:oahu-all-photon-map}
 \end{figure}
@@ -226,7 +227,7 @@ The overall bias plot showing all the subsites is shown in figure \ref{fig:oahu-
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_lidar_estimated_vs_truth.pdf}
     \caption{Bias plot for all Oahu subsites combined}
     \label{fig:oahu-all-bias-plot}
 \end{figure}
@@ -235,12 +236,12 @@ The reason the RMSE at site 2 is much higher than the rest is that there was a m
 \pdfcomment{these two figures could be combined into subplots probably }
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_mountains_removed_lidar_estimated_vs_truth.jpg}
+    \includegraphics[width=0.7\textwidth]{figures/Oahu_combined_mountains_removed_lidar_estimated_vs_truth.pdf}
     \caption{Oahu - all sites with mountain removed}
     \label{fig:oahu-bias-no-mountains}
 \end{figure}
 
-To get a clearer distribution of the error, figure \ref{fig:oahu-bias-no-mountains} shows the same datset but any truth values over 0 are removed.
+To better show the distribution of the error smaller erros, figure \ref{fig:oahu-bias-no-mountains} shows the same combination of points, but with the outlier values 
 
 \subsection{Kalman Updating}
 

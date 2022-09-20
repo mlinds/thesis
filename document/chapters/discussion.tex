@@ -18,7 +18,7 @@ This could potentially be mitigated by a different filtering strategy calculates
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{figures/ageeba_beach_example.png}
-    \caption{Classification of photons from 2021-07-19, Beam gt3r, reference ground track 396. The two parallel straight lines from 200 to 800 are the sea surface and the bathymetric signal. The default signal classification algorithm misclassifies the bathymetric points}
+    \caption{Classification of photons from 2021-07-19, Beam gt3r, reference ground track 396. The two parallel straight lines from 200 to 800 are the sea surface and the bathymetric signal. The NASA photon classification algorithm misclassifies the bathymetric points as ocean surface returns}
     \label{fig:ageeba_bad_classes}
 \end{figure}
 
@@ -58,33 +58,21 @@ There are a number of known issues with the ICESat-2 data. They are either due t
 
 The following known data issues could effect the results of the KDE signal finding algorithm:
 
-\pdfcomment{need to decide which of these apply to subsurface data, some will not (i.e. )}
-% \begin{itemize}
-%     \item Clouds
-%     \item Multiple telemetry bands
-%     \item Photon noise bursts % yes
-%     \item Apparent multiple surface returns % yes
-%     \item Specular returns
-%     \item multiple scattering % def an issue, will look at correction
-%     \item TEP misidentified as signal % an issue but hard to avoid and rare (per nasa)
-%     \item errors following DMUs % 
-%     \item background count rate and saturation
-%     \item data gaps due to TEP crossing surface % filtering mechanism will catch this
-% \end{itemize}
-
 \subsubsection{Clouds}
+
+
+The presence of some clouds along a single granule can cause the loss of data that might otherwise be valid
 
 Clouds reflect sunlight which causes a higher background photon rate, and this can create issues with the telemetry bands and cause the telemetry bands to not include the surface. Even if the actual earth surface is included in the telemetry band, the clouds can affect the travel times and create inaccurate readings \parencite{atl03knownissues}.
 
-During processing from L0 to L1, if NASA reference DEM is not within the telemetry bands, no photons will be classified as signal. Therefore, if the entire granule is affected by this issue, there will be no sea surface found and therefore the entire granule will be filtered out. This can cause a significant loss of data but it is an issue inherent to nearly any remote-sensing based approach. One possible way to mitigate this would be to combine the ICESat-2 bathymetry data with synthetic aperture radar (SAR) remote sensing data. SAR remote sensing data can penetrate clouds becaues it uses radiometry outside of the visible spectrum. It cannot directly penetrate even clear water, but SAR data can be used for kinematic satellite-derived bathymetry. The bathymetry estimates from SAR-based kinematic SDB could be incorporated into the Kalman filtering step, and the ICESat-2 data could also be used for validation of the 
+During processing from L0 to L1, if the elevation from NASA reference DEM is not within the telemetry bands, no photons will be classified as signal. Therefore, if the entire granule is affected by this issue, there will be no sea surface found and therefore the entire granule will be filtered out. This can cause a significant loss of data but it is an issue inherent to nearly any remote-sensing based approach. One possible way to mitigate this would be to combine the ICESat-2 bathymetry data with synthetic aperture radar (SAR) remote sensing data. SAR remote sensing data can penetrate clouds because it uses radiometry outside of the visible spectrum. Although the spectrum used in SAR sensing cannot directly penetrate even clear water, the data can be used to estimate wave conditions, and the bathymetry can be estimated based on the transformation of the wave (called \emph{wave kinematic satellite-derived bathymetry}). The bathymetry estimates from SAR-derived wave kinematic SDB could be incorporated into the Kalman filtering step. 
 
 In situations where the photons are able to pass through clouds, the changes to travel time through the clouds can affect the accuracy. This could potentially be something that is hard to detect and affect the accuracy of the bathymetric points if any are found.
-
-Additionally, the presence of some clouds along a single granule can cause the loss of data that might otherwise be valid.  
+ 
 
 \subsubsection{Multiple Telemetry Bands}
 
-If the signal detection on board the satellite cannot determine where the primary surface is located, it will open another telemetry band to try to collect more signal. This can create other areas of photons that are significantly above or below the surface. The effect of this are shown in \ref{fig:multiple_tel_bands}
+If the signal detection on board the satellite cannot determine where the primary surface is located, it will open another telemetry band to try to collect more signal. This can create other areas of photons that are significantly above or below the surface. The effect of is shown in figure \ref{fig:multiple_tel_bands}
 
 \begin{figure}[h!]
     \centering
@@ -99,9 +87,7 @@ Most granules that are affected by this issue have photon locations that are sig
 
 \subsubsection{Apparent Multiple Surface Returns and Specular Returns}
 
-Apparent multiple surface returns and specular returns are a similar phenomenon and are both caused by a saturation of the photon detection circitry. 
-
-These could potentially be a huge issue in very still water, and likely \emph{is} negatively affecting results. They artificially increase the density just below the surface so it could easily be misidentified as signal. They occur 2.3 or 4.2 m below the primary surface return.
+Apparent multiple surface returns and specular returns are a similar phenomenon and are both caused by a saturation of the photon sensor. These could potentially be a source of error in very still water, and likely \emph{is} negatively affecting results in some sites. They artificially increase the density just below the surface so it could easily be misidentified as signal. They occur 2.3 or 4.2 m below the primary surface return. \pdfcomment{is there a spike in detected depths at 2.3 or 4.2m?}
 
 Figure \ref{fig:multiple-surf-returns} is an example from iceland \pdfcomment{data end utc: 2019 01 14T14:30:20.721564Z atlas beam type: strong groundtrack id: gt3l}
 
@@ -117,19 +103,13 @@ While these can potentially create a false density that could bias the KDE signa
 
 \subsubsection{TEP Misclassified as Signal}
 
-In manual inspections, no transects have been found to exhibit this problem. However, if it were present this could present two problems to the signal finding algorithm. The first is that it could confound the KDE signal finding by creating more along the TEP. If TEP photons are correctly classified as TEP photons, then they are exluded from all the signal findin. 
+In manual inspections, no transects have been found to exhibit this problem. However, if it were present this could present two problems to the signal finding algorithm. The first is that it could confound the KDE signal finding by creating more along the TEP. If TEP photons are correctly classified as TEP photons, then they are exluded from all the signal finding. 
 
 The second and likely most significant issue is that the sea surface location is based on the signal classification. If there are incorrectly classified sea surface photons, the algorithm might not exclude the strong signal that is present around the sea surface. For the KDE to work accurately it needs to exclude the stronger signal of the sea surface. 
 
-% \subsubsection{Errors Following DMUs}
+\subsection{Water clarity requirements}
 
-% \pdfcomment{double check on the need for this}
-% I believe that I have seen this error before, maybe need to check the major activities log to find granules to toss out
-
-
-\subsection{Water Clarity Requirements}
-
-Most of the world's coasts are sandy and are typically turbid most or all of the year. This presents a significant restriction on spaceborne bathymetry. Of the test sites that were evaluated as part of this project, only sites with exceptionally clear water were able to produce significant bathymetric signal within ICESat-2. Therefore it was evaluated mostly at tropical test sites with a carbonate sedimentary environments.  
+Most of the world's coasts are sandy and are typically turbid most or all of the year. This presents a significant restriction on spaceborne bathymetry that requires penetration of the water surface. Of the test sites that were evaluated as part of this project, only sites with exceptionally clear water were able to produce significant bathymetric signal within ICESat-2. Therefore it was evaluated mostly at tropical test sites with a carbonate sedimentary environments.  
 
 \subsection{Temporal limits}
 
