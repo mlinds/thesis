@@ -1,6 +1,5 @@
 # from pykrige.rk import RegressionKriging
 import geopandas as gpd
-import pandas as pd
 import pdal
 import rasterio
 import rioxarray
@@ -11,12 +10,19 @@ from pykrige.uk import UniversalKriging
 detail_logger = setup_logger(name="details")
 
 
-def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
-    # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
-    pdal_array = (
+def _rename_pts_gdf(pts_gdf_all):
+    renamed_df = (
         pts_gdf_all.assign(easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y)
         .loc[:, ["northing", "easting", "sf_elev_MSL"]]
         .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
+    )
+    return renamed_df
+
+
+def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
+    # create a numpy array that PDAL can read by subsetting the columns and renaming the northing, easting, etc columns to the LAS defaults (X,Y,Z)
+    pdal_array = (
+        pts_gdf_all
         # pdal understands record arrays, so use a record array
         .to_records(index=False)
     )
@@ -39,12 +45,7 @@ def _relaxation_dart_throwing(pts_gdf_all, npts, crs):
 
 def _prepare_random_sample(pts_gdf_all, npts, crs):
     # get rename the columns and sample npts rows from the dataframe
-    pts_gdf_sample = (
-        pts_gdf_all.assign(easting=pts_gdf_all.geometry.x, northing=pts_gdf_all.geometry.y)
-        .loc[:, ["northing", "easting", "sf_elev_MSL"]]
-        .rename(columns={"northing": "Y", "easting": "X", "sf_elev_MSL": "Z"})
-        .sample(npts)
-    )
+    pts_gdf_sample = pts_gdf_all.sample(npts)
     # write it to a gdf since the original geometry was lost
     pts_gdf = gpd.GeoDataFrame(
         pts_gdf_sample,
@@ -56,6 +57,13 @@ def _prepare_random_sample(pts_gdf_all, npts, crs):
 def prepare_pt_subset_for_kriging(pts_gdf_all, folderpath, npts, crs, samplemethod):
     # path for the output geopackage
     outpath = folderpath + "/kriging_pts"
+    pts_gdf_all = _rename_pts_gdf(pts_gdf_all)
+    # if we have fewer than the
+    if len(pts_gdf_all) < npts:
+        return gpd.GeoDataFrame(
+            pts_gdf_all,
+            geometry=gpd.points_from_xy(pts_gdf_all["X"], pts_gdf_all["Y"], crs=crs),
+        )
 
     if samplemethod == "dart":
         pts_gdf = _relaxation_dart_throwing(pts_gdf_all, npts, crs)
