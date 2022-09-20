@@ -539,7 +539,7 @@ font.serif:       Utopia, Computer Modern Roman, New Century Schoolbook, Century
 #figure.labelsize:   large     # size of the figure label (``Figure.sup[x|y]label()``)
 #figure.labelweight: normal    # weight of the figure label
 #figure.figsize:     6.4, 4.8  # figure size in inches
-figure.dpi:         1000       # figure dots per inch
+figure.dpi:          100       # figure dots per inch
 #figure.facecolor:   white     # figure face color
 #figure.edgecolor:   white     # figure edge color
 #figure.frameon:     True      # enable figure frame
@@ -659,7 +659,7 @@ figure.dpi:         1000       # figure dots per inch
 ## The default savefig parameters can be different from the display parameters
 ## e.g., you may want a higher resolution, or to make the figure
 ## background white
-savefig.dpi:        1000      # figure dots per inch or 'figure'
+savefig.dpi:        100      # figure dots per inch or 'figure'
 #savefig.facecolor: auto        # figure face color when saving
 #savefig.edgecolor: auto        # figure edge color when saving
 #savefig.format:    png         # {png, ps, pdf, svg}
