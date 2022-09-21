@@ -143,7 +143,7 @@ The implementation used is from the PDAL software library \parencite{howard_butl
 Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using Universal Kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach.
 
 
-\subsection{Bayesian Data Assimilation using Kalman Filtering}
+\subsection{Bayesian data assimilation using kalman update equation}
 The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consist of a loop of two steps, an \emph{Time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations, for a state $x_k$ and a vector of measurements of the state $z_k$:
 
 Time Update:

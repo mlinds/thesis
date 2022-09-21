@@ -123,11 +123,13 @@ The selected universal kriging interpolator provides both an estimate of the int
 
 The largest practical limitation to the bayesian updating method is the requirement to interpolate the data. kriging interpolaters are ideal because the are robust to outlier and provide an uncertainty estimate as well as a depth estimate. The downside of the kriging interpolator is both the comptation expense, and the requirement that points are not too close together. If points are to close to one another, the kriging matrix is not soluble, and the algorithm has a complexity of $\mathcal{O}(n^3)$ where $n$ is the number of points. This means that there is a relatively strict practical limitation to the number of points that can be used as input to the interpolator. The upper limit with a laptop with 32GB RAM was found to be approximately 2000 points without exceeding the available memory. One way to deal with this is to use a tiling strategy, and repeat the process using tiles which contain 2000 bathymetric points or less. This would need to be done adaptively since the bathymetric points are not evenly distributed. Each tile would take longer to solve, but it would at least be feasible using a consumer grade computer. It is also possible that the kriging algorithm could be implemented using a graphics card which might give significant performance gains.
 
-\subsection{Heterogenous Spatial Distribution of Input Data}
+\subsection{Heterogenous spatial distribution of ICESat-2 photons}
 
-The input data is typically along transects whose orientation varies depending on the coastline, and there are often gaps in these transects where the bathymetric signal is weaker. These gaps are shown in figure \ref{fig:distribution-of-bathy-points-in-space} The gaps of weaker signal can be caused by areas that are too deep to be optically clear to the lidar, or due to instrument/atmospheric issues discussed in \ref{sec:discussion-photon-issues}. 
+Due to the orbit of ICESat-2, the ATL03 data is available along transects $\pm \ang{6}$ relative to north. Because of this pattern, even if there was perfect bathmetry data along every single ICESat-2 transect within the study area, the spatial distribution of the points would be anisotropic. Given that there are gaps in these transects where the bathymetric signal is weaker, the spatial distribution of the data can very significantly by site. These gaps along transects can be seen in figure \ref{fig:distribution-of-bathy-points-in-space}. The gaps of weaker signal can be caused by areas that are too deep to be optically clear to the lidar, or due to instrument/atmospheric issues (\ref{sec:discussion-photon-issues}). 
 
-This irregular distribution means that in some places far away from bathymetric signal, the upscaled estimate might not be any better than the original, so the accuracy improvement could be uneven. 
+This irregular distribution means that in some places far away from bathymetric signal, the upscaled estimate might not be any better than the original, so any accuracy gains are likely unevenly distributed across the site. 
+
+\pdfcomment{discuss results of random sampling tests}
 
 \pdfcomment{replace with a map that has a color scale bar for the bathymetry, includes maybe a subset map and a map collar}
 \begin{figure}[h!]
@@ -136,8 +138,6 @@ This irregular distribution means that in some places far away from bathymetric 
     \caption{Spatial distribution of bathymetry points in St. Croix north end, and the true bathymetry}
     \label{fig:distribution-of-bathy-points-in-space}
 \end{figure}
-
-% \subsection{Kriging Parameter Estimation}
 
 
 \section{Kalman Updating}

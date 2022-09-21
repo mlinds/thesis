@@ -6,32 +6,16 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 \begin{enumerate}
     \item How can ICESat-2 transects that contain bathymetry be identified algorithmically?
 
-    % \rule{\paperwidth}{0.4pt}
-    % \begin{itemize}
-    %     \item The KDE algorithm is able to generally find spacecraft passes which contain useful data.
-    %     \item Once way to handle this could be to download large geographic areas with only a few specific variable subsets, then based on that could find transects that are most likely to contain useful data.
-    %     \item One downside is that it requires the full algorithm to find bathymetry
-    %     \item another downside is that in medium turbidity waters there is some penetration near the surface, which creates a relatively dense area which can create a false positive. This is less common in clear waters where typically there is no partial penetration of the water. 
-    % \end{itemize}
-    % \rule{\paperwidth}{0.4pt}
     
     Currently, the KDE signal finding method employed can reliably identify transects which do not contain any bathymetric signal - i.e. false positives for bathymetric signal were not seen in the study sites that were investigated. 
     
-    For spaceborne lidar bathymetry to be practical at scale, there needs to be a way to identify coastal zones which are likely to have bathymetric signal to limit the amount of data downloading and processing that is required. Therefore further investigation of which variables predict the precense of useful bathymetry would allow better filtering of transects before downloading.
+    For spaceborne lidar bathymetry to be practical at scale, there needs to be a way to identify coastal zones which are likely to have bathymetric signal to limit the amount of data downloading and processing that is required. Therefore further investigation of which variables predict the availability of useful bathymetry would allow better filtering of transects before downloading. The NSIDC download api allows variable subsetting before download, so if there are known 
 
     One way that a practical improvement could be made is changes to the NSIDC Download API to allow subsetting by variable values. The current API design allows subsetting by time and location, which allow much smaller subsets of the data to be taken. However, being able to filter based on the data quality before downloading could reduce the bandwidth requirements significantly, if certain variables are found that predict bathymetric quality. 
     
     \item Once transects with bathymetry are found, how can nearshore subsurface photon returns that are located in the nearshore zone be extracted?
     
-    % \begin{itemize}
-    %     \item Find the sea surface level by averaging the high-confidence ocean photons, then calculate the depth of each photon.
-    %     \item Filtering the along-transect points based on GEBCO elevation
-    %     \item Filtering in the Z direction based on a maximum water depth
-    %     \item Filtering in the Z direction based on geoidal height
-        
-    % \end{itemize}
-    % \rule{\paperwidth}{0.4pt}
-    
+
     The filtering methodology employed allowed the reliable identification of subsurface returns. By first applying a horizontal filter based on a maximum and minimum GEBCO depth, photons that are likely located in the deep sea or on land can be removed from the dataset. Then, the probable sea surface for the transect is calculated based on the average elevation of the high-confidence ocean surface photons, and any photons with an elevation greater than one standard deviation below the sea surface are removed, to remove the high density ocean surface photons. Using the sea surface elevation, the depth of each remaining photon is calculated, and photons with a depth of greater than 40m are or a geoidal elevation of less than -40m are removed. 
     
     Then photons flagged as possible TEP returns \pdfcomment{Transmitter echo path, will define in the background section} are removed. Any remaining photons that are greater than 5m above the geoid are also removed, since that is above the tidal range for most of the world, and any remaining photons in this zone are not likely to be located in the nearshore zone. 
@@ -50,7 +34,7 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
     \item How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?
     
-    A kriging interpolator is used to resample the point measurements of bathymetry from the KDE algorithm to a continuous 2d grid, and a 2d grid of the uncertainty. Areas that contain many bathymetry points in the local area have a lower uncertainty, whereas points that are further away from any measured points with have a relatively higher uncertainty.
+    A kriging interpolator is used to resample the point measurements of bathymetry from the KDE algorithm to a continuous 2D grid, and a 2D grid of the uncertainty. Areas that contain many bathymetry points in the local area have a lower uncertainty, whereas points that are further away from any measured points with have a relatively higher uncertainty.
 
     To create an upscaled version of the global GEBCO data that incorporates the lidar data, the GEBCO data is first subset to the area of interest and then is resampled bilinearly to a grid in the local UTM coordinate system with the same resolution as the kriging output. Then, the bilinear data is updated using the Kalman update equation for each grid cell. 
 
@@ -63,10 +47,10 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 \end{enumerate}
 
 
-Based on the subquestions evaluted, ICESat-2 data can provide reliable ground-truth bathymetry along tracks in areas with clear water. One method of using this data to upscale low-resolution global bathymetry data is to interpolate the point data along these tracks, and then produce a new, upscaled version of the low resolution data by combining the intepolated lidar data with a kalman filter. This method can produce significant reductions in RMSE when compared to high resolution validation data. 
+Based on the subquestions evaluted, ICESat-2 data can provide reliable ground-truth bathymetry along tracks in areas with clear water. One method of using this data to upscale low-resolution global bathymetry data is to interpolate the points data along these tracks, and then produce a new, upscaled version of the low resolution data by combining the intepolated lidar data with a kalman filter. This method can produce significant reductions in RMSE when compared to high resolution validation data. 
 
 However, the spatial distribution of ATL03 data can be a significant hinderance to the accuracy of the interpolated data. While this method is practical at the scale of a single site \pdfcomment{add area measurement} there are practical constraints on scaling up the approach to the regional or global scale. One is that downloading and finding the bathymetric signal in the L1a product requires non-trivial amounts of computing resources. Another is the practical computational expense of the kriging algorithm.
 
 \section{Recommendations}
-One of the best ways to promote further research on how to use this data would be for NASA to provide a higher-level data product of the bathymetric data. In addition to the signal finding method proposed in this paper, there have been a number of other methods proposed in the literature to isolate bathymetric signal from ATL03 data. These methods are all fundamentally similar to those used for the other data products, like the global vegetation height data (ATL08), ocean elevation (ATL12), or inland water height (ATL13). By providing a pre-calculated bathymetry data product, further research on the best ways to use this data be much more practical, since the bandwidth and comptational resources required to find the data would be orders of magnitude lower.
+One of the best ways to promote further research on how to use this data would be for NASA to provide a higher-level data product of the bathymetric data. In addition to the signal finding method proposed in this paper, there have been a number of other methods proposed in the literature to isolate bathymetric signal from ATL03 data. These methods are all fundamentally similar to those used for the other data products, like the global vegetation height data (ATL08), ocean elevation (ATL12), or inland water height (ATL13). By providing a pre-calculated bathymetry data product, further research on the best ways to use this data be much more practical, since the bandwidth and computational resources required to find the data would be orders of magnitude lower.
 
