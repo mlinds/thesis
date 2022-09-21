@@ -1,0 +1,41 @@
+\newcommand{\sitesummary}[1]{
+
+\section{#1 test site}
+
+\subsection{Site conditions summary}
+
+\subsection{Validation data}
+
+\subsection{ICESat-2 Transects within AOI}
+The AOI used the validate the method is shown in figure \ref{fig:#1_transects} below.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/#1_tracklines.pdf}
+    \caption{Location of ICESat-2 Transects in #1 study area}
+    \label{fig:#1_transects}
+\end{figure}
+\subsection{Error in lidar photon data}
+After extracting the bathymetry from the ICESat-2 transects over the study site, the RMS error between the measured data from the USGS and the ICESat-2 data is
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/#1_lidar_estimated_vs_truth.pdf}
+    \caption{Comparison between depth calculated with ICESat-2 and true bathy}
+    \label{fig:#1_truth_vs_measured_points}
+\end{figure}
+\subsection{Distribution of detected bathymetric photons}
+
+Figure \ref{fig:#1-bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Florida_keys_photon_map.pdf}
+    \caption{Geographic distribution of Bathymetric photon data}
+    \label{fig:#1-bathyphotonmap}
+\end{figure}
+
+\subsection{Lidar updated GEBCO vs. Simple bilinear Interpolation}
+
+\input{tables/#1_kalman_improvement.tex}
+}
+
+% \sitesummary{florida\_keys}
