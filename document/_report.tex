@@ -2,7 +2,6 @@
 % \documentclass{tudelft-report}
 \usepackage{gensymb}
 \usepackage{changes}
-% \usepackage{todonotes}
 \usepackage{booktabs}
 % \usepackage{lscape}
 % \usepackage{pdflscape}
@@ -66,10 +65,9 @@
 
 
 %% Include an optional title page.
-% \input{chapters/title.tex}
+\input{chapters/title.tex}
 \input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
-\pdfcomment{check for naming style/capitilization convention}
 \tableofcontents
 % \listofpdfcomments[liststyle=Comment]
 % \listoffigures
@@ -100,7 +98,7 @@
 \renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}
 \renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
 
-\printbibliography
+% \printbibliography
 
 \end{document}
 

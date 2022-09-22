@@ -219,7 +219,8 @@
 \definecolor{tudelft-fuchsia}{cmyk}{0.19,1,0,0.19}
 \definecolor{tudelft-bright-green}{cmyk}{0.36,0,1,0}
 \definecolor{tudelft-yellow}{cmyk}{0.02,0,0.54,0}
-\definecolor{van-oord-blue}{cmyk}{.70, .54, 0, .53}
+% \definecolor{van-oord-blue}{cmyk}{1, .80, 0.05, .20}
+\definecolor{van-oord-blue}{HTML}{253a79}
 \def\@pagecolor{tudelft-cyan}
 %\if@whitetitle
 %  \def\titlecolor{tudelft-white}
@@ -230,7 +231,7 @@
 %% Use TU Delft cyan as the color for titles, unless the 'print' option is
 %% specified. % JMT changed this: all titles black!
 % \if@print
-    \colorlet{title}{black}
+    \colorlet{title}{van-oord-blue}
 %\else
 %    \colorlet{title}{tudelft-cyan}
 %\fi
@@ -652,8 +653,8 @@
 %% Hyperlinks are cyan, except in print mode, when they are all black.
 \hypersetup{
     colorlinks=true,
-    citecolor=title,
-    linkcolor=title,
-    urlcolor=title
+    citecolor=van-oord-blue,
+    linkcolor=van-oord-blue,
+    urlcolor=van-oord-blue
 }
 
