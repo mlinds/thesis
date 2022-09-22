@@ -7,8 +7,8 @@
         
         %% Print the title in cyan.
         {\makeatletter
-            \largetitlestyle\fontsize{64}{94}\selectfont\@title
-            %\largetitlestyle\color{tudelft-cyan}\Huge\@title
+            \largetitlestyle\fontsize{48}{94}\selectfont\@title
+            % \largetitlestyle\color{tudelft-cyan}\Huge\@title
             \makeatother}
         
         %% Print the optional subtitle in black.
@@ -48,7 +48,7 @@
         \vfill
         \begin{tabular}{lll}
             Student number:   & 5243610                                                                          \\
-            Project duration: & \multicolumn{2}{l}{March 1, 2022 -- September 30, 2022}                          \\
+            Project duration: & \multicolumn{2}{l}{March 1, 2022 -- ?}                          \\
             Thesis committee: & Prof.\ dr.\ ir.\ S.\ Aarninkhof,                        & TU Delft, Chair        \\
                               & Dr.\ ir.\ B.\ Wouters,     \pdfcomment{prof? double check}                                  & TU Delft, Supervisor   \\
                               & Dr.\ ir.\ A.\ Gijón-Mancheño,                                & TU Delft               \\
@@ -72,13 +72,13 @@
     \end{center}
     
     \begin{tikzpicture}[remember picture, overlay]
-        \node at (current page.south)[anchor=south,right=2cm]{
+        \node (tud) at (current page.south)[anchor=south]{
             \includegraphics{cover/logo_black}
         };
-    % \end{tikzpicture}
+    \end{tikzpicture}
     
-    % \begin{tikzpicture}[remember picture, overlay]
-        \node at (current page.south)[anchor=south,left=2cm]{
+    \begin{tikzpicture}[remember picture, overlay]
+        \node at (current page.south)[anchor=south,above=2cm]{
             \includegraphics[width=0.4\textwidth]{figures/VanOord-2048x785.png}
             
         };

@@ -220,7 +220,8 @@
 \definecolor{tudelft-bright-green}{cmyk}{0.36,0,1,0}
 \definecolor{tudelft-yellow}{cmyk}{0.02,0,0.54,0}
 % \definecolor{van-oord-blue}{cmyk}{1, .80, 0.05, .20}
-\definecolor{van-oord-blue}{HTML}{253a79}
+% \definecolor{van-oord-blue}{HTML}{253a79}
+\definecolor{van-oord-blue}{RGB}{37,58,121}
 \def\@pagecolor{tudelft-cyan}
 %\if@whitetitle
 %  \def\titlecolor{tudelft-white}
