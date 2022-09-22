@@ -1,155 +1,52 @@
 \chapter{Discussion}
-\pdfcomment{address using lidar photon returns for kinematic bathmetry and the practical implementation}
-\pdfcomment{mention use of icesat to improve estimates of global flooding}
 
-\section{Limitations of ICESat-2 ATL03 data}
-The starting point of this method is the level 2A product ATL03 data from NASA. It consists of raw photon locations and data about the atmospheric and geophysical parameters. 
 
-\subsection{Tidal model errors}
-\subsection{Misclassified photons in ATL03 data}
+\pdfcomment{I think i need to make it clearer in my abstract that this is a goal}
+\section{A-priori identification of transects with bathymetric signal}
+One of the goals of the project is to find a way to predict nearshore zones which are most likely to have ICESat-2 bathymetry available before downloading the photon-level data and running the KDE signal finding algorithm. A-priori identification of promising sites is useful to minimize the computing resources required when scaling up the approach to a global level.
 
-Correcting filtering of sea surface returns is very important to the accuracy of the bathymetry signal finding, because the sea surface signal is often several orders of magnitude more dense than the bathymetric signal, and the location of the sea surface is also used to calculate the depth of a photon for refraction correction. The default photon classification provided in the ATL03 data is used to identify the sea surface within the filtering algorithm. Errors in the default ocean signal classification can result in sea surface signal being inadvertently included in the subsurface data and biasing the KDE results.
+In looking at the transect data as a whole, there was not one clear variable which predicts either the availability of bathymetric data, or the quality  (measured by RMSE) of data an individual lidar transect. It is well-established that lidar and optical bathymetry are highly sensitive to turbidity levels, since they require light to be able to reach the seafloor. It was hypothesized that the Secchi depth, as estimated by optical satellite methods, would be a reliable indicator of bathymetric quality and quantity for a given transect. However, no clear relationship was found between the Secchi depth and the quality and quantity of bathymetric signal photons. In fact, the Florida Keys test site has the lowest median Secchi depth (8.3m), while also providing among the highest quality data (0.87m RMSE), and the largest percent of transects containing good data of any test sites.
 
-The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathtymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
+The most likely explanation for this seeming paradox is that the characteristics that make a site ideal for ICESat-2 bathymetry (a wide, shallow shelf area clear water) could also can affect the accuracy of optical ocean color measurements. The area of interest selected in the Florida Keys site has has large areas with a depth of less than 10m, and exceptionally clear water. The secchi depth determination is based on passive optical remote sensing response of the site. It is possible that because in this site there is a very significant amount of sunlight reflecting from the seabed, the secchi depth algorithms used in the GlobColour product have limited accuracy. This is further supported by the fact that the Secchi depth uncertainty metric (median 56\% uncertainty) is much higher for the Florida Keys site than any other site. \pdfcomment{table of depths}
 
-This could potentially be mitigated by a different filtering strategy calculates the local sea surface based on the local geoid  This could be very feasible in microtidal areas where the tidal signal has a smaller impacts.
+\section{Bathymetry extraction from ICESat-2 lidar}
 
-\pdfcomment{temp figure, replace with matplotlib figure with axis labels. Maybe also include a plan view map with scale bar to understand the geographic context}
-\begin{figure}[htbp]
+Compared to other signal finding methods proposed the literature, the implementation used here results in a similar order of RMSE for most of the test sites. The KDE signal finding method proposed was able to identify bathymetric photons with an RMSE of between 0.54m and 9.53m RMSE. This is a very wide range of reliability, and would require further refinement before scaling the method to more sites. The site with the largest error was in an area with steep cliffs on the south end of Oahu. The source of the error was a failure in the photon filtering approach \pdfcomment{explain with figure}. The error was caused by some points with an true elevation of 118m being labeled as subsurface photons. Because they are in a land area, they should have been removed by the GEBCO filtering step. However, because of the limited horizontal accuracy of GEBCO data they were not removed from the photon cloud during subsurface photon filtering.
+
+The best way to mitigate this would be to find a better land mask dataset. This is likely possible for sites in the global north that have good data availability, but higher resolution land masks might not be available in the entire world. It should be noted that the ATL03 dataset does include a surface mask flag as one of the variables. However, it is not suitable for this purpose because there is an intentional overlap between the boundaries of these different masks. Therefore, a photon return in a coastal zone can be classified as being both in the ocean, land, and inland water zones. This is done because it is assumed there is a high uncertainty in the exact boundaries between surface types. 
+
+One of the major challenges to the proposed KDE signal finding method is that it is very sensitive to the input parameters, especially the threshold local density to consider a point to be valid signal. The assumption used here was set empirically, and it was the greater of either a.: the median KDE of the transect, or b: 0.1. By making this criteria stricter (increasing the minimum to 0.15) the RMSE error at each site is reduced significantly. However, this is presents a tradeoff. While a few large magnitude errors are filtered out by this method, there are many times more high-quality points that are also excluded. By excluding these points, it often reduces the overall spatial distribution of the resulting point data (the KDE is correlated for a given transect, so by increasing the threshold, often entire transects worth of points are removed). Therefore, increasing this threshold is quite a blunt instrument that removes significant amounts of high quality data. It was found that using a lower density threshold, and therefore allowing some large errors to remain in the point data, the overall quality of the kriging interpolation and the resulting kalman-updated was improved. 
+
+One potential avenue for improving the discretion of the algorithm would be considering the local horizontal density of photon returns. A rolling window based on distance rather than a set number of adjacent photons could potentially improve the quality of the KDE magnitude estimation. Another approach might be to normalize the KDE value based on the transect length, and see if that improves the ability to throw out low-quality data while retaining high-quality data.
+
+It is possible that the results could be further improved by building a larger dataset of validation sites, and trying to find globally optimum parameters that provide a good balance of excluding low accuracy points and maintaining as much quality data as possible.
+
+\section{2D interpolation via universal kriging}
+
+The universal kriging approach proved effective transform the point estimates into a gridded estimate of seabed elevation and uncertainty. 
+
+The largest practical limitation to the bayesian updating method is the requirement to interpolate the data. Kriging interpolaters are ideal because the are robust to outliers and provide an uncertainty estimate as well as a depth estimate. The downside of the kriging interpolator is both the computional complexity and the requirement that points are not too close together. If points are to close to one another, the kriging matrix is not soluble, and the algorithm has a complexity of $\mathcal{O}(n^3)$ where $n$ is the number of points. This means that there is a relatively strict practical limitation to the number of points that can be used as input to the interpolator. The upper limit with a laptop with 32GB RAM was found to be approximately 2000 points without exceeding the available memory. One way to deal with this is to use a tiling strategy, and repeat the process using tiles which contain 2000 bathymetric points or less. This would need to be done adaptively since the bathymetric points are not evenly distributed. Each AOI would take longer to process, but it would at least be feasible using a consumer-grade computer.
+
+One disadvantage of ICESat-2 data is the uneven spatial distribution of the resulting bathymetric points. Due to the orbit of ICESat-2, the ATL03 data is available along transects $\pm \ang{6}$ relative to north. Because of this pattern, even if there was perfect bathmetry data along every single ICESat-2 transect within the study area, the spatial distribution of the points would be anisotropic. Given that there are gaps in these transects where the bathymetric signal is weaker, the spatial distribution of the data can very significantly by site. These gaps along transects can be seen in figure \ref{fig:distribution-of-bathy-points-in-space}. The gaps of weaker signal can be caused by areas that are too deep or too turbid for the laser to reach the seabed, or due to instrument/atmospheric issues (\ref{sec:discussion-photon-issues}). 
+
+
+\begin{figure}
+    \pdfcomment{redo in cartopy/add scale bar/other map stuff}
     \centering
-    \includegraphics[width=\textwidth]{figures/ageeba_beach_example.png}
-    \caption{Classification of photons from 2021-07-19, Beam gt3r, reference ground track 396. The two parallel straight lines from 200 to 800 are the sea surface and the bathymetric signal. The NASA photon classification algorithm misclassifies the bathymetric points as ocean surface returns}
-    \label{fig:ageeba_bad_classes}
-\end{figure}
-
-
-
-\subsection{Limitations in Photon Geolocation Accuracy}
-
-The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m.\pdfcomment{From data users guide, either cite that or better, find the published literature it comes from}.
-
-This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50m grid.
-
-
-\subsection{Errors in Refraction Correction}
-
-The refraction correction method used accounts for the additional horizontal error that is introduced by off-pointing. However, there are several other second-order effects that are not considered by the methodology. One of these is the estimation of the refractive index; the temperature and salinity affect the speed at which the water transmits light. By assuming a default value it introduces an error on the order of X.XXm \pdfcomment{Look this up to plug in some numbers to the formula to check}. This could be corrected by either estimating in advance a value for each local site, or by connecting the algorithm to an API that can provide a temperature and salinity value. 
-
-Another potential source of error is the slope of the water surface. Since there is a slope to the water surface, this affects the bounce angle of the photon. This can be corrected for and some papers that investigate ICESat-2 bathymetry have attempted to correct for it. For this project the magnitude of error due to slope was considered small enough to be within the margin of error of the method.
-
-The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. \pdfcomment{Just added this correction and improved error for one site by O 0.001m :|}
-
-\subsection{Limited Spatial Coverage in Islands}
-
-In support of the vegetation mission of ICESat-2, the instrument is sometimes pointed up to several degrees to the side of the reference ground tracks when the satellite passes over land. This increases the spatial density of points at the expense of the temporal resolution. For bathymetric purposes the increased spatial resolution gives a more even  coverage of nearshore zone bathymetry. 
-
-However, the land mask that is used to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Due to apparently being located within the off-pointing zones, both of the aforementioned islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the further reduction in spatial coverage limits the accuracy of the kriging method. This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations. The tradeoff for this scenario is that the temporal resolution is significantly better, so the spaceborne lidar could be useful for studying the changes over time. 
-
-\subsection{Inherent Uncertainty of KDE Method}
-There are a number of input parameters to the filtering and the density-based bathymetry finding methods. These parameters can be optimized for each site to reduce the RMSE error as much as possible if there is some validation data available. However since the end goal of the project is to be able to improve estimates without using any in situ data, ideally there would be no need for optimization based on the site.
-
-Currently the globally-set parameters are sufficient to extract bathymetry without any tuning for all of the case studies that are investigated. However, the inability to tune in advance is a limitation. 
-
-One possible future step would be to gather even more validation sites, and explore which other variables might influence the best parameter setting. It is possible that there are certain site variables which predict the optimal parameter options. Even so, upscaling of validation sites would allow better insight into which variables predict the presence of valid data.  
-
-\subsection{ATL03 Data Quality Issues}\label{sec:discussion-photon-issues}
-
-There are a number of known issues with the ICESat-2 data. They are either due to atmospheric and environmental conditions, or due to limitations of the instrument. Many of them can be detected in advance, and then the effected granule data can be thrown out or the issue otherwise corrected for. However, there might be some edge cases related to these issues that cause either false bathymetric signal points, or cause the algorithm to miss valid bathymetric data. These data issues could present an issue for the scaling up the signal finding without any manual intervention. Currently the process is run without any intervention, but the sites are small enough to manually check several of the transects.
-
-The following known data issues could effect the results of the KDE signal finding algorithm:
-
-\subsubsection{Clouds}
-
-
-The presence of some clouds along a single granule can cause the loss of data that might otherwise be valid
-
-Clouds reflect sunlight which causes a higher background photon rate, and this can create issues with the telemetry bands and cause the telemetry bands to not include the surface. Even if the actual earth surface is included in the telemetry band, the clouds can affect the travel times and create inaccurate readings \parencite{atl03knownissues}.
-
-During processing from L0 to L1, if the elevation from NASA reference DEM is not within the telemetry bands, no photons will be classified as signal. Therefore, if the entire granule is affected by this issue, there will be no sea surface found and therefore the entire granule will be filtered out. This can cause a significant loss of data but it is an issue inherent to nearly any remote-sensing based approach. One possible way to mitigate this would be to combine the ICESat-2 bathymetry data with synthetic aperture radar (SAR) remote sensing data. SAR remote sensing data can penetrate clouds because it uses radiometry outside of the visible spectrum. Although the spectrum used in SAR sensing cannot directly penetrate even clear water, the data can be used to estimate wave conditions, and the bathymetry can be estimated based on the transformation of the wave (called \emph{wave kinematic satellite-derived bathymetry}). The bathymetry estimates from SAR-derived wave kinematic SDB could be incorporated into the Kalman filtering step. 
-
-In situations where the photons are able to pass through clouds, the changes to travel time through the clouds can affect the accuracy. This could potentially be something that is hard to detect and affect the accuracy of the bathymetric points if any are found.
- 
-
-\subsubsection{Multiple Telemetry Bands}
-
-If the signal detection on board the satellite cannot determine where the primary surface is located, it will open another telemetry band to try to collect more signal. This can create other areas of photons that are significantly above or below the surface. The effect of is shown in figure \ref{fig:multiple_tel_bands}
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/multiple_telemetry_from_known_issues.png}
-    \caption{Example of Multiple telemetry from \cite{atl03knownissues}}
-    \label{fig:multiple_tel_bands}
-\end{figure}
-
-As with data affected by clouds, photons that are a certain distance away from the known reference surface are marked not classified as being signal photons. This has a limited effect because often bathymetric signal points are marked as noise by the default ATL03 classification algorithm used by NASA. 
-
-Most granules that are affected by this issue have photon locations that are significantly above or below the geoid. Therefore, granules affected by this issue area almost always filtered out by the filtering step that removes photons that are significantly above or below the geoid. Those remaining are often well-distributed in the nearshore zone, so they do not increase density in one vertical location enough to create a false positive or affect the existing result. 
-
-\subsubsection{Apparent Multiple Surface Returns and Specular Returns}
-
-Apparent multiple surface returns and specular returns are a similar phenomenon and are both caused by a saturation of the photon sensor. These could potentially be a source of error in very still water, and likely \emph{is} negatively affecting results in some sites. They artificially increase the density just below the surface so it could easily be misidentified as signal. They occur 2.3 or 4.2 m below the primary surface return. \pdfcomment{is there a spike in detected depths at 2.3 or 4.2m?}
-
-Figure \ref{fig:multiple-surf-returns} is an example from iceland \pdfcomment{data end utc: 2019 01 14T14:30:20.721564Z atlas beam type: strong groundtrack id: gt3l}
-
-\pdfcomment{temporary figure, open in python to add title}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/temp_specular_returns.png}
-    \caption{An example of specular returns in a transect with bathymetry signal from Greenland. Bathymetry signal can be seen from 1000-3000m, and the specular returns can be seen from about 2700 to 3800m. From 1 jan 2019, beam gt3l, RGT 262.}
-    \label{fig:multiple-surf-returns}
-\end{figure}
-
-While these can potentially create a false density that could bias the KDE signal finding function, segments that potentially are affected by these two problems can be flagged based on a parameter that is available as part of the ATL03 data product. 
-
-\subsubsection{TEP Misclassified as Signal}
-
-In manual inspections, no transects have been found to exhibit this problem. However, if it were present this could present two problems to the signal finding algorithm. The first is that it could confound the KDE signal finding by creating more along the TEP. If TEP photons are correctly classified as TEP photons, then they are exluded from all the signal finding. 
-
-The second and likely most significant issue is that the sea surface location is based on the signal classification. If there are incorrectly classified sea surface photons, the algorithm might not exclude the strong signal that is present around the sea surface. For the KDE to work accurately it needs to exclude the stronger signal of the sea surface. 
-
-\subsection{Water clarity requirements}
-
-Most of the world's coasts are sandy and are typically turbid most or all of the year. This presents a significant restriction on spaceborne bathymetry that requires penetration of the water surface. Of the test sites that were evaluated as part of this project, only sites with exceptionally clear water were able to produce significant bathymetric signal within ICESat-2. Therefore it was evaluated mostly at tropical test sites with a carbonate sedimentary environments.  
-
-\subsection{Temporal limits}
-
-The satellite repeat time for a certain track is every 91 days, and the data is available starting in 2018. Due to off-pointing over most land areas there is often greater than 91 days between passes of the \emph{exact same} reference ground track. Since coasts are among the most dynamic morphological environments, there might be substantial changes between repeat passes. The proposed method assumes that the all the bathymetry data is contemporaneous. This is a inherent limitation to the method, since it cannot account for morphological changes that might occur during the 4-year time window in which the data was collected. Another practical limitation is that not all satellite passes can capture and subsurface data due to issues with the atmospheric conditions, wave heights, instrument conditions, etc. 
-
-\section{Limitations of Kriging Interpolation}
-
-The selected universal kriging interpolator provides both an estimate of the interpolated seafloor surface and the uncertainty of the estimate.
-
-\subsection{Computational Expense}
-
-The largest practical limitation to the bayesian updating method is the requirement to interpolate the data. kriging interpolaters are ideal because the are robust to outlier and provide an uncertainty estimate as well as a depth estimate. The downside of the kriging interpolator is both the comptation expense, and the requirement that points are not too close together. If points are to close to one another, the kriging matrix is not soluble, and the algorithm has a complexity of $\mathcal{O}(n^3)$ where $n$ is the number of points. This means that there is a relatively strict practical limitation to the number of points that can be used as input to the interpolator. The upper limit with a laptop with 32GB RAM was found to be approximately 2000 points without exceeding the available memory. One way to deal with this is to use a tiling strategy, and repeat the process using tiles which contain 2000 bathymetric points or less. This would need to be done adaptively since the bathymetric points are not evenly distributed. Each tile would take longer to solve, but it would at least be feasible using a consumer grade computer. It is also possible that the kriging algorithm could be implemented using a graphics card which might give significant performance gains.
-
-\subsection{Heterogenous spatial distribution of ICESat-2 photons}
-
-Due to the orbit of ICESat-2, the ATL03 data is available along transects $\pm \ang{6}$ relative to north. Because of this pattern, even if there was perfect bathmetry data along every single ICESat-2 transect within the study area, the spatial distribution of the points would be anisotropic. Given that there are gaps in these transects where the bathymetric signal is weaker, the spatial distribution of the data can very significantly by site. These gaps along transects can be seen in figure \ref{fig:distribution-of-bathy-points-in-space}. The gaps of weaker signal can be caused by areas that are too deep to be optically clear to the lidar, or due to instrument/atmospheric issues (\ref{sec:discussion-photon-issues}). 
-
-This irregular distribution means that in some places far away from bathymetric signal, the upscaled estimate might not be any better than the original, so any accuracy gains are likely unevenly distributed across the site. 
-
-\pdfcomment{discuss results of random sampling tests}
-
-\pdfcomment{replace with a map that has a color scale bar for the bathymetry, includes maybe a subset map and a map collar}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/temp_spatial_dist.png}
+    \includegraphics[width=0.75\textwidth]{figures/temp_spatial_dist.png}
     \caption{Spatial distribution of bathymetry points in St. Croix north end, and the true bathymetry}
     \label{fig:distribution-of-bathy-points-in-space}
 \end{figure}
 
+However, handling this uneven spatial distribution is one of the advantages of using a geostatisical approach. Areas that are distant from any input points have a higher uncertainty in the output grid, and therefore there is little or no change from the prior estimate, since the kalman update step accounts for the estimate uncertainty. Therefore, in locations that are further away from valid data, there is little or no change from the prior estimate. A limitation of this is that any accuracy gains are might not be evenly distributed across the site. 
 
-\section{Kalman Updating}
+\section{Kalman updating and improvement over GEBCO}
+
+It was found that in most sites, the bayesian combination of bilinearly resampled GEBCO data and the interpolated ICESat-2 data increased the accuracy compared to the validation data than either product on their own. The average decrease in RMSE was on the order of 30\% \pdfcomment{going to crunch the numbers again but this is close}
+
+The optimal decrease in RMSE error was found by assuming a GEBCO uncertainty of $\sigma=1.5m$ standard deviation. This produced the best results for the test sites under consideration, however the actual GEBCO uncertainty depends on myriad factors including the original data source, survey method, and how old it is. Thing that could be further explored is how the uncertainty of GEBCO varies with the Type IDentifier (TID) grid. The TID is a GEBCO data product that indicates the original source of the data. It is likely that the original data source affects the error between the GEBCO grid and the validation data.
+
+One limitation is that the temporal resolution of the ICESat-2 data is not sufficient to take full advantage of the kalman filtering approach, which normally includes updates both in space and time. The satellite repeat time for a given reference ground track is 91 days, and the data is available starting in 2018. Due to off-pointing over most land areas, there is often greater than 91 days between passes of the \emph{exact same} track. Since coasts are among the most dynamic morphological environments, there might be substantial changes between repeat passes. The proposed method assumes that the all the bathymetry data is contemporaneous. This is a inherent limitation to the method, since it cannot account for morphological changes that might occur during the 4-year time window in which the data was collected. However, the ICESat-2 data is very likely more recent than the input data to the GEBCO gridding process, which can sometimes be hundreds of years old. Therefore, all data was assumed to be contemporaneous, and the time update step of the Kalman Filter was not used.
 
 
-\subsection{Estimation of in-situ standard deviation for GEBCO}
-
-
-\pdfcomment{Potential section in main body: take all sites with good data, compare the GEBCO RMSE, then compare GEBCO error vs the TID categories}
-
-The optimal decrease in RMSE error was found by assuming a GEBCO uncertainty of 2.5m standard deviation. This produced the best results for the test sites under consideration, however the actual GEBCO uncertainty depends on a lot of factors including the original data source and how old the data is. 
-
-\subsection{Introducing spurious shoals/shallows}
-
-The proposed method does reliably decrease the RMSE in all case study sites where it was applied. RMS error is sensitive to significant outliers, so large decreases in RMSE can be interpreted to mean that the largest magnitude errors were removed from the GEBCO data. However, it is possible that artifacts introduced by the kriging interpolator could introduce some high or low points that do not reflect physical features, especially in areas of the test site that are far from ICESat-2 bathymetry points.
+One potential downside of the bayesian update approach is that it could create artifacts in the resulting output data, even if the RMS error is decreased relative to GEBCO. If there is an area with a high density of incorrect point measurements, the resulting uncertainty data might have a high confidence in that local area, leading to a significant update to the prior estimate which does not reflect an physical seabed  feature. This effect could create artificial shoals or shallow areas. \pdfcomment{this probably needs a graphic to help explain} Because the RMSE error is decreasing relative to the validation data, we know that the \emph{net} effect of the bayesian update is an improvement. However, the additional of artificial shoals could make the data nearly useless for numerical modeling studies, since introducing an artificial high point offshore could change the wave transformation significantly. However, the decreased average error of the resulting product could still could have utility for estimating dredging quantities, which are less sensitive to an individual high point. 
