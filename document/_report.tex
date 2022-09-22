@@ -1,4 +1,4 @@
-\documentclass[nativefonts]{tudelft-report}
+\documentclass[nativefonts,draft]{tudelft-report}
 % \documentclass{tudelft-report}
 \usepackage{gensymb}
 \usepackage{changes}
@@ -69,20 +69,20 @@
 \input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
 \tableofcontents
-% \listofpdfcomments[liststyle=Comment]
-% \listoffigures
-% \listoftables
+\listofpdfcomments[liststyle=Comment]
+\listoffigures
+\listoftables
 
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
 \parskip 0.1in
 % smallchange
-% \input{chapters/introduction.tex}
+\input{chapters/introduction.tex}
 \input{chapters/background.tex}
 \input{chapters/methodology.tex}
-% \input{chapters/results.tex}
-% \input{chapters/discussion.tex}
-% \input{chapters/conclusion.tex}
+\input{chapters/results.tex}
+\input{chapters/discussion.tex}
+\input{chapters/conclusion.tex}
 
 
 %% Use letters for the chapter numbers of the appendices.
@@ -91,12 +91,11 @@
 % \input{chapters/python_code.tex}
 % \input{chapters/output_data.tex}
 % \input{chapters/geostatistical_interpolation.tex}
-%\input{appendix-a}
 
 % why did I put these in? which stackexchange post did I copy paste from them from lol
-\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
-\renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}
-\renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
+% \renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
+% \renewcommand*{\mkbibnameprefix}[1]{\textsc{#1}}
+% \renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
 
 % \printbibliography
 

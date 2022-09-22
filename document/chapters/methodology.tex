@@ -102,7 +102,7 @@ Finally, before the signal-finding is applied, the Parrish method of refraction 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/methodology_refraction.jpg}
+    \includegraphics[width=\textwidth]{figures/methodology_refraction.pdf}
     \caption{The refraction correction applied to the remaining photons}
     \label{fig:refraction-photons}
 \end{figure}
@@ -129,7 +129,7 @@ The input parameters to the signal finding function are:
 
 \subsection{Interpolation to a 2D grid}
 
-After the bathymetric signal points are identified per the method in \ref{sec:kdesignalfinding}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. A number of interpolation techniques have been applied to create bathymetry grids from point data. Commonly, inverse-distance weighting (IDW), tension splines, or loess interpolators have been used \parencite{gebcocookbook,Ferreira2017}. These approaches are relatively straightfoward and easy to implement. However, the disadvantage of these simple approaches that there is not a clear methodology of establishing the uncertainty of the resulting interpolation. Intuitively, areas with a higher point density will lead to a interpolation with a lower uncertainty that areas with very sparse points. Kriging is a geostatistical technique that allows interpolating points into a grid, while also giving an indication of the uncertainty in the neighborhood. By knowing both our estimated sea floor depth and the uncertainty in the estimate, we can use a bayesian approach to update our initial guess of the seafloor location.
+After the bathymetric signal points are identified per the method in \ref{sec:kdesignalfinding}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. A number of interpolation techniques have been applied to create bathymetry grids from point data. Commonly, inverse-distance weighting (IDW), tension splines, or loess interpolators have been used \parencite{gebcocookbook,Ferreira2017}. These approaches are relatively straightforward and easy to implement. However, the disadvantage of these simple approaches that there is not a clear methodology of establishing the uncertainty of the resulting interpolation. Intuitively, areas with a higher point density will lead to a interpolation with a lower uncertainty that areas with very sparse points. Kriging is a geostatistical technique that allows interpolating points into a grid, while also giving an indication of the uncertainty in the neighborhood. By knowing both our estimated sea floor depth and the uncertainty in the estimate, we can use a bayesian approach to update our initial guess of the seafloor location.
 
 
 \subsubsection{Subsampling of Bathymetric points using Poisson Disk Sampling} \pdfcomment{maybe add a figure to show the process better} \label{subsec:poissonsubsampling}
