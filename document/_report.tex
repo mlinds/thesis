@@ -1,5 +1,5 @@
-% \documentclass[draft]{tudelft-report}
-\documentclass{tudelft-report}
+\documentclass[nativefonts]{tudelft-report}
+% \documentclass{tudelft-report}
 \usepackage{gensymb}
 \usepackage{changes}
 % \usepackage{todonotes}
@@ -12,14 +12,14 @@
 \usepackage{siunitx}
 \usepackage{pstricks}
 \usepackage{import}
-% \usepackage[section]{placeins}
+\usepackage[acronym]{glossaries}
+\usepackage[section]{placeins}
 
 % \usepackage{tablefootnote}
 \addbibresource[datatype=bibtex]{library.bib}
 \addbibresource[datatype=bibtex]{non-mendeley.bib}
 
 \begin{document}
-
 
 
 %% Use Roman numerals for the page numbers of the title pages and table of
@@ -66,12 +66,12 @@
 
 
 %% Include an optional title page.
-\input{chapters/title.tex}
+% \input{chapters/title.tex}
 \input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
-
+\pdfcomment{check for naming style/capitilization convention}
 \tableofcontents
-\listofpdfcomments[liststyle=comment]
+% \listofpdfcomments[liststyle=Comment]
 % \listoffigures
 % \listoftables
 
@@ -79,13 +79,12 @@
 \mainmatter
 \parskip 0.1in
 % smallchange
-
-\input{chapters/introduction.tex}
+% \input{chapters/introduction.tex}
 \input{chapters/background.tex}
 \input{chapters/methodology.tex}
-\input{chapters/results.tex}
-\input{chapters/discussion.tex}
-\input{chapters/conclusion.tex}
+% \input{chapters/results.tex}
+% \input{chapters/discussion.tex}
+% \input{chapters/conclusion.tex}
 
 
 %% Use letters for the chapter numbers of the appendices.

@@ -55,7 +55,7 @@ The ICESat-2 ATL03 data includes a correction factor for that includes the effec
 \pdfcomment{This should maybe be moved into the ICESat-2 section}
 
 
-The ocean tides contribute 70\% of the variance to the sea surface \parencite{icesat2 comparison guide}.
+The ocean tides contribute 70\% of the variance to the sea surface \parencite{Robbins2022}.
 
 
 \section{Lidar Bathymetric Surveying}
@@ -97,9 +97,8 @@ To locate the position of each photon in 3D space, the time of flight of the pho
 The data used for this study is the ATL03 data product. It contains the geolocated photons returns that have already been processed for some basic geophysical corrections and then have
 \subsection{Weak vs. Strong Beams}
 
-The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements \parencite{}. The strong beams have been found to provide the better data for lidar bathymetry measurements, but there weak beams can still contain useful bathymetry data \parencite{add citation}.
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements \parencite{}. The strong beams have been found to provide the better data for lidar bathymetry measurements, but there weak beams can still contain useful bathymetry data \parencite{}.
 
-\subsection{Signal extraction}
 
 \subsection{Refraction Correction}
 \pdfcomment{Make a figure with refraction correction amount on the x axis, depth on the y, and then multiple lines for different pointing vectors}
@@ -221,7 +220,7 @@ Optical remote sensing is a passive technique, as it detects light from the sun 
 
 There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, finding bathymetric signal points, and combining the lidar data with optical techniques.
 
-\subsection{Summary of Prior Research Combining Optical and Lidar SDB}
+\subsection{Summary of Prior Research on ICESat-2 derived bathymetry}
 
 The studies that have used some version of the proposed technique are summarized in table \ref{tab:researchsummary}.
 

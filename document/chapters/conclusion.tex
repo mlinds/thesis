@@ -12,7 +12,7 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
     For spaceborne lidar bathymetry to be practical at scale, there must to be a way to identify coastal zones which are likely to have bathymetric signal to limit the amount of data downloading and processing that is required. Therefore further investigation of which metadata and ATL03 variables predict the availability of useful bathymetry would allow better filtering of transects before downloading. 
     
     The NSIDC download API allows variable subsetting before download, so if there are a limited number of known variables that correlate strongly with good bathymetry signal in a transect, these few variables could be easily downloaded for large regions.  
-    Then, based on the the properties of these variables, specific areas and transects that are the best candidats could be then downloaded in full.
+    Then, based on the the properties of these variables, specific areas and transects that are the best candidate could be then downloaded in full.
     
     \item Once transects with bathymetry are found, how can nearshore subsurface photon returns that are located in the nearshore zone be extracted?
     
@@ -47,11 +47,11 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
 \end{enumerate}
 
-Based on the subquestions evaluted, ICESat-2 data can provide reliable bathymetry estimates along satellite transects in areas with sufficiently clear water. One method of using this data to upscale low-resolution global bathymetry data is to interpolate the points data along these tracks, and then produce a new, upscaled version of the low resolution data by combining the intepolated lidar data with a kalman filter. This method can produce significant reductions in RMSE when compared to high resolution validation data. 
+Based on the subquestions evaluated, ICESat-2 data can provide reliable bathymetry estimates along satellite transects in areas with sufficiently clear water. One method of using this data to upscale low-resolution global bathymetry data is to interpolate the points data along these tracks, and then produce a new, upscaled version of the low resolution data by combining the interpolated lidar data with a kalman filter. This method can produce significant reductions in RMSE when compared to high resolution validation data. 
 
 However, the spatial distribution of ATL03 data can be a significant hinderance to the accuracy of the interpolated data. While this method is practical at the scale of a single site (~500\si{km^2}) there are practical constraints on scaling up the approach to the regional or global scale. One is that downloading and finding the bathymetric signal in the L2 product requires non-trivial amounts of computing resources. Another is the practical computational expense of the kriging algorithm.\pdfcomment{to add here or in discussion section: how does it compare to icesat+optical sdb, in terms of accuracy and processing time}
 
-% ICESat-2 data is provided to the public at a number of different processing levels. NASA provides a number of processing chains that produce higher-level products for different uses. The lowest level products provided to the public are level 1, which are raw data as telemetered from the satellite, and this telemeterty data converted to common SI units. In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipoidal units. NASA then furhter processes 
+% ICESat-2 data is provided to the public at a number of different processing levels. NASA provides a number of processing chains that produce higher-level products for different uses. The lowest level products provided to the public are level 1, which are raw data as telemetered from the satellite, and this telemetry data converted to common SI units. In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipsoidal units. NASA then further processes 
 
 This project proposes a parallel processing to go from an L2 product (geolocated photons) to a 
 
