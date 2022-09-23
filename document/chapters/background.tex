@@ -3,8 +3,7 @@
 \pdfcomment{add secchi depth/ocean color section}
 
 \section{Geodetic reference systems for oceanography}
-\subsection{The geoid}
-\pdfcomment{split into more subsections}
+
 The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g=\Delta W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface.
 
 The contours of the geoid can be measured using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
@@ -54,9 +53,7 @@ The ICESat-2 ATL03 data includes a correction factor for that includes the effec
 
 \pdfcomment{This should maybe be moved into the ICESat-2 section}
 
-
 The ocean tides contribute 70\% of the variance to the sea surface \parencite{Robbins2022}.
-
 
 \section{Lidar Bathymetric Surveying}
 
@@ -204,6 +201,8 @@ Other researchers have used implementations of the density-based spatial cluster
 
 \citeauthor{Thomas2022} created a tool called C-SHELPh, which uses a binned histograms to predict the location of the sea surface.
 \pdfcomment{finish section}
+
+\subsection{Possible limitiations}
 
 \section{Satellite Derived bathymetry}
 There are several established methods for calculating bathymetric data from passive optical and SAR satellite data, and recent advances in cloud computing capabilities like Google Earth Engine (GEE) \parencite{Gorelick2017a} make large catalogs of remote sensing data more accessible \parencite{Pike2019,Turner2021}. The approaches can be broadly classified into \emph{wave-kinematic} and \emph{optical inversion} techniques.
