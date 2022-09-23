@@ -3,6 +3,7 @@ import os
 from os.path import exists as file_exists
 
 import geopandas as gpd
+import matplotlib.pyplot as plt
 import pandas as pd
 from atl_module import error_calc, kalman, kriging
 from atl_module.bathymetry_extraction import icesat_bathymetry
@@ -22,6 +23,7 @@ from atl_module.ocean_color import (
 from atl_module.plotting import (
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
+    plot_both_maps,
     plot_photon_map,
     plot_tracklines_overview,
 )
@@ -307,6 +309,9 @@ class GebcoUpscaler:
     def write_raster_error_tables(self):
         """Write the ICESat-2 error and updated raster error tables for the site"""
         raster_error_table_path = f"../document/tables/{self.site_name}_kalman_improvement.tex"
+        # TODO fix this horrible ugliness
+        self.raster_error_summary.to_csv(raster_error_table_path.replace(".tex", ".csv"))
+
         self.raster_error_summary.style.to_latex(
             buf=raster_error_table_path,
             caption="Improvement in error metrics after appyling Kalman Updating of kriged data",
@@ -349,8 +354,9 @@ class GebcoUpscaler:
         )
 
     def plot_icesat_points(self):
+        icesat_points_figure, ax = plt.subplots()
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
-        icesat_points_figure = plot_photon_map(self.bathy_pts_gdf)
+        plot_photon_map(ax, self.bathy_pts_gdf)
         icesat_points_figure.savefig(
             outpath,
             bbox_inches="tight",
@@ -359,14 +365,21 @@ class GebcoUpscaler:
         detail_logger.info(f"Photon output written to {outpath}")
 
     def plot_tracklines(self):
+        trackline_fig, ax = plt.subplots()
         outpath = f"../document/figures/{self.site_name}_tracklines.pdf"
-        trackline_ax = plot_tracklines_overview(self.tracklines)
-        trackline_ax.get_figure().savefig(
+        plot_tracklines_overview(ax, self.tracklines)
+        trackline_fig.savefig(
             outpath,
             facecolor="white",
             bbox_inches="tight",
         )
         detail_logger.info(f"trackline output written to {outpath}")
+
+    def plot_site(self):
+        aoi_gdf = gpd.read_file(self.AOI_path)
+        fig = plot_both_maps(self.tracklines, self.bathy_pts_gdf, aoi_gdf)
+        # fig.show()
+        return fig
 
     def run_summary(self):
         run_logger.info(

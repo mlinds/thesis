@@ -57,31 +57,57 @@ def map_ground_truth_data(truthdata_path, plottitle):
         return fig
 
 
-def plot_photon_map(bathy_pts_gdf):
-    ax = bathy_pts_gdf.plot(
+def plot_photon_map(ax, bathy_points_gdf):
+    print("plotting photon map")
+    bathy_points_gdf.plot(
         # figsize=(10, 10),
         column="z_kde",
         cmap="inferno",
         legend=True,
-        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]"},
+        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]", "shrink": 0.25},
         rasterized=True,
+        ax=ax,
+        s=4,
     )
+    print("finished plotting photons")
+    cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_points_gdf.crs)
+    print("finished adding basemap")
 
-    cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_pts_gdf.crs)
+    # ax.colorbar(ptsartist,fraction=0.046, pad=0.04)
 
-    ax.set_xlabel(f"Easting in {bathy_pts_gdf.crs.name}")
-    ax.set_ylabel(f"Northing in {bathy_pts_gdf.crs.name}")
+    ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
+    ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
     ax.set_title("Bathymetric photons identified by rolling-window KDE")
-    return ax.get_figure()
+    # return ax
 
 
-def plot_tracklines_overview(tracklines_gdf):
-    ax = tracklines_gdf.plot(figsize=(10, 5))
+def plot_tracklines_overview(ax, tracklines_gdf):
+    print("plotting tracklines")
+    tracklines_gdf.plot(
+        # figsize=(10, 5),
+        ax=ax
+    )
+    print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
+    print("finished plotting basemap")
     ax.set_xlabel(f"Easting in {tracklines_gdf.crs.name}")
     ax.set_ylabel(f"Northing in {tracklines_gdf.crs.name}")
     ax.set_title("Study site and tracklines")
-    return ax
+    # return ax
+
+
+def plot_aoi(ax, aoi_gdf):
+    aoi_gdf.plot(ax=ax, color="red")
+
+
+def plot_both_maps(tracklines_gdf, bathy_points_gdf, aoi_gdf):
+
+    # this in hacky, but creates to axes, then has functions that modifies the axes objects in place
+    fig, (photon_ax, track_ax) = plt.subplots(nrows=2, ncols=1)
+    plot_aoi(track_ax, aoi_gdf)
+    plot_tracklines_overview(track_ax, tracklines_gdf)
+    plot_photon_map(photon_ax, bathy_points_gdf)
+    return fig
 
 
 def plot_transect_results(subsurfacedf, bathy_df, figpath):
