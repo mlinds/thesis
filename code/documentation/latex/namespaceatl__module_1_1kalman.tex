@@ -1,0 +1,65 @@
+\hypertarget{namespaceatl__module_1_1kalman}{}\doxysection{atl\+\_\+module.\+kalman Namespace Reference}
+\label{namespaceatl__module_1_1kalman}\index{atl\_module.kalman@{atl\_module.kalman}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1kalman_a39f29e9a95c4034a1dea0f643b3c9376}{simple\+\_\+kalman}} (z, sigma, z\+\_\+meas, sigma\+\_\+meas)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1kalman_a94ca2a2f287ef7fd9a55518eb866c5a0}{gridded\+\_\+kalman\+\_\+update}} (outputfile, start\+\_\+raster\+\_\+path, measrasterlist, gebco\+\_\+uncertainty\+\_\+in)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1kalman_a5e18d531bad60e3eb2fdb206a3230f62}{run\+\_\+logger}} = setup\+\_\+logger(name=\char`\"{}mainrunlogger\char`\"{}, logfile=\char`\"{}./run\+\_\+log.\+log\char`\"{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1kalman_a94ca2a2f287ef7fd9a55518eb866c5a0}\label{namespaceatl__module_1_1kalman_a94ca2a2f287ef7fd9a55518eb866c5a0}} 
+\index{atl\_module.kalman@{atl\_module.kalman}!gridded\_kalman\_update@{gridded\_kalman\_update}}
+\index{gridded\_kalman\_update@{gridded\_kalman\_update}!atl\_module.kalman@{atl\_module.kalman}}
+\doxysubsubsection{\texorpdfstring{gridded\_kalman\_update()}{gridded\_kalman\_update()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+kalman.\+gridded\+\_\+kalman\+\_\+update (\begin{DoxyParamCaption}\item[{}]{outputfile,  }\item[{}]{start\+\_\+raster\+\_\+path,  }\item[{}]{measrasterlist,  }\item[{}]{gebco\+\_\+uncertainty\+\_\+in }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1kalman_a94ca2a2f287ef7fd9a55518eb866c5a0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1kalman_a39f29e9a95c4034a1dea0f643b3c9376}\label{namespaceatl__module_1_1kalman_a39f29e9a95c4034a1dea0f643b3c9376}} 
+\index{atl\_module.kalman@{atl\_module.kalman}!simple\_kalman@{simple\_kalman}}
+\index{simple\_kalman@{simple\_kalman}!atl\_module.kalman@{atl\_module.kalman}}
+\doxysubsubsection{\texorpdfstring{simple\_kalman()}{simple\_kalman()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+kalman.\+simple\+\_\+kalman (\begin{DoxyParamCaption}\item[{}]{z,  }\item[{}]{sigma,  }\item[{}]{z\+\_\+meas,  }\item[{}]{sigma\+\_\+meas }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}vectorizable function that does the kalman update step in 1d, saves the results to a tif file
+
+Args:
+    z (float): initial geuss
+    sigma (float): uncertainty of initial depth in standard deviation
+    z_meas (float): new, measured value
+    sigma_meas (float): uncertainty in the measured value in STANDARD DEVIATION
+
+Returns:
+    tuple: new grid of Z and uncertainty
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1kalman_a39f29e9a95c4034a1dea0f643b3c9376_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1kalman_a5e18d531bad60e3eb2fdb206a3230f62}\label{namespaceatl__module_1_1kalman_a5e18d531bad60e3eb2fdb206a3230f62}} 
+\index{atl\_module.kalman@{atl\_module.kalman}!run\_logger@{run\_logger}}
+\index{run\_logger@{run\_logger}!atl\_module.kalman@{atl\_module.kalman}}
+\doxysubsubsection{\texorpdfstring{run\_logger}{run\_logger}}
+{\footnotesize\ttfamily atl\+\_\+module.\+kalman.\+run\+\_\+logger = setup\+\_\+logger(name=\char`\"{}mainrunlogger\char`\"{}, logfile=\char`\"{}./run\+\_\+log.\+log\char`\"{})}
+

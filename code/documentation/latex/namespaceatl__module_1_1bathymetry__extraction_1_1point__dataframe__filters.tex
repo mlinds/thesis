@@ -1,0 +1,151 @@
+\hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters}{}\doxysection{atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters Namespace Reference}
+\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters}\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678}{add\+\_\+msl\+\_\+corrected\+\_\+seafloor\+\_\+elev}} (df\+\_\+in)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aaf1fe670a179cdeec1154b17f65438dd}{filter\+\_\+high\+\_\+returns}} (df, max\+\_\+geoid\+\_\+high\+\_\+z)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a13000aee400ecb64d2b4ff18a6076d29}{filter\+\_\+\+T\+E\+P\+\_\+and\+\_\+nonassoc}} (df)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a0c1f8f315a8727a23223effec2fbef85}{add\+\_\+sea\+\_\+surface\+\_\+level}} (df, max\+\_\+sea\+\_\+surf\+\_\+elev, rolling\+\_\+window=200)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a3d96f41ce58a12d7483fe51752d38cb9}{filter\+\_\+low\+\_\+points}} (df, filter\+\_\+below\+\_\+z)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad370dbe15226acaad178fd30eb59c050}{filter\+\_\+depth}} (df, filter\+\_\+below\+\_\+depth)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad964b0828cb993233df0305243bb9eaa}{remove\+\_\+surface\+\_\+points}} (df, n=1, min\+\_\+remove=1)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a95e1371dc4250e39223651351ae0a441}{add\+\_\+gebco}} (df)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_adcb6653187c8f30786dd0fd8e576bfee}{filter\+\_\+gebco}} (pd.\+Data\+Frame df, float low\+\_\+limit, float high\+\_\+limit)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_abd730b4766d8bef34c84ce89726930e3}{correct\+\_\+for\+\_\+refraction}} (df)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aefa9c39d8134977ed9a081420684f63a}{add\+\_\+neighbor\+\_\+count}} (df, window\+\_\+distance\+\_\+pts, window\+\_\+distance\+\_\+meters)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aafcaaf6732f7a0c93953e5201168e7bc}{p}} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).parents\mbox{[}3\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a95e1371dc4250e39223651351ae0a441}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a95e1371dc4250e39223651351ae0a441}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!add\_gebco@{add\_gebco}}
+\index{add\_gebco@{add\_gebco}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{add\_gebco()}{add\_gebco()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+add\+\_\+gebco (\begin{DoxyParamCaption}\item[{}]{df }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a95e1371dc4250e39223651351ae0a441_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!add\_msl\_corrected\_seafloor\_elev@{add\_msl\_corrected\_seafloor\_elev}}
+\index{add\_msl\_corrected\_seafloor\_elev@{add\_msl\_corrected\_seafloor\_elev}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{add\_msl\_corrected\_seafloor\_elev()}{add\_msl\_corrected\_seafloor\_elev()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+add\+\_\+msl\+\_\+corrected\+\_\+seafloor\+\_\+elev (\begin{DoxyParamCaption}\item[{}]{df\+\_\+in }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aefa9c39d8134977ed9a081420684f63a}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aefa9c39d8134977ed9a081420684f63a}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!add\_neighbor\_count@{add\_neighbor\_count}}
+\index{add\_neighbor\_count@{add\_neighbor\_count}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{add\_neighbor\_count()}{add\_neighbor\_count()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+add\+\_\+neighbor\+\_\+count (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{window\+\_\+distance\+\_\+pts,  }\item[{}]{window\+\_\+distance\+\_\+meters }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a0c1f8f315a8727a23223effec2fbef85}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a0c1f8f315a8727a23223effec2fbef85}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!add\_sea\_surface\_level@{add\_sea\_surface\_level}}
+\index{add\_sea\_surface\_level@{add\_sea\_surface\_level}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{add\_sea\_surface\_level()}{add\_sea\_surface\_level()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+add\+\_\+sea\+\_\+surface\+\_\+level (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{rolling\+\_\+window = {\ttfamily 200} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_abd730b4766d8bef34c84ce89726930e3}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_abd730b4766d8bef34c84ce89726930e3}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!correct\_for\_refraction@{correct\_for\_refraction}}
+\index{correct\_for\_refraction@{correct\_for\_refraction}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{correct\_for\_refraction()}{correct\_for\_refraction()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+correct\+\_\+for\+\_\+refraction (\begin{DoxyParamCaption}\item[{}]{df }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_abd730b4766d8bef34c84ce89726930e3_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad370dbe15226acaad178fd30eb59c050}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad370dbe15226acaad178fd30eb59c050}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!filter\_depth@{filter\_depth}}
+\index{filter\_depth@{filter\_depth}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{filter\_depth()}{filter\_depth()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+filter\+\_\+depth (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{filter\+\_\+below\+\_\+depth }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_adcb6653187c8f30786dd0fd8e576bfee}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_adcb6653187c8f30786dd0fd8e576bfee}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!filter\_gebco@{filter\_gebco}}
+\index{filter\_gebco@{filter\_gebco}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{filter\_gebco()}{filter\_gebco()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+filter\+\_\+gebco (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{df,  }\item[{float}]{low\+\_\+limit,  }\item[{float}]{high\+\_\+limit }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aaf1fe670a179cdeec1154b17f65438dd}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aaf1fe670a179cdeec1154b17f65438dd}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!filter\_high\_returns@{filter\_high\_returns}}
+\index{filter\_high\_returns@{filter\_high\_returns}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{filter\_high\_returns()}{filter\_high\_returns()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+filter\+\_\+high\+\_\+returns (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Remove returns above *level* which is an elevation in meters
+
+Args:
+    df (pd.DataFrame): input dataframe
+    level (int, optional): level above which to remove points. Defaults to 5.
+
+Returns:
+    pd.DataFrame: output dataframe
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a3d96f41ce58a12d7483fe51752d38cb9}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a3d96f41ce58a12d7483fe51752d38cb9}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!filter\_low\_points@{filter\_low\_points}}
+\index{filter\_low\_points@{filter\_low\_points}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{filter\_low\_points()}{filter\_low\_points()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+filter\+\_\+low\+\_\+points (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{filter\+\_\+below\+\_\+z }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a13000aee400ecb64d2b4ff18a6076d29}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a13000aee400ecb64d2b4ff18a6076d29}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!filter\_TEP\_and\_nonassoc@{filter\_TEP\_and\_nonassoc}}
+\index{filter\_TEP\_and\_nonassoc@{filter\_TEP\_and\_nonassoc}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{filter\_TEP\_and\_nonassoc()}{filter\_TEP\_and\_nonassoc()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+filter\+\_\+\+T\+E\+P\+\_\+and\+\_\+nonassoc (\begin{DoxyParamCaption}\item[{}]{df }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Remove Transmitter Echo Path (TEP) photons
+
+Args:
+    df (pd.DataFrame): Input dataframe
+
+Returns:
+    pd.DataFrame: Output dataframe
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad964b0828cb993233df0305243bb9eaa}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_ad964b0828cb993233df0305243bb9eaa}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!remove\_surface\_points@{remove\_surface\_points}}
+\index{remove\_surface\_points@{remove\_surface\_points}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{remove\_surface\_points()}{remove\_surface\_points()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+remove\+\_\+surface\+\_\+points (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{n = {\ttfamily 1},  }\item[{}]{min\+\_\+remove = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aafcaaf6732f7a0c93953e5201168e7bc}\label{namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_aafcaaf6732f7a0c93953e5201168e7bc}} 
+\index{atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}!p@{p}}
+\index{p@{p}!atl\_module.bathymetry\_extraction.point\_dataframe\_filters@{atl\_module.bathymetry\_extraction.point\_dataframe\_filters}}
+\doxysubsubsection{\texorpdfstring{p}{p}}
+{\footnotesize\ttfamily atl\+\_\+module.\+bathymetry\+\_\+extraction.\+point\+\_\+dataframe\+\_\+filters.\+p = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).parents\mbox{[}3\mbox{]}}
+

@@ -1,0 +1,6 @@
+<map id="atl_module.bathymetry_extraction.icesat_bathymetry.get_all_bathy_from_granule" name="atl_module.bathymetry_extraction.icesat_bathymetry.get_all_bathy_from_granule">
+<area shape="rect" id="node1" title=" " alt="" coords="5,79,223,135"/>
+<area shape="rect" id="node2" href="$namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry.html#aa5e298fdb8798d14b11d94f87d1b4f28" title=" " alt="" coords="271,5,491,61"/>
+<area shape="rect" id="node3" href="$namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="290,86,471,127"/>
+<area shape="rect" id="node4" href="$namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="310,152,451,208"/>
+</map>

@@ -1,0 +1,66 @@
+\hypertarget{namespaceatl__module_1_1io_1_1atl03__netcdf__loading}{}\doxysection{atl\+\_\+module.\+io.\+atl03\+\_\+netcdf\+\_\+loading Namespace Reference}
+\label{namespaceatl__module_1_1io_1_1atl03__netcdf__loading}\index{atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+list \mbox{\hyperlink{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_abc1074f21ee3ea96ea2987f6de9e4fbe}{get\+\_\+beams}} (str or Path\+Like granule\+\_\+netcdf)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a6a1e7a5737ef2d651c29ae1512e0e94a}{load\+\_\+beam\+\_\+array\+\_\+ncds}} (str or Path\+Like filename, str beam)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+list \mbox{\hyperlink{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a5f2ffe169dc1d973209dabdd58619acc}{beamlist}} = \mbox{[}\char`\"{}gt1l\char`\"{}, \char`\"{}gt1r\char`\"{}, \char`\"{}gt2l\char`\"{}, \char`\"{}gt2r\char`\"{}, \char`\"{}gt3l\char`\"{}, \char`\"{}gt3r\char`\"{}\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_abc1074f21ee3ea96ea2987f6de9e4fbe}\label{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_abc1074f21ee3ea96ea2987f6de9e4fbe}} 
+\index{atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}!get\_beams@{get\_beams}}
+\index{get\_beams@{get\_beams}!atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}}
+\doxysubsubsection{\texorpdfstring{get\_beams()}{get\_beams()}}
+{\footnotesize\ttfamily  list atl\+\_\+module.\+io.\+atl03\+\_\+netcdf\+\_\+loading.\+get\+\_\+beams (\begin{DoxyParamCaption}\item[{str or Path\+Like}]{granule\+\_\+netcdf }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}List the beams available for a given granule
+
+Args:
+    granule_netcdf (Pathlike): Path to granule NETCDF file
+
+Returns:
+    list: List of beams
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_abc1074f21ee3ea96ea2987f6de9e4fbe_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a6a1e7a5737ef2d651c29ae1512e0e94a}\label{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a6a1e7a5737ef2d651c29ae1512e0e94a}} 
+\index{atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}!load\_beam\_array\_ncds@{load\_beam\_array\_ncds}}
+\index{load\_beam\_array\_ncds@{load\_beam\_array\_ncds}!atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}}
+\doxysubsubsection{\texorpdfstring{load\_beam\_array\_ncds()}{load\_beam\_array\_ncds()}}
+{\footnotesize\ttfamily  np.\+ndarray atl\+\_\+module.\+io.\+atl03\+\_\+netcdf\+\_\+loading.\+load\+\_\+beam\+\_\+array\+\_\+ncds (\begin{DoxyParamCaption}\item[{str or Path\+Like}]{filename,  }\item[{str}]{beam }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}return an array of photon-level details for a given file and beam name.
+
+Granule-level metadata is also included with the array
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a6a1e7a5737ef2d651c29ae1512e0e94a_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a5f2ffe169dc1d973209dabdd58619acc}\label{namespaceatl__module_1_1io_1_1atl03__netcdf__loading_a5f2ffe169dc1d973209dabdd58619acc}} 
+\index{atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}!beamlist@{beamlist}}
+\index{beamlist@{beamlist}!atl\_module.io.atl03\_netcdf\_loading@{atl\_module.io.atl03\_netcdf\_loading}}
+\doxysubsubsection{\texorpdfstring{beamlist}{beamlist}}
+{\footnotesize\ttfamily list atl\+\_\+module.\+io.\+atl03\+\_\+netcdf\+\_\+loading.\+beamlist = \mbox{[}\char`\"{}gt1l\char`\"{}, \char`\"{}gt1r\char`\"{}, \char`\"{}gt2l\char`\"{}, \char`\"{}gt2r\char`\"{}, \char`\"{}gt3l\char`\"{}, \char`\"{}gt3r\char`\"{}\mbox{]}}
+

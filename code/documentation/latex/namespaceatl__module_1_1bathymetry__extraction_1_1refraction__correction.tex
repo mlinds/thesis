@@ -1,0 +1,61 @@
+\hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction}{}\doxysection{atl\+\_\+module.\+bathymetry\+\_\+extraction.\+refraction\+\_\+correction Namespace Reference}
+\label{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction}\index{atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a73b52297b78cd0c1f1d2602616b3d01a}{correct\+\_\+refr}} (depth, pointing\+\_\+vector\+\_\+az, pointing\+\_\+vector\+\_\+elev)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a0d28db5c53002b43fa4cdbb80f8948c1}{I\+C\+E\+S\+A\+T\+\_\+\+A\+L\+T\+I\+T\+U\+DE}} = 496 $\ast$ 1000
+\item 
+int \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a849d41a755598debf41d5690272158c6}{E\+A\+R\+T\+H\+\_\+\+R\+AD}} = 6371 $\ast$ 100
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Implements the Parrish Method
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a73b52297b78cd0c1f1d2602616b3d01a}\label{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a73b52297b78cd0c1f1d2602616b3d01a}} 
+\index{atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}!correct\_refr@{correct\_refr}}
+\index{correct\_refr@{correct\_refr}!atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}}
+\doxysubsubsection{\texorpdfstring{correct\_refr()}{correct\_refr()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+refraction\+\_\+correction.\+correct\+\_\+refr (\begin{DoxyParamCaption}\item[{}]{depth,  }\item[{}]{pointing\+\_\+vector\+\_\+az,  }\item[{}]{pointing\+\_\+vector\+\_\+elev }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}return the X,Y,Z corrections introduced by refraction, using parrish method
+
+Args:
+    depth (float): the current depth
+    pointing_vector_az (float): azimuth of pointing vector of the satellite in radians
+    pointing_vector_elev (float): Elevation of pointing vector of the satellite in radians
+
+Returns:
+    tuple: tuple of (Easting correcting, northing correction, Z correction)
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a73b52297b78cd0c1f1d2602616b3d01a_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a849d41a755598debf41d5690272158c6}\label{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a849d41a755598debf41d5690272158c6}} 
+\index{atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}!EARTH\_RAD@{EARTH\_RAD}}
+\index{EARTH\_RAD@{EARTH\_RAD}!atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}}
+\doxysubsubsection{\texorpdfstring{EARTH\_RAD}{EARTH\_RAD}}
+{\footnotesize\ttfamily int atl\+\_\+module.\+bathymetry\+\_\+extraction.\+refraction\+\_\+correction.\+E\+A\+R\+T\+H\+\_\+\+R\+AD = 6371 $\ast$ 100}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a0d28db5c53002b43fa4cdbb80f8948c1}\label{namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction_a0d28db5c53002b43fa4cdbb80f8948c1}} 
+\index{atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}!ICESAT\_ALTITUDE@{ICESAT\_ALTITUDE}}
+\index{ICESAT\_ALTITUDE@{ICESAT\_ALTITUDE}!atl\_module.bathymetry\_extraction.refraction\_correction@{atl\_module.bathymetry\_extraction.refraction\_correction}}
+\doxysubsubsection{\texorpdfstring{ICESAT\_ALTITUDE}{ICESAT\_ALTITUDE}}
+{\footnotesize\ttfamily int atl\+\_\+module.\+bathymetry\+\_\+extraction.\+refraction\+\_\+correction.\+I\+C\+E\+S\+A\+T\+\_\+\+A\+L\+T\+I\+T\+U\+DE = 496 $\ast$ 1000}
+

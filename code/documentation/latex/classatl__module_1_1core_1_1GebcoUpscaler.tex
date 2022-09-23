@@ -1,0 +1,459 @@
+\hypertarget{classatl__module_1_1core_1_1GebcoUpscaler}{}\doxysection{atl\+\_\+module.\+core.\+Gebco\+Upscaler Class Reference}
+\label{classatl__module_1_1core_1_1GebcoUpscaler}\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ad54a914a1343b9b64d090c8bc5fa1e8b}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, site, \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a857871a564a2c2b2340018498dead3f0}{site\+\_\+name}}, truebathy=None)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aef0b7892306194d3dff5e851c2af05d0}{download\+\_\+\+A\+T\+L03}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da}{calc\+\_\+zsdpoints\+\_\+by\+\_\+tracks}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe}{recalc\+\_\+tracklines\+\_\+gdf}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a3b43fdd21c17dde55ea141e28eff7878}{subset\+\_\+gebco}} (self, int hres)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}{find\+\_\+bathy\+\_\+from\+\_\+icesat}} (self, window, threshold\+\_\+val, req\+\_\+perc\+\_\+hconf, min\+\_\+photons, window\+\_\+meters, min\+\_\+kde, low\+\_\+limit, high\+\_\+limit, rolling\+\_\+window, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z, min\+\_\+ph\+\_\+count, save\+\_\+result=True)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa20a8bcf7842b7884aeae3ad69fd8efb}{kriging}} (self, int npts, str kr\+\_\+model, $\ast$$\ast$kwargs)
+\item 
+None \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a0ddd1f5ad4829901ea5b6e5e2b6db0c8}{kalman\+\_\+update}} (self, float gebco\+\_\+std)
+\item 
+dict \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a8b9b75b6b08e65f91563600cb589d45c}{lidar\+\_\+error}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad}{add\+\_\+truth\+\_\+data}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}{raster\+\_\+rmse}} (self, check\+\_\+kriged=False, error\+\_\+out=False)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a56e0411da599e1ebb844671023e0f9f8}{write\+\_\+raster\+\_\+error\+\_\+tables}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a14cf69df0525edc6f6c9225683fb349a}{write\+\_\+lidar\+\_\+error\+\_\+tables}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76}{plot\+\_\+lidar\+\_\+error}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}{plot\+\_\+truth\+\_\+data}} (self, plot\+\_\+title)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa}{plot\+\_\+icesat\+\_\+points}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}{plot\+\_\+tracklines}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d}{plot\+\_\+site}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba63d8106089770244}{run\+\_\+summary}} (self)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_af49ea88566f9ddcb664bf2484f361910}{rmse\+\_\+naive}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a857871a564a2c2b2340018498dead3f0}{site\+\_\+name}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_acf9180ab4c3c05632a3e8a133deaa4fa}{folderpath}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a942a9e2f82ec15f96e981d8c97f79a17}{gebco\+\_\+full\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a9497d33eb03fefa444217263ca48acfc}{truebathy\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_adf4a744427bd751156e94b0c204022d8}{trackline\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a16127f71bd4769c07b020d0c7c99ed10}{bathymetric\+\_\+point\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a24b243aea3f076489672d9ea03fe8a3e}{kalman\+\_\+update\+\_\+raster\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a822c2e84e054add2c2a910d798f12218}{bilinear\+\_\+gebco\+\_\+raster\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a64fec8385202d4628f84e638c11fdae4}{kriged\+\_\+raster\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aad733d36f9d6406ed6e60ba4eac36257}{A\+O\+I\+\_\+path}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a153b593c9c2027258150441246f83f96}{run\+\_\+params}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a94a4cd63cff534e79601906f5aad1954}{tracklines}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa36f029eab27b5897f8a0d80634d85df}{crs}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ac0de8f53617315a8b7a54018858ffff9}{epsg}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa5eb69fe9b85f54e13c2669b97a2020e}{bathy\+\_\+pts\+\_\+gdf}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}{lidar\+\_\+err\+\_\+dict}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a6fa951d4644ed716a9d65a7cf741751f}{rmse\+\_\+icesat}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a1a7b659a37d3cd7a3808296d94c8ef36}{mae\+\_\+icesat}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a6714fa0f6f1d35269c817711047cf951}{rmse\+\_\+kalman}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ab9c3ccf1021b1c8b82e78f5f74b82a3f}{rmse\+\_\+kriged}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a87bf18be734a224a9f64bce2b93d65c5}{raster\+\_\+error\+\_\+summary}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Object that contains a test site, and optionally a truth raster for comparison\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_ad54a914a1343b9b64d090c8bc5fa1e8b}\label{classatl__module_1_1core_1_1GebcoUpscaler_ad54a914a1343b9b64d090c8bc5fa1e8b}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{site,  }\item[{}]{site\+\_\+name,  }\item[{}]{truebathy = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad}\label{classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!add\_truth\_data@{add\_truth\_data}}
+\index{add\_truth\_data@{add\_truth\_data}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{add\_truth\_data()}{add\_truth\_data()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+add\+\_\+truth\+\_\+data (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da}\label{classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!calc\_zsdpoints\_by\_tracks@{calc\_zsdpoints\_by\_tracks}}
+\index{calc\_zsdpoints\_by\_tracks@{calc\_zsdpoints\_by\_tracks}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{calc\_zsdpoints\_by\_tracks()}{calc\_zsdpoints\_by\_tracks()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+calc\+\_\+zsdpoints\+\_\+by\+\_\+tracks (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aef0b7892306194d3dff5e851c2af05d0}\label{classatl__module_1_1core_1_1GebcoUpscaler_aef0b7892306194d3dff5e851c2af05d0}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!download\_ATL03@{download\_ATL03}}
+\index{download\_ATL03@{download\_ATL03}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{download\_ATL03()}{download\_ATL03()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+download\+\_\+\+A\+T\+L03 (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Request a data download with the extent determined by the AOI.gpkg in the folder\end{DoxyVerb}
+ Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_aef0b7892306194d3dff5e851c2af05d0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!find\_bathy\_from\_icesat@{find\_bathy\_from\_icesat}}
+\index{find\_bathy\_from\_icesat@{find\_bathy\_from\_icesat}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{find\_bathy\_from\_icesat()}{find\_bathy\_from\_icesat()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+find\+\_\+bathy\+\_\+from\+\_\+icesat (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{window,  }\item[{}]{threshold\+\_\+val,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{min\+\_\+photons,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit,  }\item[{}]{high\+\_\+limit,  }\item[{}]{rolling\+\_\+window,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z,  }\item[{}]{min\+\_\+ph\+\_\+count,  }\item[{}]{save\+\_\+result = {\ttfamily True} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0ddd1f5ad4829901ea5b6e5e2b6db0c8}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0ddd1f5ad4829901ea5b6e5e2b6db0c8}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!kalman\_update@{kalman\_update}}
+\index{kalman\_update@{kalman\_update}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{kalman\_update()}{kalman\_update()}}
+{\footnotesize\ttfamily  None atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kalman\+\_\+update (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{float}]{gebco\+\_\+std }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performed a kalman update assuming a certain constant value for the standard deviation of GEBCO
+
+Args:
+    gebco_std (float): The assumed measurement error (standard deviation in meters) of GEBCO data
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aa20a8bcf7842b7884aeae3ad69fd8efb}\label{classatl__module_1_1core_1_1GebcoUpscaler_aa20a8bcf7842b7884aeae3ad69fd8efb}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!kriging@{kriging}}
+\index{kriging@{kriging}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{kriging()}{kriging()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kriging (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{npts,  }\item[{str}]{kr\+\_\+model,  }\item[{$\ast$$\ast$}]{kwargs }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Subset the points using poisson disk sampling then run the kriging process and save the resulting depth and uncertainty raster to the folder of the site
+    Additional kwargs are passed into the kriging function, so parameters can be supplied to that function
+Args:
+    npts (int): The number of points to subset\end{DoxyVerb}
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a8b9b75b6b08e65f91563600cb589d45c}\label{classatl__module_1_1core_1_1GebcoUpscaler_a8b9b75b6b08e65f91563600cb589d45c}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!lidar\_error@{lidar\_error}}
+\index{lidar\_error@{lidar\_error}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{lidar\_error()}{lidar\_error()}}
+{\footnotesize\ttfamily  dict atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+lidar\+\_\+error (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it\end{DoxyVerb}
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa}\label{classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_icesat\_points@{plot\_icesat\_points}}
+\index{plot\_icesat\_points@{plot\_icesat\_points}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_icesat\_points()}{plot\_icesat\_points()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+icesat\+\_\+points (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76}\label{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_lidar\_error@{plot\_lidar\_error}}
+\index{plot\_lidar\_error@{plot\_lidar\_error}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_lidar\_error()}{plot\_lidar\_error()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+lidar\+\_\+error (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d}\label{classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_site@{plot\_site}}
+\index{plot\_site@{plot\_site}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_site()}{plot\_site()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+site (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}\label{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_tracklines@{plot\_tracklines}}
+\index{plot\_tracklines@{plot\_tracklines}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_tracklines()}{plot\_tracklines()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+tracklines (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_truth\_data@{plot\_truth\_data}}
+\index{plot\_truth\_data@{plot\_truth\_data}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_truth\_data()}{plot\_truth\_data()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+truth\+\_\+data (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{plot\+\_\+title }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}\label{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!raster\_rmse@{raster\_rmse}}
+\index{raster\_rmse@{raster\_rmse}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{raster\_rmse()}{raster\_rmse()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+raster\+\_\+rmse (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{check\+\_\+kriged = {\ttfamily False},  }\item[{}]{error\+\_\+out = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the raster error metrics for the various rasters (the naive bilinear raster, then kalman updated raster, and the post-kriging raster)
+
+Because each operation is very expensive, they are only run when required/requested.
+
+Args:
+    check_kriged (bool, optional): Calculate the RMSE and MAE error between the kriged raster and the truth raster. This is. Defaults to False.
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe}\label{classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!recalc\_tracklines\_gdf@{recalc\_tracklines\_gdf}}
+\index{recalc\_tracklines\_gdf@{recalc\_tracklines\_gdf}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{recalc\_tracklines\_gdf()}{recalc\_tracklines\_gdf()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+recalc\+\_\+tracklines\+\_\+gdf (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder\end{DoxyVerb}
+ Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba63d8106089770244}\label{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba63d8106089770244}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!run\_summary@{run\_summary}}
+\index{run\_summary@{run\_summary}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{run\_summary()}{run\_summary()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+run\+\_\+summary (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a3b43fdd21c17dde55ea141e28eff7878}\label{classatl__module_1_1core_1_1GebcoUpscaler_a3b43fdd21c17dde55ea141e28eff7878}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!subset\_gebco@{subset\_gebco}}
+\index{subset\_gebco@{subset\_gebco}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{subset\_gebco()}{subset\_gebco()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+subset\+\_\+gebco (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{hres }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Take a subset of GEBCO with the area determined by the extent of the tracklines.gpkg file in the main folder, resampled bilinearly to the requested resolution
+
+Args:
+    hres (int): the horizontal (x and y) resolution of the subset
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a14cf69df0525edc6f6c9225683fb349a}\label{classatl__module_1_1core_1_1GebcoUpscaler_a14cf69df0525edc6f6c9225683fb349a}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!write\_lidar\_error\_tables@{write\_lidar\_error\_tables}}
+\index{write\_lidar\_error\_tables@{write\_lidar\_error\_tables}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{write\_lidar\_error\_tables()}{write\_lidar\_error\_tables()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+write\+\_\+lidar\+\_\+error\+\_\+tables (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a56e0411da599e1ebb844671023e0f9f8}\label{classatl__module_1_1core_1_1GebcoUpscaler_a56e0411da599e1ebb844671023e0f9f8}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!write\_raster\_error\_tables@{write\_raster\_error\_tables}}
+\index{write\_raster\_error\_tables@{write\_raster\_error\_tables}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{write\_raster\_error\_tables()}{write\_raster\_error\_tables()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+write\+\_\+raster\+\_\+error\+\_\+tables (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Write the ICESat-2 error and updated raster error tables for the site\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aad733d36f9d6406ed6e60ba4eac36257}\label{classatl__module_1_1core_1_1GebcoUpscaler_aad733d36f9d6406ed6e60ba4eac36257}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!AOI\_path@{AOI\_path}}
+\index{AOI\_path@{AOI\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{AOI\_path}{AOI\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+A\+O\+I\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aa5eb69fe9b85f54e13c2669b97a2020e}\label{classatl__module_1_1core_1_1GebcoUpscaler_aa5eb69fe9b85f54e13c2669b97a2020e}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!bathy\_pts\_gdf@{bathy\_pts\_gdf}}
+\index{bathy\_pts\_gdf@{bathy\_pts\_gdf}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{bathy\_pts\_gdf}{bathy\_pts\_gdf}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+bathy\+\_\+pts\+\_\+gdf}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a16127f71bd4769c07b020d0c7c99ed10}\label{classatl__module_1_1core_1_1GebcoUpscaler_a16127f71bd4769c07b020d0c7c99ed10}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!bathymetric\_point\_path@{bathymetric\_point\_path}}
+\index{bathymetric\_point\_path@{bathymetric\_point\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{bathymetric\_point\_path}{bathymetric\_point\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+bathymetric\+\_\+point\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a822c2e84e054add2c2a910d798f12218}\label{classatl__module_1_1core_1_1GebcoUpscaler_a822c2e84e054add2c2a910d798f12218}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!bilinear\_gebco\_raster\_path@{bilinear\_gebco\_raster\_path}}
+\index{bilinear\_gebco\_raster\_path@{bilinear\_gebco\_raster\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{bilinear\_gebco\_raster\_path}{bilinear\_gebco\_raster\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+bilinear\+\_\+gebco\+\_\+raster\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aa36f029eab27b5897f8a0d80634d85df}\label{classatl__module_1_1core_1_1GebcoUpscaler_aa36f029eab27b5897f8a0d80634d85df}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!crs@{crs}}
+\index{crs@{crs}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{crs}{crs}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+crs}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_ac0de8f53617315a8b7a54018858ffff9}\label{classatl__module_1_1core_1_1GebcoUpscaler_ac0de8f53617315a8b7a54018858ffff9}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!epsg@{epsg}}
+\index{epsg@{epsg}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{epsg}{epsg}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+epsg}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_acf9180ab4c3c05632a3e8a133deaa4fa}\label{classatl__module_1_1core_1_1GebcoUpscaler_acf9180ab4c3c05632a3e8a133deaa4fa}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!folderpath@{folderpath}}
+\index{folderpath@{folderpath}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{folderpath}{folderpath}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+folderpath}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a942a9e2f82ec15f96e981d8c97f79a17}\label{classatl__module_1_1core_1_1GebcoUpscaler_a942a9e2f82ec15f96e981d8c97f79a17}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!gebco\_full\_path@{gebco\_full\_path}}
+\index{gebco\_full\_path@{gebco\_full\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{gebco\_full\_path}{gebco\_full\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+gebco\+\_\+full\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a24b243aea3f076489672d9ea03fe8a3e}\label{classatl__module_1_1core_1_1GebcoUpscaler_a24b243aea3f076489672d9ea03fe8a3e}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!kalman\_update\_raster\_path@{kalman\_update\_raster\_path}}
+\index{kalman\_update\_raster\_path@{kalman\_update\_raster\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{kalman\_update\_raster\_path}{kalman\_update\_raster\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kalman\+\_\+update\+\_\+raster\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a64fec8385202d4628f84e638c11fdae4}\label{classatl__module_1_1core_1_1GebcoUpscaler_a64fec8385202d4628f84e638c11fdae4}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!kriged\_raster\_path@{kriged\_raster\_path}}
+\index{kriged\_raster\_path@{kriged\_raster\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{kriged\_raster\_path}{kriged\_raster\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kriged\+\_\+raster\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}\label{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!lidar\_err\_dict@{lidar\_err\_dict}}
+\index{lidar\_err\_dict@{lidar\_err\_dict}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{lidar\_err\_dict}{lidar\_err\_dict}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+lidar\+\_\+err\+\_\+dict}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a1a7b659a37d3cd7a3808296d94c8ef36}\label{classatl__module_1_1core_1_1GebcoUpscaler_a1a7b659a37d3cd7a3808296d94c8ef36}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!mae\_icesat@{mae\_icesat}}
+\index{mae\_icesat@{mae\_icesat}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{mae\_icesat}{mae\_icesat}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+mae\+\_\+icesat}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a87bf18be734a224a9f64bce2b93d65c5}\label{classatl__module_1_1core_1_1GebcoUpscaler_a87bf18be734a224a9f64bce2b93d65c5}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!raster\_error\_summary@{raster\_error\_summary}}
+\index{raster\_error\_summary@{raster\_error\_summary}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{raster\_error\_summary}{raster\_error\_summary}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+raster\+\_\+error\+\_\+summary}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a6fa951d4644ed716a9d65a7cf741751f}\label{classatl__module_1_1core_1_1GebcoUpscaler_a6fa951d4644ed716a9d65a7cf741751f}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!rmse\_icesat@{rmse\_icesat}}
+\index{rmse\_icesat@{rmse\_icesat}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{rmse\_icesat}{rmse\_icesat}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+rmse\+\_\+icesat}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a6714fa0f6f1d35269c817711047cf951}\label{classatl__module_1_1core_1_1GebcoUpscaler_a6714fa0f6f1d35269c817711047cf951}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!rmse\_kalman@{rmse\_kalman}}
+\index{rmse\_kalman@{rmse\_kalman}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{rmse\_kalman}{rmse\_kalman}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+rmse\+\_\+kalman}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_ab9c3ccf1021b1c8b82e78f5f74b82a3f}\label{classatl__module_1_1core_1_1GebcoUpscaler_ab9c3ccf1021b1c8b82e78f5f74b82a3f}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!rmse\_kriged@{rmse\_kriged}}
+\index{rmse\_kriged@{rmse\_kriged}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{rmse\_kriged}{rmse\_kriged}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+rmse\+\_\+kriged}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_af49ea88566f9ddcb664bf2484f361910}\label{classatl__module_1_1core_1_1GebcoUpscaler_af49ea88566f9ddcb664bf2484f361910}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!rmse\_naive@{rmse\_naive}}
+\index{rmse\_naive@{rmse\_naive}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{rmse\_naive}{rmse\_naive}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+rmse\+\_\+naive}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a153b593c9c2027258150441246f83f96}\label{classatl__module_1_1core_1_1GebcoUpscaler_a153b593c9c2027258150441246f83f96}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!run\_params@{run\_params}}
+\index{run\_params@{run\_params}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{run\_params}{run\_params}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+run\+\_\+params}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a857871a564a2c2b2340018498dead3f0}\label{classatl__module_1_1core_1_1GebcoUpscaler_a857871a564a2c2b2340018498dead3f0}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!site\_name@{site\_name}}
+\index{site\_name@{site\_name}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{site\_name}{site\_name}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+site\+\_\+name}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_adf4a744427bd751156e94b0c204022d8}\label{classatl__module_1_1core_1_1GebcoUpscaler_adf4a744427bd751156e94b0c204022d8}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!trackline\_path@{trackline\_path}}
+\index{trackline\_path@{trackline\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{trackline\_path}{trackline\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+trackline\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a94a4cd63cff534e79601906f5aad1954}\label{classatl__module_1_1core_1_1GebcoUpscaler_a94a4cd63cff534e79601906f5aad1954}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!tracklines@{tracklines}}
+\index{tracklines@{tracklines}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{tracklines}{tracklines}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+tracklines}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a9497d33eb03fefa444217263ca48acfc}\label{classatl__module_1_1core_1_1GebcoUpscaler_a9497d33eb03fefa444217263ca48acfc}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!truebathy\_path@{truebathy\_path}}
+\index{truebathy\_path@{truebathy\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{truebathy\_path}{truebathy\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+truebathy\+\_\+path}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/mnt/c/\+Users/\+X\+C\+B/\+One\+Drive -\/ Van Oord/\+Documents/thesis/code/atl\+\_\+module/\mbox{\hyperlink{core_8py}{core.\+py}}\end{DoxyCompactItemize}
