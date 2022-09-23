@@ -5,14 +5,14 @@
 \section{Remote sensing of bathymetry}
 There are several established methods for calculating bathymetric data from passive optical and SAR satellite data, and recent advances in cloud computing capabilities like Google Earth Engine (GEE) \parencite{Gorelick2017a} make large catalogs of remote sensing data more accessible \parencite{Pike2019,Turner2021}. The approaches can be broadly classified into \emph{wave-kinematic} and \emph{optical inversion} techniques.
 
-\subsection{Wave-Kinematic Bathymetry}
+\subsection{Wave-Kinematic bathymetry}
 This approach uses the hydrodynamic properties of a wave field to estimate the bathymetry. The hydrodynamic variables like wave celerity and wavelength are estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation \cite{Almar2021e}. The major advantage of this method is that the results do not depend on the turbidity, which can be a significant limitation to optical SDB along many coastlines. The downsides to this approach are that the horizontal resolution is limited compared to optical methods, and the depth that it can reach is limited by the wavelength: longer waves feel the bottom earlier, so only in areas with significant swells can deeper bathymetry measurements be found \parencite{Almar2021e}.
 
-\subsection{Bathymetry from Optical Remote Sensing}
+\subsection{Bathymetry from optical remote sensing}
 Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it it can provide continuos estimates of bathymetry with a resolution up to the resolution of the optical imagery (10m for the Sentinel-2, and higher if commerical imagery is purchased). There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to apply.
 
 
-\subsection{Active-passive Sensor Fusion}
+\subsection{Active-passive sensor fusion}
 \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
 
 There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, finding bathymetric signal points, and combining the lidar data with optical techniques.
@@ -224,16 +224,84 @@ Other researchers have used implementations of the density-based spatial cluster
 
 \citeauthor{Xu2022} proposed AMSRLC algorithm
 
-\citeauthor{Hsu2021}
+\citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
 \pdfcomment{finish section}
 
 \subsection{Possible limitations}
+
+The starting point of this method is the level 2A product ATL03 data from NASA. It consists of raw photon locations and data about the atmospheric and geophysical parameters. 
+
+\subsection{Tidal model errors}
+\subsection{Misclassified photons in ATL03 data}
+
+Correcting filtering of sea surface returns is very important to the accuracy of the bathymetry signal finding, because the sea surface signal is often several orders of magnitude more dense than the bathymetric signal, and the location of the sea surface is also used to calculate the depth of a photon for refraction correction. The default photon classification provided in the ATL03 data is used to identify the sea surface within the filtering algorithm. Errors in the default ocean signal classification can result in sea surface signal being inadvertently included in the subsurface data and biasing the KDE results.
+
+The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
+
+This could potentially be mitigated by a different filtering strategy calculates the local sea surface based on the local geoid  This could be very feasible in microtidal areas where the tidal signal has a smaller impacts.
+
+\pdfcomment{temp figure, replace with matplotlib figure with axis labels. Maybe also include a plan view map with scale bar to understand the geographic context}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/ageeba_beach_example.png}
+    \caption{Classification of photons from 2021-07-19, Beam gt3r, reference ground track 396. The two parallel straight lines from 200 to 800 are the sea surface and the bathymetric signal. The NASA photon classification algorithm misclassifies the bathymetric points as ocean surface returns}
+    \label{fig:ageeba_bad_classes}
+\end{figure}
+
+\subsection{Limitations in Photon Geolocation Accuracy}
+
+The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m.\pdfcomment{From data users guide, either cite that or better, find the published literature it comes from}.
+
+This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50m grid.
+
+\subsection{Errors in refraction correction}
+
+The refraction correction method used accounts for the additional horizontal error that is introduced by off-pointing. However, there are several other second-order effects that are not considered by the methodology. One of these is the estimation of the refractive index; the temperature and salinity affect the speed at which the water transmits light. By assuming a default value it introduces an error on the order of X.XXm \pdfcomment{Look this up to plug in some numbers to the formula to check}. This could be corrected by either estimating in advance a value for each local site, or by connecting the algorithm to an API that can provide a temperature and salinity value. 
+
+Another potential source of error is the slope of the water surface. Since there is a slope to the water surface, this affects the bounce angle of the photon. This can be corrected for and some papers that investigate ICESat-2 bathymetry have attempted to correct for it. For this project the magnitude of error due to slope was considered small enough to be within the margin of error of the method.
+
+The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. \pdfcomment{Just added this correction and improved error for one site by O 0.001m :|}
+
+\subsection{Limited spatial coverage in some islands}
+
+In support of the vegetation mission of ICESat-2, the instrument is sometimes pointed up to several degrees to the side of the reference ground tracks when the satellite passes over land. This increases the spatial density of points at the expense of the temporal resolution. For bathymetric purposes the increased spatial resolution gives a more even  coverage of nearshore zone bathymetry. 
+
+However, the land mask that is used to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Due to apparently being located within the off-pointing zones, both of the aforementioned islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the further reduction in spatial coverage limits the accuracy of the kriging method. This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations. The tradeoff for this scenario is that the temporal resolution is significantly better, so the spaceborne lidar could be useful for studying the changes over time. 
+
+\subsection{Inherent uncertainty of KDE Method}
+There are a number of input parameters to the filtering and the density-based bathymetry finding methods. These parameters can be optimized for each site to reduce the RMSE error as much as possible if there is some validation data available. However since the end goal of the project is to be able to improve estimates without using any in situ data, ideally there would be no need for optimization based on the site.
+
+Currently the globally-set parameters are sufficient to extract bathymetry without any tuning for all of the case studies that are investigated. However, the inability to tune in advance is a limitation. 
+
+One possible future step would be to gather even more validation sites, and explore which other variables might influence the best parameter setting. It is possible that there are certain site variables which predict the optimal parameter options. Even so, upscaling of validation sites would allow better insight into which variables predict the presence of valid data.  
+
+\subsection{ATL03 data quality issues}\label{sec:discussion-photon-issues}
+
+There are a number of known issues with the ICESat-2 data. They are either due to atmospheric and environmental conditions, or due to limitations of the instrument. Many of them can be detected in advance, and then the effected granule data can be thrown out or the issue otherwise corrected for. However, there might be some edge cases related to these issues that cause either false bathymetric signal points, or cause the algorithm to miss valid bathymetric data. These data issues could present an issue for the scaling up the signal finding without any manual intervention. Currently the process is run without any intervention, but the sites are small enough to manually check several of the transects.
+
+The following known data issues could effect the results of the KDE signal finding algorithm:
+
+\subsubsection{Clouds}
+
+The presence of some clouds along a single granule can cause the loss of data that might otherwise be valid
+
+Clouds reflect sunlight which causes a higher background photon rate, and this can create issues with the telemetry bands and cause the telemetry bands to not include the surface. Even if the actual earth surface is included in the telemetry band, the clouds can affect the travel times and create inaccurate readings \parencite{atl03knownissues}.
+
+During processing from L0 to L1, if the elevation from NASA reference DEM is not within the telemetry bands, no photons will be classified as signal. Therefore, if the entire granule is affected by this issue, there will be no sea surface found and therefore the entire granule will be filtered out. This can cause a significant loss of data but it is an issue inherent to nearly any remote-sensing based approach. One possible way to mitigate this would be to combine the ICESat-2 bathymetry data with synthetic aperture radar (SAR) remote sensing data. SAR remote sensing data can penetrate clouds because it uses radiometry outside of the visible spectrum. Although the spectrum used in SAR sensing cannot directly penetrate even clear water, the data can be used to estimate wave conditions, and the bathymetry can be estimated based on the transformation of the wave (called \emph{wave kinematic satellite-derived bathymetry}). The bathymetry estimates from SAR-derived wave kinematic SDB could be incorporated into the Kalman filtering step. 
+
+In situations where the photons are able to pass through clouds, the changes to travel time through the clouds can affect the accuracy. This could potentially be something that is hard to detect and affect the accuracy of the bathymetric points if any are found.
+ 
+
+\subsubsection{Multiple Telemetry Bands}
+
+If the signal detection on board the satellite cannot determine where the primary surface is located, it will open another telemetry band to try to collect more signal. This can create other areas of photons that are significantly above or below the surface. The effect of is shown in figure \ref{fig:multiple_tel_bands}
+
 
 \subsection{Summary of Prior Research on ICESat-2 derived bathymetry} %move to ICESat-2 section
 
 The studies that have used some version of the proposed technique are summarized in table \ref{tab:researchsummary}.
 
-\begin{table}
+\begin{table}[h]
       \caption{Summary of past studies that extract bathymetric data from spaceborne lidar}
       \label{tab:researchsummary}
       % \centering

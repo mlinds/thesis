@@ -1,8 +1,7 @@
 \chapter{Discussion}
 
-
 \pdfcomment{I think i need to make it clearer in my abstract that this is a goal}
-\section{A-priori identification of transects with bathymetric signal}
+\section{A-priori identification of transects with useful bathymetric signal}
 One of the goals of the project is to find a way to predict nearshore zones which are most likely to have ICESat-2 bathymetry available before downloading the photon-level data and running the KDE signal finding algorithm. A-priori identification of promising sites is useful to minimize the computing resources required when scaling up the approach to a global level.
 
 In looking at the transect data as a whole, there was not one clear variable which predicts either the availability of bathymetric data, or the quality  (measured by RMSE) of data an individual lidar transect. It is well-established that lidar and optical bathymetry are highly sensitive to turbidity levels, since they require light to be able to reach the seafloor. It was hypothesized that the Secchi depth, as estimated by optical satellite methods, would be a reliable indicator of bathymetric quality and quantity for a given transect. However, no clear relationship was found between the Secchi depth and the quality and quantity of bathymetric signal photons. In fact, the Florida Keys test site has the lowest median Secchi depth (8.3m), while also providing among the highest quality data (0.87m RMSE), and the largest percent of transects containing good data of any test sites.
