@@ -4,7 +4,7 @@ This section presents the main findings of the project
 \pdfcomment{Compare the effect of other physical or atmospheric variables on the error, like include an entire section}
 \pdfcomment{Add a point density per sqaure meter for each site}
 \pdfcomment{average depth for each site?}
-
+\pdfcomment{how many transects actually had data?}
 % \section{Random Sampling vs sampling along lines}
 
 \section{Petten Test Site}
@@ -13,7 +13,7 @@ Most research results show that spaceborne lidar is not effective at retrieving 
 However, The Dutch government provides a dataset of point surveys of the Dutch coast. This data was used as input to the kriging and Kalman updating code.
 
 \subsection{Site Conditions Summary}
-\begin{table}[h]
+\begin{table}[h!]
     \begin{minipage}{0.5\textwidth}
         \centering\begin{tabular}{r l }
             Parameter                                                 & \textbf{Value}                  \\
@@ -43,12 +43,12 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
     \label{fig:jarkus_vs_survey}
 \end{figure}
 
-\subsection{Jarkus Data kriging and kalman Update}
+\subsection{Jarkus Data kriging and Kalman update}
 \input{tables/jarkus_kalman_rms_error-table.tex}
 
 
 \section{Marathon Key Test Site}
-The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area has a wide shelf, a microtidal tidal environment, and very clear water, so it is an ideal site to apply this methodolgy. 
+The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area has a wide shelf, a microtidal tidal environment, and very clear water, so it is an ideal site to apply this methodology. 
 
 \begin{table}[h]
     \begin{minipage}{0.5\textwidth}
@@ -131,11 +131,11 @@ After downloading the above tracklines and processing them, the points shown in 
     \label{fig:stcroix-bathy-points}
 \end{figure}
 
-This site showed excellent agreement between the point ICESat-2 estimated lidar and the validaton data. The error metrics are shown in table \ref{tab:stcroix_lidar_error}
+This site showed excellent agreement between the point ICESat-2 estimated lidar and the validation data. The error metrics are shown in table \ref{tab:stcroix_lidar_error}
 
 \input{tables/Stcroix_lidar_error_table.tex}
 
-\subsection{Gebco Updating}
+\subsection{GEBCO Updating}
 
 The change in the error metrics that is provided by the  is shown in table \ref{tab:stcroix-raster-error}
 
@@ -211,7 +211,7 @@ The data for all 8 subsites was downloaded and the filtering and KDE signal find
     \label{fig:oahu-all-photon-map}
 \end{figure}
 
-The sites varied significantly in in the accuracy of the ICESat-2 point bathymetry. Some sites showed a significant RMS error due to the precense of mountain peaks up to a few hundred meters high with small horizontal footprint. These features are not captured by the GEBCO grid and therefore photon returns below them are not filtered due to the GEBCO-based horizontal filtering. Table \ref{table:Oahusitestats} contains the compiled error metrics for each site.
+The sites varied significantly in in the accuracy of the ICESat-2 point bathymetry. Some sites showed a significant RMS error due to the presense of mountain peaks up to a few hundred meters high with small horizontal footprint. These features are not captured by the GEBCO grid and therefore photon returns below them are not filtered due to the GEBCO-based horizontal filtering. Table \ref{table:Oahusitestats} contains the compiled error metrics for each site.
 
 \pdfcomment{add to discussion section} \pdfcomment{good to explain with a figure I think}
 

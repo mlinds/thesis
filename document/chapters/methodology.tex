@@ -6,15 +6,15 @@ This chapter lays out the data sources and approach used for the project
 The following data sources were used as input to the processing chain
 \subsection{NASA ATL03 global geolocated photon data}
 
-The main source of data is NASA's ATL03 V005 data product \parencite{icesat2data}. ATL03 is a level 1 data product that consists of the precise latitude, longitude, and elevation for each received photon. As a level 1 data product, it has already undergone some processing by the Atlas Science Algorithm Software (ASAS) to correct for instrument errors, to classify photons as likely signal or noise for different surface types, and to correct for some geophysical effects including earth tides to provide provide measurements relative to the WGS-84 ellipsoid. 
+The main source of data is NASA's ATL03 V005 data product \parencite{icesat2data}. ATL03 is a level 1 data product that consists of the precise latitude, longitude, and elevation for each received photon. As a level 1 data product, it has already undergone some processing by the Atlas Science Algorithm Software (ASAS) to correct for instrument errors, to classify photons as likely signal or noise for different surface types, and to correct for some geophysical effects including earth tides to provide measurements relative to the WGS-84 ellipsoid. 
 
 Additionally, the data includes variables that allow for further corrections and adjustments to the tide-free geoid reference system. These additional variables include correction factors for the tide, ocean surface depression due to atmospheric pressure, and factors to convert the ellipsoidal elevation to a height relative to the tide-free geoid.
 
 \subsection{GEBCO Global Grid 2021}
 
-The General Bathymetric Chart of the Ocean (GEBCO) is a global grid of topography and bathymetry at a 30 arc-second mesh resolution \parencite{gebco2021griddata}. GEBCO is assembled by compiling many different data sources, including mutli-beam sonar data, nautical charts, and satellite gravimetric measurements for deep-ocean bathymetry \parencite{gebcocookbook}. The elevation data is referenced to a vaguely-defined 'mean sea level'. The various data sets included in GEBCO are all assumed to be referenced to MSL, but some datasets referenced to chart datum are included. 
+The General Bathymetric Chart of the Ocean (GEBCO) is a global grid of topography and bathymetry at a 30 arc-second mesh resolution \parencite{gebco2021griddata}. GEBCO is assembled by compiling many different data sources, including multibeam sonar data, nautical charts, and satellite gravimetric measurements for deep-ocean bathymetry \parencite{gebcocookbook}. The elevation data is referenced to a vaguely-defined 'mean sea level'. The various data sets included in GEBCO are all assumed to be referenced to MSL, but some datasets referenced to chart datum are included. 
 
-GEBCO has a limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the bayesian updating approach. 
+GEBCO has a limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the Bayesian updating approach. 
 
 \subsection{GlobColour Daily Secchi Disk Depth Data}
 
@@ -65,7 +65,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
 
     \item To remove any high noise, cloud returns, or any remaining high land points not removed in step 1, any points more than 5m above the geoid are removed, based on the approach in \citeauthor{Ranndal2021}.
     \item The local sea-surface elevation $h_{sea}$ is calculated by taking the median elevation of photons that are classified as high-confidence sea surface photons. The water depth for each photon is then calculated. The standard deviation of the elevation high-confidence photons $\sigma_{h_{sea}}$ is also calculated to estimate the magnitude of the wave height at the time of the observation.
-    \item Any points with a water depth greater than 40 meters, and points with an geoidal height  less than -40m are removed, based on the same assumption that they are too deep to be bathymetric points. 
+    \item Any points with a water depth greater than 40 meters, and points with a geoidal height  less than -40m are removed, based on the same assumption that they are too deep to be bathymetric points. 
     \item Any points that are higher than $h_{sea} + max(\sigma_{h_{sea}},1)$ are removed. 
     
     
@@ -88,7 +88,7 @@ After these filtering steps, the resulting subsurface photons for this example t
     \label{fig:remaing_photons}
 \end{figure}
 
-An overview of the entire filtering chain is shown in figure \ref{fig:filtering-flowchart}
+An overview of the entire filtering chain is shown in figure \ref{fig:filtering-flowchart} \pdfcomment{mention checks for the number of filtered photons, and how it skips the transect if there are not enough photons}
 
 \begin{figure}[h]
     \centering
@@ -129,20 +129,20 @@ The input parameters to the signal finding function are:
 
 \subsection{Interpolation to a 2D grid}
 
-After the bathymetric signal points are identified per the method in \ref{sec:kdesignalfinding}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. A number of interpolation techniques have been applied to create bathymetry grids from point data. Commonly, inverse-distance weighting (IDW), tension splines, or loess interpolators have been used \parencite{gebcocookbook,Ferreira2017}. These approaches are relatively straightforward and easy to implement. However, the disadvantage of these simple approaches that there is not a clear methodology of establishing the uncertainty of the resulting interpolation. Intuitively, areas with a higher point density will lead to a interpolation with a lower uncertainty that areas with very sparse points. Kriging is a geostatistical technique that allows interpolating points into a grid, while also giving an indication of the uncertainty in the neighborhood. By knowing both our estimated sea floor depth and the uncertainty in the estimate, we can use a bayesian approach to update our initial guess of the seafloor location.
+After the bathymetric signal points are identified per the method in \ref{sec:kdesignalfinding}, the resulting bathymetry points are densely spaced along satellite tracklines, but are absent between them. A number of interpolation techniques have been applied to create bathymetry grids from point data. Commonly, inverse-distance weighting (IDW), tension splines, or loess interpolators have been used \parencite{gebcocookbook,Ferreira2017}. These approaches are relatively straightforward and easy to implement. However, the disadvantage of these simple approaches that there is not a clear methodology of establishing the uncertainty of the resulting interpolation. Intuitively, areas with a higher point density will lead to an interpolation with a lower uncertainty that areas with very sparse points. Kriging is a geostatistical technique that allows interpolating points into a grid, while also giving an indication of the uncertainty in the neighborhood. By knowing both our estimated sea floor depth and the uncertainty in the estimate, we can use a Bayesian approach to update our initial guess of the seafloor location.
 
 
 \subsubsection{Subsampling of Bathymetric points using Poisson Disk Sampling} \pdfcomment{maybe add a figure to show the process better} \label{subsec:poissonsubsampling}
 The bathymetric points are extremely densely spaced in some areas and transects. This can present an issue to kriging, which is computationally expensive and points too close together can make the algorithm even slower. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the Poisson disk sampling technique. Poisson disk sampling is a strategy that generates random samples of a distribution that are a minimum distance apart. When applied to a point cloud, in this case the point cloud of all the bathymetric points, the sampling function will only return points that are a minimum distance apart in 3d space. This ensures that the sampling is as representative as possible of the underlying surface.
 
-The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992}. The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can be practically be used is approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using consumer-grade laptops to run the algorithm. 
+The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992}. The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can be practically be used in the kriging step approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using consumer-grade laptops to run the algorithm. 
 
 \subsubsection{Kriging interpolation}
 Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using universal kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. \pdfcomment{add variogram parameter discussion}
 
 
-\subsection{Bayesian data assimilation using kalman update equation}
-The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consist of a loop of two steps, an \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations, for a state $x_k$ and a vector of measurements of the state $z_k$:
+\subsection{Bayesian data assimilation using Kalman update equation}
+The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, an \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations, for a state $x_k$ and a vector of measurements of the state $z_k$:
 
 Time Update:
 
@@ -168,13 +168,13 @@ Measurement Update:
 \end{equation}
 
 
-The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
+The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a Bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
 
 \subsection{Error Evaluation}
 
 There are two different types of error being evaluated to test the results of the different parts of the method. Both the error between the validation data and the lidar data is checked to evaluate the performance of ICESat-2 measurements, and the signal finding algorithm, and the total decrease in error between GEBCO and the version of GEBCO that includes the interpolated ICESat-2 data. 
 
-The error metrics that are evaluated for both types of error are the root mean square error (RMSE) and the mean absolute error (MAE). The RMSE is calculated by takign the mean of the squared difference between the true value and the estimated value, and then taking the square root of this mean.
+The error metrics that are evaluated for both types of error are the root mean square error (RMSE) and the mean absolute error (MAE). The RMSE is calculated by taking the mean of the squared difference between the true value and the estimated value, and then taking the square root of this mean.
 
 $$  RMSE = \sqrt{\frac{1}{n}\Sigma_{i=1}^{n}{\Big(\frac{d_i -f_i}{\sigma_i}\Big)^2}}  $$
 
@@ -182,7 +182,7 @@ By squaring the error first, larger magnitude errors are given relatively more w
 
 $$ MAE = \sum_{i=1}^{D}|x_i-y_i| $$
 
-To evaluate these errors between the kalman-updated bathymetry grid and the validation data. Reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1m, while GEBCO has a horizontal resolution on the order of 450m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using GDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
+To evaluate these errors between the Kalman-updated bathymetry grid and the validation data. Reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1m, while GEBCO has a horizontal resolution on the order of 450m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using GDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
 
 \pdfcomment{make add figures showing the grid resampling/reprojection steps}
 
