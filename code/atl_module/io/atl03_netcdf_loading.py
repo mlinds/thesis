@@ -158,7 +158,8 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         ph_count_photon_interp = interpolated_df["ph_count_segment"]
         full_sat = interpolated_df["full_sat_segment"]
 
-        correction = geoid_tide_free + geof2m + tide_ocean
+        correction = geoid_tide_free + geof2m
+        # + tide_ocean
         # + dac_corr
         # print(len(correction))
         # get the corrected Z vals

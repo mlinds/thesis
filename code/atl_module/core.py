@@ -314,7 +314,7 @@ class GebcoUpscaler:
 
         self.raster_error_summary.style.to_latex(
             buf=raster_error_table_path,
-            caption="Improvement in error metrics after appyling Kalman Updating of kriged data",
+            caption="Improvement in error metrics after applying Kalman Updating of kriged data",
             hrules=True,
             label=f"tab:{self.site_name}_gebco_raster_error",
         )
