@@ -29,32 +29,27 @@ The potential for bathymetric mapping using spaceborne laser observations has be
 
 \section{Geodetic reference systems for oceanography}
 
-The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g=\Delta W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface.
+The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g= - \nabla W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface.
 
-The contours of the geoid can be measured using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
+The contours of the geoid can be estimated using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
 
-The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.
-
-
-\subsection{Permanent Tide}
-The same gravitational forcing that drives ocean tides also creates a deformation of the earth itself. Because the time average of the sun and moon's tidal effect on the earth is nonzero, the mean effect of the solid earth tides is also non-zero. This time-averaged deformation is referred to as the permanent tide (n.b. here `tide` refers to earth tide rather than ocean tides).
-
-The \emph{tide-free geoid} is defined as a reference system where the permanent tide effect is removed \parencite{Makinen2009}.
+The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero\pdfcomment{add why}
 
 
-\subsection{Inverted barometer effect}
-Inverted barometer is the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{Robbins2022}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. NASA includes a factor to remove this effect from the local sea surface.
 
-\subsection{Dynamic atmosphere correction}
-In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are very high frequency,
+. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.
 
-The ICESat-2 ATL03 data includes a correction factor for that includes the effects of both wind and the atmospheric pressure. It is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It has a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution, and is interpolated spatially and temporally for inclusion in the ATL03 data.
+\subsection{Inverted barometer effect and Dynamic atmosphere correction}
+The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{Robbins2022}\pdfcomment{fix this}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down. 
 
-\subsection{Ocean Tides}
+In the simplest formulation, the drop in ocean level is approximately 1cm per additional mbar of atmospheric presure: $D_h \approx 0.99484(P_i-P_{ref})$, where $P_i$ is the instantaneous pressure in mbar and $P_{ref}$ is an assumed average pressure (1013.3 mbar)
 
-\pdfcomment{This should maybe be moved into the ICESat-2 section}
+In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are higher frequency compared to the pressure forcing that is captured by the IB correction.
 
-The ocean tides contribute 70\% of the variance to the sea surface \parencite{Robbins2022}.
+The combined effect of the IB effect and local wind forcing can be modeled using a global wave model that is forced using weather data. The combined correction factor is called the Dynamic Atmospheric Correction (DAC). The DAC correction provided in the ATL03 data product is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It is a global, barotropic, non-linear model of the oceans. It has a variable grid resolution to provide higher resolution data in coastal areas and enclosed seas. The MOG2D model is forced using the wind velocity and atmospheric pressure at 10m height that is supplied by the European Centre for Medium-Range Weather Forecasts (ECMWF) global weather model. The MOG2D model provides the DAC factor with a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution.
+The factor included in ATL03 is interpolated spatially and temporally to the nearest reference photon.
+
+The magnitude of the DAC correction is $\pm 50 cm$
 
 
 \section{ICESat-2}
@@ -68,7 +63,7 @@ The ICESat-2 mission is intended to gather high resolution topographic data on a
       \label{fig:icesat-rgts}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher int he water column \parencite{Ranndal2021}
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}
 
 \begin{figure}[htbp]
       \centering
@@ -80,7 +75,7 @@ Each of the 3 beams emits both a strong and weak beam, with the strong beam bein
 
 The main mission of the satellite is to gather data about mass and elevation changes in ice sheets and glaciers, and to study global canopy height \parencite{Markus2017}. As part of the vegetation height mission, the observatory is sometimes pointed away from the reference ground track when flying over land. This increases the spatial density of the observations of vegetation height \parencite{Markus2017}. This operation, called  \emph{offpointing}, begins before the satellite begins to record data over land, so the nearshore coastal area is also included, and therefore bathymetric and hydrological applications also benefit from increased spatial coverage \parencite{Magruder2021}.
 
-To locate the position of each photon in 3D space, the time of flight of the photon is calculated with a precision of 800 ps \parencite{Neumann2019d}. The location of the center of mass of the instrument is found using Global Positioning System (GPS) systems onboard the satellite. By combining the measured time of flight and satellite position, the geolocation of each returning photon is calculated \parencite{Neumann2019d}.
+To locate the position of each photon in 3D space, the time of flight of the photon is calculated with a precision of 800 ps \parencite{Neumann2019d}. The location of the center of mass of the instrument is found using Global Positioning System (GPS) systems onboard the satellite. By combining the measured time of flight and satellite position and attitude, the geolocation of each returning photon is calculated \parencite{Neumann2019d}.
 
 
 \begin{figure}[h]
@@ -127,9 +122,9 @@ Where:
 \end{itemize}
 
 $H_{GC}$ is the height above the WGS84 ellipsoid. To convert this ellipsoidal height into a value that can be used for computing the bathymetry, it needs to be converted into an instantaneous sea surface height. The equation that relates these is:
-\pdfcomment{This isn't entirely right I think. Don't need to convert before kde}
+
 \begin{equation}
-      H_{inst} = H_{GC} + H_{geoid} + H_{free2mean} + H_{DAC}
+      H_{inst} = H_{GC} - (H_{geoid} + H_{free2mean} + H_{DAC} + H{tide}) 
 \end{equation}
 
 Where:
@@ -139,12 +134,11 @@ Where:
       \item $H_{DAC}$ is the dynamic atmospheric correction factor which includes periodic effects like local wind forcing
 \end{itemize}
 
-The elevation value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}.
+% The height value reported in ATL03 does not include the geoid or any tides. To find these values from the reported ellipsoidal height, the dataset includes correction factors for the tide-free geoid, the height difference between the tide-free and mean-tide geoid, and the height of the tide relative to the mean tide geoid as calculated by the GOT4.8 model. The mean sea level can be estimated by adding these correction factors to the ellipsoidal height. However, the GOT4.8 model tidal height is a based on a relatively low resolution grid, and therefore is less accurate in nearshore coastal areas and within embayments \parencite{Neumann2019e}.
 
 \subsection{ICESat-2 data processing levels}
 
 ICESat-2 data is provided to the public at a number of different processing levels. NASA provides a number of processing chains that produce higher-level products for different uses. The raw data transmitted from the satellite is considered to be Level 0. The NASA NSIDC decompresses this level 0 data, orders it in time and formats it in the HDF5 file format, and it is made available as a level 1 product, the lowest-level data that is available to the public. 
-
 
 In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipsoidal units. 
 
@@ -230,23 +224,6 @@ Other researchers have used implementations of the density-based spatial cluster
 \subsection{Possible limitations}
 
 The starting point of this method is the level 2A product ATL03 data from NASA. It consists of raw photon locations and data about the atmospheric and geophysical parameters. 
-
-\subsection{Tidal model errors}
-\subsection{Misclassified photons in ATL03 data}
-
-Correcting filtering of sea surface returns is very important to the accuracy of the bathymetry signal finding, because the sea surface signal is often several orders of magnitude more dense than the bathymetric signal, and the location of the sea surface is also used to calculate the depth of a photon for refraction correction. The default photon classification provided in the ATL03 data is used to identify the sea surface within the filtering algorithm. Errors in the default ocean signal classification can result in sea surface signal being inadvertently included in the subsurface data and biasing the KDE results.
-
-The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
-
-This could potentially be mitigated by a different filtering strategy calculates the local sea surface based on the local geoid  This could be very feasible in microtidal areas where the tidal signal has a smaller impacts.
-
-\pdfcomment{temp figure, replace with matplotlib figure with axis labels. Maybe also include a plan view map with scale bar to understand the geographic context}
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/ageeba_beach_example.png}
-    \caption{Classification of photons from 2021-07-19, Beam gt3r, reference ground track 396. The two parallel straight lines from 200 to 800 are the sea surface and the bathymetric signal. The NASA photon classification algorithm misclassifies the bathymetric points as ocean surface returns}
-    \label{fig:ageeba_bad_classes}
-\end{figure}
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 
