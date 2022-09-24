@@ -124,7 +124,7 @@ Where:
 $H_{GC}$ is the height above the WGS84 ellipsoid. To convert this ellipsoidal height into a value that can be used for computing the bathymetry, it needs to be converted into an instantaneous sea surface height. The equation that relates these is:
 
 \begin{equation}
-      H_{inst} = H_{GC} - (H_{geoid} + H_{free2mean} + H_{DAC} + H{tide}) 
+      H_{inst} = H_{GC} - H_{geoid} - H_{free2mean} - H_{DAC} - H_{tide} 
 \end{equation}
 
 Where:
