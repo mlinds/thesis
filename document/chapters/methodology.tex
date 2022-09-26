@@ -9,9 +9,9 @@ The following data sources were used as input to the processing chain
 
 The main source of data is NASA's ATL03 V005 data product \parencite{icesat2data}. ATL03 is a level 1 data product that consists of the precise latitude, longitude, and elevation for each received photon. As a level 1 data product, it has already undergone some processing by the Atlas Science Algorithm Software (ASAS) to correct for instrument errors, to classify photons as likely signal or noise for different surface types, and to correct for some geophysical effects including earth tides to provide measurements relative to the WGS-84 ellipsoid. 
 
-Additionally, the data includes variables that allow for further corrections and adjustments to the tide-free geoid reference system. These additional variables include correction factors for the tide, ocean surface depression due to atmospheric pressure, and factors to convert the ellipsoidal elevation to a height relative to the tide-free geoid.
+Additionally, the data includes variables that allow for further corrections and adjustments to change the height reference from the ellipsoidal height. These additional variables include correction factors for the tide, ocean surface depression due to atmospheric pressure, and factors to convert the ellipsoidal elevation to a height relative to the tide-free geoid.
 
-The data is available via the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC) via an Application Programming interface (API) via the endpoint at \texttt{https://n5eil02u.ecs.nsidc.org/egi}. The API allows searching for data based on spatial location and date of acquisition. Once the search has been completed, the resulting \emph{granules} of ATL03 data can be downloaded. Before downloading, the data be further subset by spatial location, so that only photons within a geographic area are included. The granules can also be subset by variables, so that only specific variables of interest are included in the resulting download. This can significantly reduce the required download side if only a few variables are needed.
+The data is available via the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC) via an Application Programming interface (API) via the endpoint at \texttt{https://n5eil02u.ecs.nsidc.org/egi}. The data is available divided in granules that include  The API allows searching for data based on spatial location and date of acquisition. Once the search has been completed, the resulting \emph{granules} of ATL03 data can be downloaded. Before downloading, the data be further subset by spatial location, so that only photons within a geographic area are included. The granules can also be subset by variables, so that only specific variables of interest are included in the resulting download. This can significantly reduce the required download side if only a few variables are needed.
 
 
 \subsection{GEBCO Global Grid 2021}
@@ -152,7 +152,7 @@ The Kalman Filter is a mathematical technique to predict the state of systems ba
 Time Update:
 
 \begin{equation}
-    \hat{x}_{\bar{k}} = A\hat{x}_{k-1} + B\hat{u_{k-1}}
+    \hat{x}_{\bar{k}} = A\hat{x}_{k-1} + B\hat{u}_{k-1}
 \end{equation}
 
 \begin{equation}
@@ -160,21 +160,28 @@ Time Update:
 \end{equation}
 
 Measurement Update:
-\begin{equation}
+\begin{equation}\label{eq:kalmangain}
     K = P_{\bar{k}} H^T(H P_{\bar{k}} H^T + R) ^{-1}
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{eq:new_state_measurement}
     \hat{x}_k = \hat{x}_{\bar{k}} + K(\hat{z}_k - H \hat{x}_{\bar{k}})
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{eq:new_uncertainty}
     P_k = (I - KH)P_{\bar{k}}
 \end{equation}
 
-\pdfcomment{explain variables}
+Where:
+\begin{itemize}
+    \item $\hat{x}_k$ is the current state of the system
+    \item $\bar{k}$ is the measurement matrix
+    \item $P_k$ is the erorr covariance matrix
+\end{itemize}
 
 The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a Bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
+
+Equations \ref{eq:kalmangain},\ref{eq:new_state_measurement},\ref{eq:new_uncertainty} are used. At the start, a value needs to be assumed for the 
 
 \subsection{Error Evaluation}
 
@@ -188,7 +195,7 @@ By squaring the error first, larger magnitude errors are given relatively more w
 
 $$ MAE = \sum_{i=1}^{D}|x_i-y_i| $$
 
-To evaluate these errors between the Kalman-updated bathymetry grid and the validation data reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1m, while GEBCO has a horizontal resolution on the order of 450m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using aGDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
+To evaluate these errors between the Kalman-updated bathymetry grid and the validation data reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1m, while GEBCO has a horizontal resolution on the order of 450m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using GDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
 
 \pdfcomment{make add figures showing the grid resampling/reprojection steps}
 
