@@ -36,7 +36,7 @@ def _assign_na_values(inpval):
 #         ypoints = [point.y for point in line_point_list]
 
 
-def query_from_lines(line, rasterpath):
+def query_from_lines(line, rasterpath, band):
 
     interp_points = np.linspace(0, 1, 200)
     line_point_list = [
@@ -46,11 +46,11 @@ def query_from_lines(line, rasterpath):
     ypoints = [point.y for point in line_point_list]
 
     df = pd.DataFrame({"X": xpoints, "Y": ypoints})
-    return query_raster(df, rasterpath)
+    return xpoints, ypoints, query_raster(df, rasterpath, band)
 
 
 # function that gets values from rasters for each lidar photon
-def query_raster(dataframe: pd.DataFrame, src: str):
+def query_raster(dataframe: pd.DataFrame, src: str, band=1):
     """Takes a dataframe with a column named X and Y (WITH WGSLATLONGS) and a raster file, and returns the raster value at each point X and Y
 
     Args:
@@ -74,7 +74,7 @@ def query_raster(dataframe: pd.DataFrame, src: str):
     pipeinput = bytes(coordlist, "utf-8")
 
     # gdal location info command with arguments
-    cmd = ["gdallocationinfo", "-wgs84", "-valonly", "-b", "1", src]
+    cmd = ["gdallocationinfo", "-wgs84", "-valonly", "-b", str(band), src]
     # open a pipe to these commands
     with Popen(cmd, stdout=PIPE, stdin=PIPE) as p:
         # feed in our bytestring
@@ -119,7 +119,6 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
 
     # going to try to buffer this a bit to see if it improves results
-    # bounds_wgs84 = bathy_pts.buffer(100).to_crs("EPSG:4326").geometry.total_bounds
     # get the number of the EPSG crs (should be the local UTM zone!!)
 
     out_raster_path = f"{folderpath}/bilinear.tif"

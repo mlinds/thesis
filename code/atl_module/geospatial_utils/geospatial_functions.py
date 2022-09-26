@@ -161,3 +161,7 @@ def add_track_dist_meters(
     ).sort_values("dist_or")
     # return a dataframe or GDF
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
+
+
+def get_points_near_line(line,gdf):
+    pass
