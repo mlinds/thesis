@@ -5,6 +5,8 @@ import pandas as pd
 import rasterio
 from rasterio.plot import show as rastershow
 
+LATEX_PAGE_WIDTH = 448.1309
+
 
 def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
     ax = df_in.plot.scatter(
@@ -13,7 +15,7 @@ def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
         xlabel="True Elevation [m +MSL]",
         ylabel="Calculated Elevation [m +MSL]",
         title=f"Lidar Point Vs. Truth Point: {site_name}",
-        figsize=(5, 5),
+        figsize=set_size(),
         alpha=0.3,
         s=3,
         rasterized=True,
@@ -60,7 +62,7 @@ def map_ground_truth_data(truthdata_path, plottitle):
 def plot_photon_map(ax, bathy_points_gdf):
     print("plotting photon map")
     bathy_points_gdf.plot(
-        # figsize=(10, 10),
+        figsize=set_size(),
         column="z_kde",
         cmap="inferno",
         legend=True,
@@ -83,10 +85,7 @@ def plot_photon_map(ax, bathy_points_gdf):
 
 def plot_tracklines_overview(ax, tracklines_gdf):
     print("plotting tracklines")
-    tracklines_gdf.plot(
-        # figsize=(10, 5),
-        ax=ax
-    )
+    tracklines_gdf.plot(figsize=set_size(), ax=ax)
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
@@ -150,3 +149,38 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
     ax.set_title(f"binning with {nbins}")
 
     fig.savefig(figpath, bbox_inches="tight")
+
+
+def set_size(fraction=1):
+    """Set figure dimensions to avoid scaling in LaTeX.
+
+    Parameters
+    ----------
+    width: float
+            Document textwidth or columnwidth in pts
+    fraction: float, optional
+            Fraction of the width which you wish the figure to occupy
+
+    Returns
+    -------
+    fig_dim: tuple
+            Dimensions of figure in inches
+    """
+    # Width of figure (in pts)
+    fig_width_pt = LATEX_PAGE_WIDTH * fraction
+
+    # Convert from pt to inches
+    inches_per_pt = 1 / 72.27
+
+    # Golden ratio to set aesthetic figure height
+    # https://disq.us/p/2940ij3
+    golden_ratio = (5**0.5 - 1) / 2
+
+    # Figure width in inches
+    fig_width_in = fig_width_pt * inches_per_pt
+    # Figure height in inches
+    fig_height_in = fig_width_in * golden_ratio
+
+    fig_dim = (fig_width_in, fig_height_in)
+
+    return fig_dim
