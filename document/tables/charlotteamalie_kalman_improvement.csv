@@ -1,0 +1,4 @@
+,RMSE,MAE
+Naive Bilinear Interpolation,7.354837302373504,5.386294
+Kalman Updated Raster,5.712759747432476,4.281253
+Kriged Raster,7.577910052525047,5.933264
