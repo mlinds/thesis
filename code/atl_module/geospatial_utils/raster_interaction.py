@@ -27,6 +27,28 @@ def _assign_na_values(inpval):
     return np.NaN if inpval in ["", "-999999", "-9999"] else float(inpval)
 
 
+# def query_from_lines(line_df):
+#     line_df_wgs = line_df.to_crs("EPSG:4326")
+
+#     for line in line_df_wgs.geometry:
+#         line_point_list = [line.interpolate(fraction,normalized=True) for fraction in interp_points]
+#         xpoints = [point.x for point in line_point_list]
+#         ypoints = [point.y for point in line_point_list]
+
+
+def query_from_lines(line, rasterpath):
+
+    interp_points = np.linspace(0, 1, 200)
+    line_point_list = [
+        line.interpolate(fraction, normalized=True) for fraction in interp_points
+    ]
+    xpoints = [point.x for point in line_point_list]
+    ypoints = [point.y for point in line_point_list]
+
+    df = pd.DataFrame({"X": xpoints, "Y": ypoints})
+    return query_raster(df, rasterpath)
+
+
 # function that gets values from rasters for each lidar photon
 def query_raster(dataframe: pd.DataFrame, src: str):
     """Takes a dataframe with a column named X and Y (WITH WGSLATLONGS) and a raster file, and returns the raster value at each point X and Y
@@ -95,6 +117,9 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
 
     # get the boundaries in WGS coordinates
     bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
+
+    # going to try to buffer this a bit to see if it improves results
+    # bounds_wgs84 = bathy_pts.buffer(100).to_crs("EPSG:4326").geometry.total_bounds
     # get the number of the EPSG crs (should be the local UTM zone!!)
 
     out_raster_path = f"{folderpath}/bilinear.tif"
@@ -112,7 +137,6 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
         # format='GTiff'
     )
     ds = gdal.Warp(out_raster_path, GEBCO_LOCATION, options=options)
-    print(ds)
     ds = None
 
     # reopen with rasterio to mask out the values out of range
