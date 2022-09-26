@@ -177,7 +177,7 @@ def getkde(start, window):
 # create a 3d figure showing how the rolling window kde function works to find the max density
 
 # setup a figure to put the plots on
-fig = plt.figure(figsize=(20, 16))
+fig = plt.figure(figsize=(10, 8))
 # fig.suptitle("2D KDE windowing function")
 # setup a 2 subplot first
 
@@ -426,7 +426,6 @@ ax.scatter(
 ax.legend(loc="lower left")
 fig.savefig(
     "../document/figures/1d_kriging_section.pdf",
-    dpi=500,
     bbox_inches="tight",
     facecolor="white",
 )
@@ -485,7 +484,6 @@ ax.set_ylabel("Elevation [m]")
 ax.set_xlabel("Easting [m UTM 17N]")
 fig.savefig(
     "../document/figures/kalman_1d_section.pdf",
-    dpi=500,
     bbox_inches="tight",
     facecolor="white",
 )
@@ -509,7 +507,6 @@ with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bili
         fname="../document/figures/horizontal_section.pdf",
         bbox_inches="tight",
         facecolor="white",
-        dpi=500,
     )
 
 
@@ -648,3 +645,32 @@ filtering_ax.set_xlabel("Photon Longitude WGS84")
 filtering_fig.savefig(
     "../document/figures/methodology_reminaing_after_filtering.pdf", bbox_inches="tight"
 )
+
+# %%
+
+
+filtering_fig, filtering_ax = plt.subplots(figsize=(10, 3))
+
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_geoid,
+    label="Remaining points after filtering",
+    # alpha=0.3,
+    s=2,
+    rasterized=True,
+    c="#253a79",
+)
+filtering_ax.scatter(
+    filtered_photon_df.X,
+    filtered_photon_df.Z_refr,
+    label="Refraction-corrected returns",
+    # alpha=0.3,
+    s=2,
+    rasterized=True,
+    c="#FF8702",
+)
+filtering_ax.legend()
+filtering_ax.set_ylabel("Photon elevation [m +geoid]")
+filtering_ax.set_xlabel("Photon Longitude WGS84")
+
+filtering_fig.savefig("../document/figures/methodology_refraction.pdf", bbox_inches="tight")
