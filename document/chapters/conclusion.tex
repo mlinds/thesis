@@ -5,26 +5,26 @@ This section summarizes the findings after implementing the toolchain as describ
 To answer the primary research question \emph{How can spaceborne remote sensing data be combined with existing global datasets to improve estimates of nearshore bathymetry?}, a number of subquestions were pursued:
 
 \begin{enumerate}
-    \item How can ICESat-2 transects that contain bathymetry be identified algorithmically?
+    \item \textbf{How can ICESat-2 transects that contain bathymetry be identified algorithmically?}
 
-    Currently, the KDE signal finding method employed can reliably identify transects which do not contain any bathymetric signal. However, it requires the process to bet 
+    Currently, the KDE signal finding method employed can reliably identify transects which do not contain any bathymetric signal. However, it requires the processing chain to be fully run for the transect. 
     
     For spaceborne lidar bathymetry to be practical at scale, there must be a way to identify coastal zones which are likely to have bathymetric signal to limit the amount of data downloading and processing that is required. Therefore further investigation of which metadata and ATL03 variables predict the availability of useful bathymetry would allow better filtering of transects before downloading. 
     
     The NSIDC download API allows variable subsetting before download, so if there are a limited number of known variables that correlate strongly with good bathymetry signal in a transect, these few variables could be easily downloaded for large regions.  
-    Then, based on the properties of these variables, specific areas and transects that are the best candidate could be then downloaded in full.
+    Then, based on the properties of these variables, specific areas and transects that are the best candidates could be then downloaded in full.
     
-    \item Once transects with bathymetry are found, how can nearshore subsurface photon returns that are located in the nearshore zone be extracted?
+    \item \textbf{Once transects with bathymetry are found, how can nearshore subsurface photon returns that are located in the nearshore zone be extracted?}
     
     The filtering methodology employed allowed the reliable identification of subsurface returns. By first applying a horizontal filter based on a maximum and minimum GEBCO depth, photons that are likely located in the deep sea or on land can be removed from the dataset. Then, the probable sea surface for the transect is calculated based on the average elevation of the high-confidence ocean surface photons, and any photons with an elevation greater than one standard deviation below the sea surface are removed to eliminate the ocean surface signal. Then using the calculated sea surface, the depth of each remaining photon is calculated, and photons with a depth of greater than 40m are or a geoidal elevation of less than -40m are removed. 
     
     Then photons flagged as possible TEP returns \pdfcomment{Transmitter echo path, will define in the background section} are removed. Any remaining photons that are greater than 5m above the geoid are also removed, since that is above the tidal range for most of the world, and any remaining photons in this zone are not likely to be located in the nearshore zone. 
 
-    Once the filtering method is applied all remaining photons are assumed to be subsurface returns in the nearshore zone. Then, the refraction correction methodology from \citeauthor{Parrish2019} is applied, using the calculated depth, and the satellite orbit data as an input. 
+    Once the filtering method is applied all remaining photons are assumed to be subsurface returns in the nearshore zone. Then, the refraction correction methodology from \cite{Parrish2019} is applied, using the calculated depth, and the satellite orbit data as an input. 
 
     The filtering strategy based on GEBCO elevation did result in some issues in areas of steep topography, where the GEBCO resolution is not to capture some smaller mountains and sea cliffs, and land areas that should be masked out of the transect are inadvertently included in the subsurface photon set.
 
-    \item How can lidar photon return locations reflecting the seafloor be separated from background noise?
+    \item \textbf{How can lidar photon return locations reflecting the seafloor be separated from background noise?}
     
     The developed toolchain implements a method of isolating bathymetric data based on the local density of photons in the vertical direction. A rolling window function is applied longitudinally along the transect. For each window a kernel density estimator is used to find the density of the Z values within that window. Both the magnitude of the peak density, and the Z value where the peak value occurs are recorded.    
 
@@ -32,7 +32,7 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
     At the various test sites, the KDE method was able to estimate point bathymetry with an RMSE error of between 0.49m to 9m, depending on site conditions. The sites with a higher error are due to issues in the filtering approach, and not directly from the KDE function.
 
-    \item How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?
+    \item \textbf{How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?}
     
     A kriging interpolator is used to resample the point measurements of bathymetry from the KDE algorithm to a continuous bathymetry grid, and a grid of the uncertainty. Areas that contain many bathymetry points in the local area have a lower uncertainty, whereas grid cells that are further away from any measured points with have a relatively higher uncertainty.
 
@@ -40,11 +40,11 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
     By incorporating the lidar data, the RMSE between the sites can be reduced by up to approximately 30\% at the sites tested.
     
-    \item Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?
+    \item \textbf{Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?}
     
     By applying the method to the test sites where lidar data was available, the RMS error between the raw GEBCO data can be reduced by approximately 30\% in clear water sites. This is a non-trivial decrease in the overall error. However, the constraint of requiring very clear water makes the method most useful for tropical waters, where satellite-derived SDB methods are also often applicable. 
 
-    \item What is the potential to scale up bathymetry detection to a global scale to produce high-level processed bathymetry product using ICESat-2 data? \pdfcomment{move this guy}
+    \item \textbf{What is the potential to scale up bathymetry detection to a global scale to produce high-level processed bathymetry product using ICESat-2 data? } \pdfcomment{move this guy}
 
 
 
@@ -63,6 +63,4 @@ This project proposes a parallel processing to go from an L2 product (geolocated
 
 The dire need for bathymetry data is well-established in the literature. ICESat-2 has been shown to provide an extremely valuable source of accurate but sparse bathymetry data points. However, a significant bottleneck is the processing required to download and analyze the data. One of the best ways to promote further use this data would be for NASA to provide a L3A and L3B data product of the bathymetric data. 
 
-In addition to the signal finding method proposed here, there have been a number of other methods in the literature to isolate bathymetric signal from ATL03 data. These methods are all based on the idea that increased density in the vertical direction indicates possible bathymetric signal. These algorithms are all fundamentally similar to the approaches developed by NASA for other L3A data products, like the global vegetation height data (ATL08), ocean elevation (ATL12), or inland water height (ATL13). NASA could lead research on how to improve and scale these algorithms, and develop an algorithm theoretical basis document (ATBD) for bathymetry points in the same way that they already have for other higher level products. Such a collaborative effort between scientists studying this issue would likely lead to improvements in the algorithm. This would also be practical to implement, since it would make use of the existing hardware already used to produce the other L3A and L3B products. The global surface area of shallow water zones is a small fraction of the earth surface compared to ocean, forests, and ice cover, therefore the marginal increase in computational complexity by adding bathymetry processing would likely be vanishingly small. 
-
-However, the benefit to geoscientists, physical oceanographers, and others would be revolutionary. A global analysis would likely reveal thousands of sites with bathymetric signal that have not been identified yet, even by the myriad papers that look at a single site at a time. Having such a global dataset would provide \pdfcomment{going to add a bit more here.}
+In addition to the signal finding method proposed here, there have been a number of other methods in the literature to isolate bathymetric signal from ATL03 data. These methods are all based on the idea that increased density in the vertical direction indicates possible bathymetric signal. These algorithms are all fundamentally similar to the approaches developed by NASA for other L3A data products, like the global vegetation height data (ATL08), ocean elevation (ATL12), or inland water height (ATL13). NASA could lead research on how to improve and scale these algorithms, and develop an Algorithm Theoretical Basis Document (ATBD) for bathymetry points in the same way that they already have for other higher level products. Such a collaborative effort between scientists studying this issue would likely lead to improvements in the algorithm. This would also be practical to implement, since it would make use of the existing processing infrastructure already used to produce the other L3A and L3B products. The global surface area of shallow water zones is a small fraction of the earth surface compared to ocean, forests, and ice cover, therefore the marginal increase in computational complexity by adding bathymetry processing would likely be vanishingly small. However, the benefit to geoscientists, physical oceanographers, and others would be revolutionary. A global analysis would likely reveal thousands of sites with bathymetric signal that have not been identified yet, even by the myriad papers that look at a single site at a time. Having such a global dataset would provide \pdfcomment{going to add a bit more here.}

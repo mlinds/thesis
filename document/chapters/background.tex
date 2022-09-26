@@ -26,6 +26,8 @@ Recent advances in lidar technology have allowed the development of the photon-c
 
 The potential for bathymetric mapping using spaceborne laser observations has been noted since before the advent of the ICESat-2 mission. The predecessor mission carried a lidar instrument called the Geoscience Laser Altimeter System (GLAS). GLAS was a green-light laser intended for measuring atmospheric aerosols \parencite{Abshire2005}. However, because of the laser architecture, GLAS was not able to penetrate the water column \parencite{Forfinski-Sarkozi2016}. However, a prototype of ATLAS, called the Multiple Altimeter Beam Experimental lidar (MABEL) instrument was tested with high-altitude aircraft missions, allowing a simulation of the data that would be provided by ATLAS \parencite{Mcgill2013}. Early experiments with MABEL showed good agreement between bathymetric measurements from MABEL and high-quality airborne reference data \parencite{Jasinski2016,Forfinski-Sarkozi2016}.
 
+To detect the relatively weak signal reflected off the seafloor, very clear water and ideal atmospheric and oceannic conditions are required to detect bathymetry. Therefore, only a fraction of transects contain bathymetric signal even for ideal sites. One of the most important aspects to use this data is to extract the bathymetryic signal from the transect data. One known property of the bathymetric signal is that a relatively high density of returns in the vertical (Z) direction. Therefore, a method based on a gaussian Kernel Density Estimation (KDE) function, applied on a rolling basis, is suggested to isolate this signal. and estimate the seafloor at each point.
+
 
 \section{Geodetic reference systems for oceanography}
 
@@ -87,6 +89,7 @@ To locate the position of each photon in 3D space, the time of flight of the pho
 
 \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
 
+\pdfcomment{this is range, actual location is needs to be adjusted further}
 
 \begin{equation}\label{eq:raw_photon_calculation}
       H_{satellite_{surface}} = c(t_T-t_R)/2
