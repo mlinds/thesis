@@ -11,7 +11,7 @@ The main source of data is NASA's ATL03 V005 data product \parencite{icesat2data
 
 Additionally, the data includes variables that allow for further corrections and adjustments to change the height reference from the ellipsoidal height. These additional variables include correction factors for the tide, ocean surface depression due to atmospheric pressure, and factors to convert the ellipsoidal elevation to a height relative to the tide-free geoid.
 
-The data is available via the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC) via an Application Programming interface (API) via the endpoint at \texttt{https://n5eil02u.ecs.nsidc.org/egi}. The data is available divided in \emph{granules} that include several seconds worth of observations. The API allows searching for data based on spatial location and date of acquisition. Once the search has been completed, the resulting granules of ATL03 data can be downloaded. Before downloading, the data be further subset by spatial location, so that only photons within a geographic area are included. The granules can also be subset by variables, so that only specific variables of interest are included in the resulting download. This can significantly reduce the required download side if only a few variables are needed.
+The data is available via the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC) via an Application Programming interface (API). The data is available divided into \emph{granules} that include several seconds worth of observations. The API allows searching for data based on spatial location and date of acquisition. Once the search has been completed, the resulting granules of ATL03 data can be downloaded. Before downloading, the data be further subset by spatial location, so that only photons within a geographic area are included. The granules can also be subset by variables, so that only specific variables of interest are included in the resulting download. This can significantly reduce the required download side if only a few variables are needed.
 
 
 \subsection{GEBCO Global Grid 2021}
@@ -189,18 +189,11 @@ Equations \ref{eq:kalmangain}, \ref{eq:new_state_measurement}, and \ref{eq:new_u
 
 The Kalman gain K is calculated
 
-\subsection{Per-track Secchi depth estimation}\pdfcomment{add figure}
-\rule{\textwidth}{1pt}
-\begin{itemize}
-    \item point sample every 400m along the trackline
-    \item drop points based on a GEBCO land mask
-    \item for each point and date, get the nearest Secchi depth and uncertainty with a day and 200m.
-    \item store the resulting points for later use
-\end{itemize}
-\rule{\textwidth}{1pt}
+\subsection{Per-track Secchi depth estimation}
 
-The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, these sample points are assigned a GEBCO elevation. Any points with a GEBCO elevation area assumed to be over land, and are removed from the dataset. This steps 
+The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occuring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively), so it works better to filter out points on land.  
 
+This provides a dataset of the ocean clarity (as estimated by Secchi Depth) (per GlobColour) data at the site \emph{on the day of the satellite pass.} Statistics can then be calculated for each unique trackline, or by each site as a whole.
 
 
 \subsection{Error Evaluation}
