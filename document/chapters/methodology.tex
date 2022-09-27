@@ -25,7 +25,7 @@ The elevation grid, and a metadata grid which shows where the GEBCO input data w
 
 \subsection{GlobColour Daily Secchi Disk Depth Data}
 
-To investigate the relationship between the water clarity and the availablity and quality of the bathymetric data from the spaceborne lidar, data from \citeauthor{Garnesson2019} is also linked to each transect to investigate the relationship between the Secchi Disk Depth along the transect. The exact data product used is \cite{Garnesson2019}. The data is accessed via the OPeNDAP protocol hosted by the Copernicus Marine Service, using the Xarray python package \parencite{hoyer_stephan_2022_6323468,hoyer2017xarray}.
+To investigate the relationship between the water clarity and the availability and quality of the bathymetric data from the spaceborne lidar, data from \citeauthor{Garnesson2019} is also linked to each transect to investigate the relationship between the Secchi Disk Depth along the transect. The exact data product used is \cite{Garnesson2019}. The data is accessed via the OPeNDAP protocol hosted by the Copernicus Marine Service, using the Xarray python package \parencite{hoyer_stephan_2022_6323468,hoyer2017xarray}.
 
 
 
@@ -40,7 +40,7 @@ To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lida
     \label{fig:methodology-overview}
 \end{figure}
 
-\subsection{Processing ATL03}
+\subsection{Processing ATL03}\pdfcomment{Maybe split into two sections, download and processing?}
 To download data for a site, geographic area of interest is defined, and this area is passed to the NSIDC download API to use for spatial subsetting. This allows spatial subsetting of the data download which reduces file size. The NSIDC API also allows subsetting by the variable name, so only the ATL03 variables that are relevant for this research are downloaded, which further reduces the file size for practical download and storage of the ATL03 data. 
 
 The three variables that define the 3D location in the WGS-84 reference frame of each photon are \emph{h\_ph}, \emph{lat\_ph}, and \emph{lon\_ph} are located in the \emph{heights} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, the two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download. For ocean surface correction, the \emph{dac} and \emph{tide\_ocean} are downloaded from the \emph{geophys\_corr} group.
@@ -176,12 +176,32 @@ Where:
 \begin{itemize}
     \item $\hat{x}_k$ is the current state of the system
     \item $\bar{k}$ is the measurement matrix
-    \item $P_k$ is the erorr covariance matrix
+    \item $P_k$ is the error covariance matrix
+    \item $K$ is the Kalman gain
+    \item $H$ is the covariance matrix
+    \item $R$ is the variance of the measurement error
+    \item $Q$ is the variance of the process noise
 \end{itemize}
 
 The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a Bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
 
-Equations \ref{eq:kalmangain},\ref{eq:new_state_measurement},\ref{eq:new_uncertainty} are used. At the start, a value needs to be assumed for the 
+Equations \ref{eq:kalmangain}, \ref{eq:new_state_measurement}, and \ref{eq:new_uncertainty} are used. At the start, a value needs to be assumed for the underlying uncertainty in the GEBCO data. This value was set empirically to 1.5m. 
+
+The Kalman gain K is calculated
+
+\subsection{Per-track Secchi depth estimation}\pdfcomment{add figure}
+\rule{\textwidth}{1pt}
+\begin{itemize}
+    \item point sample every 400m along the trackline
+    \item drop points based on a GEBCO land mask
+    \item for each point and date, get the nearest Secchi depth and uncertainty with a day and 200m.
+    \item store the resulting points for later use
+\end{itemize}
+\rule{\textwidth}{1pt}
+
+The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, these sample points are assigned a GEBCO elevation. Any points with a GEBCO elevation area assumed to be over land, and are removed from the dataset. This steps 
+
+
 
 \subsection{Error Evaluation}
 
