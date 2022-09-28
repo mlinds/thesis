@@ -121,7 +121,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             ds.groups[beam].groups["geolocation"].variables["segment_ph_cnt"][:].filled(0)
         )
         full_sat_segment = (
-            ds.groups[beam].groups["geolocation"].variables["full_sat_fract"][:].filled(0)
+            ds.groups[beam].groups["geolocation"].variables["full_sat_fract"][:].filled(np.NaN)
         )
         # combine the corrections into one
         # this must be subtracted from Z ellipsoidal (see page 3 of data comparison manual v005)
@@ -146,6 +146,8 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
             },
             index=delta_time_geophys,
         ).sort_index()
+
+        # return segment_level_df,delta_time
 
         interpolated_df = segment_level_df.asof(delta_time).to_records()
         # get the value for every single photon
@@ -200,7 +202,10 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         photon_data["p_vec_az"] = p_vec_az
         photon_data["p_vec_elev"] = p_vec_elev
         photon_data["dac_corr"] = dac_corr
-        photon_data["ph_count"] = ph_count_photon_interp
+        # NANs need to be replaced with integer 0s
+        photon_data["ph_count"] = np.where(
+            np.isnan(ph_count_photon_interp), 0, ph_count_photon_interp
+        )
         photon_data["full_sat"] = full_sat
 
         return photon_data
