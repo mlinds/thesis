@@ -1,21 +1,9 @@
 
 \chapter{Results}
-\pdfcomment{Compare the effect of other physical or atmospheric variables on the error, like include an entire section}\pdfcomment{Add a point density per sqaure meter for each site}\pdfcomment{average depth for each site?}\pdfcomment{how many transects actually had data?}
-
-\section{Water clarity metrics}
-\begin{figure}[ht]
-    \centering
-    \includegraphics{figures/secchi_by_site_boxplot.pdf}
-    \caption{The distribution of Secchi depth along transects during the time of ICESat-2 transects}\pdfcomment{fix xtick labels and make site names fancier}
-    \label{fig:secchi-boxplot}
-\end{figure}
+% \pdfcomment{Compare the effect of other physical or atmospheric variables on the error, like include an entire section}
+\pdfcomment{average depth for each site?}
 
 
-\chapter{Results - old}
-This section presents the main findings of the project
-
-
-% \section{Random Sampling vs sampling along lines}
 
 \section{Petten Test Site}
 Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found, likely due to the inability of the laser to penetrate the turbid water.
@@ -48,14 +36,13 @@ There was some error between the Jarkus survey points and the Van Oord 1m survey
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/Petten_lidar_estimated_vs_truth.jpg}
+    \includegraphics{figures/petten_lidar_estimated_vs_truth.pdf}
     \caption{Jarkus Survey points vs same location on Van Oord Survey data}
     \label{fig:jarkus_vs_survey}
 \end{figure}
 
-\subsection{Jarkus Data kriging and Kalman update}
+\subsection{Jarkus data kriging and Kalman update}
 \input{tables/jarkus_kalman_rms_error-table.tex}
-
 
 \section{Marathon Key Test Site}
 The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area has a wide shelf, a microtidal tidal environment, and very clear water, so it is an ideal site to apply this methodology. 
@@ -82,39 +69,25 @@ The area surrounding Marathon Key in the Florida Keys in Florida, USA. The area 
 The AOI used the validate the method is shown in figure \ref{fig:keys_transects} below.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/florida_keys_tracklines.pdf}
+    \includegraphics{figures/florida_keys_tracklines.pdf}
     % \input{figures/study_site_tracklines.pgf}
     \caption{Location of ICESat-2 Transects in Florida keys Study Area}
     \label{fig:keys_transects}
 \end{figure}
 \subsection{Validation Data}
 The validation data used for this site is from a detailed lidar survey of the area performed in 2018 and 2019 by Quantum Spatial, Inc. \parencite{Keys2019Lidar}. The survey was performed using a Riegl VQ-880-G hydrographic airborne laser scanner. The instrument is designed for high bathymetric accuracy in shallow water.
-%removing validation data for now, maybe replace this with a contour map 
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=\textwidth]{figures/florida_keys_ras.jpg}
-%     \caption{Ground Truth topobathymetric Survey taken after Hurricane Irma}
-%     \label{fig:truebathy}
-% \end{figure}
-\subsection{Error in lidar photon data}
 
-% \input{tables/rms_by_atm.tex}
-
-% \input{tables/rms_by_type.tex}
-
-\subsection{Bathymetric photons}
-Figure \ref{fig:bathyphotonmap} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
-\pdfcomment{change colorbars to match}
+\subsection{Bathymetric Signal finding}
+Figure \ref{fig:keys-photons} shows the location and estimated bathymetric depths of individual ICESat-2 photon returns.
 \begin{figure}[h]
     \centering
     \includegraphics{figures/Florida_keys_photon_map.pdf}
     \caption{Geographic distribution of Bathymetric photon data}
-    \label{fig:bathyphotonmap}
+    \label{fig:keys-photons}
 \end{figure}
 
 \subsection{Lidar updated GEBCO vs. Simple bilinear Interpolation}
 The results when comparing a raw interpolation of GEBCO to
-% \input{tables/total_raster_error_kalman_vs_bi.tex}
 \input{tables/Florida_keys_kalman_improvement.tex}
 
 
@@ -192,7 +165,7 @@ The error for the site is shown in \ref{fig:charlotteamalie-lidar-bias}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/charlotteamalie_lidar_estimated_vs_truth.pdf}
+    \includegraphics{figures/charlotteamalie_lidar_estimated_vs_truth.pdf}
     \caption{Bias plot showing the agreement between the validation data and the lidar points for Charlotte Amalie}
     \label{fig:charlotteamalie-lidar-bias}
 \end{figure}
@@ -221,7 +194,7 @@ The data for all 8 subsites was downloaded and the filtering and KDE signal find
     \label{fig:oahu-all-photon-map}
 \end{figure}
 
-The sites varied significantly in in the accuracy of the ICESat-2 point bathymetry. Some sites showed a significant RMS error due to the presense of mountain peaks up to a few hundred meters high with small horizontal footprint. These features are not captured by the GEBCO grid and therefore photon returns below them are not filtered due to the GEBCO-based horizontal filtering. Table \ref{table:Oahusitestats} contains the compiled error metrics for each site.
+The sites varied significantly in in the accuracy of the ICESat-2 point bathymetry. Some sites showed a significant RMS error due to the presence of mountain peaks up to a few hundred meters high with small horizontal footprint. These features are not captured by the GEBCO grid and therefore photon returns below them are not filtered due to the GEBCO-based horizontal filtering. Table \ref{table:Oahusitestats} contains the compiled error metrics for each site.
 
 \pdfcomment{add to discussion section} \pdfcomment{good to explain with a figure I think}
 
@@ -236,7 +209,9 @@ The overall bias plot showing all the subsites is shown in figure \ref{fig:oahu-
     \label{fig:oahu-all-bias-plot}
 \end{figure}
 
-The reason the RMSE at site 2 is much higher than the rest is that there was a mountain of 120m tall that was in the validation data. If that is removed, the error drops significantly. \pdfcomment{outlier rejection might be a fix for that.}
+The reason the RMSE at site 2 is much higher than the rest is that there was a mountain of 120m tall that was in the validation data. If that is removed, the error drops significantly. 
+
+
 \pdfcomment{these two figures could be combined into subplots probably }
 \begin{figure}[h]
     \centering
@@ -261,3 +236,12 @@ The results of all the test sites that used lidar data were combined into a sing
     \label{fig:all-sites-biasplot}
 \end{figure}
 
+\section{Water clarity metrics}
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics{figures/secchi_by_site_boxplot.pdf}
+    \caption{The distribution of Secchi depth along transects during the time of ICESat-2 transects}\pdfcomment{fix xtick labels and make site names fancier}
+    \label{fig:secchi-boxplot}
+\end{figure}

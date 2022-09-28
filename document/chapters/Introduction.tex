@@ -1,8 +1,6 @@
 \chapter{Introduction}
 
-\pdfcomment{Add mention of NSIDC per gerben comment}
-
-Thirty-nine percent \pdfcomment{consider revising} of humans live within 100 km of a coast, and many of the world's largest cities are located in coastal areas \parencite{Magdalena2021}. Further, 10\% of all human beings live in zones less than 10m above sea level, an area known as the Low Elevation Coastal Zone (LECZ) \parencite{Neumann2015,Lichter2011}. These economically and socially important areas are under significant stress due to anthropogenic climate change and the consequent sea level rise (SLR). Changing climate patterns will likely create more intense storms, which combined with a higher sea level boundary condition due to SLR, puts these populations and infrastructure investments at significant risk. Additionally, climate change can increase water stress and result in increases in groundwater abstraction, leading to subsidence of coastal areas. Climate change presents severe, even existential risks for coastal zones and the those who inhabit them.
+Thirty-nine percent of humans live within 100 km of a coast, and many of the world's largest cities are located in coastal areas \parencite{Magdalena2021}. Further, 10\% of all human beings live in zones less than 10m above sea level, an area known as the Low Elevation Coastal Zone (LECZ) \parencite{Neumann2015,Lichter2011}. These economically and socially important areas are under significant stress due to anthropogenic climate change and the consequent sea level rise (SLR). Changing climate patterns will likely create more intense storms, which combined with a higher sea level boundary condition due to SLR, puts these populations and infrastructure investments at significant risk. Additionally, climate change can increase water stress and result in increases in groundwater abstraction, leading to subsidence of coastal areas. Climate change presents severe, even existential risks for coastal zones and the those who inhabit them.
 
 To mitigate these risks economically, substantial research into coastal protection strategies and climate adaptation measures is required. Scientific research will help fully quantify the risks, allow better prioritization of mitigation efforts, and help develop strategies for climate adaptation and coastal protection that work in harmony with nature. A critical variable for this research is nearshore bathymetric data \parencite{Holman2013}, which allows mapping of the spatial extents of flooding and better quantification of the wave transformation on the coasts. 
 
@@ -20,11 +18,20 @@ Because of the difficulty of directly measuring bathymetry, there have been many
 
 \subsection{Spaceborne lidar}
 
-NASA launched the Ice, Cloud, and land Elevation Satellite-2 (ICESat-2) mission in September 2018. The primary purpose of the mission is to study the height of the glaciers and ice sheets (i.e. the cryosphere)\pdfcomment{figure out spacing issue}, with a secondary purpose of collecting altimetry data of land, vegetation, and the sea surface \parencite{Markus2017}. The satellite carries a lidar altimeter called the Advanced Topographic Laser Altimeter (ATLAS) which counts individual photon returns. The ability to count photons allows the instrument to continuously take high-density lidar measurements along 3 tracks approximately 3km apart, while having power requirements low enough to be carried on a satellite \parencite{Popescu2018}. 
+NASA launched the Ice, Cloud, and land Elevation Satellite-2 (ICESat-2) mission in September 2018. The primary purpose of the mission is to study the height of the glaciers and ice sheets (i.e. the cryosphere), with a secondary purpose of collecting altimetry data of land, vegetation, and the sea surface \parencite{Markus2017}. The satellite carries a lidar altimeter called the Advanced Topographic Laser Altimeter (ATLAS) which counts individual photon returns. The ability to count photons allows the instrument to continuously take high-density lidar measurements along 3 tracks approximately 3km apart, while having power requirements low enough to be carried on a satellite \parencite{Popescu2018}. 
 
 The geodetic location of each detected photon relative to the WGS-84 ellipsoid is calculated based on the roundtrip time of the photon's path, the GPS location of the satellite, and the pointing vector. Because the photon detector is very sensitive, significant noise photons from the sun also are detected. During processing, each photon is assigned a confidence of being signal or noise. This data is released as a level 2A product called ATL03 \parencite{Neumann2019d}.
 
-Bathymetric measurements were not part of the mission design goals. However, after the start of the mission, researchers found ICESat-2 laser pulses can penetrate the water surface and returns from the seabed can be detected in optically shallow water \parencite{Parrish2019}. This has provided a \pdfcomment{not sure what gerben suggested here} new source of high-accuracy bathymetric data. However, most coastal transects globally data do not contain any data from the seabed. The ability of the laser pulses to reach the seabed is affected by turbidity, atmospheric conditions, and instrument conditions. The best ways of identifying bathymetric data within the photon returns, and how to use these sparse point measurements to improve bathymetric datasets are still an area of active research
+Bathymetric measurements were not part of the mission design goals. However, after the start of the mission, researchers found ICESat-2 laser pulses can penetrate the water surface and returns from the seabed can be detected in optically shallow water \parencite{Parrish2019}. This has provided a \pdfcomment{not sure what gerben suggested here} new source of high-accuracy bathymetric data. However, most coastal transects globally data do not contain any data from the seabed. The ability of the laser pulses to reach the seabed is affected by turbidity, atmospheric conditions, and instrument conditions. The best ways of identifying bathymetric data within the photon returns, and how to use these sparse point measurements to improve bathymetric datasets are still an area of active research.
+
+
+\begin{figure}[h!]
+      \centering
+      \includegraphics[width=0.75\textwidth]{figures/summary.pdf}
+      \caption{Overview}\pdfcomment{obviously this is a pretty rough draft ;) }
+      \label{fig:icesat-summary-image}
+  \end{figure}
+  
 
 \section{Research Question}
 The primary question that this project intends to answer is: \\
@@ -41,4 +48,3 @@ To answer this question, the following subquestions will be investigated:
       \item How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?
       \item Under what conditions can remotely-sensed lidar data provide useful improvement on bathymetric data estimates?
 \end{enumerate}
-\pdfcomment{double check these are all in the results section}

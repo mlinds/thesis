@@ -42,9 +42,10 @@ The surface of the geoid changes with time due to deformation of the earth. Thes
 . For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.
 
 \subsection{Inverted barometer effect and dynamic atmosphere correction}
-The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{Robbins2022}\pdfcomment{fix this}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down. 
 
-In the simplest formulation, the drop in ocean level is approximately 1cm per additional mbar of atmospheric presure: $D_h \approx 0.99484(P_i-P_{ref})$, where $P_i$ is the instantaneous pressure in mbar and $P_{ref}$ is an assumed average pressure (1013.3 mbar)
+The instantaneous sea surface elevation is affected by the local weather and atmospheric conditions. The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{Robbins2022}\pdfcomment{fix this}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down. 
+
+In the simplest formulation, the drop in ocean level is approximately 1cm per additional mbar of atmospheric presure: $D_h \approx 0.99484(P_i-P_{ref})$, where $P_i$ is the instantaneous pressure in mbar and $P_{ref}$ is an assumed average pressure (1013.3 mbar) \parencite{Neumann2019e}
 
 In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are higher frequency compared to the pressure forcing that is captured by the IB correction.
 
@@ -65,7 +66,7 @@ The ICESat-2 mission is intended to gather high resolution topographic data on a
       \label{fig:icesat-rgts}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}.
 
 \begin{figure}[htbp]
       \centering
@@ -154,7 +155,7 @@ The beams are divided into weak and strong signals to enhance the radiometric dy
 
 
 \subsection{Refraction correction}
-\pdfcomment{Make a figure with refraction correction amount on the x axis, depth on the y, and then multiple lines for different pointing vectors}
+
 The locations calculated by the data products from the satellite do not correct of the refraction induced by the different speeds and which light travels in water and in the atmosphere. This effect introduces both a horizontal and vertical error in the photon location, as shown in figure \ref{refract-image}.
 
 \begin{figure}[ht]
@@ -218,7 +219,7 @@ This additional correction factor was also included in the fraction correction c
 
 
 \subsection{Extracting bathymetry signal}\label{subsec:signal-finding}
-The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no pre-calculated classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} \pdfcomment{add reference here - need to find all icesat papers and search each one to figure out where I read this} and can be used to filter out points at or above the sea surface.
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no pre-calculated classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} and can be used to filter out points at or above the sea surface.
 
 To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is required. There are several different techniques proposed in the literature. Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016,Thomas2021d,Babbel2021a,Albright2021}.
 
@@ -227,26 +228,9 @@ Other researchers have used implementations of the density-based spatial cluster
 \citeauthor{Thomas2022} created a tool called C-SHELPh, which uses a binned histograms to predict the location of the sea surface.
 
 
-\citeauthor{Xu2022} proposed AMSRLC algorithm
+% \citeauthor{Xu2022} proposed AMSRLC algorithm
 
-\citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
-\pdfcomment{finish section}
-
-\subsection{Possible limitations}
-
-The starting point of this method is the level 2A product ATL03 data from NASA. It consists of raw photon locations and data about the atmospheric and geophysical parameters. 
-
-\subsection{Limitations in Photon Geolocation Accuracy}
-
-The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m.\pdfcomment{From data users guide, either cite that or better, find the published literature it comes from}.
-
-This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50m grid.
-
-\subsection{Errors in refraction correction}
-
-The refraction correction method used accounts for the additional horizontal error that is introduced by off-pointing. However, there are several other second-order effects that are not considered by the methodology. One of these is the estimation of the refractive index; the temperature and salinity affect the speed at which the water transmits light. By assuming a default value it introduces an error on the order of X.XXm \pdfcomment{Look this up to plug in some numbers to the formula to check}. This could be corrected by either estimating in advance a value for each local site, or by connecting the algorithm to an API that can provide a temperature and salinity value. 
-
-Another potential source of error is the slope of the water surface. Since there is a slope to the water surface, this affects the bounce angle of the photon. This can be corrected for and some papers that investigate ICESat-2 bathymetry have attempted to correct for it. For this project the magnitude of error due to slope was considered small enough to be within the margin of error of the method.
+% \citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
 
 
 \subsection{Summary of Prior Research on ICESat-2 derived bathymetry} %move to ICESat-2 section
@@ -279,4 +263,5 @@ The studies that have used some version of the proposed technique are summarized
             \bottomrule
       \end{tabular}
 \end{table}
-\pdfcomment{add a few more studies that I just added to mendeley}
+
+
