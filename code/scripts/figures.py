@@ -1,8 +1,8 @@
+# %
 # %%
+import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
-
-# from pyrsistent import l
 import numpy as np
 import pandas as pd
 import rasterio
@@ -11,6 +11,7 @@ from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
 from atl_module.geospatial_utils import geospatial_functions
 from atl_module.io.atl03_netcdf_loading import load_beam_array_ncds
+from atl_module.plotting import set_size
 from matplotlib.patches import ConnectionPatch, Rectangle
 from mpl_toolkits.mplot3d import art3d
 from rasterio.plot import show as rastershow
@@ -674,3 +675,35 @@ filtering_ax.set_ylabel("Photon elevation [m +geoid]")
 filtering_ax.set_xlabel("Photon Longitude WGS84")
 
 filtering_fig.savefig("../document/figures/methodology_refraction.pdf", bbox_inches="tight")
+
+# %%
+
+# 322901,1962814 : 335797,1971523
+set_size()
+# %%
+st_croix_tracklines = gpd.read_file("../data/test_sites/stcroix/tracklines/")
+bathy_pts = gpd.read_file("../data/test_sites/stcroix/kriging_pts/")
+with rasterio.open("../data/for_other_figures/stcroixvalidation.tif") as femaras:
+    fig, ax = plt.subplots(figsize=set_size(1.3))
+
+    ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
+    ax.set_ylabel(f"Degrees latitude in {femaras.crs}")
+    # cx.add_basemap(ax,source=cx.providers.OpenTopoMap,crs=femaras.crs)
+    bathy_data_array = femaras.read(1, masked=True).filled(np.NaN)
+    # mask out values greater than 0
+    bathy_data_array = np.ma.masked_greater_equal(bathy_data_array, 0).filled(np.NaN)
+    image_hidden = ax.imshow(
+        bathy_data_array,
+        cmap="inferno",
+    )
+    st_croix_tracklines.to_crs(femaras.crs).plot(ax=ax, label="ICESat-2 Track")
+    bathy_pts.to_crs(femaras.crs).plot(
+        ax=ax, c="red", s=4, zorder=2, label="Bathymetry Point from KDE"
+    )
+    rastershow(femaras, cmap="inferno", ax=ax, vmax=0)
+    # ax.set_xlim(xlim)
+    # ax.set_ylim(ylim)
+    ax.legend()
+    fig.colorbar(image_hidden, ax=ax)
+
+    fig.savefig("../document/figures/discussion-spatial-stcroix.pdf", bbox_inches="tight")
