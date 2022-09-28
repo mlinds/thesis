@@ -607,3 +607,5 @@ practicalities/outras2.tif
 practicalities/reproj.tif
 *.xcf
 *.qgz
+document/tudelft-reportoldclas.txt
+.gitignore
