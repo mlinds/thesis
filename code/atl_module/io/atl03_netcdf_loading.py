@@ -159,16 +159,9 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
         full_sat = interpolated_df["full_sat_segment"]
 
         correction = geoid_tide_free + geof2m
-        # + tide_ocean
-        # + dac_corr
-        # print(len(correction))
+
         # get the corrected Z vals
         Z_corrected = Z - correction
-        # for varname, values in (
-        #     ds.groups["quality_assessment"].groups[beam].variables.items()
-        # ):
-        #     metadata[varname + "_ocean"] = values[:].data[0][1]
-        #     metadata[varname + "_land"] = values[:].data[0][0]
 
         # creating a structured array
         dtype = np.dtype(
@@ -187,7 +180,7 @@ def load_beam_array_ncds(filename: str or PathLike, beam: str) -> np.ndarray:
                 ("p_vec_az", "<f4"),
                 ("p_vec_elev", "<f4"),
                 ("dac_corr", "<f4"),
-                ("ph_count", "<i1"),
+                ("ph_count", "<i4"),
                 ("full_sat", "<f4"),
             ],
             metadata=metadata,
