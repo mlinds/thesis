@@ -36,9 +36,9 @@ def _assign_na_values(inpval):
 #         ypoints = [point.y for point in line_point_list]
 
 
-def query_from_lines(line, rasterpath, band):
+def query_from_lines(line, rasterpath, band, npts=200):
 
-    interp_points = np.linspace(0, 1, 200)
+    interp_points = np.linspace(0, 1, npts)
     line_point_list = [
         line.interpolate(fraction, normalized=True) for fraction in interp_points
     ]

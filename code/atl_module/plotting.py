@@ -151,7 +151,7 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
     fig.savefig(figpath, bbox_inches="tight")
 
 
-def set_size(fraction=1):
+def set_size(fraction=1, ratio=1.618):
     """Set figure dimensions to avoid scaling in LaTeX.
 
     Parameters
@@ -178,7 +178,7 @@ def set_size(fraction=1):
 
     # Figure width in inches
     fig_width_in = fig_width_pt * inches_per_pt
-    # Figure height in inches
+    5
     fig_height_in = fig_width_in * golden_ratio
 
     fig_dim = (fig_width_in, fig_height_in)

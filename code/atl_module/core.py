@@ -12,12 +12,12 @@ from atl_module.bathymetry_extraction.point_dataframe_filters import (
 )
 from atl_module.geospatial_utils import raster_interaction
 from atl_module.geospatial_utils.geospatial_functions import (
-    make_gdf_from_ncdf_files,
     to_refr_corrected_gdf,
+    trackline_gdf_from_netcdf,
 )
 from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import (
-    add_secchi_depth_to_tracklines,
+    # add_secchi_depth_to_tracklines,
     create_zsd_points_from_tracklines,
 )
 from atl_module.plotting import (
@@ -90,18 +90,10 @@ class GebcoUpscaler:
 
     def recalc_tracklines_gdf(self):
         """Recalculate the tracklines from the raw netcdf files in the ATLO3/ folder"""
-        self.tracklines = make_gdf_from_ncdf_files(self.folderpath + "/ATL03/*.nc")
+        self.tracklines = trackline_gdf_from_netcdf(self.folderpath + "/ATL03/*.nc")
         self.crs = self.tracklines.estimate_utm_crs()
-        try:
-            self.tracklines = add_secchi_depth_to_tracklines(self.tracklines)
-            detail_logger.info("Added ocean color data to tracklines")
-        except ValueError:
-            detail_logger.info("Unable to get ocean color (Secchi depth) info")
-        except Exception as exception:
-            detail_logger.info(f"Secchi depth function raised {exception}")
-        finally:
-            self.tracklines.to_file(self.trackline_path, overwrite=True)
-            detail_logger.info(f"Tracklines written to {self.trackline_path}")
+        self.tracklines.to_file(self.trackline_path, overwrite=True)
+        detail_logger.info(f"Tracklines written to {self.trackline_path}")
 
     def subset_gebco(self, hres: int):
         """Take a subset of GEBCO with the area determined by the extent of the tracklines.gpkg file in the main folder, resampled bilinearly to the requested resolution

@@ -163,6 +163,8 @@ def get_all_bathy_from_granule(
             atm_profile=metadata_dict["atmosphere_profile"],
             beamtype=metadata_dict["atlas_beam_type"],
             oc_hconf_perc=metadata_dict["ocean_high_conf_perc"],
+            n_subsurf_points=len(subsurface_return_pts),
+            n_total_points=len(point_df),
         )
         # catch the case where there is no signal in one beam
         if len(bathy_pts) > 0:

@@ -61,7 +61,7 @@ def _get_single_track_linegeom(beamarray: np.ndarray) -> LineString:
         return LineString(coords)
 
 
-def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
+def trackline_gdf_from_netcdf(directory: str or PathLike) -> gpd.GeoDataFrame:
     """Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
 
     Args:
@@ -79,7 +79,11 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
     geomlist = []
     beam_type_list = []
     number_photons_list = []
-    # percent_high_conf = []
+    percent_high_conf_list = []
+    avg_ph_count_list = []
+    avg_full_sat_list = []
+
+    # loop over netcdf file list
     for h5file in glob.iglob(directory):
 
         filefriendlyname = str(h5file.split("/")[-1]).strip(".nc")
@@ -96,32 +100,38 @@ def make_gdf_from_ncdf_files(directory: str or PathLike) -> gpd.GeoDataFrame:
             filenamelist.append(filefriendlyname)
             beamlist.append(beam)
             geomlist.append(track_geom)
-
+            # if there are no valid beams in the array, skip it
             if point_array is None:
                 rgtlist.append(np.NaN)
                 datelist.append(np.NaN)
-                # percent_high_conf.append(np.NaN)
+                percent_high_conf_list.append(np.NaN)
+                avg_ph_count_list.append(np.NaN)
+                avg_full_sat_list.append(np.NaN)
             else:
                 rgt = point_array.dtype.metadata["start_rgt"]
                 date = point_array.dtype.metadata["data_start_utc"]
                 beamtype = point_array.dtype.metadata["atlas_beam_type"]
-                # p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
+                p_oc_h_conf = point_array.dtype.metadata["ocean_high_conf_perc"]
                 rgtlist.append(rgt)
                 datelist.append(date)
                 beam_type_list.append(beamtype)
                 number_photons_list.append(len(point_array))
-                # percent_high_conf.append(p_oc_h_conf)
+                percent_high_conf_list.append(p_oc_h_conf)
+                avg_ph_count_list.append(np.mean(point_array["ph_count"]))
+                avg_full_sat_list.append(np.mean(point_array["full_sat"]))
     # get geodataframe in same CRS as icessat data
     gdf = gpd.GeoDataFrame(
         {
             "file": filenamelist,
             "geometry": geomlist,
-            "Reference Ground Track": rgtlist,
+            "rgt": rgtlist,
             "date": datelist,
             "beam": beamlist,
             "beam_type": beam_type_list,
-            "total_photons_count": number_photons_list
-            # "Percentage High confidence Ocean Returns": percent_high_conf,
+            "n_photons": number_photons_list,
+            "p_hconf": percent_high_conf_list,
+            "avg_ph_count": avg_ph_count_list,
+            "avg_fsat": avg_full_sat_list,
         },
         crs="EPSG:4326",
         geometry="geometry",
@@ -163,5 +173,5 @@ def add_track_dist_meters(
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
 
 
-def get_points_near_line(line,gdf):
+def get_points_near_line(line, gdf):
     pass
