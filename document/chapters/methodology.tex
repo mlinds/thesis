@@ -193,7 +193,7 @@ The Kalman gain K is calculated
 
 The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occuring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively), so it works better to filter out points on land.  
 
-This provides a dataset of the ocean clarity (as estimated by Secchi Depth) (per GlobColour) data at the site \emph{on the day of the satellite pass.} Statistics can then be calculated for each unique trackline, or by each site as a whole.
+This provides a dataset of the ocean clarity (as estimated by Secchi Depth) data at the site \emph{on the day of the satellite pass.} Statistics can then be calculated for each unique trackline, or by each site as a whole.
 
 
 \subsection{Error Evaluation}
