@@ -16,8 +16,7 @@ from atl_module.geospatial_utils.geospatial_functions import (
     trackline_gdf_from_netcdf,
 )
 from atl_module.io.download import request_full_data_shapefile
-from atl_module.ocean_color import (
-    # add_secchi_depth_to_tracklines,
+from atl_module.ocean_color import (  # add_secchi_depth_to_tracklines,
     create_zsd_points_from_tracklines,
 )
 from atl_module.plotting import (
@@ -308,6 +307,7 @@ class GebcoUpscaler:
             buf=raster_error_table_path,
             caption="Improvement in error metrics after applying Kalman Updating of kriged data",
             hrules=True,
+            position_float="centering",
             label=f"tab:{self.site_name}_gebco_raster_error",
         )
         detail_logger.info(f"raster error table written to {raster_error_table_path}")
@@ -320,6 +320,7 @@ class GebcoUpscaler:
             caption="Error between the point bathymetry and ground-truth data",
             position="h!",
             hrules=True,
+            position_float="centering",
             label=f"tab:{self.site_name}_lidar_error",
         )
         # print to the console that it has been saved

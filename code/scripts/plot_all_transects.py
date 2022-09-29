@@ -18,13 +18,13 @@ def run_kde(filename, beam):
 
     subsurface_return_pts = _filter_points(
         point_df,
-        low_limit=-50,
+        low_limit=-40,
         high_limit=1,
         rolling_window=200,
         max_sea_surf_elev=2,
         filter_below_z=-40,
         filter_below_depth=-40,
-        n=2,
+        n=3,
         max_geoid_high_z=5,
     )
     # find the bathymetry points using the KDE function

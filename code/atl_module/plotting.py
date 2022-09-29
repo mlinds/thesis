@@ -15,7 +15,8 @@ def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
         xlabel="True Elevation [m +MSL]",
         ylabel="Calculated Elevation [m +MSL]",
         title=f"Lidar Point Vs. Truth Point: {site_name}",
-        figsize=set_size(),
+        # bias plots need to be square
+        figsize=set_size(ratio=1),
         alpha=0.3,
         s=3,
         rasterized=True,
@@ -62,7 +63,7 @@ def map_ground_truth_data(truthdata_path, plottitle):
 def plot_photon_map(ax, bathy_points_gdf):
     print("plotting photon map")
     bathy_points_gdf.plot(
-        figsize=set_size(),
+        figsize=set_size(ratio=0.4, fraction=1.2),
         column="z_kde",
         cmap="inferno",
         legend=True,
@@ -85,7 +86,7 @@ def plot_photon_map(ax, bathy_points_gdf):
 
 def plot_tracklines_overview(ax, tracklines_gdf):
     print("plotting tracklines")
-    tracklines_gdf.plot(figsize=set_size(), ax=ax)
+    tracklines_gdf.plot(figsize=set_size(ratio=0.4, fraction=1.2), ax=ax)
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
@@ -174,12 +175,12 @@ def set_size(fraction=1, ratio=1.618):
 
     # Golden ratio to set aesthetic figure height
     # https://disq.us/p/2940ij3
-    golden_ratio = (5**0.5 - 1) / 2
+    # golden_ratio = (5**0.5 - 1) / 2
 
     # Figure width in inches
     fig_width_in = fig_width_pt * inches_per_pt
-    5
-    fig_height_in = fig_width_in * golden_ratio
+
+    fig_height_in = fig_width_in / ratio
 
     fig_dim = (fig_width_in, fig_height_in)
 

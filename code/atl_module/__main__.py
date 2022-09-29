@@ -75,7 +75,6 @@ if args.download_atl03:
 if args.trackline_calc:
     site.recalc_tracklines_gdf()
     # site.calc_zsdpoints_by_tracks()
-    # site.plot_tracklines()
 
 if args.bathymetry_points:
     site.find_bathy_from_icesat(

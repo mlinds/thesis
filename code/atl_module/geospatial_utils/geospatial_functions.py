@@ -140,11 +140,8 @@ def trackline_gdf_from_netcdf(directory: str or PathLike) -> gpd.GeoDataFrame:
     # prooject it to the appropriate UTM system
     # crs_UTM = gdf.estimate_utm_crs()
     # gdf.to_crs(crs_UTM, inplace=True)
+    gdf["length"] = gdf.to_crs(gdf.estimate_utm_crs()).geometry.length
     return gdf
-
-
-def photon_df_to_gdf(photon_data: pd.DataFrame or np.ndarray):
-    pass
 
 
 def add_track_dist_meters(
@@ -171,7 +168,3 @@ def add_track_dist_meters(
     ).sort_values("dist_or")
     # return a dataframe or GDF
     return gdf if geodataframe else pd.DataFrame(gdf.drop(columns="geometry"))
-
-
-def get_points_near_line(line, gdf):
-    pass
