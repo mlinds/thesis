@@ -144,19 +144,46 @@ The bathymetric points are extremely densely spaced in some areas and transects.
 The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992} (\citeyear{McCool1992}). The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can be practically be used in the kriging step approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using consumer-grade laptops to run the algorithm. 
 
 \subsubsection{Kriging interpolation}
-Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using universal kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. \pdfcomment{add variogram parameter discussion}
+Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using universal kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. 
+
+The univeral kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generatored for the entire site. A single slice of the output, taken along a icesat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the measurement points. 
+
+{fig:kriging-interpolator}
+\begin{figure}[h]
+    \centering
+    \includegraphics[]{figures/methodology-kriging-output.pdf}
+    \caption{Example of the subsampled points, and the results of a kriging interpolation. In blue, the result of GEBCO is shown for comparison.}
+    \label{fig:kriging-interpolator}
+\end{figure}
+
+\pdfcomment{add variogram parameter discussion}
 
 
 \subsection{Bayesian data assimilation using Kalman update equation}
-The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, an \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations, for a state $x_k$ and a vector of measurements of the state $z_k$:
-
-Time Update:
+The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, an \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations, is used to estimate the state of a linear process for a state $x_k$ and a vector of measurements of the state $z_k$ \parencite{Welch2021a}.  It is assumed that the state of a system evolves according to the difference equation
 
 \begin{equation}
+ x_k = Ax_{k-1} + Bu_{k-1} + w_{k-1}   
+\end{equation}
+
+Where $A$ is a matrix that relates the state at time step $k$ to the state at the previous time step and $w_k$ represents normally distributed process noise with a variance $Q$.  
+
+Measurements of the state are assumed to have the form
+
+\begin{equation}
+    z_k = Hx_k + v_k
+\end{equation}
+
+Where $H$ is a matrix that relates the state to the measurement, and  $v_k$ is measurement noise which is assumed to be normally distributed with a variance $R$.
+
+At each time step $k$, the estimates of the state can be updated according to the following two steps:
+
+Time Update:
+\begin{equation}\label{eq:timeup1}
     \hat{x}_{\bar{k}} = A\hat{x}_{k-1} + B\hat{u}_{k-1}
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{eq:timeup2}
     P_{\bar{k}} = A P_{k-1} A^T + Q
 \end{equation}
 
@@ -179,27 +206,41 @@ Where:
     \item $\bar{k}$ is the measurement matrix
     \item $P_k$ is the error covariance matrix
     \item $K$ is the Kalman gain
-    \item $H$ is the covariance matrix
-    \item $R$ is the variance of the measurement error
-    \item $Q$ is the variance of the process noise
 \end{itemize}
 
-The coastal zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update step can be ignored. It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a Bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
+To apply this to this bathymetry estimation problem, some simplifying assumptions are made. The nearshore zone is a highly dynamic system. However, for the purposes of this project is is assumed that the temporal variations over the time scale being studied are within the margin of error of the measurements, so the bathymetry of the nearshore zone is assumed to be a static system and the time update equations \ref{eq:timeup1} and \ref{eq:timeup2}. 
 
-Equations \ref{eq:kalmangain}, \ref{eq:new_state_measurement}, and \ref{eq:new_uncertainty} are used. At the start, a value needs to be assumed for the underlying uncertainty in the GEBCO data. This value was set empirically to 1.5m. 
+Equation \ref{eq:kalmangain} is the Kalman gain, an estimation of the strength of the estimation. For this case, it is assumed that the matrix $H$ is the identity matrix. Equations \ref{eq:kalmangain}, \ref{eq:new_state_measurement}, and \ref{eq:new_uncertainty} can be simplified to 
 
-The Kalman gain K is calculated
+$$ K =  \frac{P_k}{P_k + R} $$
+
+$$ \hat{x}_k =  \hat{x}_{\bar{k}} + K(\hat{z}_k -  \hat{x}_{\bar{k}}) $$
+
+
+$$ P_k = (1 - K) P_{\bar{k}} $$
+
+
+It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement, producing a Bayesian estimate of the bathymetry, in that it considers the uncertainty of each estimate. 
+
+In this application, the starting point of estimate is based on a bilinear resampling of the GEBCO dataset, with an assumed variance of $1.5m^2$. Then, the simplified Kalman equations above are applied. At each raster grid cell the kriging uncertainty is used As $R$, and the kriged estimate of the seafloor is used as $\hat{z}_k$. The result is a new estimate of the bathymetry that includes both the kriged lidar surface and a priori depth of GEBCO. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/methodology-kalman-updating.pdf}
+    \caption{Using a section of the same transect in Figure \ref{fig:kriging-interpolater}, the processing of the Kalman measurement update is shown. }
+    \label{fig:kalman-figure}
+\end{figure}
 
 \subsection{Per-track Secchi depth estimation}
 
-The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occuring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively), so it works better to filter out points on land.  
+The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occuring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively). 
 
 This provides a dataset of the ocean clarity (as estimated by Secchi Depth) data at the site \emph{on the day of the satellite pass.} Statistics can then be calculated for each unique trackline, or by each site as a whole.
 
 
 \subsection{Error evaluation}
 
-There are two different types of error being evaluated to test the results of the different parts of the method. Both the error between the validation data and the lidar data is checked to evaluate the performance of ICESat-2 measurements, and the signal finding algorithm, and the total decrease in error between GEBCO and the version of GEBCO that includes the interpolated ICESat-2 data. 
+To validate the method, two different error metrics are considered. Both the error between the validation data and the lidar data is checked to evaluate the performance of ICESat-2 measurements, and the signal finding algorithm, and the total decrease in error between GEBCO and the version of GEBCO that includes the interpolated ICESat-2 data. 
 
 The error metrics that are evaluated for both types of error are the root mean square error (RMSE) and the mean absolute error (MAE). The RMSE is calculated by taking the mean of the squared difference between the true value and the estimated value, and then taking the square root of this mean.
 
@@ -215,8 +256,8 @@ To evaluate these errors between the Kalman-updated bathymetry grid and the vali
 
 % \subsection{Evaluating transect-level variables which predict bathymetry}
 % \pdfcomment{This could potentially be interesting and also help flesh out my answer to my first research question}
-\citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
-\pdfcomment{finish section}
+% \citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
+% \pdfcomment{finish section}
 
 \section{Possible limitations}
 
@@ -224,7 +265,7 @@ The starting point of this method is the level 2A product ATL03 data from NASA. 
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 
-The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m.\pdfcomment{From data users guide, either cite that or better, find the published literature it comes from}.
+The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m \parencite{Neumann2019c}.
 
 This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50m grid.
 
