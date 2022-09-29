@@ -1,12 +1,19 @@
 \begin{table}
-\caption{Error between the various data products}
-\label{tab:rmse-truth-raster-sampled}
-\begin{tabular}{lrr}
- & RMSE & MAE \\
-Truth vs 50m bilinear resampling of GEBCO & 6.383116 & 4.311068 \\
-Truth vs Kriged raster output & 2.592699 & 1.508940 \\
-Truth vs GEBCO+Kriged raster & 3.150718 & 2.172880 \\
-Truth Vs kriged Raster - Sampling along lines & 4.565826 & 2.246766 \\
-Gebco updated - sampling along lines & 3.552600 & 2.417099 \\
+\centering
+\caption{Comparison of error between the two different sampling strategies }
+\label{tab:random-vs-colinear-sampling}
+\begin{tabular}{llrr}
+\toprule
+ &  & RMSE & MAE \\
+\midrule
+ & Truth vs GEBCO & 4.48 & 3.31 \\
+\cline{1-2}
+\multirow[c]{2}{*}{Random sampling} & Truth vs Kriging & 3.13 & 1.18 \\
+ & Truth vs Kalman updated & 1.38 & 0.89 \\
+\cline{1-2}
+\multirow[c]{2}{*}{Colinear sampling} & Truth Vs Kriging & 4.49 & 2.12 \\
+ & Truth Vs Kalman updated & 1.97 & 1.32 \\
+\cline{1-2}
+\bottomrule
 \end{tabular}
 \end{table}

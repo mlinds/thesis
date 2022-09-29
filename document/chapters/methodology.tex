@@ -51,7 +51,7 @@ These correction factors are not provided for every photon but are provided for 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/reference_photon_plot.pdf}
-    \caption{Relation between the regular photons and the reference photon locat}
+    \caption{Relation between the regular photons and the reference photon locations}
     \label{fig:reference-photon_match} 
 \end{figure}
 
@@ -106,7 +106,7 @@ An overview of the entire filtering chain is shown in figure \ref{fig:filtering-
 
 Finally, before the signal-finding is applied, the Parrish method of refraction correction is applied to all subsurface photons.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/methodology_refraction.pdf}
     \caption{The refraction correction applied to the remaining photons}
@@ -115,7 +115,7 @@ Finally, before the signal-finding is applied, the Parrish method of refraction 
 
 \subsection{Bathymetric Signal Extraction}\label{sec:kdesignalfinding}
 
-The filtering steps reduce the dataset to just photon that are in the subsurface zone. To determine if there is bathymetric signal present, further processing is required. Some proposed methods for separating bathymetric signal photons from noise are explained in section \ref{subsec:denoising}. For this project, a new method is proposed based on a Gaussian Kernel Density Estimation (KDE) function. A function is created that returns the maximum kernel density, and the Z location at which it occurs. $$ f(\hat{z}_{window}) \rightarrow kde_{max},z_{kde_{max}} $$ Figure \ref{fig:kdefunc} shows the KDE function as applied to an example window, and the resulting kernel density plot. The KDE function is highly influenced by the \emph{bandwidth} parameter. For this implementation, the Scott method \parencite{Scott2015} is used to estimate the KDE bandwidth: $$ n^{\frac{-1}{d+4}} $$ where $n$ is the number of datapoints and $d$ is the number of dimensions of the data.
+The filtering steps reduce the dataset to just photon that are in the subsurface zone. To determine if there is bathymetric signal present, further processing is required. Some proposed methods for separating bathymetric signal photons from noise are explained in section \ref{subsec:denoising}. For this project, a method is proposed based on a Gaussian Kernel Density Estimation (KDE) function. A function is created that returns the maximum kernel density, and the Z location at which it occurs. $$ f(\hat{z}_{window}) \rightarrow kde_{max},z_{kde_{max}} $$ Figure \ref{fig:kdefunc} shows the KDE function as applied to an example window, and the resulting kernel density plot. The KDE function is highly influenced by the \emph{bandwidth} parameter. For this implementation, the Scott method \parencite{Scott2015} is used to estimate the KDE bandwidth: $$ n^{\frac{-1}{d+4}} $$ where $n$ is the number of data points and $d$ is the number of dimensions of the data.
 
 This function is applied on a rolling basis to a window of 100 adjacent photons. This function returns a value for every single point along the transect, including in areas that do not have any noticeable signal. The kernel density value gives an indication of the strength of the peak. To reject the locations where the signal is weak, any points with a KDE value of less than the median value $$ kde_{50} $$  are assigned an NaN value and are dropped from the analysis.
 
@@ -146,7 +146,7 @@ The implementation used is from the PDAL software library \parencite{howard_butl
 \subsubsection{Kriging interpolation}
 Using the subsample of the points from the poisson disk sampling, they are converted to a bathymetry raster using universal kriging. This geostatistical technique results in both a raster of the estimated depth as well as the estimated uncertainty. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. 
 
-The univeral kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generatored for the entire site. A single slice of the output, taken along a icesat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the measurement points. 
+The universal kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generated for the entire site. A single slice of the output, taken along an ICESat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the measurement points. 
 
 {fig:kriging-interpolator}
 \begin{figure}[h]
@@ -233,7 +233,7 @@ In this application, the starting point of estimate is based on a bilinear resam
 
 \subsection{Per-track Secchi depth estimation}
 
-The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occuring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively). 
+The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines divided into points every 4km starting at the end of the transect. Then, the GEBCO elevation at each point is found. Any points with a GEBCO elevation great than 0 are assumed to be over land, and are removed from the dataset. This works as a land mask to remove points occurring on land. The GlobColour dataset includes a land mask, but GEBCO has a much higher horizontal resolution than the GlobColour data ($~450m$ vs. $4km$, respectively). 
 
 This provides a dataset of the ocean clarity (as estimated by Secchi Depth) data at the site \emph{on the day of the satellite pass.} Statistics can then be calculated for each unique trackline, or by each site as a whole.
 
@@ -275,7 +275,7 @@ The refraction correction method used accounts for the additional horizontal err
 
 Another potential source of error is the slope of the water surface. Since there is a slope to the water surface, this affects the bounce angle of the photon. This can be corrected for and some papers that investigate ICESat-2 bathymetry have attempted to correct for it. For this project the magnitude of error due to slope was considered small enough to be within the margin of error of the method.
 
-\subsection*{Misclassified photons in ATL03 data}
+\subsection{Misclassified photons in ATL03 data}
 
 Correcting filtering of sea surface returns is very important to the accuracy of the bathymetry signal finding, because the sea surface signal is often several orders of magnitude more dense than the bathymetric signal, and the location of the sea surface is also used to calculate the depth of a photon for refraction correction. The default photon classification provided in the ATL03 data is used to identify the sea surface within the filtering algorithm. Errors in the default ocean signal classification can result in sea surface signal being inadvertently included in the subsurface data and biasing the KDE results.
 
