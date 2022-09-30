@@ -19,12 +19,13 @@ from atl_module.io.download import request_full_data_shapefile
 from atl_module.ocean_color import (  # add_secchi_depth_to_tracklines,
     create_zsd_points_from_tracklines,
 )
-from atl_module.plotting import (
+from atl_module.plotting import (  # plot_aoi,
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
     plot_both_maps,
     plot_photon_map,
     plot_tracklines_overview,
+    set_size,
 )
 from logzero import setup_logger
 
@@ -303,11 +304,12 @@ class GebcoUpscaler:
         # TODO fix this horrible ugliness
         self.raster_error_summary.to_csv(raster_error_table_path.replace(".tex", ".csv"))
 
-        self.raster_error_summary.style.to_latex(
+        self.raster_error_summary.style.format(precision=2).to_latex(
             buf=raster_error_table_path,
             caption="Improvement in error metrics after applying Kalman Updating of kriged data",
             hrules=True,
             position_float="centering",
+            # position='h',
             label=f"tab:{self.site_name}_gebco_raster_error",
         )
         detail_logger.info(f"raster error table written to {raster_error_table_path}")
@@ -329,14 +331,15 @@ class GebcoUpscaler:
     def plot_lidar_error(self):
         # the below can be moved to the object
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.pdf"
-        error_lidar_pt_vs_truth_pt(
+        fig = error_lidar_pt_vs_truth_pt(
             self.bathy_pts_gdf, self.site_name, self.lidar_err_dict
-        ).get_figure().savefig(
+        )
+        fig.tight_layout()
+        fig.savefig(
             outpath,
-            facecolor="white",
-            bbox_inches="tight",
         )
         detail_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
+        return fig
 
     def plot_truth_data(self, plot_title):
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
@@ -346,8 +349,15 @@ class GebcoUpscaler:
             bbox_inches="tight",
         )
 
-    def plot_icesat_points(self):
-        icesat_points_figure, ax = plt.subplots()
+    def plot_icesat_points(self, fraction=1.2):
+        # get the ratio of the map edges to each other
+        minx, miny, maxx, maxy = self.bathy_pts_gdf.total_bounds
+        # this ratio we can feed into the figure sizing function
+        scale_ratio = (maxx - minx) / (maxy - miny)
+
+        icesat_points_figure, ax = plt.subplots(
+            figsize=set_size(fraction=fraction, ratio=scale_ratio)
+        )
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
         plot_photon_map(ax, self.bathy_pts_gdf)
         icesat_points_figure.savefig(
@@ -356,6 +366,7 @@ class GebcoUpscaler:
             facecolor="white",
         )
         detail_logger.info(f"Photon output written to {outpath}")
+        return icesat_points_figure
 
     def plot_tracklines(self):
         trackline_fig, ax = plt.subplots()
@@ -371,6 +382,7 @@ class GebcoUpscaler:
     def plot_site(self):
         aoi_gdf = gpd.read_file(self.AOI_path)
         fig = plot_both_maps(self.tracklines, self.bathy_pts_gdf, aoi_gdf)
+        # fig =  plot_aoi()
         # fig.show()
         return fig
 
