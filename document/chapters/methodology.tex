@@ -29,7 +29,9 @@ The elevation grid, and a metadata grid which shows where the GEBCO input data w
 To investigate the relationship between the water clarity and the availability and quality of the bathymetric data from the spaceborne lidar, data from \citeauthor{Garnesson2019} is also linked to each transect to investigate the relationship between the Secchi Disk Depth along the transect. The exact data product used is \cite{Garnesson2019}. The data is accessed via the OPeNDAP protocol hosted by the Copernicus Marine Service, using the Xarray python package \parencite{hoyer_stephan_2022_6323468,hoyer2017xarray}.
 
 
+\subsection{Jarkus}
 
+explain the idea of jarkus and the 
 \section{Methodology}
 
 To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lidar photon data for the area of interest is downloaded, processed into geoidal heights, subset to only include subsurface photons, find bathymetric signal within the subsurface data, interpolate into a 2D grid, then finally combine the interpolated ICESat-2 data with the resampled GEBCO grid within the area of interest. Then, for each test sites the change in root mean square error (RMSE) and Mean Absolute Error (MAE)between the naive bilinear interpolation is calculated. \pdfcomment{for this flowchat, make sure step names correspond to subsetions if this section}
@@ -227,7 +229,7 @@ In this application, the starting point of estimate is based on a bilinear resam
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/methodology-kalman-updating.pdf}
-    \caption{Using a section of the same transect in Figure \ref{fig:kriging-interpolater}, the processing of the Kalman measurement update is shown. }
+    \caption{Using a section of the same transect in Figure \ref{fig:kriging-interpolator}, the processing of the Kalman measurement update is shown. }
     \label{fig:kalman-figure}
 \end{figure}
 
