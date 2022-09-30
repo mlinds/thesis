@@ -377,138 +377,138 @@ pts_all = (
 # %%
 
 
-# %%
-with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as krigedras:
-    elevation = krigedras.read(1)
-    uncertainty = krigedras.read(2)
-    width = elevation.shape[1]
-    height = elevation.shape[0]
-    cols, rows = np.meshgrid(np.arange(width), np.arange(height))
-    xs, ys = rasterio.transform.xy(krigedras.transform, rows, cols)
-    xvals = np.array(xs)
-    yvals = np.array(ys)
+# # %%
+# with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as krigedras:
+#     elevation = krigedras.read(1)
+#     uncertainty = krigedras.read(2)
+#     width = elevation.shape[1]
+#     height = elevation.shape[0]
+#     cols, rows = np.meshgrid(np.arange(width), np.arange(height))
+#     xs, ys = rasterio.transform.xy(krigedras.transform, rows, cols)
+#     xvals = np.array(xs)
+#     yvals = np.array(ys)
 
-row = 300
-oned_elev = elevation[row, :]
-oned_uncert = uncertainty[row, :]
-oned_xvals = xvals[row, :]
-oned_yvals = yvals[row, :]
+# row = 250
+# oned_elev = elevation[row, :]
+# oned_uncert = uncertainty[row, :]
+# oned_xvals = xvals[row, :]
+# oned_yvals = yvals[row, :]
 
-resolution = oned_xvals[1] - oned_xvals[0]
+# resolution = oned_xvals[1] - oned_xvals[0]
 
-pts_in_area = pts.loc[
-    (pts.Y > oned_yvals.min() - resolution / 2) & (pts.Y < oned_yvals.min() + resolution / 2)
-]
-pts_all_in_area = pts_all.loc[
-    (pts_all.northing > oned_yvals.min() - resolution)
-    & (pts_all.northing < oned_yvals.min() + resolution)
-]
-# %%
-fig, ax = plt.subplots(figsize=(20, 10))
-ax.set_title("1D section of Kriging results")
+# pts_in_area = pts.loc[
+#     (pts.Y > oned_yvals.min() - resolution / 2) & (pts.Y < oned_yvals.min() + resolution / 2)
+# ]
+# pts_all_in_area = pts_all.loc[
+#     (pts_all.northing > oned_yvals.min() - resolution)
+#     & (pts_all.northing < oned_yvals.min() + resolution)
+# ]
+# # %%
+# fig, ax = plt.subplots(figsize=(20, 10))
+# ax.set_title("1D section of Kriging results")
 
-ax.plot(oned_xvals, oned_elev, label="Interpolated Line")
-ax.fill_between(
-    oned_xvals,
-    oned_elev - np.sqrt(oned_uncert),
-    oned_elev + np.sqrt(oned_uncert),
-    color="gray",
-    alpha=0.2,
-    label="Uncertainty",
-)
+# ax.plot(oned_xvals, oned_elev, label="Interpolated Line")
+# ax.fill_between(
+#     oned_xvals,
+#     oned_elev - np.sqrt(oned_uncert),
+#     oned_elev + np.sqrt(oned_uncert),
+#     color="gray",
+#     alpha=0.2,
+#     label="Uncertainty",
+# )
 
-ax.scatter(
-    x=pts_in_area.X,
-    y=pts_in_area.Z,
-    color="red",
-    label="Remaining points after subsampling",
-)
+# ax.scatter(
+#     x=pts_in_area.X,
+#     y=pts_in_area.Z,
+#     color="red",
+#     label="Remaining points after subsampling",
+# )
 
-ax.legend(loc="lower left")
-fig.savefig(
-    "../document/figures/1d_kriging_section.pdf",
-    bbox_inches="tight",
-    facecolor="white",
-)
+# ax.legend(loc="lower left")
+# fig.savefig(
+#     "../document/figures/1d_kriging_section.pdf",
+#     bbox_inches="tight",
+#     facecolor="white",
+# )
 
-with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
-    gebco_elev = bilinear.read(1, masked=True)
-    oned_gebco = gebco_elev[row, :]
-
-
-ax.plot(oned_xvals, oned_gebco)
-
-# %%
-
-fig, ax = plt.subplots(figsize=(20, 10))
-ax.set_title("Combination via Kalman Filter - 1D view")
-
-ax.plot(oned_xvals, oned_elev, label="Kriged ICESat-2 Surface")
-ax.fill_between(
-    oned_xvals,
-    oned_elev - np.sqrt(oned_uncert),
-    oned_elev + np.sqrt(oned_uncert),
-    color="#1f77b4",
-    alpha=0.1,
-    label="Kriged ICESat-2 Uncertainty",
-)
-
-with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
-    gebco_elev = bilinear.read(1, masked=True)
-    oned_gebco = gebco_elev[row, :]
+# with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
+#     gebco_elev = bilinear.read(1, masked=True)
+#     oned_gebco = gebco_elev[row, :]
 
 
-ax.plot(oned_xvals, oned_gebco, label="GEBCO Interpolation", color="#ff7f0e")
-ax.fill_between(
-    oned_xvals,
-    oned_gebco - 0.5,
-    oned_gebco + 0.5,
-    alpha=0.1,
-    color="#ff7f0e",
-    label="GEBCO Uncertainty",
-)
-
-with rasterio.open("../data/test_sites/florida_keys/kalman_updated.tif") as kalman_raster:
-    kalman_elev = kalman_raster.read(1)
-    oned_kalman = kalman_elev[row, :]
-
-
-ax.plot(
-    oned_xvals,
-    oned_kalman,
-    label="Estimate with Kalman Filter",
-    linewidth=3,
-    color="#2ca02c",
-)
-ax.legend(loc="lower left")
-ax.set_ylabel("Elevation [m]")
-ax.set_xlabel("Easting [m UTM 17N]")
-fig.savefig(
-    "../document/figures/kalman_1d_section.pdf",
-    bbox_inches="tight",
-    facecolor="white",
-)
+# ax.plot(oned_xvals, oned_gebco)
 
 # %%
-with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bilinear_raster:
-    fig, ax = plt.subplots(figsize=(20, 10))
-    ax.set_xlabel("Easting UTM 17N")
-    ax.set_ylabel("Northing UTM 17N")
-    ax.set_title("Location of 1D section")
-    # cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bilinear_raster.crs)
-    image_hidden = ax.imshow(
-        bilinear_raster.read(1, masked=True),
-        cmap="inferno",
-    )
-    rastershow(bilinear_raster, cmap="inferno", ax=ax)
-    ax.axhline(oned_yvals[0], linewidth=5)
 
-    fig.colorbar(image_hidden, ax=ax)
-    fig.savefig(
-        fname="../document/figures/horizontal_section.pdf",
-        bbox_inches="tight",
-        facecolor="white",
-    )
+# fig, ax = plt.subplots(figsize=(20, 10))
+# ax.set_title("Combination via Kalman Filter - 1D view")
+
+# ax.plot(oned_xvals, oned_elev, label="Kriged ICESat-2 Surface")
+# ax.fill_between(
+#     oned_xvals,
+#     oned_elev - np.sqrt(oned_uncert),
+#     oned_elev + np.sqrt(oned_uncert),
+#     color="#1f77b4",
+#     alpha=0.1,
+#     label="Kriged ICESat-2 Uncertainty",
+# )
+
+# with rasterio.open("../data/test_sites/florida_keys/bilinear.tif") as bilinear:
+#     gebco_elev = bilinear.read(1, masked=True)
+#     oned_gebco = gebco_elev[row, :]
+
+
+# ax.plot(oned_xvals, oned_gebco, label="GEBCO Interpolation", color="#ff7f0e")
+# ax.fill_between(
+#     oned_xvals,
+#     oned_gebco - 0.5,
+#     oned_gebco + 0.5,
+#     alpha=0.1,
+#     color="#ff7f0e",
+#     label="GEBCO Uncertainty",
+# )
+
+# with rasterio.open("../data/test_sites/florida_keys/kalman_updated.tif") as kalman_raster:
+#     kalman_elev = kalman_raster.read(1)
+#     oned_kalman = kalman_elev[row, :]
+
+
+# ax.plot(
+#     oned_xvals,
+#     oned_kalman,
+#     label="Estimate with Kalman Filter",
+#     linewidth=3,
+#     color="#2ca02c",
+# )
+# ax.legend(loc="lower left")
+# ax.set_ylabel("Elevation [m]")
+# ax.set_xlabel("Easting [m UTM 17N]")
+# fig.savefig(
+#     "../document/figures/kalman_1d_section.pdf",
+#     bbox_inches="tight",
+#     facecolor="white",
+# )
+
+# # %%
+# with rasterio.open("../data/test_sites/florida_keys/kriging_output.tif") as bilinear_raster:
+#     fig, ax = plt.subplots(figsize=(20, 10))
+#     ax.set_xlabel("Easting UTM 17N")
+#     ax.set_ylabel("Northing UTM 17N")
+#     ax.set_title("Location of 1D section")
+#     # cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bilinear_raster.crs)
+#     image_hidden = ax.imshow(
+#         bilinear_raster.read(1, masked=True),
+#         cmap="inferno",
+#     )
+#     rastershow(bilinear_raster, cmap="inferno", ax=ax)
+#     ax.axhline(oned_yvals[0], linewidth=5)
+
+#     fig.colorbar(image_hidden, ax=ax)
+#     fig.savefig(
+#         fname="../document/figures/horizontal_section.pdf",
+#         bbox_inches="tight",
+#         facecolor="white",
+#     )
 
 
 # %%
@@ -698,11 +698,9 @@ with rasterio.open("../data/for_other_figures/stcroixvalidation.tif") as femaras
     )
     st_croix_tracklines.to_crs(femaras.crs).plot(ax=ax, label="ICESat-2 Track")
     bathy_pts.to_crs(femaras.crs).plot(
-        ax=ax, c="red", s=4, zorder=2, label="Bathymetry Point from KDE"
+        ax=ax, c="red", markersize=4, zorder=2, label="Bathymetry Point from KDE"
     )
     rastershow(femaras, cmap="inferno", ax=ax, vmax=0)
-    # ax.set_xlim(xlim)
-    # ax.set_ylim(ylim)
     ax.legend()
     fig.colorbar(image_hidden, ax=ax)
 

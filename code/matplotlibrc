@@ -359,7 +359,7 @@ text.usetex: True  # use latex for all text handling. The following fonts
                              # text.color as default value
 #axes.titley:        None    # position title (axes relative units).  None implies auto
 #axes.titlepad:      6.0     # pad between axes and title in points
-axes.labelsize:     10 # font size of the x and y labels
+axes.labelsize:     8 # font size of the x and y labels
 #axes.labelpad:      4.0     # space between label and axis
 #axes.labelweight:   normal  # weight of the x and y labels
 #axes.labelcolor:    black
@@ -560,7 +560,7 @@ figure.dpi:          100       # figure dots per inch
                                # expressed as a fraction of the average axis height
 
 ## Figure layout
-#figure.autolayout: False  # When True, automatically adjust subplot
+figure.autolayout: True  # When True, automatically adjust subplot
                            # parameters to make the plot fit the figure
                            # using `tight_layout`
 #figure.constrained_layout.use: False  # When True, automatically make plot
@@ -660,7 +660,7 @@ figure.dpi:          100       # figure dots per inch
 ## The default savefig parameters can be different from the display parameters
 ## e.g., you may want a higher resolution, or to make the figure
 ## background white
-savefig.dpi:        100      # figure dots per inch or 'figure'
+savefig.dpi:        200      # figure dots per inch or 'figure'
 #savefig.facecolor: auto        # figure face color when saving
 #savefig.edgecolor: auto        # figure edge color when saving
 #savefig.format:    png         # {png, ps, pdf, svg}

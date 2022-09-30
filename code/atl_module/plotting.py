@@ -9,17 +9,18 @@ LATEX_PAGE_WIDTH = 448.1309
 
 
 def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
-    ax = df_in.plot.scatter(
+    fig, ax = plt.subplots(figsize=set_size(ratio=1, fraction=0.5))
+    df_in.plot.scatter(
         x="true_elevation",
         y="sf_elev_MSL",
         xlabel="True Elevation [m +MSL]",
         ylabel="Calculated Elevation [m +MSL]",
-        title=f"Lidar Point Vs. Truth Point: {site_name}",
+        # title=f"Lidar Point Vs. Truth Point: {site_name}",
         # bias plots need to be square
-        figsize=set_size(ratio=1),
         alpha=0.3,
         s=3,
         rasterized=True,
+        ax=ax,
     )
 
     one_to_one_ln_st = min(df_in.true_elevation.min(), df_in.sf_elev_MSL.min())
@@ -30,12 +31,12 @@ def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
         c="red",
         label="1=1",
     )
-    ax.text(0.1, 0.8, s=f'$RMSE = {error_dict["RMSE"]:.2f}m$', transform=ax.transAxes)
-    ax.text(0.1, 0.75, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
+    ax.text(0.05, 0.8, s=f'$RMSE = {error_dict["RMSE"]:.2f}m$', transform=ax.transAxes)
+    ax.text(0.05, 0.7, s=f'$R^2 = {error_dict["R2 Score"]:.2f}$', transform=ax.transAxes)
     # ax.text('MAE')
     ax.legend()
 
-    return ax
+    return fig
 
 
 def map_ground_truth_data(truthdata_path, plottitle):
@@ -62,31 +63,30 @@ def map_ground_truth_data(truthdata_path, plottitle):
 
 def plot_photon_map(ax, bathy_points_gdf):
     print("plotting photon map")
+    # pandas plot onto a dataframe returns the artist which we will keep for later
     bathy_points_gdf.plot(
-        figsize=set_size(ratio=0.4, fraction=1.2),
-        column="z_kde",
+        column="sf_elev_MSL",
         cmap="inferno",
         legend=True,
-        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]", "shrink": 0.25},
+        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]"},
         rasterized=True,
         ax=ax,
         s=4,
     )
+
     print("finished plotting photons")
     cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_points_gdf.crs)
     print("finished adding basemap")
 
-    # ax.colorbar(ptsartist,fraction=0.046, pad=0.04)
-
     ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
     ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
-    ax.set_title("Bathymetric photons identified by rolling-window KDE")
+    # ax.set_title("Bathymetric photons identified by rolling-window KDE")
     # return ax
 
 
-def plot_tracklines_overview(ax, tracklines_gdf):
+def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2):
     print("plotting tracklines")
-    tracklines_gdf.plot(figsize=set_size(ratio=0.4, fraction=1.2), ax=ax)
+    tracklines_gdf.plot(figsize=set_size(ratio=ratio, fraction=fraction), ax=ax)
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
@@ -185,3 +185,7 @@ def set_size(fraction=1, ratio=1.618):
     fig_dim = (fig_width_in, fig_height_in)
 
     return fig_dim
+
+
+def site_overview_map():
+    pass
