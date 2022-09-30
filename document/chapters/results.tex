@@ -106,7 +106,33 @@ The bathymetric point measurements obtained from the KDE signal finding algorith
     \label{fig:st-croix-bias-plot}
 \end{figure}
 
+After implementing the Kriging/Kalman updating process for the St. Croix site we find that the combination of the kriged ICESat-2 raster with the GEBCO data produces a resulting product that has a higher accuracy than either of the input datasets. Particularly of note here is the inaccuracy of the GEBCO data at this site --- while the overall RMSE of the resulting raster is high at this site compared to some others, in this case it is limited by the accuracy of the starting GEBCO data, and the accuracy of the kriging raster. Table \ref{tab:stcroix_gebco_raster_error} shows the improvement achieved through the Kalman Update process.
 
+\input{tables/Stcroix_kalman_improvement.tex}
+
+\section{Charlotte Amalie Test site}
+
+\section{Oahu Test sites}
+
+For another validation site that is outside of the Caribbean sea, the island of Oahu in the US state of Hawai'i was chosen. The validation data used is a lidar survey from 2013
+\pdfcomment{add more details and citation}. Because this site is substantially larger ($\approx 4x$ the area) than the other test sites, to analyze the data, the coast of the island is first divided into 8 smaller subsites. The layout of these sites was chosen based on approximately similar coastline characteristics. Figure \ref{fig:oahu-subsite-layout} shows the selected distribution of the smaller subsites around the island of Oahu.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{figures/Oahu_all_tracklines.pdf}
+    \caption{Oahu test site: The distribution of the subsites around the island of Oahu. Base layer data provided by: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community}
+    \label{fig:oahu-subsite-layout}
+\end{figure}
+
+The different subsites also exhibit different hydraulic characteristics. The Northern edge of the island is exposed to longer swells and larger wave heights, while the south is relatively sheltered \parencite{Vitousek2008a}. Another aspect is that distribution of ICESat-2 tracks is not even across all sites. Sites 4 and 6, for example do not contain any ascending \pdfcomment{check ascending/descending} transects with good data, so distribution of the data will be more uneven and might reduce the quality of the kriging raster.
+
+The accuracy of the KDE algorithm derived lidar data points, grouped by subsite, are shown in Table \ref{tab:Oahusitestats}. It can be seen that site 2 has an anomalously high RMS error.  
+
+\input{tables/Oahu_all_sites_RMSE_summary.tex}
+
+
+
+\section{All sites summary}
 
 
 
