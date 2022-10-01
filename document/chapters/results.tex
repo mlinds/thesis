@@ -126,11 +126,21 @@ For another validation site that is outside of the Caribbean sea, the island of 
 
 The different subsites also exhibit different hydraulic characteristics. The Northern edge of the island is exposed to longer swells and larger wave heights, while the south is relatively sheltered \parencite{Vitousek2008a}. Another aspect is that distribution of ICESat-2 tracks is not even across all sites. Sites 4 and 6, for example do not contain any ascending \pdfcomment{check ascending/descending} transects with good data, so distribution of the data will be more uneven and might reduce the quality of the kriging raster.
 
-The accuracy of the KDE algorithm derived lidar data points, grouped by subsite, are shown in Table \ref{tab:Oahusitestats}. It can be seen that site 2 has an anomalously high RMS error.  
-
-\input{tables/Oahu_all_sites_RMSE_summary.tex}
+The accuracy of the KDE algorithm derived lidar data points, grouped by subsite, are shown in Table \ref{tab:Oahusitestats}. It can be seen that site 2 has an anomalously high RMS error. 
 
 
+\begin{figure}
+    \begin{floatrow}
+    \ffigbox{\includegraphics{figures/Oahu_all_sites_photon_points.pdf}}{\caption{test}}
+    \capbtabbox{%
+    \input{tables/Oahu_all_sites_RMSE_summary.tex}
+    }{\caption{Error metrics between ICESat-2 and ground-truth data for all sites in Oahu}
+    }
+    \end{floatrow}
+\end{figure}
+
+
+The cause of this is a weakness in the subsurface filtering process \pdfcomment{add figure}. In there case, there is a small mountain protruding from the sea that is not captured by the low-resolution of the GEBCO grid. As this area of the transect occurs on land, it should be filtered out. However, because it is not filtered out there are several points where 
 
 \section{All sites summary}
 

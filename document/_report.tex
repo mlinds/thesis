@@ -13,10 +13,13 @@
 \usepackage{import}
 \usepackage[acronym]{glossaries}
 \usepackage[section]{placeins}
-
+% \usepackage{floatrow}
 % \usepackage{tablefootnote}
 \addbibresource[datatype=bibtex]{library.bib}
 \addbibresource[datatype=bibtex]{non-mendeley.bib}
+
+% copied from https://tex.stackexchange.com/questions/6850/table-and-figure-side-by-side-with-independent-captions
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
 
 \begin{document}
 
@@ -45,24 +48,24 @@
 
 
 %% Include an optional title page.
-\input{chapters/title.tex}
-\input{chapters/abstract.tex}
+% \input{chapters/title.tex}
+% \input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
 % \listofpdfcomments[liststyle=Comment]
 % \listoffigures
 % \listoftables
-\tableofcontents
+% \tableofcontents
 
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
 \parskip 0.1in
 % smallchange
-\input{chapters/introduction.tex}
-\input{chapters/background.tex}
-\input{chapters/methodology.tex}
+% \input{chapters/introduction.tex}
+% \input{chapters/background.tex}
+% \input{chapters/methodology.tex}
 \input{chapters/results.tex}
-\input{chapters/discussion.tex}
-\input{chapters/conclusion.tex}
+% \input{chapters/discussion.tex}
+% \input{chapters/conclusion.tex}
 
 
 %% Use letters for the chapter numbers of the appendices.

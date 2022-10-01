@@ -2,13 +2,13 @@
 \centering
 \caption{Improvement in error metrics after applying Kalman Updating of kriged data}
 \label{tab:Petten_gebco_raster_error}
-\begin{tabular}{lrr}
+\begin{tabular}{lrrr}
 \toprule
- & RMSE & MAE \\
+ & RMSE [m] & MAE [m] & Mean Error [m] \\
 \midrule
-Naive Bilinear Interpolation & 1.48 & 1.31 \\
-Kalman Updated Raster & 1.00 & 0.76 \\
-Kriged Raster & 1.22 & 0.70 \\
+Naive Bilinear Interpolation & 1.48 & 1.31 & -1.01 \\
+Kriged Raster & 1.22 & 0.70 & -0.31 \\
+Kalman Updated Raster & 1.00 & 0.76 & -0.50 \\
 \bottomrule
 \end{tabular}
 \end{table}
