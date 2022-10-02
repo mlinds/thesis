@@ -1,35 +1,32 @@
 
-\chapter{Individual test site results}
-\newcommand{\sitesummary}[2]{
+\chapter{Oahu Overview}\label{ch:oahu-appendix}
 
-\section{#2 Test site details}
+\input{tables/Oahu_all_sites_raster_error_summary.tex}
 
-\subsection{Validation Data}
+% setup a command to 
+\newcommand{\oahusubsite}[1]{%
 
-
-\subsection{Lidar point accuracy}
-% \input{tables/#1_lidar_error_table.tex}
-
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{figures/#1_tracklines.pdf}
-%     \caption{Layout of ICESat-2 Transects available in in #2 Study Area}
-%     \label{fig:#1_transects}
-% \end{figure}
+\section{Subsite #1}
+\begin{figure}[h!]
+    \centering
+    \includegraphics{figures/oahu#1_tracklines.pdf}
+    \caption{Oahu Site #1 tracklines. Basemap data \copyright Esri -- Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community}
+    \label{fig:site-#1-tracklines}
+\end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[]{figures/#1_photon_map.pdf}
-    \caption{Geographic distribution of Bathymetric photon data}
-    % \label{fig:#1_bathy-photon-map}
+    \includegraphics{figures/oahu#1_photon_map.pdf}
+    \caption{Oahu site #1 detail. Basemap data: \copyright  OpenStreetMap contributors, SRTM | Map style: \copyright  OpenTopoMap (CC-BY-SA)}
+    \label{fig:site-#1-photons}
 \end{figure}
-
-
-
-
-\subsection{Improvement in Accuracy between GEBCO and resulting Kalman-updated raster}
-\input{tables/#1_kalman_improvement.tex}
-
 }
 
-\sitesummary{Florida\_keys}{Florida Keys}
+\oahusubsite{1}
+\oahusubsite{2}
+\oahusubsite{3}
+\oahusubsite{4}
+\oahusubsite{5}
+\oahusubsite{6}
+\oahusubsite{7}
+\oahusubsite{8}

@@ -131,7 +131,7 @@ The accuracy of the KDE algorithm derived lidar data points, grouped by subsite,
 
 \begin{figure}
     \begin{floatrow}
-    \ffigbox{\includegraphics{figures/Oahu_all_sites_photon_points.pdf}}{\caption{test}}
+    \ffigbox{\includegraphics{figures/Oahu_all_sites_photon_points.pdf}}{\caption{Bathymetry point estimates around Oahu from KDE signal finding algorithm}}
     \capbtabbox{%
     \input{tables/Oahu_all_sites_RMSE_summary.tex}
     }{\caption{Error metrics between ICESat-2 and ground-truth data for all sites in Oahu}
@@ -140,11 +140,30 @@ The accuracy of the KDE algorithm derived lidar data points, grouped by subsite,
 \end{figure}
 
 
-The cause of this is a weakness in the subsurface filtering process \pdfcomment{add figure}. In there case, there is a small mountain protruding from the sea that is not captured by the low-resolution of the GEBCO grid. As this area of the transect occurs on land, it should be filtered out. However, because it is not filtered out there are several points where 
+The cause of this is a weakness in the subsurface filtering process \pdfcomment{add figure}. In there case, there is a small mountain protruding from the sea that is not captured by the low-resolution of the GEBCO grid. As this area of the transect occurs on land, it should be filtered out. However, because it is not filtered out there are several points where noise points under the mountains are included, and they are not filtered out by the KDE threshold, so they are inadvertently included. 
 
-\section{All sites summary}
+Figures \ref{fig:oahu-bias-mountains} and \ref{fig:oahu-bias-nomounts} show all ICESat-2 bathymetric points in all Oahu Subsites. Figure \ref{fig:oahu-bias-nomounts} has had the scale adjust so that these extreme errors are not visible. This better shows the distribution of the other errors \pdfcomment{rephrase lmao}.
+
+The Kalman update step was also applied individually to each subsite. The Kalman updating step for the various Oahu subsites shows a more mixed result than in other test sites. A summary of the changes in the error metrics for each subsite is provided in Table \ref{tab:oahu-percent-change}. In some sites, the Kalman update does not improve the estimate, and in some cases even makes it than the a-priori GEBCO estimate. This is an indication that the parameters are not set correctly for the site --- using bayesian estimation, the parameters should be able to be set such that areas within the grid that have lower confidence are not changed significantly. 
+
+By manually investigating the results of subsites 6, 7 and 8 there is some indication of what is going wrong to produce these results. The 
+
+\input{tables/oahu_percent_change.tex}
+
+\begin{figure}
+    \begin{floatrow}
+        \ffigbox{\includegraphics{figures/Oahu_combined_lidar_estimated_vs_truth.pdf}}{\caption{Bias plot of all points within all Oahu Subsites}\label{fig:oahu-bias-mountains}}
+        \ffigbox{\includegraphics{figures/Oahu_combined_mountains_removed_lidar_estimated_vs_truth.pdf}}{\caption{Bias plot with the mountain points removed to better show the actual distribution of the error}\label{fig:oahu-bias-nomounts}}
+    \end{floatrow}
+\end{figure}
 
 
+
+\section{All sites combined}
+
+\subsection{Lidar error}
+
+\subsection{Kalman updating approach }
 
 % \subsection{Site Conditions Summary}
 % \begin{table}[h!]

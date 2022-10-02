@@ -2,13 +2,13 @@
 \centering
 \caption{Improvement in error metrics after applying Kalman Updating of kriged data}
 \label{tab:oahu5_gebco_raster_error}
-\begin{tabular}{lrr}
+\begin{tabular}{lrrr}
 \toprule
- & RMSE & MAE \\
+ & RMSE [m] & MAE [m] & Mean Error [m] \\
 \midrule
-Naive Bilinear Interpolation & 3.43 & 2.51 \\
-Kalman Updated Raster & 3.42 & 2.42 \\
-Kriged Raster & 17.62 & 11.91 \\
+GEBCO & 3.42 & 2.50 & 1.50 \\
+Kriging Surface & 17.62 & 11.90 & -11.65 \\
+Kalman Output & 3.35 & 2.38 & -0.25 \\
 \bottomrule
 \end{tabular}
 \end{table}
