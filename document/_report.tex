@@ -27,7 +27,8 @@
 %% Use Roman numerals for the page numbers of the title pages and table of
 %% contents.
 \frontmatter
-
+\pdfcomment{decide on consistent hyphenation of remote sensing, signal finding, etc}
+\pdfcomment{make sure that acronyms are defined the first time they're used}
 %% Uncomment following 16 lines for a cover with a picture on the lower half only
 \title{Bayesian upscaling of global bathymetry using spaceborne lidar}
 % \subtitle[tudelft-black]{}
@@ -48,24 +49,24 @@
 
 
 %% Include an optional title page.
-% \input{chapters/title.tex}
-% \input{chapters/abstract.tex}
+\input{chapters/title.tex}
+\input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
 % \listofpdfcomments[liststyle=Comment]
-% \listoffigures
-% \listoftables
-% \tableofcontents
+\listoffigures
+\listoftables
+\tableofcontents
 
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
 \parskip 0.1in
 % smallchange
-% \input{chapters/introduction.tex}
-% \input{chapters/background.tex}
-% \input{chapters/methodology.tex}
+\input{chapters/introduction.tex}
+\input{chapters/background.tex}
+\input{chapters/methodology.tex}
 \input{chapters/results.tex}
-% \input{chapters/discussion.tex}
-% \input{chapters/conclusion.tex}
+\input{chapters/discussion.tex}
+\input{chapters/conclusion.tex}
 
 
 %% Use letters for the chapter numbers of the appendices.

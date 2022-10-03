@@ -20,7 +20,7 @@ There have since been several studies that employ this approach, and evaluate di
 
 \section{Lidar Bathymetric Surveying}
 
-The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \parencite{Bailly2016}. The technology has matured significantly since then and currently airborne lidar using a strong 532nm laser beam is a common technique for high accuracy bathymetric and topographic surveying. The downside of this technique is that it does not scale well to large areas, because of the expensive equipment, and extensive post-processing work to correct for refraction of the laser beam in the water column, calibration to in situ data, and outlier detection.
+The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \parencite{Bailly2016}. The technology has matured significantly since then and currently airborne lidar using a strong 532nm laser beam is a common technique for high accuracy bathymetric and topographic surveying. The downside of this technique is that it does not scale well to large areas, because of the expensive equipment, and extensive post-processing work to correct for refraction of the laser beam in the water column, calibration to in situ data, and outlier detection. \pdfcomment{run-on sentence}
 
 Recent advances in lidar technology have allowed the development of the photon-counting lidar, which requires significantly less energy to detect a return signal. These have allowed the practical application of constant lidar data collection in satellites. The use of spaceborne lidar is a more recent area of research, but some early results have shown that spaceborne lidar can find depths as deep as 40m \parencite{Parrish2019}.
 
@@ -31,7 +31,7 @@ To detect the relatively weak signal reflected off the seafloor, very clear wate
 
 \section{Geodetic reference systems for oceanography}
 
-The geoid is defined as a level surface of that is normal to the gravitational acceleration at every point. It is not exactly the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g= - \nabla W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface settle along this surface.
+The geoid is defined as a level surface that is normal to the gravitational acceleration at every point. It is not just the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g= - \nabla W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface would settle along at this level.
 
 The contours of the geoid can be estimated using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
 
@@ -66,7 +66,7 @@ The ICESat-2 mission is intended to gather high resolution topographic data on a
       \label{fig:icesat-rgts}
 \end{figure}
 
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}.
+Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. \pdfcomment{per mom: mention less reflective surfaces as well}The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}. \pdfcomment{per mom: water column graphic?}
 
 \begin{figure}[htbp]
       \centering
@@ -88,7 +88,7 @@ To locate the position of each photon in 3D space, the time of flight of the pho
       \label{fig:geoids-ellipsoids-graphics}
 \end{figure}
 
-\ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
+Figure \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
 
 \pdfcomment{this is range, actual location is needs to be adjusted further}
 
