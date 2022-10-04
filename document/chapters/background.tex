@@ -1,82 +1,62 @@
 \chapter{Background}
 
-\pdfcomment{add secchi depth/ocean color section}
+% \pdfcomment{add secchi depth/ocean color section}
 
 \section{Remote sensing of bathymetry}
 There are several established methods for calculating bathymetric data from passive optical and SAR satellite data, and recent advances in cloud computing capabilities like Google Earth Engine (GEE) \parencite{Gorelick2017a} make large catalogs of remote sensing data more accessible \parencite{Pike2019,Turner2021}. The approaches can be broadly classified into \emph{wave-kinematic} and \emph{optical inversion} techniques.
 
 \subsection{Wave-Kinematic bathymetry}
-This approach uses the hydrodynamic properties of a wave field to estimate the bathymetry. The hydrodynamic variables like wave celerity and wavelength are estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation \cite{Almar2021e}. The major advantage of this method is that the results do not depend on the turbidity, which can be a significant limitation to optical SDB along many coastlines. The downsides to this approach are that the horizontal resolution is limited compared to optical methods, and the depth that it can reach is limited by the wavelength: longer waves feel the bottom earlier, so only in areas with significant swells can deeper bathymetry measurements be found \parencite{Almar2021e}.
+This approach uses the hydrodynamic properties of ocean surface to produce an estimate of the bathymetry in a 2D grid. Hydrodynamic variables such as wave celerity and wavenumber can be estimated from either optical or SAR satellite data. The bathymetry can then be calculated using the wave dispersion relation $c^2 = \frac{g}{k}\tanh{kh}$, which relates the wave celerity $c$ to the wavenumber $k$ and the depth $h$ \parencite{Almar2021e}. The major advantage of this method is that it does not require light to penetrate the water column. Therefore it is not limited by water column properties such as turbidity, which can be a significant limitation to optical SDB methods along many coastlines. The disadvantages of this approach are that the horizontal resolution is limited compared to optical methods, and that the maximum depths where this approach can be applied is limited by the wavelength: longer waves feel the bottom earlier, so bathymetry estimates in deeper areas are only possible on coasts exposed to swell waves, which have a longer wavelength \parencite{Almar2021e}.
 
 \subsection{Bathymetry from optical remote sensing}
-Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it can provide continous estimates of bathymetry with a resolution up to the resolution of the optical imagery (10m for the Sentinel-2, and higher if commercial imagery is purchased) \parencite{}. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements and derive a relationship between color and depth. One advantage is that they are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021}, but require more sophisticated computational capabilities to apply.
+Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it can provide continous estimates of bathymetry with a resolution up to the resolution of the optical imagery. This means bathymetry grids at 10~m horizontal resolution using publically available Sentinel-2 imagery, up to 0.5~m if commercial imagery is purchased \parencite{Babbel2021a,LeQuilleuc2022b,Pike2019}. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements and derive a relationship between color and depth. One advantage is that emperical approaches are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021} and require more sophisticated computational capabilities to apply.
 
-
-\subsection{Active-passive sensor fusion}
-\cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical/multispectral techniques. Because the lidar-derived data provides highly accurate point estimates along a linear track, and optical methods allow the estimation for a 2D area but require a priori depth data, combining the two techniques provides a synergistic fusion of the strengths of both. The lidar-derived depths are used as training data for the optical SDB models, creating a 2D picture of the bathymetry.
-
-There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, finding bathymetric signal points, and combining the lidar data with optical techniques.
-
+Empirical optical methods require some in-situ data to establish the relationship between the optical properties and the depth in the area. \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical techniques. Because the ICEsat-2 data provides relatively high accuracy point estimates, and optical methods allow the estimation of a 2D bathymetry grid but require in-situ point measurements for calibration, combining the two techniques provides a synergistic fusion of the strengths of both. There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, identifying bathymetry signal, and combining the lidar data with optical techniques (For examples of studies combining ICESat-2 with optical SDB methods, see \cite{Geyman2019,Pike2019,Ma2020,Lee2021,Albright2021,Ranndal2021,Gleason2021,Thomas2021d,Babbel2021a,Hsu2021,Cao2021,Xie2021,Surisetty2022,Zhong2022a,Zheng2022,Daly2022,Xu2022,Magruder2020,Thomas2022,LeQuilleuc2022b}). Suffice it to say this topic has seen significant interest from researchers in recent years.
 
 \section{Lidar Bathymetric Surveying}
 
-The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \parencite{Bailly2016}. The technology has matured significantly since then and currently airborne lidar using a strong 532nm laser beam is a common technique for high accuracy bathymetric and topographic surveying. The downside of this technique is that it does not scale well to large areas, because of the expensive equipment, and extensive post-processing work to correct for refraction of the laser beam in the water column, calibration to in situ data, and outlier detection. \pdfcomment{run-on sentence}
+The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \parencite{Bailly2016}. The technology has matured significantly since then and currently airborne lidar using a strong 532nm laser beam is a common technique for high accuracy bathymetric and topographic surveying. The downside of this technique is that it does not scale well to large areas because it requires expensive equipment, and extensive post-processing work is needed after the survey to produce a final product. 
 
-Recent advances in lidar technology have allowed the development of the photon-counting lidar, which requires significantly less energy to detect a return signal. These have allowed the practical application of constant lidar data collection in satellites. The use of spaceborne lidar is a more recent area of research, but some early results have shown that spaceborne lidar can find depths as deep as 40m \parencite{Parrish2019}.
+Recent advances in lidar technology have allowed the development of the photon-counting lidar, which requires significantly less energy to detect a return signal. These have allowed the practical application of constant lidar data collection in satellites. The use of spaceborne lidar is a more recent area of research, but some early results have shown that spaceborne lidar can find depths as deep as 38 m \parencite{Parrish2019}.
 
 The potential for bathymetric mapping using spaceborne laser observations has been noted since before the advent of the ICESat-2 mission. The predecessor mission carried a lidar instrument called the Geoscience Laser Altimeter System (GLAS). GLAS was a green-light laser intended for measuring atmospheric aerosols \parencite{Abshire2005}. However, because of the laser architecture, GLAS was not able to penetrate the water column \parencite{Forfinski-Sarkozi2016}. However, a prototype of ATLAS, called the Multiple Altimeter Beam Experimental lidar (MABEL) instrument was tested with high-altitude aircraft missions, allowing a simulation of the data that would be provided by ATLAS \parencite{Mcgill2013}. Early experiments with MABEL showed good agreement between bathymetric measurements from MABEL and high-quality airborne reference data \parencite{Jasinski2016,Forfinski-Sarkozi2016}.
 
-To detect the relatively weak signal reflected off the seafloor, very clear water and ideal atmospheric and oceannic conditions are required to detect bathymetry. Therefore, only a fraction of transects contain bathymetric signal even for ideal sites. One of the most important aspects to use this data is to extract the bathymetryic signal from the transect data. One known property of the bathymetric signal is that a relatively high density of returns in the vertical (Z) direction. Therefore, a method based on a gaussian Kernel Density Estimation (KDE) function, applied on a rolling basis, is suggested to isolate this signal. and estimate the seafloor at each point.
-
+To detect the relatively weak signal reflected off the seafloor, very clear water and ideal atmospheric and oceanic conditions are required. Therefore, only a fraction of transects contain bathymetric signal even for ideal sites. One of the most important considerations to use underwater lidar data is the method of finding bathymetryic signal while rejecting noise. One known property of the bathymetric signal is that a relatively high density of returns in the vertical (Z) direction. 
 
 \section{Geodetic reference systems for oceanography}
 
-The geoid is defined as a level surface that is normal to the gravitational acceleration at every point. It is not just the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The potential field is based defining the gravitation acceleration as the gradient of a potential field $W$ $g= - \nabla W$, and the geoid is a level surface in this field. If the ocean were in static equilibrium, the free surface would settle along at this level.
+The ICESat-2 photon heights are by default referenced to the WGS84 ellipsoid. To convert these to an approximate mean sea level, some geodetic correction is required. The \emph{geoid} is defined as a level surface that is normal to the gravitational acceleration at every point. It is not just the surface of equal gravitational potential, but it also includes the centrifugal force due to a fixed local reference frame. The geoid can be defined as a level surface in a theoretical potential field $W$ such that $g= - \nabla W$. More intuitively, it can also be defined as the surface where the ocean surface would settle if it was in static equilibrium. \parencite{Hughes2008}.
 
-The contours of the geoid can be estimated using satellite gravimetry, and from these measurements the geoid can be mathematically approximated as a sum of a series of spherical harmonic functions.
+The contours of the geoid can be estimated using satellite gravimetry, and from these measurements the shape of the geoid can be mathematically approximated by a sum of a series of spherical harmonic functions.
 
-The surface of the geoid changes with time due to deformation of the earth. These \emph{earth tides} are periodic, but their time average is non-zero\pdfcomment{add why}
-
-
-
-. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect of earth tides, and the time-average of the earth tides (the permanent tide). It can be thought of as a system where the distance to the sun and moon is increased to infinity.
+The surface of the actual geoid changes with over time due to deformation of the earth induced by the gravitational forcing from the Sun and the Moon. Because the gravitational forcing of both the sun and the moon has both periodic and non-periodic components, the time average of their effect is non-zero. This time-averaged deformation is called the \emph{permanent tide}. For satellite altimetry, a reference system that changes with time can be inconvenient, so measured heights are often reported in a coordinate system that is referenced to the \emph{tide-free geoid}. The tide-free geoid is a theoretical reference surface that removes both the periodic effect and the permanent tide \parencite{Makinen2009}. It can be thought of as the gravitational potential of the Earth if the distance to the sun and moon was increased to infinity.
 
 \subsection{Inverted barometer effect and dynamic atmosphere correction}
 
-The instantaneous sea surface elevation is affected by the local weather and atmospheric conditions. The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height (i.e. local dynamic sea-surface topography)\parencite{Robbins2022}\pdfcomment{fix this}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down. 
+The instantaneous sea surface elevation is affected by the local weather and atmospheric conditions. The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height, or the  local dynamic sea-surface topography \parencite{Robbins2022}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down.
 
 In the simplest formulation, the drop in ocean level is approximately 1cm per additional mbar of atmospheric presure: $D_h \approx 0.99484(P_i-P_{ref})$, where $P_i$ is the instantaneous pressure in mbar and $P_{ref}$ is an assumed average pressure (1013.3 mbar) \parencite{Neumann2019e}
 
 In additional to surface height changes due to atmospheric pressure forcing, the local wind stress field also creates gradients in the sea surface height due to water mass momentum forcing. These variations are higher frequency compared to the pressure forcing that is captured by the IB correction.
 
-The combined effect of the IB effect and local wind forcing can be modeled using a global wave model that is forced using weather data. The combined correction factor is called the Dynamic Atmospheric Correction (DAC). The DAC correction provided in the ATL03 data product is calculated from the MOG2D model \parencite{LeProvost1994}, which is provided by AVISO. It is a global, barotropic, non-linear model of the oceans. It has a variable grid resolution to provide higher resolution data in coastal areas and enclosed seas. The MOG2D model is forced using the wind velocity and atmospheric pressure at 10m height that is supplied by the European Centre for Medium-Range Weather Forecasts (ECMWF) global weather model. The MOG2D model provides the DAC factor with a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution.
-The factor included in ATL03 is interpolated spatially and temporally to the nearest reference photon.
-
-The magnitude of the DAC correction is $\pm 50 cm$
+The combined effect of the IB effect and local wind forcing can be modeled using a global wave model that is forced using weather data. The combined correction factor is called the Dynamic Atmospheric Correction (DAC). The DAC correction provided in the ATL03 data product is sourced from the MOG2D model \parencite{LeProvost1994}, provided by AVISO. It is a global, barotropic, non-linear model of the world's oceans. It has a variable grid resolution to provide higher resolution data in coastal areas and enclosed seas. The MOG2D model is forced using the wind velocity and atmospheric pressure at 10m height from the European Centre for Medium-Range Weather Forecasts (ECMWF) global weather model. The MOG2D model provides the DAC correction factor with a 6 hour temporal resolution and a $0.25^{\circ}$ horizontal resolution. These DAC values are interpolated in space and time to the nearest reference photon for inclusion in the ATL03 data product. The magnitude of the DAC correction factor is $\pm 50 cm$
 
 
 \section{ICESat-2}
 
-The ICESat-2 mission is intended to gather high resolution topographic data on a global scale. The satellite carries the Advanced Topographic Laser Altimeter System (ATLAS). ATLAS is a highly sensitive photon-counting, green-light lidar. The satellite instrument points at reference ground tracks (RGT) along the earth's surface, and returns with a repeat time of 91 days. Along the reference track, there are 3 beams, one pointing directly at the reference track, and two that are offset by approximately 3km on either side. The layout of the beams relative to the RGT are shown in figure \ref{fig:icesat-rgts}.
-
-\begin{figure}[h!]
-      \centering
-      \includegraphics[width=0.5\textwidth]{./figures/ATLAS_beam_layout_from_user_guide.png}
-      \caption{Layout of the ICESat-2 beams}
-      \label{fig:icesat-rgts}
-\end{figure}
-
-Each of the 3 beams emits both a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected \parencite{Neumann2019d}. \pdfcomment{per mom: mention less reflective surfaces as well}The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In muddy waters, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}. \pdfcomment{per mom: water column graphic?}
+The ICESat-2 mission is intended to gather high resolution topographic data on a global scale. The satellite carries the Advanced Topographic Laser Altimeter System (ATLAS). ATLAS is a highly sensitive photon-counting, green-light lidar. The satellite instrument points at Reference Ground Tracks (RGT) along the earth's surface, and returns with a repeat time of 91 days. Along the reference track, there are 3 beams, one pointing directly at the reference track, and two that are offset by approximately 3km on either side. Each of these three beams is further split into a weak and strong. The layout of the beams relative to the RGT are shown in Figure \ref{fig:icesat-rgts}, and the orientation of the spacecraft in 3D is shown in Figure \ref{fig:3d-beams}
 
 \begin{figure}[htbp]
-      \centering
-      \includegraphics{./figures/3d_beam_view_from_atl03ATBD.png}
-      \caption{The layout of the ICESat-2 beams in 3D space. from \cite{Neumann2019d}}
-      \label{3d-beams}
+      \begin{floatrow}
+            \ffigbox{\includegraphics[width=0.5\textwidth]{./figures/ATLAS_beam_layout_from_user_guide.png}}{\caption{Layout of the ICESat-2 beams relative to the Reference Ground Track}\label{fig:icesat-rgts}}
+            \ffigbox{\includegraphics[width=0.5\textwidth]{./figures/3d_beam_view_from_atl03ATBD.png}}{\caption[The layout of the ICESat-2 beams in 3D space]{The layout of the ICESat-2 beams in 3D space. From \cite{Neumann2019d}}\label{fig:3d-beams}}
+      \end{floatrow}
 \end{figure}
 
+Each of the 3 beams is split into a strong and weak beam, with the strong beam being approximately 4x more powerful \parencite{Neumann2019d}. With each laser pulse the instrument emits \(10^{14}\) photons which travel to the earth where they are reflected. For more reflective surfaces like snow and ice, up to 10 make it back to the sensor and are detected. For less reflective surfaces such as the open ocean, only 0-4 photons are detected at the satellite \parencite{Neumann2019d}. The exact number of emitted photons that return to the sensor and are detected at the sensor depends on the local atmospheric conditions and the reflectivity of the surface \parencite{Neumann2019e}. The highly sensitive instrument also receives significant noise, due to atmospheric scattering and photons from the sun. In clear water, some photons can travel to the bottom of the water and return. In water with a high suspended sediment concentration, these photons are more likely to be reflected higher in the water column \parencite{Ranndal2021}.
+% \pdfcomment{per mom: water column graphic?}
 
-The main mission of the satellite is to gather data about mass and elevation changes in ice sheets and glaciers, and to study global canopy height \parencite{Markus2017}. As part of the vegetation height mission, the observatory is sometimes pointed away from the reference ground track when flying over land. This increases the spatial density of the observations of vegetation height \parencite{Markus2017}. This operation, called  \emph{offpointing}, begins before the satellite begins to record data over land, so the nearshore coastal area is also included, and therefore bathymetric and hydrological applications also benefit from increased spatial coverage \parencite{Magruder2021}.
+The main mission of the satellite is to gather data about mass and elevation changes in ice sheets and glaciers, and to study global canopy height \parencite{Markus2017}. As part of the vegetation height mission, the observatory is sometimes pointed away from the reference ground track when flying over land. This increases the spatial density of the observations of vegetation height \parencite{Markus2017}. This operation, called \emph{offpointing}, begins before the satellite begins to record data over land, so the nearshore coastal area is also included, and therefore bathymetric and hydrological applications also benefit from increased spatial coverage \parencite{Magruder2021}.
 
 To locate the position of each photon in 3D space, the time of flight of the photon is calculated with a precision of 800 ps \parencite{Neumann2019d}. The location of the center of mass of the instrument is found using Global Positioning System (GPS) systems onboard the satellite. By combining the measured time of flight and satellite position and attitude, the geolocation of each returning photon is calculated \parencite{Neumann2019d}.
 
@@ -88,7 +68,7 @@ To locate the position of each photon in 3D space, the time of flight of the pho
       \label{fig:geoids-ellipsoids-graphics}
 \end{figure}
 
-Figure \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the precision Orbit Determination Module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
+Figure \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the Precision Orbit Determination (POD) module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
 
 \pdfcomment{this is range, actual location is needs to be adjusted further}
 
@@ -111,8 +91,9 @@ The ATL03 data product reports the photon heights relative to the WGS84 referenc
 
 The height provided in the ATL03 data product is calculated by equation:
 
-\[H_{GC} =  H_{P} - H_{OPT} - H_{OL} - H_{SEPT} - H_{SET} - H_{TCA}\]
-
+\begin{equation}
+      H_{GC} =  H_{P} - H_{OPT} - H_{OL} - H_{SEPT} - H_{SET} - H_{TCA}
+\end{equation}
 Where:
 
 \begin{itemize}
@@ -128,7 +109,7 @@ Where:
 $H_{GC}$ is the height above the WGS84 ellipsoid. To convert this ellipsoidal height into a value that can be used for computing the bathymetry, it needs to be converted into an instantaneous sea surface height. The equation that relates these is:
 
 \begin{equation}
-      H_{inst} = H_{GC} - H_{geoid} - H_{free2mean} - H_{DAC} - H_{tide} 
+      H_{inst} = H_{GC} - H_{geoid} - H_{free2mean} - H_{DAC} - H_{tide}
 \end{equation}
 
 Where:
@@ -142,21 +123,26 @@ Where:
 
 \subsection{ICESat-2 data processing levels}
 
-ICESat-2 data is provided to the public at a number of different processing levels. NASA provides a number of processing chains that produce higher-level products for different uses. The raw data transmitted from the satellite is considered to be Level 0. The NASA NSIDC decompresses this level 0 data, orders it in time and formats it in the HDF5 file format, and it is made available as a level 1 product, the lowest-level data that is available to the public. 
+ICESat-2 data is provided to the public at a number of different processing levels. NASA provides a number of processing chains that produce higher-level products for different uses. The raw data transmitted from the satellite is considered to be Level 0. The NASA NSIDC decompresses this level 0 data, orders it in time and formats it in the HDF5 file format, and it is made available as a level 1 product, the lowest-level data that is available to the public.
 
-In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipsoidal units. 
+In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipsoidal units.
 
-In accordance with the scientific mission of the satellite, the level 2 product is then transformed into a number of higher-level products, each for a specific use case. Level 3 is divided into two sublevels, 3A and 3B. 3A products are point measurements, of Land Ice, Sea Ice, Land vegetation, inland water elevation and ocean surface elevation. These point measurement products are then further transformed into gridded products.
+In accordance with the scientific mission of the satellite, the level 2 product is then transformed into a number of higher-level products, each for a specific use case. Level 3 is divided into two sublevels, 3A and 3B. 3A products are point measurements of of Land Ice, Sea Ice, Land vegetation, inland water elevation and ocean surface elevation. These point measurement products are then further transformed into level 3B or gridded products, which aggregate the point measurements over time to a grid.
 
 
 \subsection{Weak vs. strong beams}
 
-The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor \parencite{Neumann2019d}. The weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements \parencite{}. The strong beams have been found to provide the better data for lidar bathymetry measurements, but there weak beams can still contain useful bathymetry data \parencite{}.
+The beams are divided into weak and strong signals to enhance the radiometric dynamic range. The strong beams are expected to provide better signal-noise ratios over low-reflectivity surfaces, like the ocean and seafloor, while the weak beams are better for capturing very high reflectivity surfaces like ice, which might otherwise saturate the sensor and do not provide usable measurements \parencite{Neumann2019d}. The strong beams have been found to provide the better data for lidar bathymetry measurements, but the weak beams can still contain useful bathymetry data \parencite{Hsu2021}.
 
 
 \subsection{Refraction correction}
 
-The locations calculated by the data products from the satellite do not correct of the refraction induced by the different speeds and which light travels in water and in the atmosphere. This effect introduces both a horizontal and vertical error in the photon location, as shown in figure \ref{refract-image}.
+The locations calculated by the data products from the satellite do not correct of the refraction induced by the water column. The subsurface photons are geolocated as if they are not underwater. However, because the speed at which light travels is different in water than the atmosphere. This effect introduces both a horizontal and vertical error in the photon location, as shown in Figure \ref{refract-image}.
+
+When the instrument is pointed directly at the reference ground track, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is $\sim 9~cm$ \parencite{Parrish2019}, which for bathymetric purposes is negligible. Some studies of bathymetry extraction from ICESat-2 data only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law.
+
+However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or $\sim43~km$ away from the RGT \parencite{Magruder2021}. During offpointing, the horizontal error is more significant and must be corrected for accurate bathymetry \parencite{Parrish2019}. \citeauthor{Parrish2019} propose a method to correct for both horizontal and vertical error that is widely cited in later papers. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}.  This is referred to as \emph{first order} refraction correction in the table summarizing previous research (Table \ref{tab:researchsummary}).
+
 
 \begin{figure}[ht]
       \centering
@@ -165,11 +151,7 @@ The locations calculated by the data products from the satellite do not correct 
       \label{refract-image}
 \end{figure}
 
-When the instrument is pointed directly at the RGT, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is approximately 9cm \parencite{Parrish2019}, which for bathymetric purposes is negligible. Some studies of bathymetry extraction from ICESat-2 data only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law.
-
-However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir (equal to 43km away from the RGT \parencite{Magruder2021}). During offpointing, the horizontal error is much more significant and must be corrected for measurement accuracy \parencite{Parrish2019}. \citeauthor{Parrish2019} propose a method to correct for both horizontal and vertical error that is widely cited in later papers. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}.  This is referred to as \emph{first order} refraction correction in the table summarizing previous research (Table \ref{tab:researchsummary}).
-
-The method proposed by \citeauthor{Parrish2019} is outlined below. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
+The method proposed by \citeauthor{Parrish2019} is outlined below. Figure \ref{refract-image} shows some of the geometric variables used in the equations. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
 
 \begin{equation}\label{eq:snellslaw}
       \theta_2 = \sin^{-1}{\frac{n_1 \sin{\theta_1}}{n_2}}
@@ -209,28 +191,19 @@ The horizontal correction $\Delta Y$ is along the direction of the laser pointin
 \end{align}
 
 
-The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this is correction factor is 
+The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this is correction factor is
 
 \begin{equation}
       \delta \theta_{EC} = \arctan{\frac{H \tan{\theta_1}}{R_e}}
 \end{equation}
 
-This additional correction factor was also included in the fraction correction code.
 
-
-\subsection{Extracting bathymetry signal}\label{subsec:signal-finding}
-The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no pre-calculated classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is reliable \parencite{} and can be used to filter out points at or above the sea surface.
+\subsection{Extraction of bathymetric signal from photon data}\label{subsec:signal-finding}
+The ATL03 data product includes a calculated confidence that a given photon return is signal or noise. The probability is assigned for each of the 5 surface types. Because bathymetric survey was not part of the original mission scope, there is no pre-calculated classification for subsurface returns. Therefore within the default classification bathymetric photons are often classified as noise. However, the classification of ocean surface classification is mostly reliable \parencite{} and can be used to filter out points near or above the sea surface.
 
 To find bathymetric signal, a separate algorithm specifically calibrated to distinguish bathymetric signal from noise photons is required. There are several different techniques proposed in the literature. Some early research on small sites used manual classification \parencite{Forfinski-Sarkozi2016,Thomas2021d,Babbel2021a,Albright2021}.
 
-Other researchers have used implementations of the density-based spatial clustering for applications with Noise (DBSCAN) algorithm \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns. These density-based methods are premised on the assumption that signal photons are closer together than noise photons \parencite{Neuenschwander2019}.
-
-\citeauthor{Thomas2022} created a tool called C-SHELPh, which uses a binned histograms to predict the location of the sea surface.
-
-
-% \citeauthor{Xu2022} proposed AMSRLC algorithm
-
-% \citeauthor{Hsu2021} found RMSE 0.26-0.61m, but they only had two transects.
+Other researchers have used implementations of the density-based spatial clustering for applications with Noise (DBSCAN) algorithm \parencite{Ester1996}, with parameters that are set adaptively based on the local density of returns, called \emph{adaptive DBSCAN} in the literature \parencite{Ma2020,Xie2021,LeQuilleuc2022b,Liu2021}.  \citeauthor{Thomas2022} created an algorithm called C-SHELPh, which uses a binned histograms to predict the location of the sea surface. \cite{Datta2021} proposed a method based on a kernel density estimation function. All of these automated classification approaches rely on the fact that when there is bathymetric signal present, the density of returns in the vertical direction is higher than in the surrounding area \parencite{Neuenschwander2019}.
 
 
 \subsection{Summary of Prior Research on ICESat-2 derived bathymetry} %move to ICESat-2 section
@@ -238,28 +211,27 @@ Other researchers have used implementations of the density-based spatial cluster
 The studies that have used some version of the proposed technique are summarized in table \ref{tab:researchsummary}.
 
 \begin{table}[h]
-      \caption{Summary of past studies that extract bathymetric data from spaceborne lidar}
+      \caption{Summary of prior studies that extract bathymetric data from ICESat-2 photons}
       \label{tab:researchsummary}
       % \centering
       \raggedright
       \begin{tabular}{rccccc}
             \midrule
-            Paper                              & Year & Dataset & Refraction Correction Method  & S/N Classification method     \\ 
-            \hline                                                                                                              \\
-            \citeauthor{Forfinski-Sarkozi2016} & 2016 & MABEL   & First-order depth correction  & Manual                        \\ 
-            \citeauthor{Parrish2019}           & 2019 & ATL03   & Parrish method                & Manual                        \\ 
-            \citeauthor{Ma2020}                & 2020 & ATL03   & Parrish + sloping sea surface & Adaptive DBSCAN               \\ 
-            \citeauthor{Thomas2021d}           & 2020 & ATL03   & Parrish Method                & Manual                        \\ 
-            \citeauthor{Albright2021}          & 2021 & ATL03   & First-order                   & Manual                        \\ 
-            \citeauthor{Babbel2021a}           & 2021 & ATL03   & Parrish                       & Manual                        \\ 
-            \citeauthor{Xie2021}               & 2021 & ATL03   & Parrish Method                & Adaptive DBSCAN               \\ 
-            \citeauthor{Cao2021}               & 2021 & ATL03   & First-order depth correction  & A-DRAGANN                     \\ 
-            \citeauthor{Lee2021}               & 2021 & ATL03   & Not specified                 & Not specified                 \\ 
-            \citeauthor{Liu2021}               & 2021 & ATL03   & Liu method                    & DBSCAN after Ma et al.        \\ 
-            \citeauthor{Coveney2021a}          & 2021 & ATL03   & First-order                   & Manual                        \\ 
-            \citeauthor{Datta2021}             & 2021 & ATL03   & Parrish                       & Watta                         \\ 
-            \citeauthor{LeQuilleuc2022b}       & 2022 & ATL03   & Parrish                       & DBSCAN with manual correction \\ 
-            \citeauthor{Thomas2022}            & 2022 & ATL03   & Parrish                       & C-SHELPh                      \\
+            Paper                        & Year & Refraction Correction Method  & S/N Classification method \\
+            \hline                                                                                          \\
+            \citeauthor{Parrish2019}     & 2019 & Parrish method                & Manual                    \\
+            \citeauthor{Ma2020}          & 2020 & Parrish + sloping sea surface & Adaptive DBSCAN           \\
+            \citeauthor{Thomas2021d}     & 2020 & Parrish Method                & Manual                    \\
+            \citeauthor{Albright2021}    & 2021 & First-order                   & Manual                    \\
+            \citeauthor{Babbel2021a}     & 2021 & Parrish                       & Manual                    \\
+            \citeauthor{Xie2021}         & 2021 & Parrish Method                & Adaptive DBSCAN           \\
+            \citeauthor{Cao2021}         & 2021 & First-order depth correction  & A-DRAGANN                 \\
+            \citeauthor{Lee2021}         & 2021 & Not specified                 & Not specified             \\
+            \citeauthor{Liu2021}         & 2021 & Liu method                    & Adaptive DBSCAN    \\
+            \citeauthor{Coveney2021a}    & 2021 & First-order                   & Manual                    \\
+            \citeauthor{Datta2021}       & 2021 & Parrish                       & Watta                     \\
+            \citeauthor{LeQuilleuc2022b} & 2022 & Parrish                       & DBSCAN                    \\
+            \citeauthor{Thomas2022}      & 2022 & Parrish                       & C-SHELPh                  \\
             \bottomrule
       \end{tabular}
 \end{table}

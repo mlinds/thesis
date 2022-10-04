@@ -4,13 +4,13 @@
     \begin{center}
 
         %% Insert the TU Delft logo at the bottom of the page.
-        
+
         %% Print the title in cyan.
         {\makeatletter
             \largetitlestyle\fontsize{48}{94}\selectfont\@title
             % \largetitlestyle\color{tudelft-cyan}\Huge\@title
             \makeatother}
-        
+
         %% Print the optional subtitle in black.
         {\makeatletter
             \ifx\@subtitle\undefined\else
@@ -19,68 +19,70 @@
                 %\titlefont\titleshape\LARGE\@subtitle
             \fi
             \makeatother}
-        
+
         \bigskip
         \bigskip
-        
+
         by
         %door
-        
+
         \bigskip
         \bigskip
-        
+
         %% Print the name of the author.
         {\makeatletter
             %\largetitlefont\Large\bfseries\@author
             \largetitlestyle\fontsize{26}{26}\selectfont\@author
             \makeatother}
-        
+
         \bigskip
         \bigskip
-        
+
         to obtain the degree of Master of Science
-        
+
         at the Delft University of Technology,
-        
-        \pdfcomment{add this}
-        to be defended publicly on %Tuesday November 3, 2022 at 10:00 AM.
-        
+
+        % \pdfcomment{add this}
+        % to be defended publicly on %Tuesday November 3, 2022 at 10:00 AM.
+
         \vfill
         \begin{tabular}{lll}
-            Student number:   & 5243610                                                                          \\
-            Project duration: & \multicolumn{2}{l}{March 1, 2022 -- ?}                          \\
-            Thesis committee: & Prof.\ dr.\ ir.\ S.\ Aarninkhof,                        & TU Delft, Chair        \\
-                              & Dr.\ ir.\ B.\ Wouters,     \pdfcomment{prof? double check}                                  & TU Delft, Supervisor   \\
-                              & Dr.\ ir.\ A.\ Gijón-Mancheño,                                & TU Delft               \\
-                              & Dr.\ ir.\ G.\ de Boer,                                       & Van Oord, Supervisor 
+            Student number:   & 5243610                                                       \\
+            Project duration: & \multicolumn{2}{l}{March 1, 2022 -- ?}                        \\
+            Thesis committee: & Prof.\ dr.\ ir.\ S.\ Aarninkhof,       & TU Delft, Chair      \\
+                              & Dr.\ ir.\ B.\ Wouters,                 & TU Delft, Supervisor \\
+                              & Dr.\ ir.\ A.\ Gijón-Mancheño,          & TU Delft             \\
+                              & Dr.\ ir.\ G.\ de Boer,                 & Van Oord, Supervisor
         \end{tabular}
         %% Only include the following lines if confidentiality is applicable.
-        
+
         \bigskip
         \bigskip
         % \emph{This thesis is confidential and cannot be made public until December 31, 2013.}
-        
+
         \bigskip
         \bigskip
         % An electronic version of this thesis is available at \url{http://repository.tudelft.nl/}.
-        Draft as of \today
+        % Draft as of \today
+        Greenlight Meeting Version
+        \today
         %\\[1cm]
-        
+
         %\centering{\includegraphics{cover/logo_black}}
-        
-        
+
+
     \end{center}
-    
+
     \begin{tikzpicture}[remember picture, overlay]
         \node (tud) at (current page.south)[anchor=south]{
             \includegraphics{cover/logo_black}
         };
     \end{tikzpicture}
-    
+
     \begin{tikzpicture}[remember picture, overlay]
         \node at (current page.south)[anchor=south,above=2cm]{
             \includegraphics[width=0.4\textwidth]{figures/VanOord-2048x785.png}
-            
+
         };
     \end{tikzpicture}
 \end{titlepage}
