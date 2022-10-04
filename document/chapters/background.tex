@@ -68,9 +68,9 @@ To locate the position of each photon in 3D space, the time of flight of the pho
       \label{fig:geoids-ellipsoids-graphics}
 \end{figure}
 
-Figure \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the Precision Orbit Determination (POD) module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The height of the photon above the ellipsoid is calculated by the difference:
+Figure \ref{fig:geoids-ellipsoids-graphics} shows the various reference systems used in calculating the height of an individual photon in the ICESat-2 data production. The location of the satellite is resolved in ellipsoidal coordinates using the Precision Orbit Determination (POD) module. Then, using the travel time between the photon and the satellite, the location of the photon is calculated using the speed of light and corrections for atmospheric delays, instrument bias, and wave height. The ellipsoidal height of a photon located directly below the instrument nadir is calculated by the difference:
 
-\pdfcomment{this is range, actual location is needs to be adjusted further}
+% \pdfcomment{this is range, actual location is needs to be adjusted further}
 
 \begin{equation}\label{eq:raw_photon_calculation}
       H_{satellite_{surface}} = c(t_T-t_R)/2
@@ -86,6 +86,8 @@ Where:
       \item $c$ is the speed of light
       \item $t_T$ and $t_R$ are the photon transmit and receive times respectively
 \end{itemize}
+
+This gives the hight of a photon directly at the nadir of the satellite; since photon are actually collected along 6 different beams at various angles, the actual X,Y,Z location of the photon is triangulated based on the angle of the beam. 
 
 The ATL03 data product reports the photon heights relative to the WGS84 reference ellipsoid. These ellipsoidal heights already include corrections for the solid earth tides, ocean loading, ocean pole tides, and atmospheric delays.
 
@@ -191,7 +193,7 @@ The horizontal correction $\Delta Y$ is along the direction of the laser pointin
 \end{align}
 
 
-The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this affect can be corrected for with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this is correction factor is
+The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this effect can be corrected with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this correction factor is
 
 \begin{equation}
       \delta \theta_{EC} = \arctan{\frac{H \tan{\theta_1}}{R_e}}
