@@ -1,0 +1,98 @@
+%% Creator: Inkscape 1.2 (1:1.2.1+202207142221+cd75a1ee6d), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'method_final.svg.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{421.06917445bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,1.10611279)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{method_final.svg.pdf}}%
+    \put(0.41534811,1.06336447){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}GEBCO\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{method_final.svg.pdf}}%
+    \put(0.12501577,1.06336447){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}ATL03\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{method_final.svg.pdf}}%
+    \put(0.12501577,0.95649367){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Subsurface Filtering\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{method_final.svg.pdf}}%
+    \put(0.1298875,0.62188726){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Bathymetry\\points\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{method_final.svg.pdf}}%
+    \put(0.12501577,0.94758777){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Subsurface Filtering\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{method_final.svg.pdf}}%
+    \put(0.12453047,0.84212593){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Subsurface\\Photons\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{method_final.svg.pdf}}%
+    \put(0.13855145,0.73876179){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}KDE signal\\finding function\\\ref{subsec:kdesignalfinding}\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{method_final.svg.pdf}}%
+    \put(0.73952288,0.2582711){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Kalman updating\\\ref{subsec:kalman-update}\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{method_final.svg.pdf}}%
+    \put(0.64288976,0.053378){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Updated\\uncertainty grid\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{method_final.svg.pdf}}%
+    \put(0.88313747,0.053378){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Updated\\bathymetry grid\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{method_final.svg.pdf}}%
+    \put(0.41528028,0.87620989){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Bilinear resampling\\to 50 m\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{method_final.svg.pdf}}%
+    \put(0.4152594,0.73795276){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Reprojection to local\\UTM zone\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{method_final.svg.pdf}}%
+    \put(0.12292919,0.29483052){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Universal\\kriging\\\ref{subsec:gridding}\\\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{method_final.svg.pdf}}%
+    \put(0.405662,0.28386268){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Bathymetry\\grid\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=17]{method_final.svg.pdf}}%
+    \put(0.38343125,0.19498181){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Uncertainty\\grid\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=18]{method_final.svg.pdf}}%
+    \put(0.12857813,0.50229277){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Poisson disk sampling\\\ref{subsec:gridding}\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=19]{method_final.svg.pdf}}%
+    \put(0.12501577,0.39542196){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Point\\subsample\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=20]{method_final.svg.pdf}}%
+    \put(0.75644193,0.99868092){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Input data\end{tabular}}}}%
+    \put(0.75644193,0.94524552){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Point data\end{tabular}}}}%
+    \put(0.76534783,0.89181012){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Raster data\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=21]{method_final.svg.pdf}}%
+    \put(0.76534787,0.83837471){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Output data\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=22]{method_final.svg.pdf}}%
+  \end{picture}%
+\endgroup%
