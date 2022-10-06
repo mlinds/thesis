@@ -22,7 +22,6 @@ from atl_module.ocean_color import (  # add_secchi_depth_to_tracklines,
 from atl_module.plotting import (  # plot_aoi,
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
-    plot_both_maps,
     plot_photon_map,
     plot_tracklines_overview,
     set_size,
@@ -38,6 +37,13 @@ class GebcoUpscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
     def __init__(self, site, site_name, truebathy=None):
+        """init method for the GebcoUpscaler class
+
+        Args:
+            site (str): path to the site folder
+            site_name (str): `fancy` name of the site, e.g. `Florida Keys`
+            truebathy (str, optional): path to the validation data in a GDAL readable raster format. Defaults to None.
+        """
         # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
         # set up the site name
@@ -84,8 +90,8 @@ class GebcoUpscaler:
         detail_logger.info(f"ATL03 Data downloaded sucessfully to {self.folderpath}/ATL03")
 
     def calc_zsdpoints_by_tracks(self):
+        """Generate a set of secchi disk depth points. Requires tracklines to be present in the directory"""
         trackline_pts = create_zsd_points_from_tracklines(self.tracklines)
-        trackline_pts = trackline_pts
         trackline_pts.to_file(os.path.join(self.folderpath, "secchi_pts.gpkg"))
 
     def recalc_tracklines_gdf(self):
@@ -241,7 +247,7 @@ class GebcoUpscaler:
         return pd.DataFrame(self.lidar_err_dict, index=[self.site_name])
 
     def add_truth_data(self):
-
+        """For every bathymetry points, query the raster of validation data and get the elevation at the x,y coordinate of the bathymetry point"""
         if self.truebathy_path is None:
             detail_logger.info(
                 "No truth data is available, so none was added to the bathymetry dataframe"
@@ -285,13 +291,13 @@ class GebcoUpscaler:
             )
         # if this is not requested, set a dicionary saying that
         else:
-            self.rmse_kriged = {"RMSE": "Not Calculated", "MAE": "Not Calculated"}
+            self.rmse_kriged = {"RMSE [m]": "Not Calculated", "MAE [m]": "Not Calculated"}
 
         self.raster_error_summary = pd.DataFrame.from_dict(
             {
-                "Naive Bilinear Interpolation": self.rmse_naive,
-                "Kalman Updated Raster": self.rmse_kalman,
-                "Kriged Raster": self.rmse_kriged,
+                "GEBCO": self.rmse_naive,
+                "Kriging Surface": self.rmse_kriged,
+                "Kalman Output": self.rmse_kalman,
             },
             orient="index",
         )
@@ -303,7 +309,7 @@ class GebcoUpscaler:
         raster_error_table_path = f"../document/tables/{self.site_name}_kalman_improvement.tex"
         # TODO fix this horrible ugliness
         self.raster_error_summary.to_csv(raster_error_table_path.replace(".tex", ".csv"))
-
+        # write the latex tables
         self.raster_error_summary.style.format(precision=2).to_latex(
             buf=raster_error_table_path,
             caption="Improvement in error metrics after applying Kalman Updating of kriged data",
@@ -315,6 +321,7 @@ class GebcoUpscaler:
         detail_logger.info(f"raster error table written to {raster_error_table_path}")
 
     def write_lidar_error_tables(self):
+        """Write tables that summarize the lidar RMSE, MAE, and ME"""
         # do the lidar output
         lidar_error_table_path = f"../document/tables/{self.site_name}_lidar_error_table.tex"
         pd.DataFrame(self.lidar_err_dict, index=[self.site_name]).style.to_latex(
@@ -329,11 +336,14 @@ class GebcoUpscaler:
         detail_logger.info(f"lidar error table written to {lidar_error_table_path}")
 
     def plot_lidar_error(self):
+        """create a bias plot showing the comparison of the bathymetry points to the validation data.
+
+        Returns:
+            matplotlib.figure: figure of the bias plot
+        """
         # the below can be moved to the object
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.pdf"
-        fig = error_lidar_pt_vs_truth_pt(
-            self.bathy_pts_gdf, self.site_name, self.lidar_err_dict
-        )
+        fig = error_lidar_pt_vs_truth_pt(self.bathy_pts_gdf, self.lidar_err_dict)
         fig.tight_layout()
         fig.savefig(
             outpath,
@@ -342,6 +352,11 @@ class GebcoUpscaler:
         return fig
 
     def plot_truth_data(self, plot_title):
+        """Generate a map of the validation data and save it using a consistent filename
+
+        Args:
+            plot_title (str): title to use on the plot
+        """
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
         truthdata_figure.savefig(
             f"{self.site_name}_truth_raster.pdf",
@@ -349,7 +364,15 @@ class GebcoUpscaler:
             bbox_inches="tight",
         )
 
-    def plot_icesat_points(self, fraction=1.2):
+    def plot_icesat_points(self, fraction=1):
+        """plot a map of the ICESat-2 points in the AOI
+
+        Args:
+            fraction (int, optional): size of the plot relative to the latex pagewidth. Defaults to 1.
+
+        Returns:
+            matplotlib.figure: figure of the resulting plot
+        """
         # get the ratio of the map edges to each other
         minx, miny, maxx, maxy = self.bathy_pts_gdf.total_bounds
         # this ratio we can feed into the figure sizing function
@@ -360,6 +383,13 @@ class GebcoUpscaler:
         )
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
         plot_photon_map(ax, self.bathy_pts_gdf)
+
+        # remove contextily attribution which we can remove later
+        text = icesat_points_figure.axes[0].texts[0]
+        text.set_visible(False)
+        text_string_value = text.get_text()
+        print("add this to caption! :", text_string_value)
+
         icesat_points_figure.savefig(
             outpath,
             bbox_inches="tight",
@@ -369,22 +399,31 @@ class GebcoUpscaler:
         return icesat_points_figure
 
     def plot_tracklines(self):
+        """Generate a plot of the tracklines"""
         trackline_fig, ax = plt.subplots()
         outpath = f"../document/figures/{self.site_name}_tracklines.pdf"
         plot_tracklines_overview(ax, self.tracklines)
+        # we drop the contextily attribution text which we can then add to the caption
+        text = trackline_fig.axes[0].texts[0]
+        text.set_visible(False)
+        text_string_value = text.get_text()
+        print("add this to caption! :", text_string_value)
         trackline_fig.savefig(
             outpath,
             facecolor="white",
             bbox_inches="tight",
+            # we want higher res than the default we set elsewhere in the document
+            dpi=400,
         )
         detail_logger.info(f"trackline output written to {outpath}")
+        # TODO change to return a figure like it's counterpart
 
-    def plot_site(self):
-        aoi_gdf = gpd.read_file(self.AOI_path)
-        fig = plot_both_maps(self.tracklines, self.bathy_pts_gdf, aoi_gdf)
-        # fig =  plot_aoi()
-        # fig.show()
-        return fig
+    # def plot_site(self):
+    #     aoi_gdf = gpd.read_file(self.AOI_path)
+    #     fig = plot_both_maps(self.tracklines, self.bathy_pts_gdf, aoi_gdf)
+    #     # fig =  plot_aoi()
+    #     # fig.show()
+    #     return fig
 
     def run_summary(self):
         run_logger.info(
