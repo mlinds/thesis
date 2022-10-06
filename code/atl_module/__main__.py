@@ -1,3 +1,5 @@
+""" To run a site from the command line, with various command line options to trigger differents steps of the process
+"""
 import argparse
 
 import logzero
@@ -113,7 +115,7 @@ if args.kriging:
         npts=2000,
         samplemethod="dart",
         kr_model="uk",
-        variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 23},
+        variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 25},
     )
 
 if args.kalman_update:

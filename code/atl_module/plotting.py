@@ -8,8 +8,8 @@ from rasterio.plot import show as rastershow
 LATEX_PAGE_WIDTH = 448.1309
 
 
-def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, site_name, error_dict):
-    fig, ax = plt.subplots(figsize=set_size(ratio=1, fraction=0.5))
+def error_lidar_pt_vs_truth_pt(df_in: pd.DataFrame, error_dict, fraction=0.5):
+    fig, ax = plt.subplots(figsize=set_size(ratio=1, fraction=fraction))
     df_in.plot.scatter(
         x="true_elevation",
         y="sf_elev_MSL",
@@ -90,9 +90,11 @@ def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2):
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
-    ax.set_xlabel(f"Easting in {tracklines_gdf.crs.name}")
-    ax.set_ylabel(f"Northing in {tracklines_gdf.crs.name}")
-    ax.set_title("Study site and tracklines")
+
+    # remove the contextily attribution, which we can add later
+    ax.set_xlabel(f"Longitude in {tracklines_gdf.crs.name}")
+    ax.set_ylabel(f"Latitude in {tracklines_gdf.crs.name}")
+    # ax.set_title("Study site and tracklines")
     # return ax
 
 

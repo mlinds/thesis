@@ -30,7 +30,11 @@ def _setup_globcolor_api_session(COPERNICUS_USERNAME: str, COPERNICUS_PW: str, D
     return xr.open_dataset(store)
 
 
-ds = _setup_globcolor_api_session(COPERNICUS_USERNAME, COPERNICUS_PW, DAP_URL)
+try:
+    ds = _setup_globcolor_api_session(COPERNICUS_USERNAME, COPERNICUS_PW, DAP_URL)
+except Exception as ex:
+    print(ex)
+    print("GlobColour API could not be reached")
 
 
 def get_zsd_info(lat: float, lon: float, dates: str or datetime) -> tuple:

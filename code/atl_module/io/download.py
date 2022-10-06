@@ -34,6 +34,14 @@ GRANULE_SEARCH_URL = "https://cmr.earthdata.nasa.gov/search/granules"
 
 
 def _get_product_metadata(product_short_name):
+    """Internal function that queries the NSIDC API and returns data about that product
+
+    Args:
+        product_short_name (str): ICESat-2 product name, e.g. `ATL03`
+
+    Returns:
+        dict: information about what subsetting options are available for a NSIDC DAAC product
+    """
     response = requests.get(CMR_COLLECTIONS_URL, params={"short_name": product_short_name})
     results = json.loads(response.content)
     # print(results)
@@ -45,6 +53,14 @@ def _get_product_metadata(product_short_name):
 
 
 def _prepare_geo_file(bounds_filepath):
+    """reads an OGR vector file and preps it to send to the NSIDC apt
+
+    Args:
+        bounds_filepath (str): path to the OGR vector data describing the AOI
+
+    Returns:
+        _type_: _description_
+    """
     # Use geopandas to read in polygon file
     # Note: a KML or geojson, or almost any other vector-based spatial data format could be substituted here.
 
