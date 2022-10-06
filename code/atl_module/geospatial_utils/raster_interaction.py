@@ -1,4 +1,3 @@
-from os.path import basename
 from subprocess import PIPE, Popen
 
 import geopandas as gpd
@@ -18,6 +17,14 @@ detail_logger = setup_logger(name="details")
 
 
 def _assign_na_values(inpval):
+    """internal function that just returns a NaN if the value return by gdalrasterquery is the nan value of the raster
+
+    Args:
+        inpval (float): the elevation from the raster
+
+    Returns:
+        float: either the float that was entered, or np.NaN if it is a nodata value
+    """
     # this could be inlined into a lambda function, and made to predict the nodata value
     """
     assign the appropriate value to the output of the gdallocationinfo response. '-99999' and an empty string are NaN values
@@ -27,17 +34,18 @@ def _assign_na_values(inpval):
     return np.NaN if inpval in ["", "-999999", "-9999"] else float(inpval)
 
 
-# def query_from_lines(line_df):
-#     line_df_wgs = line_df.to_crs("EPSG:4326")
-
-#     for line in line_df_wgs.geometry:
-#         line_point_list = [line.interpolate(fraction,normalized=True) for fraction in interp_points]
-#         xpoints = [point.x for point in line_point_list]
-#         ypoints = [point.y for point in line_point_list]
-
-
 def query_from_lines(line, rasterpath, band, npts=200):
+    """take npts equally-spaced samples along a line and raster band
 
+    Args:
+        line (shapely.Line): a shapely line
+        rasterpath (str): path to the raster of interest in any GDAL readable format
+        band (int): the raster band number
+        npts (int, optional): The number of evenly spaced samples to take along the line. Defaults to 200.
+
+    Returns:
+        tuple: (x,y,z) of the points, where x and y are from the evenly-split line and z is the value queried from the raster of interest
+    """
     interp_points = np.linspace(0, 1, npts)
     line_point_list = [
         line.interpolate(fraction, normalized=True) for fraction in interp_points
@@ -85,15 +93,15 @@ def query_raster(dataframe: pd.DataFrame, src: str, band=1):
     return [_assign_na_values(inpval) for inpval in outlist[:-1]]
 
 
-# TODO maybe delete
-def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
+# TODO maybe delete, goign to comment this out and see if anything breaks
+# def add_dem_data(beam_df: pd.DataFrame, demlist: list) -> pd.DataFrame:
 
-    for dempath in demlist:
-        demname = basename(dempath).split(".")[0]
-        values_at_pt = query_raster(beam_df, dempath)
-        beam_df.loc[:, (demname)] = values_at_pt
+#     for dempath in demlist:
+#         demname = basename(dempath).split(".")[0]
+#         values_at_pt = query_raster(beam_df, dempath)
+#         beam_df.loc[:, (demname)] = values_at_pt
 
-    return beam_df
+#     return beam_df
 
 
 # TODO change this function to take the bounds as in input instead of the dataframe
@@ -166,8 +174,20 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     #     return None
 
 
-def raster_random_sample(raster_in, nsample_points, crs=None):
+def _raster_random_sample(raster_in, nsample_points, crs=None):
+    """Generate `nsample_points` random points from a raster surface
 
+    Args:
+        raster_in (str): any GDAL readable raster
+        nsample_points (int): number of points to generate
+        crs (pyproj.crs, optional): the CRS of the raster, if not already available in the raster metadata. Defaults to None.
+
+    Raises:
+        ValueError: If the raster doesn't have a CRS and none is supplied, function will raise this error
+
+    Returns:
+        tuple: tuple of (crs,x,y,z) where x,y,z are the random points from the surface of the raster
+    """
     with rio.open(raster_in) as inraster:
         # we can rewrite the supplied values
         crs = inraster.crs
@@ -200,14 +220,25 @@ def raster_random_sample(raster_in, nsample_points, crs=None):
     # return nodatamask
 
 
-def random_raster_gdf(raster_in, nsample_points_required):
+# TODO need to fix the maskgdf input function
+def random_raster_gdf(raster_in, nsample_points_required, maskgdf=None):
+    """wrapper around `_random_raster_sample` that returns geodataframe formatted data and can optionally take a mask data in any vector format
+
+    Args:
+        raster_in (str): path to the raster to be sampled in any GDAL format
+        nsample_points_required (int): number of random samples desired
+        maskgdf (gpd.GeoDataFrame, optional): optional geodataframe of a single polygon that defines the area to be sampled. Defaults to None.
+
+    Returns:
+        gpd.GeoDataFrame: geodataframe of the random points
+    """
     # since some points will be in outside of the valid data mask, we need to sample more points than we need in the end.
     first_guess = nsample_points_required * 2
-    crs, x, y, z = raster_random_sample(raster_in=raster_in, nsample_points=first_guess)
+    crs, x, y, z = _raster_random_sample(raster_in=raster_in, nsample_points=first_guess)
 
     # if we have less points than we need, we will try again
     while len(x) < nsample_points_required:
-        crs, x_loop, y_loop, z_loop = raster_random_sample(
+        crs, x_loop, y_loop, z_loop = _raster_random_sample(
             raster_in=raster_in, nsample_points=nsample_points_required
         )
 
