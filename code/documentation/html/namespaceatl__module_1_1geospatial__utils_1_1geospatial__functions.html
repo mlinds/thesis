@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: atl_module.geospatial_utils.geospatial_functions Namespace Reference</title>
+<title>ATL03 bathymetry extraction, gridding, and upscaling: atl_module.geospatial_utils.geospatial_functions Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">ATL03 bathymetry extraction, gridding, and upscaling
    &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
@@ -80,17 +80,17 @@ Functions</h2></td></tr>
 <tr class="separator:a0c62c28c44f06a622d8946f6dec84d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa71641ce41316e77177fed24e4ce7809"><td class="memItemLeft" align="right" valign="top">gpd.GeoDataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#aa71641ce41316e77177fed24e4ce7809">get_track_gdf</a> (np.ndarray outarray)</td></tr>
 <tr class="separator:aa71641ce41316e77177fed24e4ce7809"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e4913f100f87573a79beca856183065"><td class="memItemLeft" align="right" valign="top">gpd.GeoDataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a6e4913f100f87573a79beca856183065">make_gdf_from_ncdf_files</a> (str or PathLike directory)</td></tr>
-<tr class="separator:a6e4913f100f87573a79beca856183065"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85a3013fbc574d9298c47af108f85083"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a85a3013fbc574d9298c47af108f85083">photon_df_to_gdf</a> (pd.DataFrame or np.ndarray photon_data)</td></tr>
-<tr class="separator:a85a3013fbc574d9298c47af108f85083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab640bb9ad7c77b1974d21c9834faa237"><td class="memItemLeft" align="right" valign="top">gpd.GeoDataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#ab640bb9ad7c77b1974d21c9834faa237">trackline_gdf_from_netcdf</a> (str or PathLike directory)</td></tr>
+<tr class="separator:ab640bb9ad7c77b1974d21c9834faa237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2653e26b45dec38a08a88a0887df99db"><td class="memItemLeft" align="right" valign="top">pd.DataFrame or gpd.GeoDataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a2653e26b45dec38a08a88a0887df99db">add_track_dist_meters</a> (pd.DataFrame df, geodataframe=False)</td></tr>
 <tr class="separator:a2653e26b45dec38a08a88a0887df99db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a4c617efb699c27c7373a1e9782ef2035"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a4c617efb699c27c7373a1e9782ef2035">detail_logger</a> = setup_logger(name=&quot;details&quot;)</td></tr>
+<tr class="memitem:a4c617efb699c27c7373a1e9782ef2035"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a4c617efb699c27c7373a1e9782ef2035">detail_logger</a></td></tr>
 <tr class="separator:a4c617efb699c27c7373a1e9782ef2035"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc4712c3193af4a05f752c4262b56827"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#abc4712c3193af4a05f752c4262b56827">name</a></td></tr>
+<tr class="separator:abc4712c3193af4a05f752c4262b56827"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a2653e26b45dec38a08a88a0887df99db"></a>
@@ -146,68 +146,6 @@ Returns:
 </pre> 
 </div>
 </div>
-<a id="a6e4913f100f87573a79beca856183065"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e4913f100f87573a79beca856183065">&#9670;&nbsp;</a></span>make_gdf_from_ncdf_files()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"> gpd.GeoDataFrame atl_module.geospatial_utils.geospatial_functions.make_gdf_from_ncdf_files </td>
-          <td>(</td>
-          <td class="paramtype">str or PathLike&#160;</td>
-          <td class="paramname"><em>directory</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<pre class="fragment">Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
-
-Args:
-    directory (strorPathLike): Location of the folder to search for netcdf files
-
-Returns:
-    gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
-</pre> <div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_cgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_cgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_cgraph" id="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_cgraph">
-<area shape="rect" title=" " alt="" coords="5,35,217,91"/>
-<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="265,5,447,47"/>
-<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="285,71,427,127"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_icgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_icgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_icgraph" id="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_icgraph">
-<area shape="rect" title=" " alt="" coords="300,5,512,61"/>
-<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,13,252,54"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="a85a3013fbc574d9298c47af108f85083"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85a3013fbc574d9298c47af108f85083">&#9670;&nbsp;</a></span>photon_df_to_gdf()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def atl_module.geospatial_utils.geospatial_functions.photon_df_to_gdf </td>
-          <td>(</td>
-          <td class="paramtype">pd.DataFrame or np.ndarray&#160;</td>
-          <td class="paramname"><em>photon_data</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a0c62c28c44f06a622d8946f6dec84d94"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0c62c28c44f06a622d8946f6dec84d94">&#9670;&nbsp;</a></span>to_refr_corrected_gdf()</h2>
 
@@ -254,6 +192,50 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="ab640bb9ad7c77b1974d21c9834faa237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab640bb9ad7c77b1974d21c9834faa237">&#9670;&nbsp;</a></span>trackline_gdf_from_netcdf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> gpd.GeoDataFrame atl_module.geospatial_utils.geospatial_functions.trackline_gdf_from_netcdf </td>
+          <td>(</td>
+          <td class="paramtype">str or PathLike&#160;</td>
+          <td class="paramname"><em>directory</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
+
+Args:
+    directory (strorPathLike): Location of the folder to search for netcdf files
+
+Returns:
+    gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
+</pre> <div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_cgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_cgraph" alt=""/></div>
+<map name="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_cgraph" id="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_cgraph">
+<area shape="rect" title=" " alt="" coords="5,35,235,91"/>
+<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="283,5,464,47"/>
+<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="303,71,444,127"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_icgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_icgraph" alt=""/></div>
+<map name="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_icgraph" id="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_icgraph">
+<area shape="rect" title=" " alt="" coords="300,5,529,61"/>
+<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,13,252,54"/>
+</map>
+</div>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a4c617efb699c27c7373a1e9782ef2035"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c617efb699c27c7373a1e9782ef2035">&#9670;&nbsp;</a></span>detail_logger</h2>
@@ -262,7 +244,21 @@ Here is the caller graph for this function:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">atl_module.geospatial_utils.geospatial_functions.detail_logger = setup_logger(name=&quot;details&quot;)</td>
+          <td class="memname">atl_module.geospatial_utils.geospatial_functions.detail_logger</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc4712c3193af4a05f752c4262b56827"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc4712c3193af4a05f752c4262b56827">&#9670;&nbsp;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">atl_module.geospatial_utils.geospatial_functions.name</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -3,43 +3,53 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839}{query\+\_\+raster}} (pd.\+Data\+Frame dataframe, str src)
+def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4}{query\+\_\+from\+\_\+lines}} (line, rasterpath, band, npts=200)
 \item 
-pd.\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d}{add\+\_\+dem\+\_\+data}} (pd.\+Data\+Frame beam\+\_\+df, list demlist)
+def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229}{query\+\_\+raster}} (pd.\+Data\+Frame dataframe, str src, band=1)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a9d80f41fdade85bb42711213e4c6fece}{subset\+\_\+gebco}} (str folderpath, bathy\+\_\+pts, int epsg\+\_\+no, int hres)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed}{raster\+\_\+random\+\_\+sample}} (raster\+\_\+in, nsample\+\_\+points, crs=None)
-\item 
-def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c}{random\+\_\+raster\+\_\+gdf}} (raster\+\_\+in, nsample\+\_\+points\+\_\+required)
+def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_afaccf24641402f01e28bcac63e35cc07}{random\+\_\+raster\+\_\+gdf}} (raster\+\_\+in, nsample\+\_\+points\+\_\+required, maskgdf=None)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a8ce3b8a8ae76da56a7b771f412324910}{detail\+\_\+logger}} = setup\+\_\+logger(name=\char`\"{}details\char`\"{})
+\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a8ce3b8a8ae76da56a7b771f412324910}{detail\+\_\+logger}}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a621af52caa3ef05f27e2768ed068c4f8}{name}}
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d}} 
-\index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!add\_dem\_data@{add\_dem\_data}}
-\index{add\_dem\_data@{add\_dem\_data}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
-\doxysubsubsection{\texorpdfstring{add\_dem\_data()}{add\_dem\_data()}}
-{\footnotesize\ttfamily  pd.\+Data\+Frame atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+add\+\_\+dem\+\_\+data (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{beam\+\_\+df,  }\item[{list}]{demlist }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4}} 
+\index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!query\_from\_lines@{query\_from\_lines}}
+\index{query\_from\_lines@{query\_from\_lines}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
+\doxysubsubsection{\texorpdfstring{query\_from\_lines()}{query\_from\_lines()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+query\+\_\+from\+\_\+lines (\begin{DoxyParamCaption}\item[{}]{line,  }\item[{}]{rasterpath,  }\item[{}]{band,  }\item[{}]{npts = {\ttfamily 200} }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:
-\nopagebreak
+\begin{DoxyVerb}take npts equally-spaced samples along a line and raster band
+
+Args:
+    line (shapely.Line): a shapely line
+    rasterpath (str): path to the raster of interest in any GDAL readable format
+    band (int): the raster band number
+    npts (int, optional): The number of evenly spaced samples to take along the line. Defaults to 200.
+
+Returns:
+    tuple: (x,y,z) of the points, where x and y are from the evenly-split line and z is the value queried from the raster of interest
+\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d_cgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229}} 
 \index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!query\_raster@{query\_raster}}
 \index{query\_raster@{query\_raster}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
 \doxysubsubsection{\texorpdfstring{query\_raster()}{query\_raster()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+query\+\_\+raster (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{dataframe,  }\item[{str}]{src }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+query\+\_\+raster (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{dataframe,  }\item[{str}]{src,  }\item[{}]{band = {\ttfamily 1} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Takes a dataframe with a column named X and Y (WITH WGSLATLONGS) and a raster file, and returns the raster value at each point X and Y
 
@@ -50,43 +60,30 @@ Args:
 Returns:
     ndarray: 1D Array of values at each point.
 \end{DoxyVerb}
- Here is the caller graph for this function\+:
-\nopagebreak
+ Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_afaccf24641402f01e28bcac63e35cc07}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_afaccf24641402f01e28bcac63e35cc07}} 
 \index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!random\_raster\_gdf@{random\_raster\_gdf}}
 \index{random\_raster\_gdf@{random\_raster\_gdf}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
 \doxysubsubsection{\texorpdfstring{random\_raster\_gdf()}{random\_raster\_gdf()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+random\+\_\+raster\+\_\+gdf (\begin{DoxyParamCaption}\item[{}]{raster\+\_\+in,  }\item[{}]{nsample\+\_\+points\+\_\+required }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+random\+\_\+raster\+\_\+gdf (\begin{DoxyParamCaption}\item[{}]{raster\+\_\+in,  }\item[{}]{nsample\+\_\+points\+\_\+required,  }\item[{}]{maskgdf = {\ttfamily None} }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c_cgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed}} 
-\index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!raster\_random\_sample@{raster\_random\_sample}}
-\index{raster\_random\_sample@{raster\_random\_sample}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
-\doxysubsubsection{\texorpdfstring{raster\_random\_sample()}{raster\_random\_sample()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+raster\+\_\+random\+\_\+sample (\begin{DoxyParamCaption}\item[{}]{raster\+\_\+in,  }\item[{}]{nsample\+\_\+points,  }\item[{}]{crs = {\ttfamily None} }\end{DoxyParamCaption})}
+\begin{DoxyVerb}wrapper around `_random_raster_sample` that returns geodataframe formatted data and can optionally take a mask data in any vector format
 
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a9d80f41fdade85bb42711213e4c6fece}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a9d80f41fdade85bb42711213e4c6fece}} 
+Args:
+    raster_in (str): path to the raster to be sampled in any GDAL format
+    nsample_points_required (int): number of random samples desired
+    maskgdf (gpd.GeoDataFrame, optional): optional geodataframe of a single polygon that defines the area to be sampled. Defaults to None.
+
+Returns:
+    gpd.GeoDataFrame: geodataframe of the random points
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a9d80f41fdade85bb42711213e4c6fece}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a9d80f41fdade85bb42711213e4c6fece}} 
 \index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!subset\_gebco@{subset\_gebco}}
 \index{subset\_gebco@{subset\_gebco}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
 \doxysubsubsection{\texorpdfstring{subset\_gebco()}{subset\_gebco()}}
@@ -110,5 +107,11 @@ Returns:
 \index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!detail\_logger@{detail\_logger}}
 \index{detail\_logger@{detail\_logger}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
 \doxysubsubsection{\texorpdfstring{detail\_logger}{detail\_logger}}
-{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+detail\+\_\+logger = setup\+\_\+logger(name=\char`\"{}details\char`\"{})}
+{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+detail\+\_\+logger}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a621af52caa3ef05f27e2768ed068c4f8}\label{namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a621af52caa3ef05f27e2768ed068c4f8}} 
+\index{atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}!name@{name}}
+\index{name@{name}!atl\_module.geospatial\_utils.raster\_interaction@{atl\_module.geospatial\_utils.raster\_interaction}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+raster\+\_\+interaction.\+name}
 

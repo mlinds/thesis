@@ -3,35 +3,45 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1plotting_aabb5cd69237de6d3661db92d02da0790}{error\+\_\+lidar\+\_\+pt\+\_\+vs\+\_\+truth\+\_\+pt}} (pd.\+Data\+Frame df\+\_\+in, site\+\_\+name, error\+\_\+dict)
+def \mbox{\hyperlink{namespaceatl__module_1_1plotting_ad7d05a043ecdacdd8591f067aa0bd9d7}{error\+\_\+lidar\+\_\+pt\+\_\+vs\+\_\+truth\+\_\+pt}} (pd.\+Data\+Frame df\+\_\+in, error\+\_\+dict, fraction=0.\+5)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1plotting_ad921aa572a1c60920c82fe1261484911}{map\+\_\+ground\+\_\+truth\+\_\+data}} (truthdata\+\_\+path, plottitle)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a2b8db371294d553f28f62fb79dbc2b9a}{plot\+\_\+photon\+\_\+map}} (ax, bathy\+\_\+points\+\_\+gdf)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a3022098c6a9edf591e97a900fb12f215}{plot\+\_\+tracklines\+\_\+overview}} (ax, tracklines\+\_\+gdf)
+def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a63ade196dba1dda442df5ac2a49265f3}{plot\+\_\+tracklines\+\_\+overview}} (ax, tracklines\+\_\+gdf, ratio=0.\+4, fraction=1.\+2)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a1fa2b903781c882fa8bf42193bc43b23}{plot\+\_\+aoi}} (ax, aoi\+\_\+gdf)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1plotting_abe7a08f12efe5b6231d4219e97d1c52d}{plot\+\_\+both\+\_\+maps}} (tracklines\+\_\+gdf, bathy\+\_\+points\+\_\+gdf, aoi\+\_\+gdf)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a552b1eb3d70e3b30b4672a93b4efeda3}{plot\+\_\+transect\+\_\+results}} (subsurfacedf, bathy\+\_\+df, figpath)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1plotting_ab3b9a39875d53a458723360f363b1ae2}{set\+\_\+size}} (fraction=1, ratio=1.\+618)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1plotting_a6001c306cab825cb107e9bcc0c1c5a75}{site\+\_\+overview\+\_\+map}} ()
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespaceatl__module_1_1plotting_aabb5cd69237de6d3661db92d02da0790}\label{namespaceatl__module_1_1plotting_aabb5cd69237de6d3661db92d02da0790}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1plotting_ad7d05a043ecdacdd8591f067aa0bd9d7}\label{namespaceatl__module_1_1plotting_ad7d05a043ecdacdd8591f067aa0bd9d7}} 
 \index{atl\_module.plotting@{atl\_module.plotting}!error\_lidar\_pt\_vs\_truth\_pt@{error\_lidar\_pt\_vs\_truth\_pt}}
 \index{error\_lidar\_pt\_vs\_truth\_pt@{error\_lidar\_pt\_vs\_truth\_pt}!atl\_module.plotting@{atl\_module.plotting}}
 \doxysubsubsection{\texorpdfstring{error\_lidar\_pt\_vs\_truth\_pt()}{error\_lidar\_pt\_vs\_truth\_pt()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+error\+\_\+lidar\+\_\+pt\+\_\+vs\+\_\+truth\+\_\+pt (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{df\+\_\+in,  }\item[{}]{site\+\_\+name,  }\item[{}]{error\+\_\+dict }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+error\+\_\+lidar\+\_\+pt\+\_\+vs\+\_\+truth\+\_\+pt (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{df\+\_\+in,  }\item[{}]{error\+\_\+dict,  }\item[{}]{fraction = {\ttfamily 0.5} }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_aabb5cd69237de6d3661db92d02da0790_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_ad7d05a043ecdacdd8591f067aa0bd9d7_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_ad7d05a043ecdacdd8591f067aa0bd9d7_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1plotting_ad921aa572a1c60920c82fe1261484911}\label{namespaceatl__module_1_1plotting_ad921aa572a1c60920c82fe1261484911}} 
@@ -40,8 +50,7 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{map\_ground\_truth\_data()}{map\_ground\_truth\_data()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+map\+\_\+ground\+\_\+truth\+\_\+data (\begin{DoxyParamCaption}\item[{}]{truthdata\+\_\+path,  }\item[{}]{plottitle }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -54,8 +63,7 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{plot\_aoi()}{plot\_aoi()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+aoi (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{aoi\+\_\+gdf }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -68,20 +76,11 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{plot\_both\_maps()}{plot\_both\_maps()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+both\+\_\+maps (\begin{DoxyParamCaption}\item[{}]{tracklines\+\_\+gdf,  }\item[{}]{bathy\+\_\+points\+\_\+gdf,  }\item[{}]{aoi\+\_\+gdf }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:
-\nopagebreak
+Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{namespaceatl__module_1_1plotting_abe7a08f12efe5b6231d4219e97d1c52d_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_abe7a08f12efe5b6231d4219e97d1c52d_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1plotting_a2b8db371294d553f28f62fb79dbc2b9a}\label{namespaceatl__module_1_1plotting_a2b8db371294d553f28f62fb79dbc2b9a}} 
@@ -90,26 +89,31 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{plot\_photon\_map()}{plot\_photon\_map()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+photon\+\_\+map (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{bathy\+\_\+points\+\_\+gdf }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{namespaceatl__module_1_1plotting_a2b8db371294d553f28f62fb79dbc2b9a_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1plotting_a3022098c6a9edf591e97a900fb12f215}\label{namespaceatl__module_1_1plotting_a3022098c6a9edf591e97a900fb12f215}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1plotting_a63ade196dba1dda442df5ac2a49265f3}\label{namespaceatl__module_1_1plotting_a63ade196dba1dda442df5ac2a49265f3}} 
 \index{atl\_module.plotting@{atl\_module.plotting}!plot\_tracklines\_overview@{plot\_tracklines\_overview}}
 \index{plot\_tracklines\_overview@{plot\_tracklines\_overview}!atl\_module.plotting@{atl\_module.plotting}}
 \doxysubsubsection{\texorpdfstring{plot\_tracklines\_overview()}{plot\_tracklines\_overview()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+tracklines\+\_\+overview (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{tracklines\+\_\+gdf }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+tracklines\+\_\+overview (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{tracklines\+\_\+gdf,  }\item[{}]{ratio = {\ttfamily 0.4},  }\item[{}]{fraction = {\ttfamily 1.2} }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_a3022098c6a9edf591e97a900fb12f215_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_a63ade196dba1dda442df5ac2a49265f3_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_a63ade196dba1dda442df5ac2a49265f3_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1plotting_a552b1eb3d70e3b30b4672a93b4efeda3}\label{namespaceatl__module_1_1plotting_a552b1eb3d70e3b30b4672a93b4efeda3}} 
@@ -117,4 +121,37 @@ Here is the caller graph for this function\+:
 \index{plot\_transect\_results@{plot\_transect\_results}!atl\_module.plotting@{atl\_module.plotting}}
 \doxysubsubsection{\texorpdfstring{plot\_transect\_results()}{plot\_transect\_results()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+plot\+\_\+transect\+\_\+results (\begin{DoxyParamCaption}\item[{}]{subsurfacedf,  }\item[{}]{bathy\+\_\+df,  }\item[{}]{figpath }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1plotting_ab3b9a39875d53a458723360f363b1ae2}\label{namespaceatl__module_1_1plotting_ab3b9a39875d53a458723360f363b1ae2}} 
+\index{atl\_module.plotting@{atl\_module.plotting}!set\_size@{set\_size}}
+\index{set\_size@{set\_size}!atl\_module.plotting@{atl\_module.plotting}}
+\doxysubsubsection{\texorpdfstring{set\_size()}{set\_size()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+set\+\_\+size (\begin{DoxyParamCaption}\item[{}]{fraction = {\ttfamily 1},  }\item[{}]{ratio = {\ttfamily 1.618} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Set figure dimensions to avoid scaling in LaTeX.
+
+Parameters
+----------
+width: float
+        Document textwidth or columnwidth in pts
+fraction: float, optional
+        Fraction of the width which you wish the figure to occupy
+
+Returns
+-------
+fig_dim: tuple
+        Dimensions of figure in inches
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1plotting_ab3b9a39875d53a458723360f363b1ae2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1plotting_a6001c306cab825cb107e9bcc0c1c5a75}\label{namespaceatl__module_1_1plotting_a6001c306cab825cb107e9bcc0c1c5a75}} 
+\index{atl\_module.plotting@{atl\_module.plotting}!site\_overview\_map@{site\_overview\_map}}
+\index{site\_overview\_map@{site\_overview\_map}!atl\_module.plotting@{atl\_module.plotting}}
+\doxysubsubsection{\texorpdfstring{site\_overview\_map()}{site\_overview\_map()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+plotting.\+site\+\_\+overview\+\_\+map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 

@@ -1,7 +1,7 @@
 <map id="atl_module.io.atl03_netcdf_loading.load_beam_array_ncds" name="atl_module.io.atl03_netcdf_loading.load_beam_array_ncds">
-<area shape="rect" id="node1" title=" " alt="" coords="565,45,707,101"/>
-<area shape="rect" id="node2" href="$namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry.html#ad3b631e1eee33cd88ca7d1b7f2887622" title=" " alt="" coords="300,5,517,61"/>
-<area shape="rect" id="node4" href="$namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a6e4913f100f87573a79beca856183065" title=" " alt="" coords="303,85,515,141"/>
+<area shape="rect" id="node1" title=" " alt="" coords="577,45,719,101"/>
+<area shape="rect" id="node2" href="$namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry.html#ad3b631e1eee33cd88ca7d1b7f2887622" title=" " alt="" coords="306,5,523,61"/>
+<area shape="rect" id="node4" href="$namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#ab640bb9ad7c77b1974d21c9834faa237" title=" " alt="" coords="300,85,529,141"/>
 <area shape="rect" id="node3" href="$namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry.html#a4fe0f4d74ba794b33aba5d2eb134ab0c" title=" " alt="" coords="13,5,244,61"/>
 <area shape="rect" id="node5" href="$classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,93,252,134"/>
 </map>

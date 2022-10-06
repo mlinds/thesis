@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: atl_module.geospatial_utils.raster_interaction Namespace Reference</title>
+<title>ATL03 bathymetry extraction, gridding, and upscaling: atl_module.geospatial_utils.raster_interaction Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">ATL03 bathymetry extraction, gridding, and upscaling
    &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
@@ -76,40 +76,52 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aaa87b53d7678efbc94be36a12b509839"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#aaa87b53d7678efbc94be36a12b509839">query_raster</a> (pd.DataFrame dataframe, str src)</td></tr>
-<tr class="separator:aaa87b53d7678efbc94be36a12b509839"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0faaf18e4a34625de5fdf3bc4c00764d"><td class="memItemLeft" align="right" valign="top">pd.DataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a0faaf18e4a34625de5fdf3bc4c00764d">add_dem_data</a> (pd.DataFrame beam_df, list demlist)</td></tr>
-<tr class="separator:a0faaf18e4a34625de5fdf3bc4c00764d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a255fa9c30e8d87bbd79ee110a254c9b4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a255fa9c30e8d87bbd79ee110a254c9b4">query_from_lines</a> (line, rasterpath, band, npts=200)</td></tr>
+<tr class="separator:a255fa9c30e8d87bbd79ee110a254c9b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5abb11861e18f3b5a045bb0f5c68a229"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a5abb11861e18f3b5a045bb0f5c68a229">query_raster</a> (pd.DataFrame dataframe, str src, band=1)</td></tr>
+<tr class="separator:a5abb11861e18f3b5a045bb0f5c68a229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d80f41fdade85bb42711213e4c6fece"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a9d80f41fdade85bb42711213e4c6fece">subset_gebco</a> (str folderpath, bathy_pts, int epsg_no, int hres)</td></tr>
 <tr class="separator:a9d80f41fdade85bb42711213e4c6fece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abad435a0a52eefd1b5d2c9c5520007ed"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#abad435a0a52eefd1b5d2c9c5520007ed">raster_random_sample</a> (raster_in, nsample_points, crs=None)</td></tr>
-<tr class="separator:abad435a0a52eefd1b5d2c9c5520007ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6145143a27dc124463fd8dfde6c3189c"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a6145143a27dc124463fd8dfde6c3189c">random_raster_gdf</a> (raster_in, nsample_points_required)</td></tr>
-<tr class="separator:a6145143a27dc124463fd8dfde6c3189c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaccf24641402f01e28bcac63e35cc07"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#afaccf24641402f01e28bcac63e35cc07">random_raster_gdf</a> (raster_in, nsample_points_required, maskgdf=None)</td></tr>
+<tr class="separator:afaccf24641402f01e28bcac63e35cc07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a8ce3b8a8ae76da56a7b771f412324910"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a8ce3b8a8ae76da56a7b771f412324910">detail_logger</a> = setup_logger(name=&quot;details&quot;)</td></tr>
+<tr class="memitem:a8ce3b8a8ae76da56a7b771f412324910"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a8ce3b8a8ae76da56a7b771f412324910">detail_logger</a></td></tr>
 <tr class="separator:a8ce3b8a8ae76da56a7b771f412324910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a621af52caa3ef05f27e2768ed068c4f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a621af52caa3ef05f27e2768ed068c4f8">name</a></td></tr>
+<tr class="separator:a621af52caa3ef05f27e2768ed068c4f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a0faaf18e4a34625de5fdf3bc4c00764d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0faaf18e4a34625de5fdf3bc4c00764d">&#9670;&nbsp;</a></span>add_dem_data()</h2>
+<a id="a255fa9c30e8d87bbd79ee110a254c9b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a255fa9c30e8d87bbd79ee110a254c9b4">&#9670;&nbsp;</a></span>query_from_lines()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"> pd.DataFrame atl_module.geospatial_utils.raster_interaction.add_dem_data </td>
+          <td class="memname">def atl_module.geospatial_utils.raster_interaction.query_from_lines </td>
           <td>(</td>
-          <td class="paramtype">pd.DataFrame&#160;</td>
-          <td class="paramname"><em>beam_df</em>, </td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>line</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">list&#160;</td>
-          <td class="paramname"><em>demlist</em>&#160;</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>rasterpath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>band</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>npts</em> = <code>200</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -118,20 +130,30 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">take npts equally-spaced samples along a line and raster band
+
+Args:
+    line (shapely.Line): a shapely line
+    rasterpath (str): path to the raster of interest in any GDAL readable format
+    band (int): the raster band number
+    npts (int, optional): The number of evenly spaced samples to take along the line. Defaults to 200.
+
+Returns:
+    tuple: (x,y,z) of the points, where x and y are from the evenly-split line and z is the value queried from the raster of interest
+</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d_cgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d_cgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d_cgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a0faaf18e4a34625de5fdf3bc4c00764d_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,188,61"/>
-<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#aaa87b53d7678efbc94be36a12b509839" title=" " alt="" coords="236,5,429,61"/>
+<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4_cgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4_cgraph" alt=""/></div>
+<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4_cgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a255fa9c30e8d87bbd79ee110a254c9b4_cgraph">
+<area shape="rect" title=" " alt="" coords="5,5,199,61"/>
+<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a5abb11861e18f3b5a045bb0f5c68a229" title=" " alt="" coords="247,5,440,61"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="aaa87b53d7678efbc94be36a12b509839"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa87b53d7678efbc94be36a12b509839">&#9670;&nbsp;</a></span>query_raster()</h2>
+<a id="a5abb11861e18f3b5a045bb0f5c68a229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5abb11861e18f3b5a045bb0f5c68a229">&#9670;&nbsp;</a></span>query_raster()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +168,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">str&#160;</td>
-          <td class="paramname"><em>src</em>&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>band</em> = <code>1</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -166,19 +194,19 @@ Returns:
 </pre> <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839_icgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839_icgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839_icgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_aaa87b53d7678efbc94be36a12b509839_icgraph">
-<area shape="rect" title=" " alt="" coords="236,85,429,141"/>
-<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a0faaf18e4a34625de5fdf3bc4c00764d" title=" " alt="" coords="5,5,188,61"/>
-<area shape="rect" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a95e1371dc4250e39223651351ae0a441" title=" " alt="" coords="5,85,188,141"/>
-<area shape="rect" href="namespaceatl__module_1_1error__calc.html#a63ee1cd20fcb08172a44096b75923769" title=" " alt="" coords="11,166,182,207"/>
+<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229_icgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229_icgraph" alt=""/></div>
+<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229_icgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a5abb11861e18f3b5a045bb0f5c68a229_icgraph">
+<area shape="rect" title=" " alt="" coords="247,79,440,135"/>
+<area shape="rect" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a95e1371dc4250e39223651351ae0a441" title=" " alt="" coords="11,5,193,61"/>
+<area shape="rect" href="namespaceatl__module_1_1error__calc.html#a63ee1cd20fcb08172a44096b75923769" title=" " alt="" coords="17,86,187,127"/>
+<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a255fa9c30e8d87bbd79ee110a254c9b4" title=" " alt="" coords="5,152,199,208"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="a6145143a27dc124463fd8dfde6c3189c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6145143a27dc124463fd8dfde6c3189c">&#9670;&nbsp;</a></span>random_raster_gdf()</h2>
+<a id="afaccf24641402f01e28bcac63e35cc07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaccf24641402f01e28bcac63e35cc07">&#9670;&nbsp;</a></span>random_raster_gdf()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,7 +221,13 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>nsample_points_required</em>&#160;</td>
+          <td class="paramname"><em>nsample_points_required</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>maskgdf</em> = <code>None</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -202,59 +236,16 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c_cgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c_cgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c_cgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_a6145143a27dc124463fd8dfde6c3189c_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,209,61"/>
-<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#abad435a0a52eefd1b5d2c9c5520007ed" title=" " alt="" coords="257,5,452,61"/>
-</map>
-</div>
+<pre class="fragment">wrapper around `_random_raster_sample` that returns geodataframe formatted data and can optionally take a mask data in any vector format
 
-</div>
-</div>
-<a id="abad435a0a52eefd1b5d2c9c5520007ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abad435a0a52eefd1b5d2c9c5520007ed">&#9670;&nbsp;</a></span>raster_random_sample()</h2>
+Args:
+    raster_in (str): path to the raster to be sampled in any GDAL format
+    nsample_points_required (int): number of random samples desired
+    maskgdf (gpd.GeoDataFrame, optional): optional geodataframe of a single polygon that defines the area to be sampled. Defaults to None.
 
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def atl_module.geospatial_utils.raster_interaction.raster_random_sample </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>raster_in</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>nsample_points</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>crs</em> = <code>None</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed_icgraph.png" border="0" usemap="#namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed_icgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed_icgraph" id="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction_abad435a0a52eefd1b5d2c9c5520007ed_icgraph">
-<area shape="rect" title=" " alt="" coords="257,5,452,61"/>
-<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a6145143a27dc124463fd8dfde6c3189c" title=" " alt="" coords="5,5,209,61"/>
-</map>
-</div>
-
+Returns:
+    gpd.GeoDataFrame: geodataframe of the random points
+</pre> 
 </div>
 </div>
 <a id="a9d80f41fdade85bb42711213e4c6fece"></a>
@@ -315,7 +306,21 @@ Returns:
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">atl_module.geospatial_utils.raster_interaction.detail_logger = setup_logger(name=&quot;details&quot;)</td>
+          <td class="memname">atl_module.geospatial_utils.raster_interaction.detail_logger</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a621af52caa3ef05f27e2768ed068c4f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a621af52caa3ef05f27e2768ed068c4f8">&#9670;&nbsp;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">atl_module.geospatial_utils.raster_interaction.name</td>
         </tr>
       </table>
 </div><div class="memdoc">

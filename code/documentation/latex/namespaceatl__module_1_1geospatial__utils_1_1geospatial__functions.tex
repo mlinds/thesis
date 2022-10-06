@@ -7,16 +7,16 @@ def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__fu
 \item 
 gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_aa71641ce41316e77177fed24e4ce7809}{get\+\_\+track\+\_\+gdf}} (np.\+ndarray outarray)
 \item 
-gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065}{make\+\_\+gdf\+\_\+from\+\_\+ncdf\+\_\+files}} (str or Path\+Like directory)
-\item 
-def \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a85a3013fbc574d9298c47af108f85083}{photon\+\_\+df\+\_\+to\+\_\+gdf}} (pd.\+Data\+Frame or np.\+ndarray photon\+\_\+data)
+gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237}{trackline\+\_\+gdf\+\_\+from\+\_\+netcdf}} (str or Path\+Like directory)
 \item 
 pd.\+Data\+Frame or gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a2653e26b45dec38a08a88a0887df99db}{add\+\_\+track\+\_\+dist\+\_\+meters}} (pd.\+Data\+Frame df, geodataframe=False)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a4c617efb699c27c7373a1e9782ef2035}{detail\+\_\+logger}} = setup\+\_\+logger(name=\char`\"{}details\char`\"{})
+\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a4c617efb699c27c7373a1e9782ef2035}{detail\+\_\+logger}}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_abc4712c3193af4a05f752c4262b56827}{name}}
 \end{DoxyCompactItemize}
 
 
@@ -41,43 +41,7 @@ Args:
 Returns:
     gpd.GeoDataFrame: A geodataframe of a particular track
 \end{DoxyVerb}
- \mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065}} 
-\index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!make\_gdf\_from\_ncdf\_files@{make\_gdf\_from\_ncdf\_files}}
-\index{make\_gdf\_from\_ncdf\_files@{make\_gdf\_from\_ncdf\_files}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
-\doxysubsubsection{\texorpdfstring{make\_gdf\_from\_ncdf\_files()}{make\_gdf\_from\_ncdf\_files()}}
-{\footnotesize\ttfamily  gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+make\+\_\+gdf\+\_\+from\+\_\+ncdf\+\_\+files (\begin{DoxyParamCaption}\item[{str or Path\+Like}]{directory }\end{DoxyParamCaption})}
-
-\begin{DoxyVerb}Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
-
-Args:
-    directory (strorPathLike): Location of the folder to search for netcdf files
-
-Returns:
-    gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
-\end{DoxyVerb}
- Here is the call graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a6e4913f100f87573a79beca856183065_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a85a3013fbc574d9298c47af108f85083}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a85a3013fbc574d9298c47af108f85083}} 
-\index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!photon\_df\_to\_gdf@{photon\_df\_to\_gdf}}
-\index{photon\_df\_to\_gdf@{photon\_df\_to\_gdf}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
-\doxysubsubsection{\texorpdfstring{photon\_df\_to\_gdf()}{photon\_df\_to\_gdf()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+photon\+\_\+df\+\_\+to\+\_\+gdf (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame or np.\+ndarray}]{photon\+\_\+data }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a0c62c28c44f06a622d8946f6dec84d94}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a0c62c28c44f06a622d8946f6dec84d94}} 
+ \mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a0c62c28c44f06a622d8946f6dec84d94}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a0c62c28c44f06a622d8946f6dec84d94}} 
 \index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!to\_refr\_corrected\_gdf@{to\_refr\_corrected\_gdf}}
 \index{to\_refr\_corrected\_gdf@{to\_refr\_corrected\_gdf}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
 \doxysubsubsection{\texorpdfstring{to\_refr\_corrected\_gdf()}{to\_refr\_corrected\_gdf()}}
@@ -92,12 +56,39 @@ Args:
 Returns:
     pd.DataFram: dataframe with the corrected data
 \end{DoxyVerb}
- Here is the caller graph for this function\+:
-\nopagebreak
+ Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_a0c62c28c44f06a622d8946f6dec84d94_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237}} 
+\index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!trackline\_gdf\_from\_netcdf@{trackline\_gdf\_from\_netcdf}}
+\index{trackline\_gdf\_from\_netcdf@{trackline\_gdf\_from\_netcdf}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{trackline\_gdf\_from\_netcdf()}{trackline\_gdf\_from\_netcdf()}}
+{\footnotesize\ttfamily  gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+trackline\+\_\+gdf\+\_\+from\+\_\+netcdf (\begin{DoxyParamCaption}\item[{str or Path\+Like}]{directory }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
+
+Args:
+    directory (strorPathLike): Location of the folder to search for netcdf files
+
+Returns:
+    gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
+\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_ab640bb9ad7c77b1974d21c9834faa237_icgraph}
 \end{center}
 \end{figure}
 
@@ -107,5 +98,11 @@ Returns:
 \index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!detail\_logger@{detail\_logger}}
 \index{detail\_logger@{detail\_logger}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
 \doxysubsubsection{\texorpdfstring{detail\_logger}{detail\_logger}}
-{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+detail\+\_\+logger = setup\+\_\+logger(name=\char`\"{}details\char`\"{})}
+{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+detail\+\_\+logger}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_abc4712c3193af4a05f752c4262b56827}\label{namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions_abc4712c3193af4a05f752c4262b56827}} 
+\index{atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}!name@{name}}
+\index{name@{name}!atl\_module.geospatial\_utils.geospatial\_functions@{atl\_module.geospatial\_utils.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily atl\+\_\+module.\+geospatial\+\_\+utils.\+geospatial\+\_\+functions.\+name}
 

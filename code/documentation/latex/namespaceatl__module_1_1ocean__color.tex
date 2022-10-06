@@ -5,64 +5,30 @@
 \item 
 tuple \mbox{\hyperlink{namespaceatl__module_1_1ocean__color_a3e1ba6c8102c71a3b7834abe68a619bd}{get\+\_\+zsd\+\_\+info}} (float lat, float lon, str or datetime dates)
 \item 
-gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8}{add\+\_\+secchi\+\_\+depth\+\_\+to\+\_\+tracklines}} (gpd.\+Geo\+Data\+Frame df\+\_\+input)
-\item 
 def \mbox{\hyperlink{namespaceatl__module_1_1ocean__color_ae6b5d26a21ce50d3dcf4d16532d4cdec}{create\+\_\+zsd\+\_\+points\+\_\+from\+\_\+tracklines}} (df\+\_\+input)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-string \mbox{\hyperlink{namespaceatl__module_1_1ocean__color_ad14dc8660403588a465dd5925aed5ae0}{D\+A\+P\+\_\+\+U\+RL}} = \char`\"{}https\+://my.\+cmems-\/du.\+eu/thredds/dodsC/cmems\+\_\+obs-\/oc\+\_\+glo\+\_\+bgc-\/transp\+\_\+my\+\_\+l4-\/gapfree-\/multi-\/4km\+\_\+\+P1D\char`\"{}
+\mbox{\hyperlink{namespaceatl__module_1_1ocean__color_a43e235001122325b359fc7dfdc62762d}{D\+A\+P\+\_\+\+U\+RL}}
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8}\label{namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8}} 
-\index{atl\_module.ocean\_color@{atl\_module.ocean\_color}!add\_secchi\_depth\_to\_tracklines@{add\_secchi\_depth\_to\_tracklines}}
-\index{add\_secchi\_depth\_to\_tracklines@{add\_secchi\_depth\_to\_tracklines}!atl\_module.ocean\_color@{atl\_module.ocean\_color}}
-\doxysubsubsection{\texorpdfstring{add\_secchi\_depth\_to\_tracklines()}{add\_secchi\_depth\_to\_tracklines()}}
-{\footnotesize\ttfamily  gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+ocean\+\_\+color.\+add\+\_\+secchi\+\_\+depth\+\_\+to\+\_\+tracklines (\begin{DoxyParamCaption}\item[{gpd.\+Geo\+Data\+Frame}]{df\+\_\+input }\end{DoxyParamCaption})}
-
-\begin{DoxyVerb}Accepts a dataframe of tracklines and returns the same dataframe with a new column for the Secchi Disk Depth and the uncertainty
-
-Args:
-    df_input (gpd.GeoDataFrame): Geodataframe of the tracklines
-
-Returns:
-    gpd.GeoDataFrame: Same geodataframe with 2 new columns
-\end{DoxyVerb}
- Here is the call graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_icgraph}
-\end{center}
-\end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1ocean__color_ae6b5d26a21ce50d3dcf4d16532d4cdec}\label{namespaceatl__module_1_1ocean__color_ae6b5d26a21ce50d3dcf4d16532d4cdec}} 
 \index{atl\_module.ocean\_color@{atl\_module.ocean\_color}!create\_zsd\_points\_from\_tracklines@{create\_zsd\_points\_from\_tracklines}}
 \index{create\_zsd\_points\_from\_tracklines@{create\_zsd\_points\_from\_tracklines}!atl\_module.ocean\_color@{atl\_module.ocean\_color}}
 \doxysubsubsection{\texorpdfstring{create\_zsd\_points\_from\_tracklines()}{create\_zsd\_points\_from\_tracklines()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+ocean\+\_\+color.\+create\+\_\+zsd\+\_\+points\+\_\+from\+\_\+tracklines (\begin{DoxyParamCaption}\item[{}]{df\+\_\+input }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:
-\nopagebreak
+Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{namespaceatl__module_1_1ocean__color_ae6b5d26a21ce50d3dcf4d16532d4cdec_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -75,8 +41,17 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{get\_zsd\_info()}{get\_zsd\_info()}}
 {\footnotesize\ttfamily  tuple atl\+\_\+module.\+ocean\+\_\+color.\+get\+\_\+zsd\+\_\+info (\begin{DoxyParamCaption}\item[{float}]{lat,  }\item[{float}]{lon,  }\item[{str or datetime}]{dates }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+\begin{DoxyVerb}lookup the disk depth info at a certain location and time.
+
+Args:
+    lat (float): latitude in WGS84
+    lon (float): longitude in WGS84
+    dates (strordatetime): A string or numpy/python datetime object for a date
+
+Returns:
+    tuple: tuple of (Disk Depth, Disk Depth uncertainty)
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -86,9 +61,9 @@ Here is the caller graph for this function\+:
 
 
 \doxysubsection{Variable Documentation}
-\mbox{\Hypertarget{namespaceatl__module_1_1ocean__color_ad14dc8660403588a465dd5925aed5ae0}\label{namespaceatl__module_1_1ocean__color_ad14dc8660403588a465dd5925aed5ae0}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1ocean__color_a43e235001122325b359fc7dfdc62762d}\label{namespaceatl__module_1_1ocean__color_a43e235001122325b359fc7dfdc62762d}} 
 \index{atl\_module.ocean\_color@{atl\_module.ocean\_color}!DAP\_URL@{DAP\_URL}}
 \index{DAP\_URL@{DAP\_URL}!atl\_module.ocean\_color@{atl\_module.ocean\_color}}
 \doxysubsubsection{\texorpdfstring{DAP\_URL}{DAP\_URL}}
-{\footnotesize\ttfamily string atl\+\_\+module.\+ocean\+\_\+color.\+D\+A\+P\+\_\+\+U\+RL = \char`\"{}https\+://my.\+cmems-\/du.\+eu/thredds/dodsC/cmems\+\_\+obs-\/oc\+\_\+glo\+\_\+bgc-\/transp\+\_\+my\+\_\+l4-\/gapfree-\/multi-\/4km\+\_\+\+P1D\char`\"{}}
+{\footnotesize\ttfamily atl\+\_\+module.\+ocean\+\_\+color.\+D\+A\+P\+\_\+\+U\+RL}
 

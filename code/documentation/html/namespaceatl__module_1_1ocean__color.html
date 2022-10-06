@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: atl_module.ocean_color Namespace Reference</title>
+<title>ATL03 bathymetry extraction, gridding, and upscaling: atl_module.ocean_color Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">ATL03 bathymetry extraction, gridding, and upscaling
    &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
@@ -78,60 +78,15 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a3e1ba6c8102c71a3b7834abe68a619bd"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1ocean__color.html#a3e1ba6c8102c71a3b7834abe68a619bd">get_zsd_info</a> (float lat, float lon, str or datetime dates)</td></tr>
 <tr class="separator:a3e1ba6c8102c71a3b7834abe68a619bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a619c095c4fbcad0d6fed0623472fbdf8"><td class="memItemLeft" align="right" valign="top">gpd.GeoDataFrame&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1ocean__color.html#a619c095c4fbcad0d6fed0623472fbdf8">add_secchi_depth_to_tracklines</a> (gpd.GeoDataFrame df_input)</td></tr>
-<tr class="separator:a619c095c4fbcad0d6fed0623472fbdf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6b5d26a21ce50d3dcf4d16532d4cdec"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1ocean__color.html#ae6b5d26a21ce50d3dcf4d16532d4cdec">create_zsd_points_from_tracklines</a> (df_input)</td></tr>
 <tr class="separator:ae6b5d26a21ce50d3dcf4d16532d4cdec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ad14dc8660403588a465dd5925aed5ae0"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1ocean__color.html#ad14dc8660403588a465dd5925aed5ae0">DAP_URL</a> = &quot;https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D&quot;</td></tr>
-<tr class="separator:ad14dc8660403588a465dd5925aed5ae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43e235001122325b359fc7dfdc62762d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1ocean__color.html#a43e235001122325b359fc7dfdc62762d">DAP_URL</a></td></tr>
+<tr class="separator:a43e235001122325b359fc7dfdc62762d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a619c095c4fbcad0d6fed0623472fbdf8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a619c095c4fbcad0d6fed0623472fbdf8">&#9670;&nbsp;</a></span>add_secchi_depth_to_tracklines()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"> gpd.GeoDataFrame atl_module.ocean_color.add_secchi_depth_to_tracklines </td>
-          <td>(</td>
-          <td class="paramtype">gpd.GeoDataFrame&#160;</td>
-          <td class="paramname"><em>df_input</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<pre class="fragment">Accepts a dataframe of tracklines and returns the same dataframe with a new column for the Secchi Disk Depth and the uncertainty
-
-Args:
-    df_input (gpd.GeoDataFrame): Geodataframe of the tracklines
-
-Returns:
-    gpd.GeoDataFrame: Same geodataframe with 2 new columns
-</pre> <div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_cgraph.png" border="0" usemap="#namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_cgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_cgraph" id="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,192,47"/>
-<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#a3e1ba6c8102c71a3b7834abe68a619bd" title=" " alt="" coords="240,5,420,47"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_icgraph.png" border="0" usemap="#namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_icgraph" alt=""/></div>
-<map name="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_icgraph" id="namespaceatl__module_1_1ocean__color_a619c095c4fbcad0d6fed0623472fbdf8_icgraph">
-<area shape="rect" title=" " alt="" coords="300,5,487,47"/>
-<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,5,252,47"/>
-</map>
-</div>
-
-</div>
-</div>
 <a id="ae6b5d26a21ce50d3dcf4d16532d4cdec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae6b5d26a21ce50d3dcf4d16532d4cdec">&#9670;&nbsp;</a></span>create_zsd_points_from_tracklines()</h2>
 
@@ -199,30 +154,37 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">lookup the disk depth info at a certain location and time.
+
+Args:
+    lat (float): latitude in WGS84
+    lon (float): longitude in WGS84
+    dates (strordatetime): A string or numpy/python datetime object for a date
+
+Returns:
+    tuple: tuple of (Disk Depth, Disk Depth uncertainty)
+</pre> <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespaceatl__module_1_1ocean__color_a3e1ba6c8102c71a3b7834abe68a619bd_icgraph.png" border="0" usemap="#namespaceatl__module_1_1ocean__color_a3e1ba6c8102c71a3b7834abe68a619bd_icgraph" alt=""/></div>
 <map name="namespaceatl__module_1_1ocean__color_a3e1ba6c8102c71a3b7834abe68a619bd_icgraph" id="namespaceatl__module_1_1ocean__color_a3e1ba6c8102c71a3b7834abe68a619bd_icgraph">
-<area shape="rect" title=" " alt="" coords="547,39,727,80"/>
-<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#a619c095c4fbcad0d6fed0623472fbdf8" title=" " alt="" coords="306,5,493,47"/>
-<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#ae6b5d26a21ce50d3dcf4d16532d4cdec" title=" " alt="" coords="300,71,499,112"/>
-<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,5,252,47"/>
-<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da" title=" " alt="" coords="11,71,246,112"/>
+<area shape="rect" title=" " alt="" coords="535,5,715,47"/>
+<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#ae6b5d26a21ce50d3dcf4d16532d4cdec" title=" " alt="" coords="288,5,487,47"/>
+<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da" title=" " alt="" coords="5,5,240,47"/>
 </map>
 </div>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="ad14dc8660403588a465dd5925aed5ae0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad14dc8660403588a465dd5925aed5ae0">&#9670;&nbsp;</a></span>DAP_URL</h2>
+<a id="a43e235001122325b359fc7dfdc62762d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43e235001122325b359fc7dfdc62762d">&#9670;&nbsp;</a></span>DAP_URL</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">string atl_module.ocean_color.DAP_URL = &quot;https://my.cmems-du.eu/thredds/dodsC/cmems_obs-oc_glo_bgc-transp_my_l4-gapfree-multi-4km_P1D&quot;</td>
+          <td class="memname">atl_module.ocean_color.DAP_URL</td>
         </tr>
       </table>
 </div><div class="memdoc">

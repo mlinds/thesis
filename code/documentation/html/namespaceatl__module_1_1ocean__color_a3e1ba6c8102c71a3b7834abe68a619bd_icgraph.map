@@ -1,7 +1,5 @@
 <map id="atl_module.ocean_color.get_zsd_info" name="atl_module.ocean_color.get_zsd_info">
-<area shape="rect" id="node1" title=" " alt="" coords="547,39,727,80"/>
-<area shape="rect" id="node2" href="$namespaceatl__module_1_1ocean__color.html#a619c095c4fbcad0d6fed0623472fbdf8" title=" " alt="" coords="306,5,493,47"/>
-<area shape="rect" id="node4" href="$namespaceatl__module_1_1ocean__color.html#ae6b5d26a21ce50d3dcf4d16532d4cdec" title=" " alt="" coords="300,71,499,112"/>
-<area shape="rect" id="node3" href="$classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe" title=" " alt="" coords="5,5,252,47"/>
-<area shape="rect" id="node5" href="$classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da" title=" " alt="" coords="11,71,246,112"/>
+<area shape="rect" id="node1" title=" " alt="" coords="535,5,715,47"/>
+<area shape="rect" id="node2" href="$namespaceatl__module_1_1ocean__color.html#ae6b5d26a21ce50d3dcf4d16532d4cdec" title=" " alt="" coords="288,5,487,47"/>
+<area shape="rect" id="node3" href="$classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da" title=" " alt="" coords="5,5,240,47"/>
 </map>

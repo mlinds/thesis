@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: atl_module.core.GebcoUpscaler Class Reference</title>
+<title>ATL03 bathymetry extraction, gridding, and upscaling: atl_module.core.GebcoUpscaler Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">ATL03 bathymetry extraction, gridding, and upscaling
    &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
@@ -107,12 +107,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a786134ef76467c730ead59c7b9932e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c5a6b059b640f514a51960f1710b770"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a0c5a6b059b640f514a51960f1710b770">plot_truth_data</a> (self, plot_title)</td></tr>
 <tr class="separator:a0c5a6b059b640f514a51960f1710b770"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42be9cee284c680110b15cf77081c0aa"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a42be9cee284c680110b15cf77081c0aa">plot_icesat_points</a> (self)</td></tr>
-<tr class="separator:a42be9cee284c680110b15cf77081c0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0424a22ae9df478bf5217c56823e931"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#aa0424a22ae9df478bf5217c56823e931">plot_icesat_points</a> (self, fraction=1)</td></tr>
+<tr class="separator:aa0424a22ae9df478bf5217c56823e931"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82c3f8ec4a887d499f3748532203423b"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a82c3f8ec4a887d499f3748532203423b">plot_tracklines</a> (self)</td></tr>
 <tr class="separator:a82c3f8ec4a887d499f3748532203423b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e9a4932ad8123409957be6621e1fd1d"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a4e9a4932ad8123409957be6621e1fd1d">plot_site</a> (self)</td></tr>
-<tr class="separator:a4e9a4932ad8123409957be6621e1fd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaf7b76d493cb8ba63d8106089770244"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classatl__module_1_1core_1_1GebcoUpscaler.html#aeaf7b76d493cb8ba63d8106089770244">run_summary</a> (self)</td></tr>
 <tr class="separator:aeaf7b76d493cb8ba63d8106089770244"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -202,7 +200,13 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<pre class="fragment">init method for the GebcoUpscaler class
 
+Args:
+    site (str): path to the site folder
+    site_name (str): `fancy` name of the site, e.g. `Florida Keys`
+    truebathy (str, optional): path to the validation data in a GDAL readable raster format. Defaults to None.
+</pre> 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -221,7 +225,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">For every bathymetry points, query the raster of validation data and get the elevation at the x,y coordinate of the bathymetry point</pre> <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad_icgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad_icgraph" alt=""/></div>
@@ -248,7 +252,7 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">Generate a set of secchi disk depth points. Requires tracklines to be present in the directory</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a6c1d146791ec3ebfc2c933abd484a0da_cgraph" alt=""/></div>
@@ -511,8 +515,8 @@ Args:
 <pre class="fragment">Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it</pre> 
 </div>
 </div>
-<a id="a42be9cee284c680110b15cf77081c0aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42be9cee284c680110b15cf77081c0aa">&#9670;&nbsp;</a></span>plot_icesat_points()</h2>
+<a id="aa0424a22ae9df478bf5217c56823e931"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0424a22ae9df478bf5217c56823e931">&#9670;&nbsp;</a></span>plot_icesat_points()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -521,18 +525,36 @@ Args:
           <td class="memname">def atl_module.core.GebcoUpscaler.plot_icesat_points </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>fraction</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">plot a map of the ICESat-2 points in the AOI
+
+Args:
+    fraction (int, optional): size of the plot relative to the latex pagewidth. Defaults to 1.
+
+Returns:
+    matplotlib.figure: figure of the resulting plot
+</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa_cgraph" alt=""/></div>
-<map name="classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_a42be9cee284c680110b15cf77081c0aa_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,237,47"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#a2b8db371294d553f28f62fb79dbc2b9a" title=" " alt="" coords="285,5,441,47"/>
+<div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931_cgraph" alt=""/></div>
+<map name="classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931_cgraph">
+<area shape="rect" title=" " alt="" coords="5,35,237,76"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#a2b8db371294d553f28f62fb79dbc2b9a" title=" " alt="" coords="299,5,455,47"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#ab3b9a39875d53a458723360f363b1ae2" title=" " alt="" coords="285,71,469,98"/>
 </map>
 </div>
 
@@ -553,43 +575,18 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">create a bias plot showing the comparison of the bathymetry points to the validation data.
+
+Returns:
+    matplotlib.figure: figure of the bias plot
+</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph" alt=""/></div>
 <map name="classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph">
 <area shape="rect" title=" " alt="" coords="5,5,237,47"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#aabb5cd69237de6d3661db92d02da0790" title=" " alt="" coords="285,5,447,47"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="a4e9a4932ad8123409957be6621e1fd1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e9a4932ad8123409957be6621e1fd1d">&#9670;&nbsp;</a></span>plot_site()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def atl_module.core.GebcoUpscaler.plot_site </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d_cgraph" alt=""/></div>
-<map name="classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_a4e9a4932ad8123409957be6621e1fd1d_cgraph">
-<area shape="rect" title=" " alt="" coords="5,64,265,91"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#abe7a08f12efe5b6231d4219e97d1c52d" title=" " alt="" coords="313,57,469,98"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#a1fa2b903781c882fa8bf42193bc43b23" title=" " alt="" coords="517,5,697,32"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#a2b8db371294d553f28f62fb79dbc2b9a" title=" " alt="" coords="529,57,685,98"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#a3022098c6a9edf591e97a900fb12f215" title=" " alt="" coords="529,122,685,163"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#ad7d05a043ecdacdd8591f067aa0bd9d7" title=" " alt="" coords="285,5,447,47"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#ab3b9a39875d53a458723360f363b1ae2" title=" " alt="" coords="495,13,679,39"/>
 </map>
 </div>
 
@@ -610,13 +607,14 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">Generate a plot of the tracklines</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph" alt=""/></div>
 <map name="classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph">
 <area shape="rect" title=" " alt="" coords="5,5,237,47"/>
-<area shape="rect" href="namespaceatl__module_1_1plotting.html#a3022098c6a9edf591e97a900fb12f215" title=" " alt="" coords="285,5,441,47"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#a63ade196dba1dda442df5ac2a49265f3" title=" " alt="" coords="285,5,441,47"/>
+<area shape="rect" href="namespaceatl__module_1_1plotting.html#ab3b9a39875d53a458723360f363b1ae2" title=" " alt="" coords="489,13,673,39"/>
 </map>
 </div>
 
@@ -647,7 +645,11 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
+<pre class="fragment">Generate a map of the validation data and save it using a consistent filename
+
+Args:
+    plot_title (str): title to use on the plot
+</pre> <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770_cgraph" alt=""/></div>
@@ -720,11 +722,9 @@ Here is the call graph for this function:</div>
 <div class="center"><img src="classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe_cgraph.png" border="0" usemap="#classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe_cgraph" alt=""/></div>
 <map name="classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe_cgraph" id="classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c82d30ffe250d13cbe_cgraph">
 <area shape="rect" title=" " alt="" coords="5,43,252,84"/>
-<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#a619c095c4fbcad0d6fed0623472fbdf8" title=" " alt="" coords="313,5,499,47"/>
-<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#a6e4913f100f87573a79beca856183065" title=" " alt="" coords="300,71,512,127"/>
-<area shape="rect" href="namespaceatl__module_1_1ocean__color.html#a3e1ba6c8102c71a3b7834abe68a619bd" title=" " alt="" coords="561,5,741,47"/>
-<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="560,75,741,116"/>
-<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="580,141,721,197"/>
+<area shape="rect" href="namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#ab640bb9ad7c77b1974d21c9834faa237" title=" " alt="" coords="300,35,529,91"/>
+<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="577,5,759,47"/>
+<area shape="rect" href="namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="597,71,739,127"/>
 </map>
 </div>
 
@@ -795,7 +795,7 @@ Args:
         </tr>
       </table>
 </div><div class="memdoc">
-
+<pre class="fragment">Write tables that summarize the lidar RMSE, MAE, and ME</pre> 
 </div>
 </div>
 <a id="a56e0411da599e1ebb844671023e0f9f8"></a>
