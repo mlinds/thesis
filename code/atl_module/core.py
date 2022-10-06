@@ -1,3 +1,6 @@
+"""Provides the main object GebcoUpscaler, which interacts with the various functions in the module
+
+"""
 # going to keep the namespace as clean as possible
 import os
 from os.path import exists as file_exists

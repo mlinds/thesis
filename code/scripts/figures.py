@@ -1,6 +1,6 @@
 # %
 # %%
-import contextily as cx
+# import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -623,7 +623,7 @@ filtering_ax.set_xlabel("Photon Longitude WGS84")
 filtering_fig.savefig(
     "../document/figures/methodology_sealvl_filtering.pdf", bbox_inches="tight"
 )
-# %%
+
 # %%
 filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_high_returns, max_geoid_high_z=5)
 filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_TEP_and_nonassoc)
@@ -639,7 +639,9 @@ filtering_ax.scatter(
     s=2,
     rasterized=True,
 )
-filtering_ax.legend()
+filtering_ax.legend(
+    loc="upper center", bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=3
+)
 filtering_ax.set_ylabel("Photon elevation [m +geoid]")
 filtering_ax.set_xlabel("Photon Longitude WGS84")
 
