@@ -1,0 +1,174 @@
+\hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc}{}\doxysection{atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc Namespace Reference}
+\label{namespaceatl__module_1_1utility__functions_1_1error__calc}\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a6f5a987967269364c072eadffda2a95a}{add\+\_\+true\+\_\+elevation}} (bathy\+\_\+points, true\+\_\+data\+\_\+path, crs)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_af046b9310a25220e442526f42137459b}{icesat\+\_\+rmse}} (bathy\+\_\+points)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_ae5f15e95126730bbc5b0c064b0675526}{icesat\+\_\+mae}} (bathy\+\_\+points)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a15e9a5db8640b15c23e880e9e1ccd54f}{icesat\+\_\+mape}} (bathy\+\_\+points)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a71397487c2d3c57244273c20f064e4b1}{icesat\+\_\+med\+\_\+abs\+\_\+error}} (bathy\+\_\+points)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a254d4f0877223b2c951babae977333ce}{icesat\+\_\+r2\+\_\+score}} (bathy\+\_\+points)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_aec9ccd8728232838cbb140d1a8766f06}{icesat\+\_\+error\+\_\+metrics}} (beam\+\_\+df)
+\item 
+dict \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}{raster\+\_\+\+R\+M\+S\+E\+\_\+blocked}} (str truth\+\_\+raster\+\_\+path, str measured\+\_\+rasterpath, error\+\_\+out=False)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}{raster\+\_\+\+R\+M\+SE}} (truth\+\_\+raster\+\_\+path, measured\+\_\+rasterpath)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_ad3723af075905b8c5149e1aed03bbacd}{detail\+\_\+logger}}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a4b52bb4588401e3d4bc9bcfb41b3a120}{name}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_a6f5a987967269364c072eadffda2a95a}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_a6f5a987967269364c072eadffda2a95a}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!add\_true\_elevation@{add\_true\_elevation}}
+\index{add\_true\_elevation@{add\_true\_elevation}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{add\_true\_elevation()}{add\_true\_elevation()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+add\+\_\+true\+\_\+elevation (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points,  }\item[{}]{true\+\_\+data\+\_\+path,  }\item[{}]{crs }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}takes a bathy points dataframe and add a column called 'true elevation' that contains elevation value of the truth raster at each point
+
+Args:
+    bathy_points (pd.DataFrame): Dataframe of the bathymetryic points, must having X and Y data in the format required
+    true_data_path (str): path to a GDAL-readable raster
+    crs (str): a string readable by geopandas/prproj that contains the coordinate reference system for the bathymetric points
+
+Returns:
+    pd.Dataframe: the input dataframe with a new column with the true elevation values
+\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_a6f5a987967269364c072eadffda2a95a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_aec9ccd8728232838cbb140d1a8766f06}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_aec9ccd8728232838cbb140d1a8766f06}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_error\_metrics@{icesat\_error\_metrics}}
+\index{icesat\_error\_metrics@{icesat\_error\_metrics}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_error\_metrics()}{icesat\_error\_metrics()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+error\+\_\+metrics (\begin{DoxyParamCaption}\item[{}]{beam\+\_\+df }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_aec9ccd8728232838cbb140d1a8766f06_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_ae5f15e95126730bbc5b0c064b0675526}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_ae5f15e95126730bbc5b0c064b0675526}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_mae@{icesat\_mae}}
+\index{icesat\_mae@{icesat\_mae}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_mae()}{icesat\_mae()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+mae (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_ae5f15e95126730bbc5b0c064b0675526_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_a15e9a5db8640b15c23e880e9e1ccd54f}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_a15e9a5db8640b15c23e880e9e1ccd54f}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_mape@{icesat\_mape}}
+\index{icesat\_mape@{icesat\_mape}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_mape()}{icesat\_mape()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+mape (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_a71397487c2d3c57244273c20f064e4b1}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_a71397487c2d3c57244273c20f064e4b1}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_med\_abs\_error@{icesat\_med\_abs\_error}}
+\index{icesat\_med\_abs\_error@{icesat\_med\_abs\_error}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_med\_abs\_error()}{icesat\_med\_abs\_error()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+med\+\_\+abs\+\_\+error (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_a71397487c2d3c57244273c20f064e4b1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_a254d4f0877223b2c951babae977333ce}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_a254d4f0877223b2c951babae977333ce}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_r2\_score@{icesat\_r2\_score}}
+\index{icesat\_r2\_score@{icesat\_r2\_score}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_r2\_score()}{icesat\_r2\_score()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+r2\+\_\+score (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_a254d4f0877223b2c951babae977333ce_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_af046b9310a25220e442526f42137459b}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_af046b9310a25220e442526f42137459b}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!icesat\_rmse@{icesat\_rmse}}
+\index{icesat\_rmse@{icesat\_rmse}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{icesat\_rmse()}{icesat\_rmse()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+icesat\+\_\+rmse (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}get the RMSE of the bathymetry point dataframe
+
+Args:
+    bathy_points (geopandas.GeoDataFrame): bathymetry point dataframe generated by the module
+
+Returns:
+    float: RMS error
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_af046b9310a25220e442526f42137459b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!raster\_RMSE@{raster\_RMSE}}
+\index{raster\_RMSE@{raster\_RMSE}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{raster\_RMSE()}{raster\_RMSE()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+raster\+\_\+\+R\+M\+SE (\begin{DoxyParamCaption}\item[{}]{truth\+\_\+raster\+\_\+path,  }\item[{}]{measured\+\_\+rasterpath }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!raster\_RMSE\_blocked@{raster\_RMSE\_blocked}}
+\index{raster\_RMSE\_blocked@{raster\_RMSE\_blocked}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{raster\_RMSE\_blocked()}{raster\_RMSE\_blocked()}}
+{\footnotesize\ttfamily  dict atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+raster\+\_\+\+R\+M\+S\+E\+\_\+blocked (\begin{DoxyParamCaption}\item[{str}]{truth\+\_\+raster\+\_\+path,  }\item[{str}]{measured\+\_\+rasterpath,  }\item[{}]{error\+\_\+out = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Create a dictionary summarizing the error metrics between two rasters. The measured raster is projected into the same CRS and resolution as the truth raster, and then the RMSE and MAE area calculated.
+
+This function will perform the function for each GDAL block within the truth raster, which will significantly decrease the memory footprint of the function at the expense of increasing i/o
+
+Args:
+    truth_raster_path (str): The path of the truth raster
+    measured_rasterpath (str): the path of the measurement raster, which will be reprojected to the same grid as the truth raster
+    error_out (bool, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
+
+Returns:
+    dict: a dictionary with the keys 'RMSE' and 'MAE', whose values are a float of the respective error value
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_ad3723af075905b8c5149e1aed03bbacd}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_ad3723af075905b8c5149e1aed03bbacd}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!detail\_logger@{detail\_logger}}
+\index{detail\_logger@{detail\_logger}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{detail\_logger}{detail\_logger}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+detail\+\_\+logger}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_a4b52bb4588401e3d4bc9bcfb41b3a120}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_a4b52bb4588401e3d4bc9bcfb41b3a120}} 
+\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!name@{name}}
+\index{name@{name}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+name}
+

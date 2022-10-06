@@ -1,5 +1,23 @@
 var searchData=
 [
-  ['query_5ffrom_5flines_140',['query_from_lines',['../namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a255fa9c30e8d87bbd79ee110a254c9b4',1,'atl_module::geospatial_utils::raster_interaction']]],
-  ['query_5fraster_141',['query_raster',['../namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#a5abb11861e18f3b5a045bb0f5c68a229',1,'atl_module::geospatial_utils::raster_interaction']]]
+  ['random_5fraster_5fgdf_121',['random_raster_gdf',['../namespaceatl__module_1_1utility__functions_1_1raster__interaction.html#aaa777eb96abb5a8bebabf58371c8d888',1,'atl_module::utility_functions::raster_interaction']]],
+  ['raster_5ferror_5fsummary_122',['raster_error_summary',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a87bf18be734a224a9f64bce2b93d65c5',1,'atl_module::core::GebcoUpscaler']]],
+  ['raster_5finteraction_2epy_123',['raster_interaction.py',['../raster__interaction_8py.html',1,'']]],
+  ['raster_5frmse_124',['raster_rmse',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a05bc2c338a6ecc983ae29dc4e8bb252f',1,'atl_module.core.GebcoUpscaler.raster_rmse()'],['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#afe7316e7584adea431870614ef730e69',1,'atl_module.utility_functions.error_calc.raster_RMSE()']]],
+  ['raster_5frmse_5fblocked_125',['raster_RMSE_blocked',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#aa2d1c9d211d49fabde4c0816841b69c9',1,'atl_module::utility_functions::error_calc']]],
+  ['recalc_5ftracklines_5fgdf_126',['recalc_tracklines_gdf',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe',1,'atl_module::core::GebcoUpscaler']]],
+  ['refraction_5fcorrection_2epy_127',['refraction_correction.py',['../refraction__correction_8py.html',1,'']]],
+  ['remove_5fsurface_5fpoints_128',['remove_surface_points',['../namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#ad964b0828cb993233df0305243bb9eaa',1,'atl_module::bathymetry_extraction::point_dataframe_filters']]],
+  ['request_5fatl09_5fshapefile_129',['request_ATL09_shapefile',['../namespaceatl__module_1_1ATL03__preprocessing_1_1download.html#ad65917ba2017ab56f4dac8965d2502cc',1,'atl_module::ATL03_preprocessing::download']]],
+  ['request_5fdata_5fdownload_130',['request_data_download',['../namespaceatl__module_1_1ATL03__preprocessing_1_1download.html#afcb1c8d52b8ea95ce9ba9d019e9ae1be',1,'atl_module::ATL03_preprocessing::download']]],
+  ['request_5ffull_5fdata_5fshapefile_131',['request_full_data_shapefile',['../namespaceatl__module_1_1ATL03__preprocessing_1_1download.html#adfd2bc78b55d65385161d64af4224e9f',1,'atl_module::ATL03_preprocessing::download']]],
+  ['request_5fsegments_5fonly_132',['request_segments_only',['../namespaceatl__module_1_1ATL03__preprocessing_1_1download.html#ab0276f42bad35351a47ef631b3b3d0d8',1,'atl_module::ATL03_preprocessing::download']]],
+  ['returndict_133',['returndict',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a52dfa5d93f7a88b32ab4d6e6f4ab80bb',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
+  ['rmse_5ficesat_134',['rmse_icesat',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6fa951d4644ed716a9d65a7cf741751f',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fkalman_135',['rmse_kalman',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6714fa0f6f1d35269c817711047cf951',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fkriged_136',['rmse_kriged',['../classatl__module_1_1core_1_1GebcoUpscaler.html#ab9c3ccf1021b1c8b82e78f5f74b82a3f',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fnaive_137',['rmse_naive',['../classatl__module_1_1core_1_1GebcoUpscaler.html#af49ea88566f9ddcb664bf2484f361910',1,'atl_module::core::GebcoUpscaler']]],
+  ['run_5flogger_138',['run_logger',['../namespaceatl__module_1_1core.html#a4a067e852cd9e08ee79cd9478191b5c2',1,'atl_module::core']]],
+  ['run_5fparams_139',['run_params',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a153b593c9c2027258150441246f83f96',1,'atl_module::core::GebcoUpscaler']]],
+  ['run_5fsummary_140',['run_summary',['../classatl__module_1_1core_1_1GebcoUpscaler.html#aeaf7b76d493cb8ba63d8106089770244',1,'atl_module::core::GebcoUpscaler']]]
 ];

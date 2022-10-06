@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import rasterio
+from atl_module.ATL03_preprocessing.atl03_netcdf_loading import load_beam_array_ncds
 from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
-from atl_module.geospatial_utils import geospatial_functions
-from atl_module.io.atl03_netcdf_loading import load_beam_array_ncds
-from atl_module.plotting import set_size
+from atl_module.utility_functions import geospatial_functions
+from atl_module.utility_functions.plotting import set_size
 from matplotlib.patches import ConnectionPatch, Rectangle
 from mpl_toolkits.mplot3d import art3d
 from rasterio.plot import show as rastershow

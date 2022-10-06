@@ -1,26 +1,9 @@
 var searchData=
 [
-  ['random_5fraster_5fgdf_142',['random_raster_gdf',['../namespaceatl__module_1_1geospatial__utils_1_1raster__interaction.html#afaccf24641402f01e28bcac63e35cc07',1,'atl_module::geospatial_utils::raster_interaction']]],
-  ['raster_5ferror_5fsummary_143',['raster_error_summary',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a87bf18be734a224a9f64bce2b93d65c5',1,'atl_module::core::GebcoUpscaler']]],
-  ['raster_5finteraction_2epy_144',['raster_interaction.py',['../raster__interaction_8py.html',1,'']]],
-  ['raster_5frmse_145',['raster_rmse',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a05bc2c338a6ecc983ae29dc4e8bb252f',1,'atl_module.core.GebcoUpscaler.raster_rmse()'],['../namespaceatl__module_1_1error__calc.html#ac5a608a8c3ca1521442deada4bca9b5a',1,'atl_module.error_calc.raster_RMSE()']]],
-  ['raster_5frmse_5fblocked_146',['raster_RMSE_blocked',['../namespaceatl__module_1_1error__calc.html#a60f737ed8739f4f3f0eed10076a8a3f0',1,'atl_module::error_calc']]],
-  ['recalc_5ftracklines_5fgdf_147',['recalc_tracklines_gdf',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a58ed7011a85401c82d30ffe250d13cbe',1,'atl_module::core::GebcoUpscaler']]],
-  ['refraction_5fcorrection_2epy_148',['refraction_correction.py',['../refraction__correction_8py.html',1,'']]],
-  ['remove_5fsurface_5fpoints_149',['remove_surface_points',['../namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#ad964b0828cb993233df0305243bb9eaa',1,'atl_module::bathymetry_extraction::point_dataframe_filters']]],
-  ['req_5fperc_5fhconf_150',['req_perc_hconf',['../namespaceatl__module_1_1____main____.html#a7cc26ca53bc04095d27fda0603b11076',1,'atl_module::__main__']]],
-  ['request_5fatl09_5fshapefile_151',['request_ATL09_shapefile',['../namespaceatl__module_1_1io_1_1download.html#aba00e5a367596599b818a61ade66ff21',1,'atl_module::io::download']]],
-  ['request_5fdata_5fdownload_152',['request_data_download',['../namespaceatl__module_1_1io_1_1download.html#a004988d57ff9a21a62883bbb4ee48b73',1,'atl_module::io::download']]],
-  ['request_5ffull_5fdata_5fshapefile_153',['request_full_data_shapefile',['../namespaceatl__module_1_1io_1_1download.html#a5c4128aece05058f32284a5cbbc739dd',1,'atl_module::io::download']]],
-  ['request_5fsegments_5fonly_154',['request_segments_only',['../namespaceatl__module_1_1io_1_1download.html#ae1e590e3840b7e2c6252037a02ca7e9a',1,'atl_module::io::download']]],
-  ['requested_5fhres_155',['requested_hres',['../namespaceatl__module_1_1____main____.html#ada7524bb5776c16dd9d9fe3a46d6f21a',1,'atl_module::__main__']]],
-  ['returndict_156',['returndict',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a52dfa5d93f7a88b32ab4d6e6f4ab80bb',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
-  ['rmse_5ficesat_157',['rmse_icesat',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6fa951d4644ed716a9d65a7cf741751f',1,'atl_module::core::GebcoUpscaler']]],
-  ['rmse_5fkalman_158',['rmse_kalman',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6714fa0f6f1d35269c817711047cf951',1,'atl_module::core::GebcoUpscaler']]],
-  ['rmse_5fkriged_159',['rmse_kriged',['../classatl__module_1_1core_1_1GebcoUpscaler.html#ab9c3ccf1021b1c8b82e78f5f74b82a3f',1,'atl_module::core::GebcoUpscaler']]],
-  ['rmse_5fnaive_160',['rmse_naive',['../classatl__module_1_1core_1_1GebcoUpscaler.html#af49ea88566f9ddcb664bf2484f361910',1,'atl_module::core::GebcoUpscaler']]],
-  ['rolling_5fwindow_161',['rolling_window',['../namespaceatl__module_1_1____main____.html#a5261d48ba6dc1dbf3acc73d3463c1939',1,'atl_module::__main__']]],
-  ['run_5flogger_162',['run_logger',['../namespaceatl__module_1_1core.html#a4a067e852cd9e08ee79cd9478191b5c2',1,'atl_module::core']]],
-  ['run_5fparams_163',['run_params',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a153b593c9c2027258150441246f83f96',1,'atl_module::core::GebcoUpscaler']]],
-  ['run_5fsummary_164',['run_summary',['../classatl__module_1_1core_1_1GebcoUpscaler.html#aeaf7b76d493cb8ba63d8106089770244',1,'atl_module::core::GebcoUpscaler']]]
+  ['segment_5fvars_141',['segment_vars',['../namespaceatl__module_1_1ATL03__preprocessing_1_1variablelist.html#a13fde14cbca27dfcba450ba5ffda2231',1,'atl_module::ATL03_preprocessing::variablelist']]],
+  ['set_5fsize_142',['set_size',['../namespaceatl__module_1_1utility__functions_1_1plotting.html#adfcaed1b3e8873cf794d22b8e6a5ce57',1,'atl_module::utility_functions::plotting']]],
+  ['simple_5fkalman_143',['simple_kalman',['../namespaceatl__module_1_1kalman.html#a39f29e9a95c4034a1dea0f643b3c9376',1,'atl_module::kalman']]],
+  ['site_5fname_144',['site_name',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a857871a564a2c2b2340018498dead3f0',1,'atl_module::core::GebcoUpscaler']]],
+  ['site_5foverview_5fmap_145',['site_overview_map',['../namespaceatl__module_1_1utility__functions_1_1plotting.html#aa4ccefe2aa44d84536e39a0b88a077d0',1,'atl_module::utility_functions::plotting']]],
+  ['subset_5fgebco_146',['subset_gebco',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a3b43fdd21c17dde55ea141e28eff7878',1,'atl_module.core.GebcoUpscaler.subset_gebco()'],['../namespaceatl__module_1_1utility__functions_1_1raster__interaction.html#aff930034bc3591879bcddcbb0b6849d2',1,'atl_module.utility_functions.raster_interaction.subset_gebco()']]]
 ];

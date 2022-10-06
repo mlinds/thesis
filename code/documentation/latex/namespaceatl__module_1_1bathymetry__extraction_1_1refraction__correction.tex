@@ -26,11 +26,11 @@ int \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1refractio
 \doxysubsubsection{\texorpdfstring{correct\_refr()}{correct\_refr()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+refraction\+\_\+correction.\+correct\+\_\+refr (\begin{DoxyParamCaption}\item[{}]{depth,  }\item[{}]{pointing\+\_\+vector\+\_\+az,  }\item[{}]{pointing\+\_\+vector\+\_\+elev }\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}return the X,Y,Z corrections introduced by refraction, using parrish method
+\begin{DoxyVerb}return the X,Y,Z corrections introduced by refraction, using Parrish method, including the correction for the curvature of the earth (Parrish et al. 2019, 10.3390/rs11141634)
 
 Args:
     depth (float): the current depth
-    pointing_vector_az (float): azimuth of pointing vector of the satellite in radians
+    pointing_vector_az (float): Azimuth of pointing vector of the satellite in radians
     pointing_vector_elev (float): Elevation of pointing vector of the satellite in radians
 
 Returns:

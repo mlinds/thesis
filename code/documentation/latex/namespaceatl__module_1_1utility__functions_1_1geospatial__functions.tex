@@ -1,0 +1,108 @@
+\hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions}{}\doxysection{atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions Namespace Reference}
+\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions}\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a6575f3db47fe0c13a51401e24cc44a3a}{to\+\_\+refr\+\_\+corrected\+\_\+gdf}} (df, crs)
+\item 
+gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ab373f1efba54b3f4e7aa58bd46117dff}{get\+\_\+track\+\_\+gdf}} (np.\+ndarray outarray)
+\item 
+gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ac3a674b1bb6802dc4ca6de82315cdea9}{trackline\+\_\+gdf\+\_\+from\+\_\+netcdf}} (str or Path\+Like directory)
+\item 
+pd.\+Data\+Frame or gpd.\+Geo\+Data\+Frame \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_affa52511c73bfd4ec6ad595a496801f1}{add\+\_\+track\+\_\+dist\+\_\+meters}} (pd.\+Data\+Frame df, geodataframe=False)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_adcb7afb91da90782c9f2409f8e6a6fb7}{detail\+\_\+logger}}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a80e407fc51a28a12530831f063df3769}{name}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_affa52511c73bfd4ec6ad595a496801f1}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_affa52511c73bfd4ec6ad595a496801f1}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!add\_track\_dist\_meters@{add\_track\_dist\_meters}}
+\index{add\_track\_dist\_meters@{add\_track\_dist\_meters}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{add\_track\_dist\_meters()}{add\_track\_dist\_meters()}}
+{\footnotesize\ttfamily  pd.\+Data\+Frame or gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+add\+\_\+track\+\_\+dist\+\_\+meters (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{df,  }\item[{}]{geodataframe = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ab373f1efba54b3f4e7aa58bd46117dff}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ab373f1efba54b3f4e7aa58bd46117dff}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!get\_track\_gdf@{get\_track\_gdf}}
+\index{get\_track\_gdf@{get\_track\_gdf}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{get\_track\_gdf()}{get\_track\_gdf()}}
+{\footnotesize\ttfamily  gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+get\+\_\+track\+\_\+gdf (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{outarray }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Create a geodataframe for a track as defined by an array of photon returns
+
+Args:
+    outarray (np.ndarray): structured array of photon locations
+
+Returns:
+    gpd.GeoDataFrame: A geodataframe of a particular track
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a6575f3db47fe0c13a51401e24cc44a3a}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a6575f3db47fe0c13a51401e24cc44a3a}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!to\_refr\_corrected\_gdf@{to\_refr\_corrected\_gdf}}
+\index{to\_refr\_corrected\_gdf@{to\_refr\_corrected\_gdf}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{to\_refr\_corrected\_gdf()}{to\_refr\_corrected\_gdf()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+to\+\_\+refr\+\_\+corrected\+\_\+gdf (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{crs }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Take the original gdf of the bathymetry points, translate them to the local UTM zone, and changes the points based on the calculated refraction
+
+Args:
+    df (pd.DataFrame): input point dataframe
+    crs (str): crs string or CRS object
+
+Returns:
+    pd.DataFram: dataframe with the corrected data
+\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a6575f3db47fe0c13a51401e24cc44a3a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ac3a674b1bb6802dc4ca6de82315cdea9}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ac3a674b1bb6802dc4ca6de82315cdea9}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!trackline\_gdf\_from\_netcdf@{trackline\_gdf\_from\_netcdf}}
+\index{trackline\_gdf\_from\_netcdf@{trackline\_gdf\_from\_netcdf}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{trackline\_gdf\_from\_netcdf()}{trackline\_gdf\_from\_netcdf()}}
+{\footnotesize\ttfamily  gpd.\+Geo\+Data\+Frame atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+trackline\+\_\+gdf\+\_\+from\+\_\+netcdf (\begin{DoxyParamCaption}\item[{str or Path\+Like}]{directory }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Generates a GeoDataFrame of all the tracks in a given folder, with information about the date and the quality
+
+Args:
+    directory (strorPathLike): Location of the folder to search for netcdf files
+
+Returns:
+    gpd.GeoDataFrame: Dataframe containing all the tracks of interest, projected in local UTM coodrinate system
+\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ac3a674b1bb6802dc4ca6de82315cdea9_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_ac3a674b1bb6802dc4ca6de82315cdea9_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_adcb7afb91da90782c9f2409f8e6a6fb7}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_adcb7afb91da90782c9f2409f8e6a6fb7}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!detail\_logger@{detail\_logger}}
+\index{detail\_logger@{detail\_logger}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{detail\_logger}{detail\_logger}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+detail\+\_\+logger}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a80e407fc51a28a12530831f063df3769}\label{namespaceatl__module_1_1utility__functions_1_1geospatial__functions_a80e407fc51a28a12530831f063df3769}} 
+\index{atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}!name@{name}}
+\index{name@{name}!atl\_module.utility\_functions.geospatial\_functions@{atl\_module.utility\_functions.geospatial\_functions}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+geospatial\+\_\+functions.\+name}
+

@@ -120,11 +120,11 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">return the X,Y,Z corrections introduced by refraction, using parrish method
+<pre class="fragment">return the X,Y,Z corrections introduced by refraction, using Parrish method, including the correction for the curvature of the earth (Parrish et al. 2019, 10.3390/rs11141634)
 
 Args:
     depth (float): the current depth
-    pointing_vector_az (float): azimuth of pointing vector of the satellite in radians
+    pointing_vector_az (float): Azimuth of pointing vector of the satellite in radians
     pointing_vector_elev (float): Elevation of pointing vector of the satellite in radians
 
 Returns:

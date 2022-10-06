@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['window_184',['window',['../namespaceatl__module_1_1____main____.html#abb5b58f6a1715ebcb3bb0b06a79d51bd',1,'atl_module::__main__']]],
-  ['window_5fmeters_185',['window_meters',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#ab9ba1fc70c7a884d95bbfb9d82dae590',1,'atl_module.bathymetry_extraction.kde_peaks_method.AccumulateKDEs.window_meters()'],['../namespaceatl__module_1_1____main____.html#ae2e73412e3d954fd430da756e6cf9fcb',1,'atl_module.__main__.window_meters()']]],
-  ['write_5flidar_5ferror_5ftables_186',['write_lidar_error_tables',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a14cf69df0525edc6f6c9225683fb349a',1,'atl_module::core::GebcoUpscaler']]],
-  ['write_5fraster_5ferror_5ftables_187',['write_raster_error_tables',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a56e0411da599e1ebb844671023e0f9f8',1,'atl_module::core::GebcoUpscaler']]]
+  ['z_5fmax_5flist_158',['z_max_list',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a1dd6d3d35528c789d3a42366e53c8c72',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]]
 ];

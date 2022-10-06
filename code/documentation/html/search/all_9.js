@@ -1,13 +1,12 @@
 var searchData=
 [
-  ['icesat_5faltitude_89',['ICESAT_ALTITUDE',['../namespaceatl__module_1_1bathymetry__extraction_1_1refraction__correction.html#a0d28db5c53002b43fa4cdbb80f8948c1',1,'atl_module::bathymetry_extraction::refraction_correction']]],
-  ['icesat_5fbathymetry_2epy_90',['icesat_bathymetry.py',['../icesat__bathymetry_8py.html',1,'']]],
-  ['icesat_5ferror_5fmetrics_91',['icesat_error_metrics',['../namespaceatl__module_1_1error__calc.html#a27be8016d89c20581a8f3f4c396585f1',1,'atl_module::error_calc']]],
-  ['icesat_5fmae_92',['icesat_mae',['../namespaceatl__module_1_1error__calc.html#a00ebb765b52b9621c542f50edb2df49a',1,'atl_module::error_calc']]],
-  ['icesat_5fmape_93',['icesat_mape',['../namespaceatl__module_1_1error__calc.html#aa66b76957b1bb9c957f35872f7177091',1,'atl_module::error_calc']]],
-  ['icesat_5fmed_5fabs_5ferror_94',['icesat_med_abs_error',['../namespaceatl__module_1_1error__calc.html#a9421464530e737355b24c853b165e8e6',1,'atl_module::error_calc']]],
-  ['icesat_5fr2_5fscore_95',['icesat_r2_score',['../namespaceatl__module_1_1error__calc.html#a99152878df574a67b663739a4ee14f3b',1,'atl_module::error_calc']]],
-  ['icesat_5frmse_96',['icesat_rmse',['../namespaceatl__module_1_1error__calc.html#aa2e5ad85c5a356dfbebb2737f76ac00e',1,'atl_module::error_calc']]],
-  ['index_97',['index',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#abf0c2709ebbfffff3828aa16e4b36e5c',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
-  ['index_5fval_5flist_98',['index_val_list',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a296a9dad4a4409cc1facb7cc50a86690',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]]
+  ['kalman_2epy_88',['kalman.py',['../kalman_8py.html',1,'']]],
+  ['kalman_5fupdate_89',['kalman_update',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a0ddd1f5ad4829901ea5b6e5e2b6db0c8',1,'atl_module::core::GebcoUpscaler']]],
+  ['kalman_5fupdate_5fraster_5fpath_90',['kalman_update_raster_path',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a24b243aea3f076489672d9ea03fe8a3e',1,'atl_module::core::GebcoUpscaler']]],
+  ['kde_5fpeaks_5fmethod_2epy_91',['kde_peaks_method.py',['../kde__peaks__method_8py.html',1,'']]],
+  ['kde_5fval_5flist_92',['kde_val_list',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a51851857edb83961dbb76a83784dc5c8',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
+  ['krige_5fbathy_93',['krige_bathy',['../namespaceatl__module_1_1kriging.html#a0d954f881975aa2124e7c9fb92a8384d',1,'atl_module::kriging']]],
+  ['kriged_5fraster_5fpath_94',['kriged_raster_path',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a64fec8385202d4628f84e638c11fdae4',1,'atl_module::core::GebcoUpscaler']]],
+  ['kriging_95',['kriging',['../classatl__module_1_1core_1_1GebcoUpscaler.html#aa20a8bcf7842b7884aeae3ad69fd8efb',1,'atl_module::core::GebcoUpscaler']]],
+  ['kriging_2epy_96',['kriging.py',['../kriging_8py.html',1,'']]]
 ];

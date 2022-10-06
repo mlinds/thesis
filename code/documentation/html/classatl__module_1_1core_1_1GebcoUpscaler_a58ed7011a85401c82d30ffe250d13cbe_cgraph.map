@@ -1,6 +1,6 @@
 <map id="atl_module.core.GebcoUpscaler.recalc_tracklines_gdf" name="atl_module.core.GebcoUpscaler.recalc_tracklines_gdf">
-<area shape="rect" id="node1" title=" " alt="" coords="5,43,252,84"/>
-<area shape="rect" id="node2" href="$namespaceatl__module_1_1geospatial__utils_1_1geospatial__functions.html#ab640bb9ad7c77b1974d21c9834faa237" title=" " alt="" coords="300,35,529,91"/>
-<area shape="rect" id="node3" href="$namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#abc1074f21ee3ea96ea2987f6de9e4fbe" title=" " alt="" coords="577,5,759,47"/>
-<area shape="rect" id="node4" href="$namespaceatl__module_1_1io_1_1atl03__netcdf__loading.html#a6a1e7a5737ef2d651c29ae1512e0e94a" title=" " alt="" coords="597,71,739,127"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,39,252,80"/>
+<area shape="rect" id="node2" href="$namespaceatl__module_1_1utility__functions_1_1geospatial__functions.html#ac3a674b1bb6802dc4ca6de82315cdea9" title=" " alt="" coords="300,24,460,95"/>
+<area shape="rect" id="node3" href="$namespaceatl__module_1_1ATL03__preprocessing_1_1atl03__netcdf__loading.html#a4e9856337f5e70f1b424909d73df092b" title=" " alt="" coords="510,5,757,47"/>
+<area shape="rect" id="node4" href="$namespaceatl__module_1_1ATL03__preprocessing_1_1atl03__netcdf__loading.html#a548aad90a432e1dc06f58b4bb83be7e6" title=" " alt="" coords="508,71,759,112"/>
 </map>

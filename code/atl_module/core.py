@@ -8,21 +8,21 @@ from os.path import exists as file_exists
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import pandas as pd
-from atl_module import error_calc, kalman, kriging
+from atl_module import kalman, kriging
+from atl_module.ATL03_preprocessing.download import request_full_data_shapefile
 from atl_module.bathymetry_extraction import icesat_bathymetry
 from atl_module.bathymetry_extraction.point_dataframe_filters import (
     add_msl_corrected_seafloor_elev,
 )
-from atl_module.geospatial_utils import raster_interaction
-from atl_module.geospatial_utils.geospatial_functions import (
+from atl_module.utility_functions import error_calc, raster_interaction
+from atl_module.utility_functions.geospatial_functions import (
     to_refr_corrected_gdf,
     trackline_gdf_from_netcdf,
 )
-from atl_module.io.download import request_full_data_shapefile
-from atl_module.ocean_color import (  # add_secchi_depth_to_tracklines,
+from atl_module.utility_functions.ocean_color import (  # add_secchi_depth_to_tracklines,
     create_zsd_points_from_tracklines,
 )
-from atl_module.plotting import (  # plot_aoi,
+from atl_module.utility_functions.plotting import (  # plot_aoi,
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
     plot_photon_map,

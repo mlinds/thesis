@@ -3,10 +3,13 @@ from glob import iglob
 from multiprocessing import Pool
 
 import pandas as pd
+from atl_module.ATL03_preprocessing.atl03_netcdf_loading import (
+    get_beams,
+    load_beam_array_ncds,
+)
 from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.kde_peaks_method import AccumulateKDEs
-from atl_module.geospatial_utils import geospatial_functions as geofn
-from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
+from atl_module.utility_functions import geospatial_functions as geofn
 from logzero import setup_logger
 from tqdm import tqdm
 

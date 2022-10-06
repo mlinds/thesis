@@ -21,7 +21,7 @@ from xml.etree import ElementTree as ET
 import fiona
 import geopandas as gpd
 import requests
-from atl_module.io.variablelist import atl_03_vars, segment_vars
+from atl_module.ATL03_preprocessing.variablelist import atl_03_vars, segment_vars
 from atl_module.secret_vars import EARTHDATA_PASSWORD, EARTHDATA_USERNAME, EMAIL
 from shapely.geometry.polygon import orient
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 # from atl_module.geospatial_utils.geospatial_functions import add_track_dist_meters
 from atl_module.bathymetry_extraction.refraction_correction import correct_refr
-from atl_module.geospatial_utils.raster_interaction import query_raster
+from atl_module.utility_functions.raster_interaction import query_raster
 
 p = Path(__file__).parents[3]
 

@@ -1,5 +1,11 @@
 var searchData=
 [
-  ['p_350',['p',['../namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#aafcaaf6732f7a0c93953e5201168e7bc',1,'atl_module::bathymetry_extraction::point_dataframe_filters']]],
-  ['parser_351',['parser',['../namespaceatl__module_1_1____main____.html#a701226e17d3f5b16a2587beaeeb47674',1,'atl_module::__main__']]]
+  ['raster_5ferror_5fsummary_301',['raster_error_summary',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a87bf18be734a224a9f64bce2b93d65c5',1,'atl_module::core::GebcoUpscaler']]],
+  ['returndict_302',['returndict',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a52dfa5d93f7a88b32ab4d6e6f4ab80bb',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
+  ['rmse_5ficesat_303',['rmse_icesat',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6fa951d4644ed716a9d65a7cf741751f',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fkalman_304',['rmse_kalman',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6714fa0f6f1d35269c817711047cf951',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fkriged_305',['rmse_kriged',['../classatl__module_1_1core_1_1GebcoUpscaler.html#ab9c3ccf1021b1c8b82e78f5f74b82a3f',1,'atl_module::core::GebcoUpscaler']]],
+  ['rmse_5fnaive_306',['rmse_naive',['../classatl__module_1_1core_1_1GebcoUpscaler.html#af49ea88566f9ddcb664bf2484f361910',1,'atl_module::core::GebcoUpscaler']]],
+  ['run_5flogger_307',['run_logger',['../namespaceatl__module_1_1core.html#a4a067e852cd9e08ee79cd9478191b5c2',1,'atl_module::core']]],
+  ['run_5fparams_308',['run_params',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a153b593c9c2027258150441246f83f96',1,'atl_module::core::GebcoUpscaler']]]
 ];

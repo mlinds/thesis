@@ -3,13 +3,16 @@ import sys
 from glob import glob
 
 import pandas as pd
+from atl_module.ATL03_preprocessing.atl03_netcdf_loading import (
+    get_beams,
+    load_beam_array_ncds,
+)
 from atl_module.bathymetry_extraction.icesat_bathymetry import (
     _filter_points,
     add_rolling_kde,
 )
-from atl_module.error_calc import add_true_elevation
-from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
-from atl_module.plotting import plot_transect_results
+from atl_module.utility_functions.error_calc import add_true_elevation
+from atl_module.utility_functions.plotting import plot_transect_results
 
 
 def run_kde(filename, beam):

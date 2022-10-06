@@ -1,9 +1,4 @@
 var searchData=
 [
-  ['mae_5ficesat_340',['mae_icesat',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a1a7b659a37d3cd7a3808296d94c8ef36',1,'atl_module::core::GebcoUpscaler']]],
-  ['max_5fgeoid_5fhigh_5fz_341',['max_geoid_high_z',['../namespaceatl__module_1_1____main____.html#a09904225f87cccc46d1ebb85054fb23e',1,'atl_module::__main__']]],
-  ['max_5fsea_5fsurf_5felev_342',['max_sea_surf_elev',['../namespaceatl__module_1_1____main____.html#a2ae40ec0e672e19dd67f08580288ca0d',1,'atl_module::__main__']]],
-  ['min_5fkde_343',['min_kde',['../namespaceatl__module_1_1____main____.html#ae8b59b96880fe407bfa17b49a7300046',1,'atl_module::__main__']]],
-  ['min_5fph_5fcount_344',['min_ph_count',['../namespaceatl__module_1_1____main____.html#ae666b21e579a4261891ab557ac7864cc',1,'atl_module::__main__']]],
-  ['min_5fphotons_345',['min_photons',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#adaff9eb19b8d4d4ad062778461fc4534',1,'atl_module.bathymetry_extraction.kde_peaks_method.AccumulateKDEs.min_photons()'],['../namespaceatl__module_1_1____main____.html#a103d5cc5686cabc54edb738e09f5e9d3',1,'atl_module.__main__.min_photons()']]]
+  ['name_299',['name',['../namespaceatl__module_1_1core.html#a9cc28a9ccf2840e8fecdca6f5fbf6e1c',1,'atl_module.core.name()'],['../namespaceatl__module_1_1kalman.html#a01ee70cf115ae49e999dad3b59fca581',1,'atl_module.kalman.name()'],['../namespaceatl__module_1_1kriging.html#a6ad47190afe64adb2a71a715c116af96',1,'atl_module.kriging.name()'],['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#a4b52bb4588401e3d4bc9bcfb41b3a120',1,'atl_module.utility_functions.error_calc.name()'],['../namespaceatl__module_1_1utility__functions_1_1geospatial__functions.html#a80e407fc51a28a12530831f063df3769',1,'atl_module.utility_functions.geospatial_functions.name()'],['../namespaceatl__module_1_1utility__functions_1_1raster__interaction.html#ac086deee78c2f5177233ab3d5f21f454',1,'atl_module.utility_functions.raster_interaction.name()']]]
 ];

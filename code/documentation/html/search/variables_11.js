@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['variogram_5fparameters_372',['variogram_parameters',['../namespaceatl__module_1_1____main____.html#ae69e3bdab7c6d04a74a3fe82c0b990cf',1,'atl_module::__main__']]],
-  ['varpaths_373',['varpaths',['../namespaceatl__module_1_1io_1_1variablelist.html#a20758c2b8651fa819688b0e1d4e45268',1,'atl_module::io::variablelist']]],
-  ['vars_5f_374',['vars_',['../namespaceatl__module_1_1io_1_1download.html#a9bb32ef2f59144e679252b19915be34d',1,'atl_module::io::download']]]
+  ['window_5fmeters_316',['window_meters',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#ab9ba1fc70c7a884d95bbfb9d82dae590',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]]
 ];

@@ -4,7 +4,10 @@ from os import PathLike
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from atl_module.io.atl03_netcdf_loading import get_beams, load_beam_array_ncds
+from atl_module.ATL03_preprocessing.atl03_netcdf_loading import (
+    get_beams,
+    load_beam_array_ncds,
+)
 from logzero import setup_logger
 from shapely.geometry import LineString, Point
 

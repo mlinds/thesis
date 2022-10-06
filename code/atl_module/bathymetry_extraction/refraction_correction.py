@@ -10,11 +10,11 @@ EARTH_RAD = 6371 * 100
 
 
 def correct_refr(depth, pointing_vector_az, pointing_vector_elev):
-    """return the X,Y,Z corrections introduced by refraction, using parrish method
+    """return the X,Y,Z corrections introduced by refraction, using Parrish method, including the correction for the curvature of the earth (Parrish et al. 2019, 10.3390/rs11141634)
 
     Args:
         depth (float): the current depth
-        pointing_vector_az (float): azimuth of pointing vector of the satellite in radians
+        pointing_vector_az (float): Azimuth of pointing vector of the satellite in radians
         pointing_vector_elev (float): Elevation of pointing vector of the satellite in radians
 
     Returns:

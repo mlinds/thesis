@@ -2,8 +2,8 @@ from os import path
 
 import numpy as np
 import rasterio
-from atl_module.geospatial_utils.geospatial_functions import to_refr_corrected_gdf
-from atl_module.geospatial_utils.raster_interaction import query_raster
+from atl_module.utility_functions.geospatial_functions import to_refr_corrected_gdf
+from atl_module.utility_functions.raster_interaction import query_raster
 from logzero import setup_logger
 from rasterio.enums import Resampling
 from rasterio.vrt import WarpedVRT

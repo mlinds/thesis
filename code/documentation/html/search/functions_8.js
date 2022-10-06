@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['icesat_5ferror_5fmetrics_260',['icesat_error_metrics',['../namespaceatl__module_1_1error__calc.html#a27be8016d89c20581a8f3f4c396585f1',1,'atl_module::error_calc']]],
-  ['icesat_5fmae_261',['icesat_mae',['../namespaceatl__module_1_1error__calc.html#a00ebb765b52b9621c542f50edb2df49a',1,'atl_module::error_calc']]],
-  ['icesat_5fmape_262',['icesat_mape',['../namespaceatl__module_1_1error__calc.html#aa66b76957b1bb9c957f35872f7177091',1,'atl_module::error_calc']]],
-  ['icesat_5fmed_5fabs_5ferror_263',['icesat_med_abs_error',['../namespaceatl__module_1_1error__calc.html#a9421464530e737355b24c853b165e8e6',1,'atl_module::error_calc']]],
-  ['icesat_5fr2_5fscore_264',['icesat_r2_score',['../namespaceatl__module_1_1error__calc.html#a99152878df574a67b663739a4ee14f3b',1,'atl_module::error_calc']]],
-  ['icesat_5frmse_265',['icesat_rmse',['../namespaceatl__module_1_1error__calc.html#aa2e5ad85c5a356dfbebb2737f76ac00e',1,'atl_module::error_calc']]]
+  ['icesat_5ferror_5fmetrics_228',['icesat_error_metrics',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#aec9ccd8728232838cbb140d1a8766f06',1,'atl_module::utility_functions::error_calc']]],
+  ['icesat_5fmae_229',['icesat_mae',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#ae5f15e95126730bbc5b0c064b0675526',1,'atl_module::utility_functions::error_calc']]],
+  ['icesat_5fmape_230',['icesat_mape',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#a15e9a5db8640b15c23e880e9e1ccd54f',1,'atl_module::utility_functions::error_calc']]],
+  ['icesat_5fmed_5fabs_5ferror_231',['icesat_med_abs_error',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#a71397487c2d3c57244273c20f064e4b1',1,'atl_module::utility_functions::error_calc']]],
+  ['icesat_5fr2_5fscore_232',['icesat_r2_score',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#a254d4f0877223b2c951babae977333ce',1,'atl_module::utility_functions::error_calc']]],
+  ['icesat_5frmse_233',['icesat_rmse',['../namespaceatl__module_1_1utility__functions_1_1error__calc.html#af046b9310a25220e442526f42137459b',1,'atl_module::utility_functions::error_calc']]]
 ];
