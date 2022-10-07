@@ -108,7 +108,7 @@ def icesat_error_metrics(beam_df):
 
 
 def raster_RMSE_blocked(
-    truth_raster_path: str, measured_rasterpath: str, error_out=False
+    truth_raster_path: str, measured_rasterpath: str, error_out=None
 ) -> dict:
     """Create a dictionary summarizing the error metrics between two rasters. The measured raster is projected into the same CRS and resolution as the truth raster, and then the RMSE and MAE area calculated.
 
@@ -141,9 +141,9 @@ def raster_RMSE_blocked(
         out_mae = []
         out_me = []
         # if error output is requested, set up an empty geotiff raster to hold the output
-        if error_out:
+        if error_out is not None:
             folder = path.dirname(measured_rasterpath)
-            outpath = path.join(folder, "error_out.tif")
+            outpath = path.join(folder, error_out)
             print(folder, outpath)
             # raise NotImplementedError("fix this function before use")
             out_options = truthras.meta
