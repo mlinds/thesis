@@ -383,24 +383,17 @@ class GebcoUpscaler:
         Returns:
             matplotlib.figure: figure of the resulting plot
         """
-
+        # set location to store the output figure
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
+        # generate the matplotlib figure object
         icesat_points_figure = plot_photon_map(self.bathy_pts_gdf, fraction=fraction)
-
-        # remove contextily attribution which we can remove later
-        text = icesat_points_figure.axes[0].texts[0]
-        text.set_visible(False)
-        text_string_value = text.get_text()
-        print("add this to caption! :", text_string_value)
-
-        icesat_points_figure.tight_layout()
-
+        # save the figure
         icesat_points_figure.savefig(
             outpath,
             bbox_inches="tight",
             facecolor="white",
         )
-        detail_logger.info(f"Photon output written to {outpath}")
+        detail_logger.info(f"Photon geographic map written to {outpath}")
         return icesat_points_figure
 
     def plot_tracklines(self):
