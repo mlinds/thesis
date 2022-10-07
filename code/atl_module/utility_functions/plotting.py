@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import rasterio
+from matplotlib_scalebar.scalebar import ScaleBar
 from rasterio.plot import show as rastershow
 
 LATEX_PAGE_WIDTH = 448.1309
@@ -71,7 +72,7 @@ def plot_photon_map(ax, bathy_points_gdf):
         legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]"},
         rasterized=True,
         ax=ax,
-        s=4,
+        s=3,
     )
 
     print("finished plotting photons")
@@ -80,6 +81,11 @@ def plot_photon_map(ax, bathy_points_gdf):
 
     ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
     ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
+    scalebar = ScaleBar(
+        1,
+        "m",
+    )
+    ax.add_artist(scalebar)
     # ax.set_title("Bathymetric photons identified by rolling-window KDE")
     # return ax
 
