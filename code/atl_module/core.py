@@ -27,7 +27,6 @@ from atl_module.utility_functions.plotting import (  # plot_aoi,
     map_ground_truth_data,
     plot_photon_map,
     plot_tracklines_overview,
-    set_size,
 )
 from logzero import setup_logger
 
@@ -275,15 +274,23 @@ class GebcoUpscaler:
         Args:
             check_kriged (bool, optional): Calculate the RMSE and MAE error between the kriged raster and the truth raster. This is. Defaults to False.
         """
+        gebco_error_path = None
+        kalman_error_path = None
+        if error_out:
+            gebco_error_path = "gebco_error.tif"
+            kalman_error_path = "kalman_error.tif"
+
+        print(kalman_error_path)
 
         self.rmse_kalman = error_calc.raster_RMSE_blocked(
-            self.truebathy_path, self.kalman_update_raster_path, error_out=error_out
+            self.truebathy_path, self.kalman_update_raster_path, error_out=kalman_error_path
         )
         # this only needs to be calculated once, so only do it if this is the first time this object has been created
         if self.rmse_naive is None:
             self.rmse_naive = error_calc.raster_RMSE_blocked(
                 self.truebathy_path,
                 self.bilinear_gebco_raster_path,
+                error_out=gebco_error_path,
             )
         else:
             print("GEBCO vs Truth RMSE already calculated, skipping")
@@ -376,22 +383,17 @@ class GebcoUpscaler:
         Returns:
             matplotlib.figure: figure of the resulting plot
         """
-        # get the ratio of the map edges to each other
-        minx, miny, maxx, maxy = self.bathy_pts_gdf.total_bounds
-        # this ratio we can feed into the figure sizing function
-        scale_ratio = (maxx - minx) / (maxy - miny)
 
-        icesat_points_figure, ax = plt.subplots(
-            figsize=set_size(fraction=fraction, ratio=scale_ratio)
-        )
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
-        plot_photon_map(ax, self.bathy_pts_gdf)
+        icesat_points_figure = plot_photon_map(self.bathy_pts_gdf, fraction=fraction)
 
         # remove contextily attribution which we can remove later
         text = icesat_points_figure.axes[0].texts[0]
         text.set_visible(False)
         text_string_value = text.get_text()
         print("add this to caption! :", text_string_value)
+
+        icesat_points_figure.tight_layout()
 
         icesat_points_figure.savefig(
             outpath,

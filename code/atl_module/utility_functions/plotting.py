@@ -6,6 +6,7 @@ import rasterio
 from matplotlib_scalebar.scalebar import ScaleBar
 from rasterio.plot import show as rastershow
 
+cx.set_cache_dir("/tmp/contextilycache")
 LATEX_PAGE_WIDTH = 448.1309
 
 
@@ -62,23 +63,43 @@ def map_ground_truth_data(truthdata_path, plottitle):
         return fig
 
 
-def plot_photon_map(ax, bathy_points_gdf):
+def plot_photon_map(bathy_points_gdf, fraction):
+    # get the ratio of the map edges to each other
+    minx, miny, maxx, maxy = bathy_points_gdf.total_bounds
+    # this ratio we can feed into the figure sizing function
+    scale_ratio = (maxx - minx) / (maxy - miny)
+    width, height = set_size(fraction=fraction, ratio=scale_ratio)
+    colorbar_orient = "vertical"
+    colorbar_fraction = 0.047 * (height / width)
+    # if it is too tall for the page, shrink the vertical dimension a bit
+    if height > 9:
+        scale_relative_to_v = height / 9
+        # recalculate so that the vertial side is 9
+        width = width / scale_relative_to_v
+        height = height / scale_relative_to_v
+    # if the map is horizontal, then set the colorbar to be on the long side
+    if width > height:
+        colorbar_orient = "horizontal"
+        colorbar_fraction = 0.047 * (width / height)
+
+    icesat_points_figure, ax = plt.subplots(figsize=(width, height))
+
     print("plotting photon map")
     # pandas plot onto a dataframe returns the artist which we will keep for later
     bathy_points_gdf.plot(
         column="sf_elev_MSL",
         cmap="inferno",
         legend=True,
-        legend_kwds={"label": "Depth estimate using only ICESat-2 [m +MSL]"},
+        legend_kwds={
+            "label": "Elevation estimate using ICESat-2 [m +MSL]",
+            "orientation": colorbar_orient,
+            "fraction": colorbar_fraction,
+        },
         rasterized=True,
         ax=ax,
         s=3,
     )
-
-    print("finished plotting photons")
     cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_points_gdf.crs)
-    print("finished adding basemap")
-
     ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
     ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
     scalebar = ScaleBar(
@@ -87,7 +108,7 @@ def plot_photon_map(ax, bathy_points_gdf):
     )
     ax.add_artist(scalebar)
     # ax.set_title("Bathymetric photons identified by rolling-window KDE")
-    # return ax
+    return icesat_points_figure
 
 
 def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2):
