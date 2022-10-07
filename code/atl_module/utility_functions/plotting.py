@@ -91,15 +91,15 @@ def plot_photon_map(bathy_points_gdf, fraction):
         cmap="inferno",
         legend=True,
         legend_kwds={
-            "label": "Elevation estimate using ICESat-2 [m +MSL]",
+            "label": "ICESat-2 elevation [m +MSL]",
             "orientation": colorbar_orient,
             "fraction": colorbar_fraction,
         },
         rasterized=True,
         ax=ax,
-        s=3,
+        s=1,
     )
-    cx.add_basemap(ax, source=cx.providers.OpenTopoMap, crs=bathy_points_gdf.crs)
+    cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite, crs=bathy_points_gdf.crs)
     ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
     ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
     scalebar = ScaleBar(
@@ -107,7 +107,13 @@ def plot_photon_map(bathy_points_gdf, fraction):
         "m",
     )
     ax.add_artist(scalebar)
-    # ax.set_title("Bathymetric photons identified by rolling-window KDE")
+
+    # remove contextily attribution which we can add to figure caption
+    text = icesat_points_figure.axes[0].texts[0]
+    text.set_visible(False)
+    text_string_value = text.get_text()
+    print("add this to caption! :", text_string_value)
+    icesat_points_figure.tight_layout()
     return icesat_points_figure
 
 
