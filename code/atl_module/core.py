@@ -46,6 +46,7 @@ class GebcoUpscaler:
             site_name (str): `fancy` name of the site, e.g. `Florida Keys`
             truebathy (str, optional): path to the validation data in a GDAL readable raster format. Defaults to None.
         """
+        assert os.path.exists(site), f"the requested folder {site} could not be found"
         # rmse_naive is the RMSE error between the bilinear interpolation and the truth. when the object is created, it is set to none
         self.rmse_naive = None
         # set up the site name
