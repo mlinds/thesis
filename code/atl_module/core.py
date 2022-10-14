@@ -356,8 +356,10 @@ class GebcoUpscaler:
         outpath = f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.pdf"
         fig = error_lidar_pt_vs_truth_pt(self.bathy_pts_gdf, self.lidar_err_dict)
         fig.tight_layout()
+        fig.savefig(outpath, bbox_inches="tight")
         fig.savefig(
-            outpath,
+            f"../document/figures/{self.site_name}_lidar_estimated_vs_truth.png",
+            bbox_inches="tight",
         )
         detail_logger.info(f"{self.site_name}: Saved lidar error plot to {outpath}")
         return fig
@@ -371,6 +373,11 @@ class GebcoUpscaler:
         truthdata_figure = map_ground_truth_data(self.truebathy_path, plottitle=plot_title)
         truthdata_figure.savefig(
             f"{self.site_name}_truth_raster.pdf",
+            facecolor="white",
+            bbox_inches="tight",
+        )
+        truthdata_figure.savefig(
+            f"{self.site_name}_truth_raster.png",
             facecolor="white",
             bbox_inches="tight",
         )
@@ -391,6 +398,11 @@ class GebcoUpscaler:
         # save the figure
         icesat_points_figure.savefig(
             outpath,
+            bbox_inches="tight",
+            facecolor="white",
+        )
+        icesat_points_figure.savefig(
+            f"../document/figures/{self.site_name}_photon_map.png",
             bbox_inches="tight",
             facecolor="white",
         )
