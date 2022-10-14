@@ -110,6 +110,8 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
         ar = rioxarray.open_rasterio(ras)
+        # ar.ma
+        # maskarray = np.isnan(ar.values[0])
         gridx = ar.x.data
         gridy = ar.y.data
     # make sure we are in the same CRS
@@ -129,7 +131,8 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
         variogram_parameters=kwargs.get("variogram_parameters"),
     )
     # get the output Zgrid and uncertainty
-    z, ss = krigemodel.execute("grid", gridx, gridy)
+    z, ss = krigemodel.execute("grid", gridx, gridy, backend="loop")
+    # z, ss = krigemodel.execute("masked", gridx, gridy,mask=maskarray)
 
     detail_logger.debug(
         f"finished kriging, now saving the output raster to {folderpath + '/kriging_output.tif'}"
@@ -145,6 +148,7 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
         count=2,
         dtype=ras.dtypes[0],
         transform=ras.transform,
+        # nodata=0,
     ) as rasout:
         rasout.write(z, 1)
         rasout.write(ss, 2)
