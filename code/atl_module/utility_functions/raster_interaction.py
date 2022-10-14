@@ -128,6 +128,8 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     ), "the CRS of the bathymetry points must be a projected CRS"
     # buffer the points by 1km and get the boundaries in WGS coordinates
     bounds_wgs84 = bathy_pts.buffer(1000).to_crs("EPSG:4326").geometry.total_bounds
+    # yeet the buffer
+    # bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
 
     # going to try to buffer this a bit to see if it improves results
     # get the number of the EPSG crs (should be the local UTM zone!!)
