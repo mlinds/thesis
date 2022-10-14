@@ -1,4 +1,5 @@
 import cmocean
+import colorcet
 import contextily as cx
 import matplotlib.pyplot as plt
 import numpy as np
@@ -155,7 +156,11 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
     # ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp - 1, label="sea surf - 1m")
     ax.scatter(x=subsurfacedf.delta_time, y=subsurfacedf.Z_refr, s=2, rasterized=True)
     ax.plot(
-        bathy_df.delta_time, bathy_df.z_kde, c="red", alpha=0.7, label="KDE predicted seafloor"
+        bathy_df.delta_time,
+        bathy_df.z_kde,
+        c="red",
+        alpha=0.7,
+        label="KDE predicted seafloor",
     )
     ax.plot(
         bathy_df.delta_time,
@@ -184,7 +189,11 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
 
     nbins = max(1, int(time_secs.value / 4000000))
     bindf = bathy_df.groupby(pd.cut(bathy_df.delta_time, nbins)).agg(
-        {"X": "count", "sqerror": lambda x: np.power(np.mean(x), 0.5), "kde_val": "mean"}
+        {
+            "X": "count",
+            "sqerror": lambda x: np.power(np.mean(x), 0.5),
+            "kde_val": "mean",
+        }
     )
     # set ax to be the second subplot
     # ax = axes[1]
@@ -235,3 +244,56 @@ def set_size(fraction=1, ratio=1.618):
 
 def site_overview_map():
     pass
+
+
+greenredcolormap = colorcet.cm.diverging_gwr_55_95_c38_r
+
+
+def plot_error_improvement_meters(error_raster_path, bathy_points_gdf):
+    """Generate a geospatial plot of the change in the error due to the kalman updating process
+
+    Args:
+        error_raster_path (string): path to the raster dataset
+        bathy_points_gdf (gpd.GeoDataFrame): bathymetry point geodataframe
+
+    Returns:
+        plt.Figure: matplotlib figure object of the geospatial plot
+    """
+    with rasterio.open(error_raster_path) as error_improvement:
+        data = error_improvement.read(1, masked=True).filled(np.NaN)
+        transform = error_improvement.transform
+        crs = error_improvement.crs
+    # the colorbars edges need to be set to show the distribution
+    # using the quantoles will show the mag without being skewed by extreme outliers
+    # find the 2% and 98% value
+    q2 = np.nanquantile(data, 0.02)
+    q98 = np.nanquantile(data, 0.98)
+    # get the larger magnitude quantile, then set the high and low based on that
+    quantilechoice = max(abs(q2), abs(q98))
+
+    # TODO consider using fancy scalebar options to indicate the true max
+    fig, ax = plt.subplots(figsize=set_size())
+    imageartist = ax.imshow(
+        data,
+        cmap=greenredcolormap,
+        vmax=quantilechoice,
+        vmin=-1 * quantilechoice,
+    )
+    fig.colorbar(imageartist, label="Improvement in error [m]")
+    # clear the axes, so that a version in geospatial coordinates can be created
+    ax.clear()
+    # actually plot the raster in geospatial coordinates on to the axis
+    rastershow(
+        data,
+        transform=transform,
+        cmap=greenredcolormap,
+        vmax=quantilechoice,
+        vmin=-1 * quantilechoice,
+        ax=ax,
+    )
+    ptartist = bathy_points_gdf.to_crs(crs).plot(
+        ax=ax, label="ICESat-2 points", markersize=0.5, color="black"
+    )
+    ptartist.set_rasterized(True)
+    ax.legend()
+    return fig

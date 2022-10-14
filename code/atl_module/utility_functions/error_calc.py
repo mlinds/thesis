@@ -117,7 +117,7 @@ def raster_RMSE_blocked(
     Args:
         truth_raster_path (str): The path of the truth raster
         measured_rasterpath (str): the path of the measurement raster, which will be reprojected to the same grid as the truth raster
-        error_out (bool, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
+        error_out (string, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
 
     Returns:
         dict: a dictionary with the keys 'RMSE' and 'MAE', whose values are a float of the respective error value
@@ -154,12 +154,15 @@ def raster_RMSE_blocked(
                 mode="w+",
                 **out_options,
                 compress="lzw",
+                tiled=True,
+                predictor=2,
             )
         # iterate over the blocks in the truth raster
         # if the block contains no data in either of the rasters, the result of the operation will be np.nan
-        for ji, window in truthras.block_windows(1):
+        for ji, block_window in truthras.block_windows(1):
             # read the truth data by the window and fill the masked values with nans
-            truth_data = truthras.read(1, masked=True, window=window)
+            truth_data = truthras.read(1, masked=True, window=block_window)
+
             truth_data = np.ma.filled(truth_data, np.nan)
 
             # don't look on land
@@ -171,12 +174,12 @@ def raster_RMSE_blocked(
                 continue
 
             # read the measured data by window
-            bilinear_data = bi_vrt.read(1, masked=True, window=window)
+            bilinear_data = bi_vrt.read(1, masked=True, window=block_window)
             bilinear_data = np.ma.filled(bilinear_data, np.nan)
             error_data = truth_data - bilinear_data
             # if requested, write the error data do a new file
             if error_out:
-                outras.write(error_data, window=window, indexes=1)
+                outras.write(error_data, window=block_window, indexes=1)
             # get the mean squared error of the block
             mse = np.nanmean(error_data**2)
             # get the mean absolute error

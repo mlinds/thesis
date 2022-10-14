@@ -6,6 +6,7 @@ import pandas as pd
 
 # from pyproj import transform
 import rasterio as rio
+import rasterio.windows as riowindows
 from logzero import logger, setup_logger
 from osgeo import gdal
 
@@ -14,6 +15,40 @@ gdal.UseExceptions()
 
 
 detail_logger = setup_logger(name="details")
+
+
+def clip_to_datawindow(rasterpath, aoipath):
+    """Crop NODATA values surrounding a raster, then overwrite the raster with the new dataset
+
+    Args:
+        rasterpath (str): path to the raster
+    """
+    with rio.open(rasterpath, mode="r+") as src:
+        # get the aoi dataframe and convert it to the same CRS as the raster we want to clip
+        gdf = gpd.read_file(aoipath).to_crs(crs=src.crs)
+        # unpack the boundaries
+        left, bottom, right, top = gdf.geometry.total_bounds
+        # create an AOI window
+        aoiwindow = riowindows.from_bounds(
+            top=top, bottom=bottom, left=left, right=right, transform=src.transform
+        )
+        print(aoiwindow)
+        datawindow = riowindows.get_data_window(src.read(1, masked=True, window=aoiwindow))
+        print(datawindow)
+        finalwindow = riowindows.union(datawindow, aoiwindow)
+
+        kwargs = src.meta.copy()
+
+        kwargs.update(
+            {
+                "height": finalwindow.height,
+                "width": finalwindow.width,
+                "transform": rio.windows.transform(finalwindow, src.transform),
+            }
+        )
+
+        with rio.open("../data/test_sites/oahu8/clip_test.tif", "w", **kwargs) as dst:
+            dst.write(src.read(window=finalwindow))
 
 
 def _assign_na_values(inpval):
