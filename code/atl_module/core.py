@@ -126,8 +126,6 @@ class GebcoUpscaler:
         self,
         window,
         req_perc_hconf,
-        min_photons,
-        window_meters,
         min_kde,
         low_limit_gebco,
         high_limit_gebco,
@@ -143,8 +141,6 @@ class GebcoUpscaler:
             {
                 "window_size_photons": window,
                 "Required percentage high confidence ocean photons": req_perc_hconf,
-                "minimum photons in distance window": min_photons,
-                "window_horizontal": window_meters,
                 "Minimum KDE to be considered": min_kde,
                 "lowlimit": low_limit_gebco,
                 "high_limit_gebco": high_limit_gebco,
@@ -163,8 +159,6 @@ class GebcoUpscaler:
             self.folderpath,
             window=window,
             req_perc_hconf=req_perc_hconf,
-            min_photons=min_photons,
-            window_meters=window_meters,
             min_kde=min_kde,
             low_limit_gebco=low_limit_gebco,
             high_limit_gebco=high_limit_gebco,
@@ -278,7 +272,9 @@ class GebcoUpscaler:
         print(kalman_error_path)
 
         self.rmse_kalman = error_calc.raster_RMSE_blocked(
-            self.truebathy_path, self.kalman_update_raster_path, error_out=kalman_error_path
+            self.truebathy_path,
+            self.kalman_update_raster_path,
+            error_out=kalman_error_path,
         )
         # this only needs to be calculated once, so only do it if this is the first time this object has been created
         if self.rmse_naive is None:
@@ -296,7 +292,10 @@ class GebcoUpscaler:
             )
         # if this is not requested, set a dicionary saying that
         else:
-            self.rmse_kriged = {"RMSE [m]": "Not Calculated", "MAE [m]": "Not Calculated"}
+            self.rmse_kriged = {
+                "RMSE [m]": "Not Calculated",
+                "MAE [m]": "Not Calculated",
+            }
 
         self.raster_error_summary = pd.DataFrame.from_dict(
             {

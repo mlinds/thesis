@@ -60,9 +60,12 @@ def _filter_points(
     return filtered_photon_df
 
 
-def add_rolling_kde(df, window, window_meters, min_photons):
+def add_rolling_kde(
+    df,
+    window,
+):
     # set up the object to keep all the return values
-    accumulator = AccumulateKDEs(window_meters=window_meters, min_photons=min_photons)
+    accumulator = AccumulateKDEs()
     # this series is a key to matching the KDE value and the Z elevation of the Max KDE to the points in original df
     # this is a complicated series of joins but it should support matching any arbitrary indexes
     series_out = (
@@ -94,8 +97,6 @@ def get_all_bathy_from_granule(
     filename,
     window,
     req_perc_hconf,
-    window_meters,
-    min_photons,
     min_kde,
     low_limit_gebco,
     high_limit_gebco,
@@ -146,8 +147,6 @@ def get_all_bathy_from_granule(
         bathy_pts = add_rolling_kde(
             subsurface_return_pts,
             window=window,
-            min_photons=min_photons,
-            window_meters=window_meters,
         )
         # find the minimum KDE strength
         thresholdval = bathy_pts.kde_val.mean()
@@ -174,8 +173,6 @@ def bathy_from_all_tracks_parallel(
     folderpath,
     window,
     req_perc_hconf,
-    window_meters,
-    min_photons,
     min_kde,
     low_limit_gebco,
     high_limit_gebco,
@@ -205,8 +202,6 @@ def bathy_from_all_tracks_parallel(
             iglob(folderpath + "/ATL03/*.nc"),
             itertools.repeat(window),
             itertools.repeat(req_perc_hconf),
-            itertools.repeat(window_meters),
-            itertools.repeat(min_photons),
             itertools.repeat(min_kde),
             itertools.repeat(low_limit_gebco),
             itertools.repeat(high_limit_gebco),

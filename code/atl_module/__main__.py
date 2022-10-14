@@ -82,8 +82,6 @@ if args.bathymetry_points:
     site.find_bathy_from_icesat(
         window=100,
         req_perc_hconf=0,
-        window_meters=None,
-        min_photons=None,
         min_kde=0.10,
         low_limit_gebco=-40,
         high_limit_gebco=1,
