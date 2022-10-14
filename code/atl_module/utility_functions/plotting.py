@@ -1,3 +1,4 @@
+import cmocean
 import contextily as cx
 import matplotlib.pyplot as plt
 import numpy as np
@@ -88,12 +89,13 @@ def plot_photon_map(bathy_points_gdf, fraction):
     # pandas plot onto a dataframe returns the artist which we will keep for later
     bathy_points_gdf.plot(
         column="sf_elev_MSL",
-        cmap="inferno",
+        cmap=cmocean.cm.deep_r,
         legend=True,
         legend_kwds={
             "label": "ICESat-2 elevation [m +MSL]",
             "orientation": colorbar_orient,
             "fraction": colorbar_fraction,
+            "pad": 0.10,
         },
         rasterized=True,
         ax=ax,
@@ -119,7 +121,7 @@ def plot_photon_map(bathy_points_gdf, fraction):
 
 def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2):
     print("plotting tracklines")
-    tracklines_gdf.plot(figsize=set_size(ratio=ratio, fraction=fraction), ax=ax)
+    tracklines_gdf.plot(figsize=set_size(ratio=ratio, fraction=fraction), ax=ax, linewidth=1)
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
@@ -147,13 +149,22 @@ def plot_both_maps(tracklines_gdf, bathy_points_gdf, aoi_gdf):
 
 def plot_transect_results(subsurfacedf, bathy_df, figpath):
     # this could be two or 4 functions :(
-    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(20, 10))
-    ax = axes[0]
-    ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp, label="sea surf")
-    ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp - 1, label="sea surf - 1m")
-    ax.scatter(x=subsurfacedf.delta_time, y=subsurfacedf.Z_refr, s=4, rasterized=True)
-    ax.plot(bathy_df.delta_time, bathy_df.z_kde, c="red", alpha=0.7)
-    ax.plot(bathy_df.delta_time, bathy_df.true_elevation, c="black", alpha=0.7)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(5, 3))
+    # ax = axes[0]
+    # ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp, label="sea surf")
+    # ax.plot(subsurfacedf.delta_time, subsurfacedf.sea_level_interp - 1, label="sea surf - 1m")
+    ax.scatter(x=subsurfacedf.delta_time, y=subsurfacedf.Z_refr, s=2, rasterized=True)
+    ax.plot(
+        bathy_df.delta_time, bathy_df.z_kde, c="red", alpha=0.7, label="KDE predicted seafloor"
+    )
+    ax.plot(
+        bathy_df.delta_time,
+        bathy_df.true_elevation,
+        c="black",
+        alpha=0.7,
+        label="Actual seafloor",
+    )
+    ax.set_ylabel("Elevation [m +MSL]")
     ax.legend()
     # add the sea surface
     # ax.axhline(bathy_df.sea_level_interp.iloc[2],c='green')
@@ -163,7 +174,7 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
     ax2.plot(bathy_df.delta_time, bathy_df.kde_val, c="green")
     ax2.axhline(bathy_df.kde_val.mean(), label="mean kde", c="purple")
     ax2.axhline(bathy_df.kde_val.median(), label="median kde", c="red")
-    # ax2.plot(bathy_df.delta_time,bathy_df.ph_count,label='ph count')
+    ax2.plot(bathy_df.delta_time, bathy_df.ph_count, label="ph count")
     ax2.legend(loc="lower right")
 
     bathy_df = bathy_df.assign(error=bathy_df.true_elevation - bathy_df.z_kde)
@@ -176,13 +187,13 @@ def plot_transect_results(subsurfacedf, bathy_df, figpath):
         {"X": "count", "sqerror": lambda x: np.power(np.mean(x), 0.5), "kde_val": "mean"}
     )
     # set ax to be the second subplot
-    ax = axes[1]
-    # plot the error by bin onto the second axis
-    bindf.plot.scatter(y="sqerror", x="kde_val", c="X", cmap="viridis", ax=ax)
+    # ax = axes[1]
+    # # plot the error by bin onto the second axis
+    # bindf.plot.scatter(y="sqerror", x="kde_val", c="X", cmap="viridis", ax=ax)
     ax.axvline(bindf.kde_val.median(), label="median kde bins")
     ax.axvline(bindf.kde_val.mean(), label="mean kde bins", c="red")
     ax.legend()
-    ax.set_title(f"binning with {nbins}")
+    ax.set_title(f"binning with {nbins} bins")
 
     fig.savefig(figpath, bbox_inches="tight")
 
