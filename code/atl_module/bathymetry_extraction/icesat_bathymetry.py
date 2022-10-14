@@ -23,8 +23,8 @@ def add_along_track_dist(pointdata):
 
 def _filter_points(
     raw_photon_df: pd.DataFrame,
-    low_limit,
-    high_limit,
+    low_limit_gebco,
+    high_limit_gebco,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -41,7 +41,11 @@ def _filter_points(
     """
     filtered_photon_df = (
         raw_photon_df.pipe(dfilt.add_gebco)
-        .pipe(dfilt.filter_gebco, low_limit=low_limit, high_limit=high_limit)
+        .pipe(
+            dfilt.filter_gebco,
+            low_limit_gebco=low_limit_gebco,
+            high_limit_gebco=high_limit_gebco,
+        )
         .pipe(
             dfilt.add_sea_surface_level,
             max_sea_surf_elev=max_sea_surf_elev,
@@ -93,8 +97,8 @@ def get_all_bathy_from_granule(
     window_meters,
     min_photons,
     min_kde,
-    low_limit,
-    high_limit,
+    low_limit_gebco,
+    high_limit_gebco,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -130,8 +134,8 @@ def get_all_bathy_from_granule(
         # get df of points in the subsurface region (ie. filter out points could not be bathymetry)
         subsurface_return_pts = _filter_points(
             point_df,
-            low_limit,
-            high_limit,
+            low_limit_gebco,
+            high_limit_gebco,
             max_sea_surf_elev,
             filter_below_z,
             filter_below_depth,
@@ -173,8 +177,8 @@ def bathy_from_all_tracks_parallel(
     window_meters,
     min_photons,
     min_kde,
-    low_limit,
-    high_limit,
+    low_limit_gebco,
+    high_limit_gebco,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -204,8 +208,8 @@ def bathy_from_all_tracks_parallel(
             itertools.repeat(window_meters),
             itertools.repeat(min_photons),
             itertools.repeat(min_kde),
-            itertools.repeat(low_limit),
-            itertools.repeat(high_limit),
+            itertools.repeat(low_limit_gebco),
+            itertools.repeat(high_limit_gebco),
             itertools.repeat(max_sea_surf_elev),
             itertools.repeat(filter_below_z),
             itertools.repeat(filter_below_depth),

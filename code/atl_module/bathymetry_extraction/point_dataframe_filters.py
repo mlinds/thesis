@@ -85,13 +85,13 @@ def add_gebco(df):
     return df.assign(gebco_elev=gebco_height)
 
 
-def filter_gebco(df: pd.DataFrame, low_limit: float, high_limit: float):
+def filter_gebco(df: pd.DataFrame, low_limit_gebco: float, high_limit_gebco: float):
     # check for gebco height in the columns
     if "gebco_elev" not in df.columns:
         raise ValueError("Make sure to add the gebco elevation before running this function")
     # filter points based on gebco
-    df = df[df.gebco_elev > low_limit]
-    df = df[df.gebco_elev < high_limit]
+    df = df[df.gebco_elev > low_limit_gebco]
+    df = df[df.gebco_elev < high_limit_gebco]
     return df
 
 
