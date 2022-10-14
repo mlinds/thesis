@@ -10,7 +10,9 @@ gdal_calc.py --calc "abs(A)-abs(B)" -A "$d/gebco_error.tif" -B "$d/kalman_error.
 --type=Float32 \
 --overwrite \
 --extent=intersect \
---co COMPRESS=LZW \
+--co COMPRESS=DEFLATE \
+--co NUM_THREADS=8 \
+--co PREDICTOR=2 \
 --co TILED=YES \
 --outfile="$d/error_improvement_meter.tif" \
 --NoDataValue -999999 
