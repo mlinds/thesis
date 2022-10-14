@@ -13,10 +13,6 @@ from atl_module.utility_functions import geospatial_functions as geofn
 from logzero import setup_logger
 from tqdm import tqdm
 
-# TODO try thread based parallelism with:
-# from multiprocessing.dummy import Pool
-
-
 detail_logger = setup_logger(name="details")
 
 
