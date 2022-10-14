@@ -43,36 +43,7 @@ def filter_TEP_and_nonassoc(df):
 
 
 # TODO rewrite this to include NAs for non-high-confience photons
-def add_sea_surface_level(df, max_sea_surf_elev, rolling_window=200):
-    # take rolling median of signal points along track distance
-    # sea_level = (
-    #     df.loc[df.oc_sig_conf >= 4]["Z_geoid"].rolling(rolling_window, center=True).median()
-    # )
-
-    # sigma_sea_level = (
-    #     df.loc[df.oc_sig_conf == 4]["Z_geoid"].rolling(rolling_window, center=True).std()
-    # )
-    # sea_level.name = "sea_level"
-    # newgdf = df.merge(
-    #     right=sea_level,
-    #     how="left",
-    #     left_index=True,
-    #     right_index=True,
-    #     validate="1:1",
-    # ).merge(
-    #     right=sigma_sea_level,
-    #     how="left",
-    #     left_index=True,
-    #     right_index=True,
-    #     validate="1:1",
-    # )
-
-    # interp_sea_surf_elev = (
-    #     pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-    #     # pd.Series(data=newgdf.sea_level.array, index=newgdf.delta_time.array)
-    #     .interpolate(method="index").to_numpy()
-    # )
-
+def add_sea_surface_level(df, max_sea_surf_elev):
     # find the median sea level
     constant_sealevel = df.loc[df.oc_sig_conf >= 4]["Z_geoid"].median()
     # find the std deviation

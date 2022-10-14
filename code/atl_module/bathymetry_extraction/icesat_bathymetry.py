@@ -11,7 +11,6 @@ from atl_module.bathymetry_extraction import point_dataframe_filters as dfilt
 from atl_module.bathymetry_extraction.kde_peaks_method import AccumulateKDEs
 from atl_module.utility_functions import geospatial_functions as geofn
 from logzero import setup_logger
-from tqdm import tqdm
 
 detail_logger = setup_logger(name="details")
 
@@ -26,7 +25,6 @@ def _filter_points(
     raw_photon_df: pd.DataFrame,
     low_limit,
     high_limit,
-    rolling_window,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -46,7 +44,6 @@ def _filter_points(
         .pipe(dfilt.filter_gebco, low_limit=low_limit, high_limit=high_limit)
         .pipe(
             dfilt.add_sea_surface_level,
-            rolling_window=rolling_window,
             max_sea_surf_elev=max_sea_surf_elev,
         )
         .pipe(dfilt.filter_low_points, filter_below_z=filter_below_z)
@@ -55,7 +52,6 @@ def _filter_points(
         .pipe(dfilt.filter_high_returns, max_geoid_high_z=max_geoid_high_z)
         .pipe(dfilt.filter_TEP_and_nonassoc)
         .pipe(dfilt.correct_for_refraction)
-        # .pipe(dfilt.add_neigbor_count, window_distance_pts=200,window_distance_meters=200)
     )
     return filtered_photon_df
 
@@ -93,14 +89,12 @@ def add_rolling_kde(df, window, window_meters, min_photons):
 def get_all_bathy_from_granule(
     filename,
     window,
-    threshold_val,
     req_perc_hconf,
     window_meters,
     min_photons,
     min_kde,
     low_limit,
     high_limit,
-    rolling_window,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -138,7 +132,6 @@ def get_all_bathy_from_granule(
             point_df,
             low_limit,
             high_limit,
-            rolling_window,
             max_sea_surf_elev,
             filter_below_z,
             filter_below_depth,
@@ -153,7 +146,7 @@ def get_all_bathy_from_granule(
             window_meters=window_meters,
         )
         # find the minimum KDE strength
-        thresholdval = bathy_pts.kde_val.mean() - threshold_val * bathy_pts.kde_val.std()
+        thresholdval = bathy_pts.kde_val.mean()
         # find the
         bathy_pts = bathy_pts.loc[bathy_pts.kde_val > max(thresholdval, min_kde)]
         # TODO could this be assigned to another function? not directly related to this function
@@ -173,41 +166,15 @@ def get_all_bathy_from_granule(
         return pd.concat(granulelist)
 
 
-def bathy_from_all_tracks(
-    folderpath,
-    window,
-    threshold_val,
-    req_perc_hconf,
-    window_meters,
-    min_photons,
-    min_kde,
-):
-    dflist = []
-    for filename in tqdm(iglob(folderpath + "/ATL03/*.nc")):
-        dflist.append(
-            get_all_bathy_from_granule(
-                filename,
-                window,
-                threshold_val,
-                req_perc_hconf,
-                window_meters,
-                min_photons,
-            )
-        )
-    return pd.concat(dflist)
-
-
 def bathy_from_all_tracks_parallel(
     folderpath,
     window,
-    threshold_val,
     req_perc_hconf,
     window_meters,
     min_photons,
     min_kde,
     low_limit,
     high_limit,
-    rolling_window,
     max_sea_surf_elev,
     filter_below_z,
     filter_below_depth,
@@ -233,14 +200,12 @@ def bathy_from_all_tracks_parallel(
         zip(
             iglob(folderpath + "/ATL03/*.nc"),
             itertools.repeat(window),
-            itertools.repeat(threshold_val),
             itertools.repeat(req_perc_hconf),
             itertools.repeat(window_meters),
             itertools.repeat(min_photons),
             itertools.repeat(min_kde),
             itertools.repeat(low_limit),
             itertools.repeat(high_limit),
-            itertools.repeat(rolling_window),
             itertools.repeat(max_sea_surf_elev),
             itertools.repeat(filter_below_z),
             itertools.repeat(filter_below_depth),

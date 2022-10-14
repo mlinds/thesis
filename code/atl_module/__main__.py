@@ -81,14 +81,12 @@ if args.trackline_calc:
 if args.bathymetry_points:
     site.find_bathy_from_icesat(
         window=100,
-        threshold_val=0.0,
         req_perc_hconf=0,
         window_meters=None,
         min_photons=None,
         min_kde=0.10,
         low_limit=-40,
         high_limit=1,
-        rolling_window=200,
         max_sea_surf_elev=2,
         filter_below_z=-40,
         filter_below_depth=-40,
@@ -135,5 +133,3 @@ if args.generate_maps:
 if args.table_error_metrics:
     # rewrite the error tables
     site.write_error_tables()
-
-# site.run_summary()
