@@ -9,7 +9,7 @@ echo "calculating error improvement for $(basename $d)"
 gdal_calc.py --calc "abs(A)-abs(B)" -A "$d/gebco_error.tif" -B "$d/kalman_error.tif" \
 --type=Float32 \
 --overwrite \
---extent=intersect \
+--extent=union \
 --co COMPRESS=DEFLATE \
 --co NUM_THREADS=8 \
 --co PREDICTOR=2 \
