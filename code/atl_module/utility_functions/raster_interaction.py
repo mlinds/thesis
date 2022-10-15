@@ -140,7 +140,7 @@ def query_raster(dataframe: pd.DataFrame, src: str, band=1):
 
 
 # TODO change this function to take the bounds as in input instead of the dataframe
-def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
+def subset_gebco(folderpath: str, aoi_data_path, epsg_no: int, hres: int):
     """Create a resampled (bilinearly) and reprojected subset of the global GEBCO dataset. Write it to the same input folder
 
     Args:
@@ -158,16 +158,10 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
     GEBCO_LOCATION = "../data/GEBCO/GEBCO_2021_sub_ice_topo.nc"
     # get the trackline GDF
     # before buffering make sure we are not working in degrees
-    assert (
-        bathy_pts.crs.is_projected
-    ), "the CRS of the bathymetry points must be a projected CRS"
-    # buffer the points by 1km and get the boundaries in WGS coordinates
-    bounds_wgs84 = bathy_pts.buffer(1000).to_crs("EPSG:4326").geometry.total_bounds
-    # yeet the buffer
-    # bounds_wgs84 = bathy_pts.to_crs("EPSG:4326").geometry.total_bounds
 
-    # going to try to buffer this a bit to see if it improves results
-    # get the number of the EPSG crs (should be the local UTM zone!!)
+    # switch open AOI in geopandas
+    aoidf = gpd.read_file(aoi_data_path)
+    bounds_wgs84 = aoidf.geometry.total_bounds
 
     out_raster_path = f"{folderpath}/bilinear.tif"
     options = gdal.WarpOptions(
@@ -181,7 +175,8 @@ def subset_gebco(folderpath: str, bathy_pts, epsg_no: int, hres: int):
         srcNodata=-32767,
         dstNodata=-999999,
         outputType=gdal.GDT_Float32,
-        # format='GTiff'
+        # format='GTiff',
+        cropToCutline=aoi_data_path,
     )
     ds = gdal.Warp(out_raster_path, GEBCO_LOCATION, options=options)
     ds = None
