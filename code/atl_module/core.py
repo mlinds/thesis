@@ -25,8 +25,12 @@ from atl_module.utility_functions.ocean_color import (  # add_secchi_depth_to_tr
 from atl_module.utility_functions.plotting import (  # plot_aoi,
     error_lidar_pt_vs_truth_pt,
     map_ground_truth_data,
+    plot3d,
+    plot_error_improvement_meters,
+    plot_kriging_output,
     plot_photon_map,
     plot_tracklines_overview,
+    read_kriging_output,
 )
 from logzero import setup_logger
 
@@ -65,6 +69,7 @@ class GebcoUpscaler:
         self.AOI_path = os.path.join(self.folderpath, "AOI.gpkg")
 
         self.run_params = {}
+        self.kriging_subset_points_path = os.path.join(self.folderpath, "kriging_pts")
         # setup the files needed
         # try to add the tracklines
         if file_exists(self.trackline_path):
@@ -112,10 +117,12 @@ class GebcoUpscaler:
         """
         if self.bathy_pts_gdf is None:
             raise FileExistsError("Calculate bathymetry first")
+        # open the AOI file as a geodataframe
+
         # cut out a section of GEBCO, reproject and resample
         raster_interaction.subset_gebco(
             folderpath=self.folderpath,
-            bathy_pts=self.bathy_pts_gdf,
+            aoi_data_path=self.bathy_pts_gdf,
             epsg_no=self.epsg,
             hres=hres,
         )
@@ -193,15 +200,35 @@ class GebcoUpscaler:
         run_logger.info(
             f"Kriging {self.site_name} site using {npts} points with crs {self.crs} with options {kwargs}"
         )
-        kriging.krige_bathy(
+        (
+            Q1,
+            Q2,
+            cR,
+            lags,
+            variogram_eval,
+            variogram_fig,
+            bin_center,
+            gamma,
+        ) = kriging.krige_bathy(
             pts_gdf_all=self.bathy_pts_gdf,
             kr_model=kr_model,
             folderpath=self.folderpath,
             npts=npts,
-            variogram_model="spherical",
             crs=self.crs,
             **kwargs,
         )
+        variogram_fig.savefig(f"../document/figures/{self.site_name}_epsilon_residuals.png")
+        self.variogram_fit_params = {
+            "Q1": Q1,
+            "Q2": Q2,
+            "cR": cR,
+            "lags": lags,
+            "variogram_eval": variogram_eval,
+            "emp_var_bin_center": bin_center,
+            "emp_var_gamma": gamma,
+        }
+
+        run_logger.info(f"Q1:{Q1},Q2:{Q2},cR:{cR}")
         self.run_params.update(
             {
                 "n points used for kriging": npts,
@@ -255,7 +282,7 @@ class GebcoUpscaler:
                 f"Truth data added to Bathymetric Points dataframe for site: {self.site_name}"
             )
 
-    def raster_rmse(self, check_kriged=False, error_out=False):
+    def raster_rmse(self, check_kriged=False, error_out=False, improvement_out=False):
         """Calculate the raster error metrics for the various rasters (the naive bilinear raster, then kalman updated raster, and the post-kriging raster)
 
         Because each operation is very expensive, they are only run when required/requested.
@@ -269,13 +296,16 @@ class GebcoUpscaler:
             gebco_error_path = "gebco_error.tif"
             kalman_error_path = "kalman_error.tif"
 
-        print(kalman_error_path)
-
         self.rmse_kalman = error_calc.raster_RMSE_blocked(
             self.truebathy_path,
             self.kalman_update_raster_path,
             error_out=kalman_error_path,
         )
+        # go ahead and clip the resulting output to the data windows
+        # if error_out:
+        #     raster_interaction.clip_to_datawindow(self.folderpath+'/'+kalman_error_path,self.AOI_path)
+        #     run_logger.info(f'output raster {kalman_error_path} clipped to data window')
+
         # this only needs to be calculated once, so only do it if this is the first time this object has been created
         if self.rmse_naive is None:
             self.rmse_naive = error_calc.raster_RMSE_blocked(
@@ -283,8 +313,14 @@ class GebcoUpscaler:
                 self.bilinear_gebco_raster_path,
                 error_out=gebco_error_path,
             )
+            # raster_interaction.clip_to_datawindow(self.folderpath+'/'+gebco_error_path,self.AOI_path)
         else:
             print("GEBCO vs Truth RMSE already calculated, skipping")
+
+        if improvement_out:
+            raster_interaction.write_error_improvement_raster(self.folderpath, self.AOI_path)
+            run_logger.info("Error improvement file written to file")
+
         # only check this RMSE if required
         if check_kriged:
             self.rmse_kriged = error_calc.raster_RMSE_blocked(
@@ -375,7 +411,7 @@ class GebcoUpscaler:
             bbox_inches="tight",
         )
 
-    def plot_icesat_points(self, fraction=1):
+    def plot_icesat_points(self, fraction=1, figsize=None):
         """plot a map of the ICESat-2 points in the AOI
 
         Args:
@@ -387,7 +423,9 @@ class GebcoUpscaler:
         # set location to store the output figure
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
         # generate the matplotlib figure object
-        icesat_points_figure = plot_photon_map(self.bathy_pts_gdf, fraction=fraction)
+        icesat_points_figure = plot_photon_map(
+            self.bathy_pts_gdf, fraction=fraction, figsize=figsize
+        )
         # save the figure
         icesat_points_figure.savefig(
             outpath,
@@ -402,11 +440,11 @@ class GebcoUpscaler:
         detail_logger.info(f"Photon geographic map written to {outpath}")
         return icesat_points_figure
 
-    def plot_tracklines(self):
+    def plot_tracklines(self, figsize=None):
         """Generate a plot of the tracklines"""
         trackline_fig, ax = plt.subplots()
         outpath = f"../document/figures/{self.site_name}_tracklines.pdf"
-        plot_tracklines_overview(ax, self.tracklines)
+        plot_tracklines_overview(ax, self.tracklines, figsize_input=figsize)
         # we drop the contextily attribution text which we can then add to the caption
         text = trackline_fig.axes[0].texts[0]
         text.set_visible(False)
@@ -433,3 +471,79 @@ class GebcoUpscaler:
         run_logger.info(
             f"Run Summary: assumed parameters in analysis: {self.run_params}. The lidar RMS error was {self.rmse_icesat}, lidar MAE error {self.mae_icesat}. The raster error was {self.raster_error_summary}"
         )
+
+    def plot_improvement(self):
+        erraspath = self.folderpath + "/error_improvement_meter.tif"
+        fig = plot_error_improvement_meters(
+            error_raster_path=erraspath, bathy_points_gdf=self.bathy_pts_gdf
+        )
+        outpath = f"../document/figures/{self.site_name}_error_improvement.png"
+        fig.savefig(outpath, bbox_inches="tight", dpi=400)
+        outpath = f"../document/figures/{self.site_name}_error_improvement.pdf"
+        fig.savefig(outpath, bbox_inches="tight", dpi=400)
+        run_logger.info(f"{self.site_name}: Error improvement plot written to {outpath}")
+
+    def plot_kriging_output(self, azim, elev, horiz):
+        # get a dataframe of the subsampled points
+        subset_df = gpd.read_file(self.folderpath + "/kriging_pts/")
+        # find the name of the UTM grid
+        utm_name = subset_df.crs.name.strip("WGS 84 / ")
+        # convert to a numpy array
+        subset_pts = subset_df.drop(columns="geometry").to_records(index=False)
+
+        # get the kriging data
+        uncertainty, kriged_bathy, eastings, northings, dataset = read_kriging_output(self)
+        # plot and save the 3d plot
+        fig = plot3d(
+            self.site_name,
+            subset_pts,
+            uncertainty,
+            kriged_bathy,
+            northings,
+            eastings,
+            utm_name,
+            azim=azim,
+            elev=elev,
+        )
+
+        fig.savefig(f"../document/figures{self.site_name}_plot_3d.pdf", bbox_inches="tight")
+        fig.savefig(
+            f"../document/figures/{self.site_name}_plot_3d.png",
+            bbox_inches="tight",
+        )
+        # plot and save the kriged output and uncertainty
+        fig = plot_kriging_output(
+            self.site_name,
+            kriging_raster_dataset=dataset,
+            kriging_pt_df=subset_df,
+            uncertainty=uncertainty,
+            kriged_bathy=kriged_bathy,
+            horiz=horiz,
+        )
+        fig.savefig(
+            f"../document/figures/{self.site_name}_kriging_output.pdf", bbox_inches="tight"
+        )
+        fig.savefig(
+            f"../document/figures/{self.site_name}_kriging_output.png",
+            bbox_inches="tight",
+        )
+
+    def plot_variogram(self):
+        lags = self.variogram_fit_params["lags"]
+        variogram_eval = self.variogram_fit_params["variogram_eval"]
+        bin_center = self.variogram_fit_params["emp_var_bin_center"]
+        gamma = self.variogram_fit_params["emp_var_gamma"]
+        fig, ax = plt.subplots()
+
+        ax.scatter(bin_center, gamma)
+        ax.plot(lags, variogram_eval)
+        ax.annotate(
+            f'Q2 = {self.variogram_fit_params["Q2"]}', xy=(0.2, 0.8), xycoords="axes fraction"
+        )
+        ax.annotate(
+            f'Q1 = {self.variogram_fit_params["Q1"]}', xy=(0.2, 0.7), xycoords="axes fraction"
+        )
+        ax.annotate(
+            f'cR = {self.variogram_fit_params["cR"]}', xy=(0.2, 0.6), xycoords="axes fraction"
+        )
+        fig.savefig(f"../document/figures/{self.site_name}_variogram.png")
