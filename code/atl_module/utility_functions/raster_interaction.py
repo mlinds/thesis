@@ -1,3 +1,4 @@
+import subprocess
 from subprocess import PIPE, Popen
 
 import geopandas as gpd
@@ -15,6 +16,48 @@ gdal.UseExceptions()
 
 
 detail_logger = setup_logger(name="details")
+
+
+def write_error_improvement_raster(folder, aoipath):
+    # gebco and measurement error rasters should have the same CRS.
+    # we open one briefly to get the crs
+    with rio.open(f"{folder}/gebco_error.tif") as gebco_err:
+        crs = gebco_err.crs
+    # translate the AOI into the same CRS at the raster
+    aoi_gdf_reprojected = gpd.read_file(aoipath).to_crs(crs)
+
+    # get the bounds of the output raster:
+    minx, miny, maxx, maxy = aoi_gdf_reprojected.geometry.total_bounds
+
+    # change to the coordinates as needed by gdal
+    ulx, uly, lrx, lry = minx, maxy, maxx, miny
+
+    # going to call a gdal command here
+    gdalstring = f"""
+    gdal_calc.py --calc "abs(A)-abs(B)" -A "{folder}/gebco_error.tif" -B "{folder}/kalman_error.tif" \
+    --type=Float32 \
+    --overwrite \
+    --projwin {ulx} {uly} {lrx} {lry} \
+    --co COMPRESS=DEFLATE \
+    --co NUM_THREADS=8 \
+    --co PREDICTOR=2 \
+    --co TILED=YES \
+    --outfile="{folder}/error_improvement_meter.tif" \
+    --NoDataValue -999999 \
+    --quiet
+    """
+    subprocess.call(gdalstring, shell=True)
+
+
+def gdal_clip(rasterinpath, rasteroutpath, aoipath):
+    gdal_options = gdal.WarpOptions(
+        cutlineBlend=aoipath,
+        cropToCutline=True,
+        creationOptions=["TILED=YES", "COMPRESSION=DEFLATE"],
+    )
+    ds = gdal.Warp(rasteroutpath, rasterinpath, options=gdal_options)
+    ds = None
+    return ds
 
 
 def clip_to_datawindow(rasterpath, aoipath):
@@ -160,8 +203,8 @@ def subset_gebco(folderpath: str, aoi_data_path, epsg_no: int, hres: int):
     # before buffering make sure we are not working in degrees
 
     # switch open AOI in geopandas
-    aoidf = gpd.read_file(aoi_data_path)
-    bounds_wgs84 = aoidf.geometry.total_bounds
+    # aoidf = gpd.read_file(aoi_data_path)
+    bounds_wgs84 = aoi_data_path.to_crs("EPSG:4326").geometry.total_bounds
 
     out_raster_path = f"{folderpath}/bilinear.tif"
     options = gdal.WarpOptions(
@@ -176,7 +219,7 @@ def subset_gebco(folderpath: str, aoi_data_path, epsg_no: int, hres: int):
         dstNodata=-999999,
         outputType=gdal.GDT_Float32,
         # format='GTiff',
-        cropToCutline=aoi_data_path,
+        # cropToCutline=aoi_data_path,
     )
     ds = gdal.Warp(out_raster_path, GEBCO_LOCATION, options=options)
     ds = None

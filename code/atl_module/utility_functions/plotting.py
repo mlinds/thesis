@@ -65,7 +65,7 @@ def map_ground_truth_data(truthdata_path, plottitle):
         return fig
 
 
-def plot_photon_map(bathy_points_gdf, fraction):
+def plot_photon_map(bathy_points_gdf, fraction, figsize=None):
     # get the ratio of the map edges to each other
     minx, miny, maxx, maxy = bathy_points_gdf.total_bounds
     # this ratio we can feed into the figure sizing function
@@ -83,6 +83,11 @@ def plot_photon_map(bathy_points_gdf, fraction):
     if width > height:
         colorbar_orient = "horizontal"
         colorbar_fraction = 0.047 * (width / height)
+    print("Calculated figsize is ", width, height)
+    # overide the defaults
+    if figsize is not None:
+        width, height = figsize
+        print("default fig size overwritten with ", width, height)
 
     icesat_points_figure, ax = plt.subplots(figsize=(width, height))
 
@@ -120,9 +125,14 @@ def plot_photon_map(bathy_points_gdf, fraction):
     return icesat_points_figure
 
 
-def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2):
+def plot_tracklines_overview(ax, tracklines_gdf, ratio=0.4, fraction=1.2, figsize_input=None):
     print("plotting tracklines")
-    tracklines_gdf.plot(figsize=set_size(ratio=ratio, fraction=fraction), ax=ax, linewidth=1)
+    figsize = set_size(ratio=ratio, fraction=fraction)
+    print("calculated fig size is", figsize)
+    if figsize_input is not None:
+        figsize = figsize_input
+        print("auto size over written with", figsize)
+    tracklines_gdf.plot(figsize=figsize, ax=ax, linewidth=1)
     print("finished plotting tracklines")
     cx.add_basemap(ax, source=cx.providers.Esri.WorldImagery, crs=tracklines_gdf.crs)
     print("finished plotting basemap")
@@ -295,5 +305,161 @@ def plot_error_improvement_meters(error_raster_path, bathy_points_gdf):
         ax=ax, label="ICESat-2 points", markersize=0.5, color="black"
     )
     ptartist.set_rasterized(True)
+    ax.set_xlabel
     ax.legend()
     return fig
+
+
+def plot3d(
+    site,
+    subset_pts,
+    uncertainty,
+    kriged_bathy,
+    northings,
+    eastings,
+    utm_name,
+    azim,
+    elev,
+):
+    fig = plt.figure()
+    ax = plt.axes(projection="3d")
+    # set the view, the best view depends on the site so requires experimentation
+    ax.view_init(elev=elev, azim=azim)
+    ax.scatter3D(
+        subset_pts.X,
+        subset_pts.Y,
+        subset_pts.Z,
+        s=3,
+        label="ICESat-2 points",
+    )
+    # set the labels as needed
+    ax.set_zlabel("Elevation [m +MSL]")
+    ax.set_xlabel(f"Easting [m {utm_name}]")
+    ax.set_ylabel(f"Northing [m {utm_name}]")
+    fig.tight_layout()
+
+    fig.savefig(
+        f"../data/gl_pres_data/for_powerpoint/{site}_3d_points_only.png",
+        bbox_inches="tight",
+    )
+    ax.plot_wireframe(
+        eastings,
+        northings,
+        kriged_bathy,
+        color="red",
+        alpha=0.5,
+        label="Kriging surface",
+    )
+
+    # find the location of the bottom of the plot based on the minimum depth of the bathymetry points:
+    mindepth = min(subset_pts.Z.min(), kriged_bathy.min())
+
+    ymin = min(subset_pts.Y.min(), northings.min())
+    ymax = max(subset_pts.Y.max(), northings.max())
+    contourf_artist = ax.contourf(
+        eastings, northings, uncertainty, 100, offset=mindepth, zdir="z", cmap="plasma"
+    )
+
+    # set plot limits
+    ax.set_zlim3d(
+        top=0,
+        bottom=mindepth,
+    )
+    # ax.set_xlim3d(left=xmin,right=xmax)
+    ax.set_ylim3d(top=ymax, bottom=ymin)
+    # ax.set_aspect(1.5)
+
+    ax.legend()
+    fig.colorbar(
+        contourf_artist,
+        ax=ax,
+        label="Variance [m$^2$]",
+        orientation="vertical",
+        fraction=0.025,
+        location="left",
+        pad=0.01,
+    )
+
+    return fig
+
+
+def plot_kriging_output(
+    site,
+    kriging_raster_dataset: rasterio.DatasetReader,
+    kriging_pt_df,
+    uncertainty,
+    kriged_bathy,
+    horiz=True,
+):
+    ncols = 1
+    nrows = 2
+    figsize = set_size(fraction=1, ratio=1.68 / 1.5)
+
+    if horiz:
+        nrows = 1
+        ncols = 2
+        # figsize = set_size(fraction=1, ratio=1.68 * 2)
+
+    # set up the figure with two subplots
+    fig, (ax2, ax1) = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
+    # get the artists of the imageshow function for later, then clear the axes
+    imartist_sigma = ax1.imshow(uncertainty, cmap="plasma")
+    ax1.clear()
+    imartist_elevation_surface = ax2.imshow(kriged_bathy, cmap=cmocean.cm.deep_r)
+    ax2.clear()
+    scalebar = ScaleBar(1, units="m", location="lower right")
+    ax2.add_artist(scalebar)
+
+    # plot the points on both axes
+    kriging_pt_df.plot(ax=ax1, c="black", markersize=2, label="ICESat-2 Point")
+    kriging_pt_df.plot(ax=ax2, c="black", markersize=2)
+
+    # open the zero contour line and project it to the local UTM
+    # zero_contour = gpd.read_file(f"../data/test_sites/{site}/in-situ-DEM/contour.shp").to_crs(kriging_pt_df.crs)
+    # zero_contour.plot(ax=ax1,)
+    # zero_contour.plot(ax=ax2,)
+
+    # plot the image with geo unit axes
+    rastershow((kriging_raster_dataset, 2), ax=ax1, cmap="plasma")
+    rastershow((kriging_raster_dataset, 1), ax=ax2, cmap=cmocean.cm.deep_r)
+
+    # add the colormaps using the artists we got before
+    orientval = "horizontal"
+    fig.colorbar(
+        imartist_sigma,
+        ax=ax1,
+        label="Variance [m$^2$]",
+        orientation=orientval,
+        pad=0.05,
+    )
+    fig.colorbar(
+        imartist_elevation_surface,
+        ax=ax2,
+        label="Interpolated Elevation [m +MSL]",
+        orientation=orientval,
+        pad=0.05,
+    )
+    fig.tight_layout()
+
+    fig.savefig(f"../data/gl_pres_data/{site}_kriging_output.pdf", bbox_inches="tight")
+    fig.savefig(
+        f"../data/gl_pres_data/for_powerpoint/{site}_kriging_output.png",
+        bbox_inches="tight",
+    )
+
+
+def read_kriging_output(kriging_output_path):
+
+    krigingras = rasterio.open(kriging_output_path)
+    # the sigma is the second band
+    uncertainty = krigingras.read(2, masked=True).filled(np.NaN)
+    # the actual bathymetry estimate is the first band
+    kriged_bathy = krigingras.read(1, masked=True).filled(np.NaN)
+    height = uncertainty.shape[0]
+    width = uncertainty.shape[1]
+    cols, rows = np.meshgrid(np.arange(width), np.arange(height))
+    xs, ys = rasterio.transform.xy(krigingras.transform, rows, cols)
+    eastings = np.array(xs)
+    northings = np.array(ys)
+
+    return uncertainty, kriged_bathy, eastings, northings, krigingras

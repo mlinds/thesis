@@ -1,4 +1,5 @@
 from os import path
+from warnings import catch_warnings, simplefilter
 
 import numpy as np
 import rasterio
@@ -136,6 +137,7 @@ def raster_RMSE_blocked(
         }
         # create a virtual version of the original raster
         bi_vrt = WarpedVRT(measured_ras, **vrt_options)
+        # print(' metadata',bi_vrt.meta)
         # set up empty to store the mean sqaured error and the mean absolute error
         out_ms = []
         out_mae = []
@@ -145,7 +147,6 @@ def raster_RMSE_blocked(
             folder = path.dirname(measured_rasterpath)
             outpath = path.join(folder, error_out)
             print(folder, outpath)
-            # raise NotImplementedError("fix this function before use")
             out_options = truthras.meta
             # have to remove the driver option so we can write a tif
             out_options.pop("driver")
@@ -160,9 +161,17 @@ def raster_RMSE_blocked(
         # iterate over the blocks in the truth raster
         # if the block contains no data in either of the rasters, the result of the operation will be np.nan
         for ji, block_window in truthras.block_windows(1):
+            # read the measured data by window
+            bilinear_data = bi_vrt.read(1, masked=True, window=block_window)
+            # find the window of valid pixels
+
+            # does the validation data intersect with the estimated data in this block?
+            # if not, skip it
+            if bilinear_data.count() == 0:
+                continue
+
             # read the truth data by the window and fill the masked values with nans
             truth_data = truthras.read(1, masked=True, window=block_window)
-
             truth_data = np.ma.filled(truth_data, np.nan)
 
             # don't look on land
@@ -173,18 +182,18 @@ def raster_RMSE_blocked(
             if np.count_nonzero(~np.isnan(truth_data)) == 0:
                 continue
 
-            # read the measured data by window
-            bilinear_data = bi_vrt.read(1, masked=True, window=block_window)
             bilinear_data = np.ma.filled(bilinear_data, np.nan)
             error_data = truth_data - bilinear_data
             # if requested, write the error data do a new file
             if error_out:
                 outras.write(error_data, window=block_window, indexes=1)
             # get the mean squared error of the block
-            mse = np.nanmean(error_data**2)
-            # get the mean absolute error
-            mae = np.nanmean(np.abs(error_data))
-            me = np.nanmean(error_data)
+            with catch_warnings():
+                simplefilter("ignore", category=RuntimeWarning)
+                mse = np.nanmean(error_data**2)
+                # get the mean absolute error
+                mae = np.nanmean(np.abs(error_data))
+                me = np.nanmean(error_data)
             # append the per-block error to the list
             out_ms.append(mse)
             out_mae.append(mae)
