@@ -1,5 +1,6 @@
 # from pykrige.rk import RegressionKriging
 import geopandas as gpd
+import gstools as gs
 import pdal
 import rasterio
 import rioxarray
@@ -81,7 +82,7 @@ def prepare_pt_subset_for_kriging(pts_gdf_all, folderpath, npts, crs, samplemeth
     return pts_gdf
 
 
-def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, **kwargs):
+def krige_bathy(kr_model, folderpath, npts, pts_gdf_all, crs, **kwargs):
     """Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
     Args:
@@ -110,8 +111,6 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
     # open the interpolated raster to get the coordinates
     with rasterio.open(folderpath + "/bilinear.tif") as ras:
         ar = rioxarray.open_rasterio(ras)
-        # ar.ma
-        # maskarray = np.isnan(ar.values[0])
         gridx = ar.x.data
         gridy = ar.y.data
     # make sure we are in the same CRS
@@ -125,13 +124,29 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
         x=x_loc,
         y=y_loc,
         z=z_elev,
-        variogram_model=variogram_model,
-        verbose=True,
+        variogram_model=kwargs.get("variogram_model"),
+        # verbose=True,
         # coordinates_type="euclidean",
         variogram_parameters=kwargs.get("variogram_parameters"),
+        nlags=kwargs.get("nlags"),
     )
     # get the output Zgrid and uncertainty
-    z, ss = krigemodel.execute("grid", gridx, gridy, backend="loop")
+
+    Q1, Q2, cR = krigemodel.get_statistics()
+    detail_logger.debug(f"Q1:{Q1},Q2:{Q2},cR:{cR}")
+    lags, variogram_eval = krigemodel.get_variogram_points()
+    # print(krigemodel.get_epsilon_residuals())
+    bin_center, gamma = gs.vario_estimate((x_loc, y_loc), z_elev, lags)
+
+    variogram_fig = krigemodel.plot_epsilon_residuals()
+
+    z, ss = krigemodel.execute(
+        "grid",
+        gridx,
+        gridy,
+        backend=kwargs.get("backend"),
+        # mask=maskarray,
+    )
     # z, ss = krigemodel.execute("masked", gridx, gridy,mask=maskarray)
 
     detail_logger.debug(
@@ -154,3 +169,5 @@ def krige_bathy(kr_model, folderpath, npts, variogram_model, pts_gdf_all, crs, *
         rasout.write(ss, 2)
     ras.close()
     detail_logger.debug("Output raster of kriged Z values and uncertainty saved sucessfully")
+
+    return Q1, Q2, cR, lags, variogram_eval, variogram_fig, bin_center, gamma
