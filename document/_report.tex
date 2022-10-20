@@ -32,11 +32,11 @@
 % \pdfcomment{check for consistent spelling of Bayesian, kriging, etc}
 % \pdfcomment{check for contractions}
 %% Uncomment following 16 lines for a cover with a picture on the lower half only
-\title{Bayesian upscaling of global bathymetry using spaceborne lidar}
+\title{Bayesian downscaling of global bathymetry using spaceborne lidar}
 % \subtitle[tudelft-black]{}
 \author{M.\ A.\ E. Lindsay}
 \affiliation{Technische Universiteit Delft}
-\coverimage{tank.jpg}
+\coverimage{figures/my_spacelidar_image/cover_image2.pdf}
 % \covertext[tudelft-white]{
 %     \textbf{Draft as of \today} 
 %     % possibly \\
@@ -47,7 +47,8 @@
 %     % ISBN 000-00-0000-000-0
 % }
 % \setpagecolor{tudelft-cyan}
-% \makecover[split]
+\definecolor{title}{HTML}{4884d6}
+\makecover
 
 
 %% Include an optional title page.
@@ -55,6 +56,7 @@
 \input{chapters/abstract.tex}
 % \input{chapters/preface.tex}
 \listofpdfcomments[liststyle=Comment]
+\pdfcomment{check for captions that are too long, give them a different caption}
 \listoffigures
 \listoftables
 \tableofcontents

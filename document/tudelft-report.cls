@@ -170,8 +170,13 @@
             \ifdefvoid{\@affiliation}{}{\color{white}\titlestyle\@affiliation}};
 
         %% Add the logo in the bottom left
-        \node[above right=10mm] at (current page.south west) {%
+        \node[above right=6mm] at (current page.south west) {%
             \includegraphics[width=0.35\linewidth]{figures/logo-white.pdf}};
+        
+        %% Add the Van Oord logo:
+        % \node[above right=30mm] at (current page.south west){
+        %     \includegraphics[width=0.4\textwidth]{figures/VanOord-2048x785.png}
+        % };
 
         %% Add the banner with the title, subtitle, subject and author(s)
         \node[below=2cm,fill=black!85,minimum width={\paperwidth},inner ysep=25pt,opacity=0.6,text opacity=1] at (current page.north) {%

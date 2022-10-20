@@ -18,6 +18,13 @@ The best way to mitigate this would be to find a better land mask dataset. This 
 
 One of the major challenges to the proposed KDE signal finding method is that it is very sensitive to the input parameters, especially the threshold local density to consider to be signal. The threshold used here was set empirically, and it was the greater of either a.) the median KDE of the transect, or b.) 0.1. By making this criterion stricter (increasing the minimum to 0.15) the RMS error at each site can be reduced significantly. However, this presents a tradeoff. While a few large magnitude errors are filtered out by this method, there are many times more high-quality points that are also excluded. By excluding these points, it often reduces the overall spatial distribution of the resulting point data (the KDE is correlated for a given transect, so by increasing the threshold, often entire transects worth of points are removed). Therefore, increasing this threshold is quite a blunt instrument that removes significant amounts of high quality data. It was found that using a lower density threshold, and therefore allowing some large errors to remain in the point data, the overall quality of the kriging interpolation and the resulting Kalman-updated was improved. 
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/threshold_discussion_inset.png}
+    \caption[Exclusion of quality points]{The red line shows a threshold of 0.15. If data with a KDE value lower than this is rejected, this eliminates almost all the most severe errors but eliminates many times more high quality points at the same time}
+    \label{fig:zoomed-inset-error}
+\end{figure}
+
 One potential avenue for improving the discretion of the algorithm would be considering the local horizontal density of photon returns. A rolling window based on distance rather than a set number of adjacent photons could potentially improve the quality of the KDE magnitude estimation. Another approach might be to normalize the KDE value based on the transect length, and see if that improves the ability to throw out low-quality data while retaining high-quality data.
 
 It is possible that the results could be further improved by building a larger dataset of validation sites, and trying to find globally optimum parameters that provide a good balance of excluding low accuracy points and maintaining as much quality data as possible.

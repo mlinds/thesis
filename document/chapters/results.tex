@@ -79,27 +79,40 @@ Figure \ref{fig:keys-biasplot} shows how the error is distributed within the Flo
 
 However, the kriging process can account for an expected degree of error, and can be set up such the input points are not considered exact measurements but are considered to have their own uncertainty at each point. This is controlled by the \emph{nugget} variogram parameter. 
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[]{figures/florida_keys_kriging_output.pdf}
+    \caption{Output of the kriging process for the marathon key test site}
+    \label{fig:marathon-key-kriging}
+\end{figure}
+
+
 
 The Kriging and Kalman updating steps were applied and the results are shown in table \ref{tab:florida_keys_gebco_raster_error}.
 
 \input{tables/florida_keys_kalman_improvement.tex}
 
+\begin{figure}[htbp]
+    \begin{floatrow}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_plot_3d.pdf}}{\caption{The Results of the kriging process in 3D}\label{fig:florida-3d}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_error_improvement.pdf}}{\caption{Improvement in error after application of Kalman Updating}\label{fl-keys-improvement}}
+    \end{floatrow}
+\end{figure}
 
 \section{St.~Croix test site} \label{sec:stcroix-site}
 
 Another site where the entire processing chain was implemented was in the Caribbean island of St. Croix. The site was chosen based on the availability of recent high-resolution bathymetry validation data, and also on the basis of the clear water. The site provides some interesting contrasts: The south edge of the island is a relatively gently sloping shelf, while the north edge of the island has an extremely steep shoreline. On the northeast edge there is a bank between the main island and a smaller island.
 
-The validation data used is provided by a USGS-sponsored survey of the area using a Riegl VQ-880-G II lidar sensor between January and June 2019. The lidar point data was then post-processed into a 1m raster DEM product with a bathymetric vertical accuracy of $12.1$~cm when compared to the survey control points \parencite{USVI-lidar2022}. This DEM was utilized for this research.
-
+The validation data used is provided by a USGS-sponsored survey of the area using a Riegl VQ-880-G II lidar sensor between January and June 2019. The lidar point data was then post-processed into a 1m raster DEM product with a bathymetric vertical accuracy of $12.1$~cm when compared to the survey control points \parencite{USVI-lidar2022}. This DEM was used for validation. Note that the areas to the Northwest of the island has a very steep slope, and is therefore missing in the validation data - the slope is steep enough that the airborne lidar sensor could not get sufficient signal in that area.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics{figures/stcroix_photon_map.pdf}
-    \caption{St.~Croix site: Identified photons and their depth}
+    \caption{St.~Croix site: Error Bias plot}
     \label{fig:st-croix-photons}
 \end{figure}
 
-The bathymetric point measurements obtained from the KDE signal finding algorithm are shown in \ref{fig:st-croix-photons}. This site showed excellent agreement between the ICESat-2 data and the validation data, and the KDE signal finding algorithm reliably identified bathymetric points as deep as -20~m +MSL. The overall RMSE at the site was the lowest of any sites tested, at 0.54m. Figure \ref{fig:st-croix-bias-plot} shows the spread of the ICESat-2 points vs the corresponding point in the validation data.
+The bathymetric point measurements obtained from the KDE signal finding algorithm are shown in \ref{fig:st-croix-photons}. This site showed excellent agreement between the ICESat-2 data and the validation data, and the KDE signal finding algorithm reliably identified bathymetric points as deep as -20~m +MSL. The overall RMSE at the site was the lowest of any sites tested, at 0.54 m. Figure \ref{fig:st-croix-bias-plot} shows the spread of the ICESat-2 points vs the corresponding point in the validation data. Just as in the validation data, the north west slope of the island does not contain any signal.
 
 \begin{figure}[htbp]
     \centering
@@ -108,7 +121,25 @@ The bathymetric point measurements obtained from the KDE signal finding algorith
     \label{fig:st-croix-bias-plot}
 \end{figure}
 
-After implementing the Kriging/Kalman updating process for the St.~Croix site it is found that the combination of the kriged ICESat-2 raster with the GEBCO data produces a resulting product that has a higher accuracy than either of the input datasets. Particularly of note here is the inaccuracy of the GEBCO data at this site --- while the overall RMSE of the resulting raster is high at this site compared to some others, in this case it is limited by the accuracy of the starting GEBCO data, and the accuracy of the kriging raster. Table \ref{tab:stcroix_gebco_raster_error} shows the improvement achieved through the Kalman update process.
+The results of the kriging output for this site are shown in Figures \ref{fig:stcroix-kriging} and \ref{fig:stcroix-3d}. Because the north end of this site has a very steep slope, there is no bathymetric signal found in this area and the resulting uncertainty is very high in this region. The south end of the island has a more gentle slope and there is a significant amount of bathymetric data available, so it has a correspondingly higher confidence in the kriging estimate. 
+
+\begin{figure}[!ht]
+    \begin{floatrow}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix}\label{fig:stcroix-kriging}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption{Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot}\label{fig:stcroix-3d}}
+    \end{floatrow}
+\end{figure}
+
+After implementing the Kriging/Kalman updating process for the St.~Croix site it is found that the combination of the kriged ICESat-2 raster with the GEBCO data produces a resulting product that has a higher accuracy than either of the input datasets. Particularly notable here is the inaccuracy of the GEBCO data at this site --- while the overall RMSE of the resulting raster is high at this site compared to some others, in this case it is limited by the accuracy of the starting GEBCO data, and the accuracy of the kriging raster. Table \ref{tab:stcroix_gebco_raster_error} shows the error metrics for the site for the three bathymetric grids, and the spatial distribution of the improvement in error is shown in Figure \ref{fig:improvement-st-croix}. The improvement error is also well-distributed within areas that contain bathymetric signal. 
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[]{figures/stcroix_error_improvement.pdf}
+    \caption{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths}
+    \label{fig:improvement-st-croix}
+\end{figure}
+
 
 \input{tables/Stcroix_kalman_improvement.tex}
 
@@ -131,6 +162,23 @@ The ICESat-2 data was downloaded for an area of interest that includes extent of
     \label{fig:charlotte-amalie-biasplot}
 \end{figure}
 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[]{figures/charlotteamalie_kriging_output.pdf}
+    \caption{St.~Thomas and St.~John Test site:Result of Kriging interpolation}
+    \label{fig:charlotte-amalie-kriging-out}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{floatrow}
+        \ffigbox{ \includegraphics[width=0.5\textwidth]{figures/charlotteamalie_plot_3d.pdf}}{\caption{St.~Thomas and St.~John Test site: 3D results of the kriging interpolation}\label{fig:charlotte-amalie-3d}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{ \caption{St.~Thomas and St.~John Test site: Improvement in error after Kalman updating}    \label{fig:charlotte-amalie-improvement}}
+    \end{floatrow}
+\end{figure}
+
+
+
 \input{tables/charlotteamalie_kalman_improvement.tex}
 
 
@@ -138,7 +186,7 @@ The ICESat-2 data was downloaded for an area of interest that includes extent of
 
 For another validation site that is outside of the Caribbean sea, the island of Oahu in the US state of Hawai'i was chosen. The validation data used is a lidar survey completed in 2013. The nearshore zone was surveyed by the United States Army Corps of Engineers (USACE) using the Coastal Zone Mapping and Imaging Lidar (CZMIL). The survey data was collected by aircraft from September to November 2013. The raw lidar point cloud data was then further processed into a 1m DEM via TIN interpolation. The resulting 1m DEM is referenced to a horizontal datum of NAD83(PA11), and the vertical reference system is the local mean sea level. The data has a vertical accuracy at the 95\% confidence interval of $\sqrt{0.20^2 + (0.013d)^2}$~m, where $d$ is the depth in meters. This translates to a 95\% confidence vertical accuracy of $\pm 28$ cm at a depth of 15~m.
 
-Because the island of Oahu is substantially larger ($\approx 4x$ the area) than the other test sites the coast of the island is first divided into 8 smaller subsites to allow for easier data downloading and processing. The layout of these sites was chosen based on approximately similar coastline characteristics, and to try to minimize any interpolation over convex points in the coast. Figure \ref{fig:oahu-subsite-layout} shows the selected layout of the subsites along the coast of Oahu.
+Because the island of Oahu is substantially larger ($\approx 4x$ the area) than the other test sites the coast of the island is first divided into 8 smaller subsites to allow for easier data downloading and processing. The layout of these sites was chosen based on approximately similar coastline characteristics, and to try to minimize any interpolation over convex points in the coast. Only some selected sites are highlighted here. Other sections  Figure \ref{fig:oahu-subsite-layout} shows the selected layout of the subsites along the coast of Oahu.
 
 \begin{figure}[htbp]
     \centering
@@ -203,19 +251,11 @@ Looking at the other photons, clustered near the bottom of Figure \ref{fig:photo
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics{figures/error_by_ph_count.pdf}
-    \caption{Relationship between Photon Count and absolute error}
-    \label{fig:photon-cnt-v-abs-error}
+    \includegraphics{figures/error_full_sat_ph_count.pdf}
+    \caption[Photon error vs segment photon count and the fraction of fully-saturated returns in the segment]{Left: between Photon Count and absolute error \\ Right: The number of full saturated photons in a segment vs the error at that point}
+    \label{fig:error-photon}
 \end{figure}
-
-Another variable that was checked at the photon level is the percent of pulses within the segment that are determined to be fully saturated. This can also be an indication of data issues in the segment. However this variable is also not a good predictor of error in an individual photon, as seen in Figure \ref{fig:full-sat-frac-v-abs-error}. Part of the reason for this is that nearly all of the segments included here have a full saturation fraction of 0.0 (99.1\% of photons in all study sites). 
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics{figures/error_by_full_sat.pdf}
-    \caption{Relationship between the fraction of fully saturated photons and absolute error}
-    \label{fig:full-sat-frac-v-abs-error}
-\end{figure}
+Another variable that was checked at the photon level is the percent of pulses within the segment that are determined to be fully saturated. This can also be an indication of data issues in the segment. However this variable is also not a good predictor of error in an individual photon, as seen in the left side of Figure \ref{fig:error-photon}. Part of the reason for this is that nearly all of the segments included here have a full saturation fraction of 0.0 (99.1\% of photons in all study sites). 
 
 \subsection{Per-transect error}
 
@@ -223,7 +263,7 @@ Another useful metric is understanding which transect-level variables could indi
 
 To calculate the transect-level statistics, the aggregate RMS error was calculated by grouping the dataset of all bathymetry points by the date, beam type, and site. 
 
-One variable that was checked at the transect level is the Secchi Disk Depth. The median Secchi disk depth was calculated for each unique transect, and then compared to the aggregate RMSE for that transect. Figure \ref{fig:transect-rmse-zsd} shows the resulting plot. For this purpose, the large magnitude errors from Oahu subsite 2 were removed, since they are caused by a known issue that is not related to the Secchi disk depth.
+One variable that was checked at the transect level is the Secchi disk depth. The median Secchi disk depth was calculated for each unique transect, and then compared to the aggregate RMSE for that transect. Figure \ref{fig:transect-rmse-zsd} shows the resulting plot. For this purpose, the large magnitude errors from Oahu subsite 2 were removed, since they are caused by a known issue that is not related to the Secchi disk depth.
 
 \begin{figure}[htbp]
     \centering

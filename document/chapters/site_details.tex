@@ -2,34 +2,39 @@
 
 
 
-\chapter{Oahu subsite details}\label{ch:oahu-appendix}
+\chapter{Detailed Output per site}\label{ch:subsite-appendix}
 
 \input{tables/Oahu_all_sites_raster_error_summary.tex}
 
-% setup a command to 
-\newcommand{\oahusubsite}[1]{%
+% setup a command to create the section automatically
+% first argument is the foldername
+% maybe add second argument for 'fancy' name
+\newcommand{\subsiteoutput}[2]{%
 
-\section{Subsite #1}
+\section{#2}
 \begin{figure}[h!]
     \centering
-    \includegraphics{figures/oahu#1_tracklines.pdf}
-    \caption[Oahu Site #1 tracklines]{Oahu Site #1 tracklines. Basemap data \copyright Esri -- Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community}
+    \includegraphics{figures/#1_tracklines.pdf}
+    \caption[#2 tracklines]{Site #1 tracklines. Basemap data \copyright Esri -- Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community}
     \label{fig:site-#1-tracklines}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics{figures/oahu#1_photon_map.pdf}
-    \caption[Oahu site #1 bathymetry points from KDE signal finding]{Oahu site #1 bathymetry points from KDE signal finding. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
+    \includegraphics{figures/#1_photon_map.pdf}
+    \caption[#2 bathymetry points from KDE signal finding]{Site #1 bathymetry points from KDE signal finding. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
     \label{fig:site-#1-photons}
 \end{figure}
 }
 
-\oahusubsite{1}
-\oahusubsite{2}
-\oahusubsite{3}
-\oahusubsite{4}
-\oahusubsite{5}
-\oahusubsite{6}
-\oahusubsite{7}
-\oahusubsite{8}
+\subsiteoutput{oahu1}{Oahu Subsite 1}
+\subsiteoutput{oahu2}{Oahu Subsite 2}
+\subsiteoutput{oahu3}{Oahu Subsite 3}
+\subsiteoutput{oahu4}{Oahu Subsite 4}
+\subsiteoutput{oahu5}{Oahu Subsite 5}
+\subsiteoutput{oahu6}{Oahu Subsite 6}
+\subsiteoutput{oahu7}{Oahu Subsite 7}
+\subsiteoutput{oahu8}{Oahu Subsite 8}
+\subsiteoutput{charlotteamalie}{St.\ Thomas/St.\ John test site}
+% \subsiteoutput{florida\_keys}
+\subsiteoutput{stcroix}{St.\ Croix test site}
