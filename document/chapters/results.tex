@@ -3,9 +3,18 @@
 
 This section details the results of investigations into how point measurements of bathymetry can be extracted from ICESat-2 data, and then how these point measurements can be integrated into gridded data to produce an upscaled product. First, the principle of interpolating point measurements and combining them with GEBCO data is validated in 2 ways: first, by taking random samples of a the validation data for a region, then treating those points as input to the kriging + Kalman updating approach. Second, point measurements of bathymetry from JarKus are used as input to the process. Finally, the full cycle of ICESat-2 data extraction and the interpolation/updating of the ICESat data is applied at 4 test sites: Marathon Key, Florida, St.~ Croix, US Virgin Islands, St.~Thomas and St.~John, US Virgin Islands, and the Island of Oahu, in Hawai'i. Finally, the full set of ICESat-2 data points extracted in all test sites are aggregated to evaluate if there are any variables which predict the quality of the ICESat-2 estimate.
 
+The global distribution of the test sites is shown in Figure \ref{fig:world-site-map.}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Test_sites.png}
+    \caption{All test sites where the full methodology was implemented and validated}
+    \label{fig:world-site-map}
+\end{figure}
+
 \section{Kriging and Kalman update validation by random sampling}
 
-First, the basic approach behind both the kriging interpolation method and Bayesian updating of GEBCO are validated using a synthetic experiment. Instead of using point data from ICESat-2 as an input to the kriging step, random point samples of the validation data are taken throughout a single area of interest. This provides a source of exact bathymetry point measurements with an RMSE of 0m. Two types of random sampling are considered, randomly across the surface of the validation data, and samples that are taken along the corresponding ICESat-2 tracks. This simulates the presence of a theoretical perfect ICEsat-2 bathymetry data, and can be compared to the random sampling case to investigate the effect of sparse, irregular spacing of data points induced by the satellite tracklines. Any available ICEsat-2 bathymetric data will occur along colinear track lines, and therefore there will always be some spatial gaps in the data even if perfect ICESat-2 data were present along every single tract. By comparing the randomly sampled points to colinear points along the ICESat tracks, we can get an estimate of how much the accuracy is degraded by the data being available only along certain lines. 
+First, the basic approach behind both the kriging interpolation method and Bayesian updating of GEBCO are validated using a synthetic experiment. Instead of using point data from ICESat-2 as an input to the kriging step, random point samples of the validation data are taken throughout a single area of interest. This provides a source of exact bathymetry point measurements with an RMSE of 0m. Two types of random sampling are considered, randomly across the surface of the validation data, and samples that are taken along the corresponding ICESat-2 tracks. This simulates the presence of a theoretical perfect ICEsat-2 bathymetry data, and can be compared to the random sampling case to investigate the effect of sparse, irregular spacing of data points induced by the satellite tracklines. Any available ICEsat-2 bathymetric data will occur along colinear track lines, and therefore there will always be some spatial gaps in the data even if perfect ICESat-2 data were present along every single tract. By comparing the randomly sampled points to colinear points along the ICESat tracks, we can get an estimate of how much the accuracy is degraded by the data being available only along certain lines.
 
 A small section of the St.~Croix validation data is used to implement this trial. First, the raster of the validation data is sampled randomly until we have a set of $10^4$ random data points. From this set a subsample of $2000$ points is taken using the Poisson disk sampling method. This subsample is used as input to the kriging algorithm.
 
@@ -18,20 +27,20 @@ Figure \ref{fig:truthras-sampling} shows both sets of points that were used as i
     \label{fig:truthras-sampling}
 \end{figure}
 
-Because we know the bathymetry points used for this section are exactly the same as the validation data at each point, the \emph{nugget} of the variogram for the Kriging interpolation is set to $0$, so areas that are close known points are given a variance of $0$ by the kriging process. 
+Because we know the bathymetry points used for this section are exactly the same as the validation data at each point, the \emph{nugget} of the variogram for the Kriging interpolation is set to $0$, so areas that are close known points are given a variance of $0$ by the kriging process.
 \input{tables/truth_raster_sample_error.tex}
 
-Table \ref{tab:random-vs-colinear-sampling} shows the results of the two sampling strategies. It can be seen that the more homogenous distribution of bathymetric points in the randomly-sampled data produces a better kriging estimate (RMSE of 3.13~m and 4.49~m respectively). 
+Table \ref{tab:random-vs-colinear-sampling} shows the results of the two sampling strategies. It can be seen that the more homogenous distribution of bathymetric points in the randomly-sampled data produces a better kriging estimate (RMSE of 3.13~m and 4.49~m respectively).
 
 Also of note is that for both cases, the Bayesian combination of the kriging surface with GEBCO produces a better estimate than either on their own. This indicates that there is value in starting from GEBCO and using a Bayesian combination approach when compared to either a kriging interpolation of point data or using GEBCO as a data source.
 
 
 \section{Petten Test Site}
-Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found in the ICESat-2 data, likely due to the inability of the laser to penetrate the turbid water. 
+Most research results show that spaceborne lidar is not effective at retrieving bathymetry from very turbid waters. To test the upper limits of this, ICESat-2 data for the coast of Petten, NL was downloaded. As expected, there was no bathymetric signal found in the ICESat-2 data, likely due to the inability of the laser to penetrate the turbid water.
 
 However the site provides a useful case to validate the approach of the combination of universal kriging of point bathymetry and Bayesian combination of bathymetry grids. The Dutch government provides a dataset called JarKus which consists of annual surveyed elevations of the coastal zone \parencite{Minneboo1995}. These point measurements provide an interesting case to apply the same method but using the Jarkus point measurements as an input instead of ICESat-2 point measurements.
 
-The location of Petten, The Netherlands, located on the Noord-Holland coast, was chosen based on the availability of high-resolution ground-truth bathymetry provided by Van Oord. The survey was performed in 2021, and therefore the 2021 Jarkus points were selected from the dataset. All Jarkus points that overlap the validation data raster were selected. Like the ICESat-2 data points, the Jarkus points are available only along colinear lines. This is due to the measurement method that is based on surveying the dune and seabed starting from a series of fixed measurement poles and then surveying points normal to the shore starting at the reference pole. 
+The location of Petten, The Netherlands, located on the Noord-Holland coast, was chosen based on the availability of high-resolution ground-truth bathymetry provided by Van Oord. The survey was performed in 2021, and therefore the 2021 Jarkus points were selected from the dataset. All Jarkus points that overlap the validation data raster were selected. Like the ICESat-2 data points, the Jarkus points are available only along colinear lines. This is due to the measurement method that is based on surveying the dune and seabed starting from a series of fixed measurement poles and then surveying points normal to the shore starting at the reference pole.
 
 
 \begin{figure}[h]
@@ -41,7 +50,7 @@ The location of Petten, The Netherlands, located on the Noord-Holland coast, was
     \label{fig:jarkus-points}
 \end{figure}
 
-The Jarkus point measurements were checked for the same error metrics as the ICESat-2 points. The bias plot is shown in Figure \ref{fig:petten-bias-plot}. It is notable that the deviation between the Jarkus data and the survey data is greatest in the in the shallowest part of the nearshore zone; this is likely due to some morphological changes due to wave-driven sediment exchange between the nearshore and the offshore. Both datasets are from 2021, but this area is highly morphologically active. Also, in the deeper part of the study area, the error  between the two datasets decreases significantly. This is likely due to the depth of closure for most profiles in the study area being located between -5 and -10m. 
+The Jarkus point measurements were checked for the same error metrics as the ICESat-2 points. The bias plot is shown in Figure \ref{fig:petten-bias-plot}. It is notable that the deviation between the Jarkus data and the survey data is greatest in the in the shallowest part of the nearshore zone; this is likely due to some morphological changes due to wave-driven sediment exchange between the nearshore and the offshore. Both datasets are from 2021, but this area is highly morphologically active. Also, in the deeper part of the study area, the error  between the two datasets decreases significantly. This is likely due to the depth of closure for most profiles in the study area being located between -5 and -10m.
 
 \begin{figure}[h]
     \centering
@@ -50,7 +59,7 @@ The Jarkus point measurements were checked for the same error metrics as the ICE
     \label{fig:petten-bias-plot}
 \end{figure}
 
-The universal kriging and Kalman Updating concepts are tested for this site. The Jarkus points are used as input to the kriging process instead of ICESat-2 points. It is notable that in this site, the error between GEBCO and the high resolution bathymetry is significantly lower than other test sites. This could be due to higher quality or more recent input data into the GEBCO grid as compared to the other sites. Even with a higher accuracy in the GEBCO data, the kriged bathymetry surface was found to have a lower RMSE and MAE error than GEBCO. However, it was found that the Bayesian combination of both of these datasets has the highest accuracy --- indicating that the Bayesian combination of these two datasets increases the value compared to either data set individually. 
+The universal kriging and Kalman Updating concepts are tested for this site. The Jarkus points are used as input to the kriging process instead of ICESat-2 points. It is notable that in this site, the error between GEBCO and the high resolution bathymetry is significantly lower than other test sites. This could be due to higher quality or more recent input data into the GEBCO grid as compared to the other sites. Even with a higher accuracy in the GEBCO data, the kriged bathymetry surface was found to have a lower RMSE and MAE error than GEBCO. However, it was found that the Bayesian combination of both of these datasets has the highest accuracy --- indicating that the Bayesian combination of these two datasets increases the value compared to either data set individually.
 
 \input{tables/petten_kalman_improvement.tex}
 
@@ -61,41 +70,40 @@ The universal kriging and Kalman Updating concepts are tested for this site. The
 
 The area surrounding Marathon Key in the Florida Keys archipelago in Florida, USA was used as one site to test the entire process, including the ICESat-2 signal finding in additional to the kriging and Kalman updating. The area has a wide and relatively shallow ($\mathcal{O}(-10 m +MSL)$) shelf, a microtidal tidal environment, and very clear water, so it is an ideal site for remote sensing of bathymetry. The clear and shallow water provides a relatively strong subsurface signal within ICESat-2 transects. The site was found to have many transects of ICESat-2 data with distinct bathymetric signal. The KDE signal finding approach was applied to all transects within the study area and resulting distribution of the identified signal points is shown in figure \ref{fig:keys-photons}.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
-    \includegraphics{figures/florida_keys_photon_map.pdf}
+    \includegraphics[width=0.8\textwidth]{figures/florida_keys_photon_map.pdf}
     \caption{Marathon Key Site: Location and depth of bathymetric signal points found using KDE signal finding method}
     \label{fig:keys-photons}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics{figures/florida_keys_lidar_estimated_vs_truth.pdf}
     \caption{Marathon Key site: Bias plot showing the results of the KDE signal finding algorithm}
     \label{fig:keys-biasplot}
 \end{figure}
 
-Figure \ref{fig:keys-biasplot} shows how the error is distributed within the Florida Keys test site. This site has many transects containing data, but some errors in the signal finding can be seen in this bias plot. There is one cluster of points with a real elevation of -2.5m, while the KDE finding output identifies the seafloor elevation as between -20 and -27m.  The figure also shows a few clusters of points where the seabed location was overestimated slightly. 
+Figure \ref{fig:keys-biasplot} shows how the error is distributed within the Florida Keys test site. This site has many transects containing data, but some errors in the signal finding can be seen in this bias plot. There is one cluster of points with a real elevation of -2.5 m, while the KDE finding output identifies the seafloor elevation as between -20 and -27 m.  The figure also shows a few clusters of points where the seabed location was overestimated slightly.
 
-However, the kriging process can account for an expected degree of error, and can be set up such the input points are not considered exact measurements but are considered to have their own uncertainty at each point. This is controlled by the \emph{nugget} variogram parameter. 
+However, the kriging process can account for an expected degree of error, and can be set up such the input points are not considered exact measurements but are considered to have their own uncertainty at each point. This is controlled by the \emph{nugget} variogram parameter.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[]{figures/florida_keys_kriging_output.pdf}
-    \caption{Output of the kriging process for the marathon key test site}
-    \label{fig:marathon-key-kriging}
+\begin{figure}[!ht]
+\begin{floatrow}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_kriging_output.pdf}}{\caption{Output of the kriging process for the marathon key test site}\label{fig:marathon-key-kriging}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_plot_3d.pdf}}{\caption{The Results of the kriging process in 3D}\label{fig:florida-3d}}
+\end{floatrow}
 \end{figure}
 
 
+The Kriging interpolation results are shown in Figures \ref{fig:florida-3d} and \ref{fig:marathon-key-kriging}.
 
-The Kriging and Kalman updating steps were applied and the results are shown in table \ref{tab:florida_keys_gebco_raster_error}.
+The change in error after the Kalman updating step is shown in table \ref{tab:florida_keys_gebco_raster_error}, and the spatial distribution of this improvement is shown in Figure \ref{fig:fl-keys-improvement}. At this site the largest improvements actually happen on the edges of the available spaceborne lidar data. The kriging surface that has been fit through these points happens to match the validation data well along these points. Also, notably this improvement occurs along a change in the GEBCO source data for this site.
 
-\input{tables/florida_keys_kalman_improvement.tex}
-
-\begin{figure}[htbp]
+\begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_plot_3d.pdf}}{\caption{The Results of the kriging process in 3D}\label{fig:florida-3d}}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_error_improvement.pdf}}{\caption{Improvement in error after application of Kalman Updating}\label{fl-keys-improvement}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_error_improvement.pdf}}{\caption{Improvement in error after application of Kalman Updating}\label{fig:fl-keys-improvement}}
+        \capbtabbox{\input{tables/florida_keys_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:florida_keys_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
 
@@ -121,32 +129,38 @@ The bathymetric point measurements obtained from the KDE signal finding algorith
     \label{fig:st-croix-bias-plot}
 \end{figure}
 
-The results of the kriging output for this site are shown in Figures \ref{fig:stcroix-kriging} and \ref{fig:stcroix-3d}. Because the north end of this site has a very steep slope, there is no bathymetric signal found in this area and the resulting uncertainty is very high in this region. The south end of the island has a more gentle slope and there is a significant amount of bathymetric data available, so it has a correspondingly higher confidence in the kriging estimate. 
+The results of the kriging output for this site are shown in Figures \ref{fig:stcroix-kriging} and \ref{fig:stcroix-3d}. Because the north end of this site has a very steep slope, there is no bathymetric signal found in this area and the resulting uncertainty is very high in this region. The south end of the island has a more gentle slope and there is a significant amount of bathymetric data available, so it has a correspondingly higher confidence in the kriging estimate.
 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix}\label{fig:stcroix-kriging}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix Test site}\label{fig:stcroix-kriging}}
         \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption{Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot}\label{fig:stcroix-3d}}
     \end{floatrow}
 \end{figure}
 
-After implementing the Kriging/Kalman updating process for the St.~Croix site it is found that the combination of the kriged ICESat-2 raster with the GEBCO data produces a resulting product that has a higher accuracy than either of the input datasets. Particularly notable here is the inaccuracy of the GEBCO data at this site --- while the overall RMSE of the resulting raster is high at this site compared to some others, in this case it is limited by the accuracy of the starting GEBCO data, and the accuracy of the kriging raster. Table \ref{tab:stcroix_gebco_raster_error} shows the error metrics for the site for the three bathymetric grids, and the spatial distribution of the improvement in error is shown in Figure \ref{fig:improvement-st-croix}. The improvement error is also well-distributed within areas that contain bathymetric signal. 
+After implementing the Kriging/Kalman updating process for the St.~Croix site it is found that the combination of the kriged ICESat-2 raster with the GEBCO data produces a resulting product that has a higher accuracy than either of the input datasets. Particularly notable here is the inaccuracy of the GEBCO data at this site --- while the overall RMSE of the resulting raster is high at this site compared to some others, in this case it is limited by the accuracy of the starting GEBCO data, and the accuracy of the kriging raster. Table \ref{tab:stcroix_gebco_raster_error} shows the error metrics for the site for the three bathymetric grids, and the spatial distribution of the improvement in error is shown in Figure \ref{fig:improvement-st-croix}. The improvement in error is also well-distributed within areas that contain bathymetric signal, with the largest improvements in error having a magnitude of about 6 meters. In some areas, the there was a minor increase in absolute error. These areas are mostly in places where the the bathymetric points are not evenly spatially distributed.
 
 
 \begin{figure}[htbp]
-    \centering
-    \includegraphics[]{figures/stcroix_error_improvement.pdf}
-    \caption{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths}
-    \label{fig:improvement-st-croix}
+
+    \begin{floatrow}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_error_improvement.pdf}}{\caption{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths}\label{fig:improvement-st-croix}}
+
+        \capbtabbox{\input{tables/Stcroix_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:stcroix_gebco_raster_error}
+        }
+
+
+    \end{floatrow}
 \end{figure}
 
 
-\input{tables/Stcroix_kalman_improvement.tex}
 
 \section{St.~Thomas and St.~John test site}
-Another test site used to evaluate the ICESat-2 bathymetry signal finding steps is area around the islands of St.~Thomas and St.~John, located in the U.S.~Virgin Islands. The islands are ideal for spaceborne bathymetry for the same reason that many Caribbean islands are: they have naturally clear water that is easily penetrated by lidar signal. Additionally, the area has recent, high-resolution bathymetric data available from NOAA to allow validation of the approach. The validation data for the site is from the same surveying project described in Section \ref{sec:stcroix-site}. Because the bathymetric DEM is continuous between the two islands, the two islands together were treated as a single test site.  
+Another test site used to evaluate the ICESat-2 bathymetry signal finding steps is area around the islands of St.~Thomas and St.~John, located in the U.S.~Virgin Islands. The islands are ideal for spaceborne bathymetry for the same reason that many Caribbean islands are: they have naturally clear water that is easily penetrated by lidar signal. Additionally, the area has recent, high-resolution bathymetric data available from NOAA to allow validation of the approach. The validation data for the site is from the same surveying project described in Section \ref{sec:stcroix-site}. Because the bathymetric DEM is continuous between the two islands, the two islands together were treated as a single test site.
 
 The ICESat-2 data was downloaded for an area of interest that includes extent of the validation data around both islands. Figure \ref{fig:charlotte-amalie-photons} shows the signal that was identified from the ICESat-2 transects at the site. Figure \ref{fig:charlotte-amalie-biasplot} shows the error between the ICESat-2 points and the validation data. There is a cluster of several points on the right side of the plot that shows points with a true elevation of between 10-20~m. This is due to several land points being incorrectly identified as bathymetric signal, which significantly increases the RMS error at the site.
+
+The lidar bathymetric points in this site are moderately well distributed, but each identified cluster of signal is smaller. This is due to the the very steep slope of the underlying bathymetry. This steep slope also affects the quality of the bathymetric data around the site. The offshore extent of the bathymetric data is relatively small, because in most directions the depth increases to beyond the maximum depth of the airborne lidar very quickly.
 
 \begin{figure}[htbp]
     \centering
@@ -162,24 +176,27 @@ The ICESat-2 data was downloaded for an area of interest that includes extent of
     \label{fig:charlotte-amalie-biasplot}
 \end{figure}
 
+The bathymetric points found via the KDE signal finding process were then interpolated using universal kriging interpolation. The interpolated surface is shown in the upper half of Figure \ref{fig:charlotte-amalie-kriging-out} and in the wireframe surface shown in Figure \ref{fig:charlotte-amalie-3d}. This site shows many high-accuracy point estimates in deeper areas of the site (as can be seen in figure \ref{fig:charlotte-amalie-biasplot}). However, these points are relatively isolated so confidence in the kriged bathymetry estimate falls off quickly. Also since the clusters of signal have large gaps between them, the accuracy of the fitted curves is likely reduced since trends cannot be estimated as accurately as they would be if there was more intermediate points between the clusters.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[]{figures/charlotteamalie_kriging_output.pdf}
-    \caption{St.~Thomas and St.~John Test site:Result of Kriging interpolation}
-    \label{fig:charlotte-amalie-kriging-out}
+\begin{figure}[!ht]
+    \begin{floatrow}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_kriging_output.pdf}}{\caption{
+            St.~Thomas and St.~John Test site: Result of Kriging interpolation
+            }\label{fig:charlotte-amalie-kriging-out}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_plot_3d.pdf}}{\caption{St.~Thomas and St.~John Test site: 3D results of the kriging interpolation}\label{fig:charlotte-amalie-3d}}
+    \end{floatrow}
 \end{figure}
 
-\begin{figure}[htbp]
+After the Kalman updating of the GEBCO bathymetry data, the RMS error was reduced from 7.35 m to 5.78 m. The spatial distribution of the improvement is shown in figure \ref{fig:charlotte-amalie-improvement}. In some areas, the absolute error is improved by up to 7.5 m compared to the GEBCO data. 
+\begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{ \includegraphics[width=0.5\textwidth]{figures/charlotteamalie_plot_3d.pdf}}{\caption{St.~Thomas and St.~John Test site: 3D results of the kriging interpolation}\label{fig:charlotte-amalie-3d}}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{ \caption{St.~Thomas and St.~John Test site: Improvement in error after Kalman updating}    \label{fig:charlotte-amalie-improvement}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{\caption[Absolute error improvement at St.\ Thomas and St.\ John test site]{St.~Thomas and St.~John Test site: Improvement in absolute error [m] after Kalman update. Note the relatively limited offshore extent of the validation data}\label{fig:charlotte-amalie-improvement}}
+        \capbtabbox{\input{tables/charlotteamalie_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:charlotteamalie_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
 
 
 
-\input{tables/charlotteamalie_kalman_improvement.tex}
 
 
 \section{Oahu Test sites}\label{sec:oahuresults}
@@ -197,7 +214,7 @@ Because the island of Oahu is substantially larger ($\approx 4x$ the area) than 
 
 The different subsites also exhibit different hydraulic characteristics. The Northern edge of the island is exposed to longer swells and larger wave heights, while the south is relatively sheltered \parencite{Vitousek2008a}. Another aspect is that distribution of ICESat-2 tracks is not even across all sites. As seen in Figure \ref{fig:oahu-subsite-layout}, sites 4 and 6 do not contain any transects going in the other direction with good data, so distribution of the data will be more uneven and might reduce the quality of the kriging raster.
 
-The accuracy of the ICESat-2 bathymetry points from the KDE signal finding algorithm, grouped by subsite, are shown in Table \ref{tab:Oahusitestats}. It can be seen that site 2 has an anomalously high RMS error. 
+The accuracy of the ICESat-2 bathymetry points from the KDE signal finding algorithm, grouped by subsite, are shown in Table \ref{tab:Oahusitestats}. It can be seen that site 2 has an anomalously high RMS error.
 
 \begin{figure}[htbp]
     \centering
@@ -209,19 +226,19 @@ The accuracy of the ICESat-2 bathymetry points from the KDE signal finding algor
 
 \begin{figure}
     \begin{floatrow}
-    \capbtabbox{\input{tables/oahu_percent_change.tex}}{\caption{Percent reduction in error metrics via the Kalman updating approach. Positive values indicate reduced error, negative ones indicate increased error}\label{tab:oahu-percent-change}
-    }
-    \capbtabbox{%
-    \input{tables/Oahu_all_sites_RMSE_summary.tex}
-    }{\caption{Error metrics between ICESat-2 and ground-truth data for all sites in Oahu}\label{tab:Oahusitestats}
-    }
+        \capbtabbox{\input{tables/oahu_percent_change.tex}}{\caption{Percent reduction in error metrics via the Kalman updating approach. Positive values indicate reduced error, negative ones indicate increased error}\label{tab:oahu-percent-change}
+        }
+        \capbtabbox{%
+            \input{tables/Oahu_all_sites_RMSE_summary.tex}
+        }{\caption{Error metrics between ICESat-2 and ground-truth data for all sites in Oahu}\label{tab:Oahusitestats}
+        }
     \end{floatrow}
 \end{figure}
 
 % \pdfcomment{add figure}
-The cause of this is a weakness in the subsurface filtering process. In there case, there is steep seaside cliff that is not captured by the low-resolution of the GEBCO grid. As this area of the transect occurs on land, it ideally should have been removed during the horizontal filtering step. Due to this issue, points are inadvertently included in the subsurface photon dataset for the transect, and the KDE signal finding algorithm incorrectly identifies these points as signal. Because the actual elevation of the validation data is about 80-140~m in this area, and the output of the KDE signal finding is approximately -5~m in this area. Because of this, the RMSE metric for each of these points is anomalously high. With this in mind, these points have been removed from some subsequent analyses of the data to better show the distribution of errors in other points. Figures \ref{fig:oahu-bias-mountains} and \ref{fig:oahu-bias-nomounts} are combined bias plots that show the ICESat-2 bathymetry points of all subsites. The incorrectly classified mountain points can be seen on the right edge of Figure \ref{fig:oahu-bias-mountains}. Figure \ref{fig:oahu-bias-nomounts} is a plot of the error excluding these mountain points. 
+The cause of this is a weakness in the subsurface filtering process. In there case, there is steep seaside cliff that is not captured by the low-resolution of the GEBCO grid. As this area of the transect occurs on land, it ideally should have been removed during the horizontal filtering step. Due to this issue, points are inadvertently included in the subsurface photon dataset for the transect, and the KDE signal finding algorithm incorrectly identifies these points as signal. Because the actual elevation of the validation data is about 80-140~m in this area, and the output of the KDE signal finding is approximately -5~m in this area. Because of this, the RMSE metric for each of these points is anomalously high. With this in mind, these points have been removed from some subsequent analyses of the data to better show the distribution of errors in other points. Figures \ref{fig:oahu-bias-mountains} and \ref{fig:oahu-bias-nomounts} are combined bias plots that show the ICESat-2 bathymetry points of all subsites. The incorrectly classified mountain points can be seen on the right edge of Figure \ref{fig:oahu-bias-mountains}. Figure \ref{fig:oahu-bias-nomounts} is a plot of the error excluding these mountain points.
 
-The Kalman update step was also applied individually to each subsite. The Kalman updating step for the various Oahu subsites shows a more mixed result than in other test sites. A summary of the changes in the error metrics for each subsite is provided in Table \ref{tab:oahu-percent-change}. In some sites, the Kalman update does not improve the estimate, and in some cases has an even higher error the a-priori GEBCO estimate. This is an indication that the parameters are not set correctly for the site --- using Bayesian estimation, the parameters should be able to be set such that areas within the grid that have lower confidence are not changed significantly. 
+The Kalman update step was also applied individually to each subsite. The Kalman updating step for the various Oahu subsites shows a more mixed result than in other test sites. A summary of the changes in the error metrics for each subsite is provided in Table \ref{tab:oahu-percent-change}. In some sites, the Kalman update does not improve the estimate, and in some cases has an even higher error the a-priori GEBCO estimate. This is an indication that the parameters are not set correctly for the site --- using Bayesian estimation, the parameters should be able to be set such that areas within the grid that have lower confidence are not changed significantly.
 
 The integration of the ICESat-2 to GEBCO via Kalman updating does not improve the bathymetry estimates in subsites 6-8. For site 6, this is likely due to the quality of the ICEsat-2 data --- it has a very high RMSE and almost no bathymetry points in this subsite that were identified by the KDE signal-finding algorithm. There are several possible reasons for this. For one, the site has fewer transects available from the NSIDC portal, so there is less data to start with. Additionally, subsite 6 is located along the north edge of the island which experiences higher wave energy conditions than other subsites \parencite{Vitousek2008a}. The higher energy wave environment could degrade the quality ICESat-2 bathymetry data in two ways: increasing the slope of the local sea surface and therefore increasing the refraction error, and the whitecapping at the site could affect the ability of laser photons to penetrate to the seabed. The whitecapping effect can be seen in satellite imagery of the subsite in Figure \ref{fig:site-6-photons}.
 
@@ -238,16 +255,16 @@ However, the effect cannot be fully explained by the quality and quantity of ICE
 
 \section{Prediction of Lidar error}
 
-One of the challenges of extracting bathymetry from ICEsat-2 data is finding robust, automated ways of distinguishing between signal and noise. For the KDE approach utilized here, a minimum kernel density threshold of $\max{kde_{50},0.10}$ was found to provide a good balance between filtering out the most severe errors and retaining as much data as possible. Increasing the minimum parameter to 0.15 was found to decrease RMS error of the ICESat-2 point bathymetry, but at the expense of throwing out significant amount of high quality data at the same time. Therefore, increasing the threshold was found lower the error for the point data while simultaneously \emph{increasing} the error in the resulting kriging surface. 
+One of the challenges of extracting bathymetry from ICEsat-2 data is finding robust, automated ways of distinguishing between signal and noise. For the KDE approach utilized here, a minimum kernel density threshold of $\max{kde_{50},0.10}$ was found to provide a good balance between filtering out the most severe errors and retaining as much data as possible. Increasing the minimum parameter to 0.15 was found to decrease RMS error of the ICESat-2 point bathymetry, but at the expense of throwing out significant amount of high quality data at the same time. Therefore, increasing the threshold was found lower the error for the point data while simultaneously \emph{increasing} the error in the resulting kriging surface.
 
 Therefore, better methods are required to predict the quality of the bathymetry data in coastlines without in-situ data. Three possible ways to approaching this are explored: analyzing which parameters predict the error at the level of an individual photon, and also averaging by transect and by site.
 
 \subsection{Per-photon error}
-Several variables that are provided on a per-photon basis which might have some impact on the error at each photon. Two variables that were checked for their relationship to the error of a single photon are the count of photons in the 20 m segment (\emph{count\_ph} in the ATL03 data). This is the count of photons that are in within the 20 m segment around the reference photon. An indication of the total count of photons could be useful to predict the presence of bathymetric signal, since fewer segments being present in a segment might indicate data issues (e.g., interference from clouds) in the surrounding area. 
+Several variables that are provided on a per-photon basis which might have some impact on the error at each photon. Two variables that were checked for their relationship to the error of a single photon are the count of photons in the 20 m segment (\emph{count\_ph} in the ATL03 data). This is the count of photons that are in within the 20 m segment around the reference photon. An indication of the total count of photons could be useful to predict the presence of bathymetric signal, since fewer segments being present in a segment might indicate data issues (e.g., interference from clouds) in the surrounding area.
 
 To evaluate the effect, every single bathymetry point from all sites were combined. The comparison between the absolute error and the count of photons in the local 20 m segment is shown in Figure \ref{fig:photon-cnt-v-abs-error}. The cluster of photons with an absolute error in the range 80-150 m are those identified in Oahu site 2. Because the reason for the anomalously high error for these is known, they will not examined any further here (see section \ref{sec:oahuresults}).
 
-Looking at the other photons, clustered near the bottom of Figure \ref{fig:photon-cnt-v-abs-error}, there is indeed a relationship between the photon count variable and the absolute error --- the photons with higher absolute error (from 20-40 m) are all clustered near the left side of the graph, indicating that many of the photons with a large error occur in transects with a photon count from 0-200. However, there is a large density of photons with a relatively low error value that are also in this range. Therefore, it presents the same tradeoff as increasing the kernel density threshold - increasing it will increase the quality of the data, but also requires throwing out a very significant amount of good data at the same time. 
+Looking at the other photons, clustered near the bottom of Figure \ref{fig:photon-cnt-v-abs-error}, there is indeed a relationship between the photon count variable and the absolute error --- the photons with higher absolute error (from 20-40 m) are all clustered near the left side of the graph, indicating that many of the photons with a large error occur in transects with a photon count from 0-200. However, there is a large density of photons with a relatively low error value that are also in this range. Therefore, it presents the same tradeoff as increasing the kernel density threshold - increasing it will increase the quality of the data, but also requires throwing out a very significant amount of good data at the same time.
 
 \begin{figure}[htbp]
     \centering
@@ -255,20 +272,20 @@ Looking at the other photons, clustered near the bottom of Figure \ref{fig:photo
     \caption[Photon error vs segment photon count and the fraction of fully-saturated returns in the segment]{Left: between Photon Count and absolute error \\ Right: The number of full saturated photons in a segment vs the error at that point}
     \label{fig:error-photon}
 \end{figure}
-Another variable that was checked at the photon level is the percent of pulses within the segment that are determined to be fully saturated. This can also be an indication of data issues in the segment. However this variable is also not a good predictor of error in an individual photon, as seen in the left side of Figure \ref{fig:error-photon}. Part of the reason for this is that nearly all of the segments included here have a full saturation fraction of 0.0 (99.1\% of photons in all study sites). 
+Another variable that was checked at the photon level is the percent of pulses within the segment that are determined to be fully saturated. This can also be an indication of data issues in the segment. However this variable is also not a good predictor of error in an individual photon, as seen in the left side of Figure \ref{fig:error-photon}. Part of the reason for this is that nearly all of the segments included here have a full saturation fraction of 0.0 (99.1\% of photons in all study sites).
 
 \subsection{Per-transect error}
 
 Another useful metric is understanding which transect-level variables could indicate good bathymetry data within a transect. If some transect metadata variables are a strong indication of the quality of the bathymetric signal in the transect, this could potentially allow filtering of transects before running the KDE algorithm, allowing reduction of required computing cycles.
 
-To calculate the transect-level statistics, the aggregate RMS error was calculated by grouping the dataset of all bathymetry points by the date, beam type, and site. 
+To calculate the transect-level statistics, the aggregate RMS error was calculated by grouping the dataset of all bathymetry points by the date, beam type, and site.
 
-One variable that was checked at the transect level is the Secchi disk depth. The median Secchi disk depth was calculated for each unique transect, and then compared to the aggregate RMSE for that transect. Figure \ref{fig:transect-rmse-zsd} shows the resulting plot. For this purpose, the large magnitude errors from Oahu subsite 2 were removed, since they are caused by a known issue that is not related to the Secchi disk depth.
+One variable that was checked at the transect level is the Secchi disk depth. The median Secchi disk depth was calculated for each unique transect, and then compared to the aggregate RMSE for that transect. The upper left side of Figure \ref{fig:transect-rmse-zsd} shows the resulting plot. For this purpose, the large magnitude errors from Oahu subsite 2 were removed, since they are caused by a known issue that is not related to the optical depth.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics{figures/track_secchi_vs_rmse.pdf}
-    \caption{Relationship between median Secchi Disk depth and RMS error of ICESat-2 data, per transect}
+    \includegraphics{figures/track-level-stats.pdf}
+    \caption{Relationship between transect-level statistics and RMS error of ICESat-2 data}
     \label{fig:transect-rmse-zsd}
 \end{figure}
 
@@ -279,16 +296,9 @@ One transect level variable that was checked is the percentage of ocean surface 
 Often, bathymetry signal points are not classified as high confidence ocean-surface photons in the official ATL03 classification. However, there could be an indirect relationship between the percentage of high confidence ocean photons and the bathymetric signal quality because the percentage of high confidence ocean photons could be a proxy for the transect data quality in general (i.e., good atmospheric/weather conditions, no instrument issues, etc).
 
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics{figures/track_hconf_oc_vs_rmse.pdf}
-    \caption{Relationship to percentage of high quality photons in a transect to the RMS error in the transect}
-    \label{fig:transect-phconf-rmse}
-\end{figure}
+The lower right side of Figure \ref{fig:track-level-stats} shows the relationship between the percentage of high confidence ocean signal photons and the RMS error. On the right side of the graph, it can be seen there are a large number of transects with a more than 95\% high confidence signal but still showing significant RMS error. Therefore, this variable does not provide a good way to determine which transects contain quality signal; any filtering based on the percent of high confidence ocean signal photons would remove some useful data, while leaving many of the lower quality transects.
 
-Figure \ref{fig:transect-phconf-rmse} shows the relationship between the percentage of high confidence ocean signal photons and the RMS error. On the right side of the graph, it can be seen there are a large number of transects with a more than 95\% high confidence signal but still showing significant RMS error. Therefore, this variable does not provide a good way to determine which transects contain quality signal; any filtering based on the percent of high confidence ocean signal photons would remove some useful data, while leaving many of the lower quality transects. 
-
-Previous research on ICESat-2 bathymetry has found that the beam strength can have some effect on the quality of the bathymetry data obtained. To investigate this relationship, the transects were grouped by this binary variable to find the RMS of all strong beams and all weak beams. For this approach, it was found that the strong beams did have a slightly higher RMS error, but also were able to extract many more photons. Table \ref{tab:error-by-strongweak} shows the error metrics, and the total count of points found for each type of transect. 
+Previous research on ICESat-2 bathymetry has found that the beam strength can have some effect on the quality of the bathymetry data obtained. To investigate this relationship, the transects were grouped by this binary variable to find the RMS of all strong beams and all weak beams. For this approach, it was found that the strong beams did have a slightly higher RMS error, but also were able to extract many more photons. Table \ref{tab:error-by-strongweak} shows the error metrics, and the total count of points found for each type of transect.
 
 \input{tables/rmse_by_strongweak.tex}
 
