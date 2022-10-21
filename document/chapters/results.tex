@@ -133,8 +133,8 @@ The results of the kriging output for this site are shown in Figures \ref{fig:st
 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix Test site}\label{fig:stcroix-kriging}}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption{Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot}\label{fig:stcroix-3d}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix Test site}\label{fig:stcroix-kriging}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption{Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot}\label{fig:stcroix-3d}}
     \end{floatrow}
 \end{figure}
 
@@ -180,17 +180,17 @@ The bathymetric points found via the KDE signal finding process were then interp
 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_kriging_output.pdf}}{\caption{
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/charlotteamalie_kriging_output.pdf}}{\caption{
             St.~Thomas and St.~John Test site: Result of Kriging interpolation
             }\label{fig:charlotte-amalie-kriging-out}}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_plot_3d.pdf}}{\caption{St.~Thomas and St.~John Test site: 3D results of the kriging interpolation}\label{fig:charlotte-amalie-3d}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/charlotteamalie_plot_3d.pdf}}{\caption{St.~Thomas and St.~John Test site: 3D results of the kriging interpolation}\label{fig:charlotte-amalie-3d}}
     \end{floatrow}
 \end{figure}
 
 After the Kalman updating of the GEBCO bathymetry data, the RMS error was reduced from 7.35 m to 5.78 m. The spatial distribution of the improvement is shown in figure \ref{fig:charlotte-amalie-improvement}. In some areas, the absolute error is improved by up to 7.5 m compared to the GEBCO data. 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{\caption[Absolute error improvement at St.\ Thomas and St.\ John test site]{St.~Thomas and St.~John Test site: Improvement in absolute error [m] after Kalman update. Note the relatively limited offshore extent of the validation data}\label{fig:charlotte-amalie-improvement}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{\caption[Absolute error improvement at St.\ Thomas and St.\ John test site]{St.~Thomas and St.~John Test site: Improvement in absolute error [m] after Kalman update. Note the relatively limited offshore extent of the validation data}\label{fig:charlotte-amalie-improvement}}
         \capbtabbox{\input{tables/charlotteamalie_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:charlotteamalie_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
