@@ -5,7 +5,7 @@
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1kriging_a84986b88025bf97b6a73cfb9df90f537}{prepare\+\_\+pt\+\_\+subset\+\_\+for\+\_\+kriging}} (pts\+\_\+gdf\+\_\+all, folderpath, npts, crs, samplemethod)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1kriging_a0d954f881975aa2124e7c9fb92a8384d}{krige\+\_\+bathy}} (kr\+\_\+model, folderpath, npts, variogram\+\_\+model, pts\+\_\+gdf\+\_\+all, crs, $\ast$$\ast$kwargs)
+def \mbox{\hyperlink{namespaceatl__module_1_1kriging_a51bf8167af683eb60bae2443bfe31833}{krige\+\_\+bathy}} (kr\+\_\+model, folderpath, npts, pts\+\_\+gdf\+\_\+all, crs, $\ast$$\ast$kwargs)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -15,11 +15,11 @@ def \mbox{\hyperlink{namespaceatl__module_1_1kriging_a0d954f881975aa2124e7c9fb92
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespaceatl__module_1_1kriging_a0d954f881975aa2124e7c9fb92a8384d}\label{namespaceatl__module_1_1kriging_a0d954f881975aa2124e7c9fb92a8384d}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1kriging_a51bf8167af683eb60bae2443bfe31833}\label{namespaceatl__module_1_1kriging_a51bf8167af683eb60bae2443bfe31833}} 
 \index{atl\_module.kriging@{atl\_module.kriging}!krige\_bathy@{krige\_bathy}}
 \index{krige\_bathy@{krige\_bathy}!atl\_module.kriging@{atl\_module.kriging}}
 \doxysubsubsection{\texorpdfstring{krige\_bathy()}{krige\_bathy()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+kriging.\+krige\+\_\+bathy (\begin{DoxyParamCaption}\item[{}]{kr\+\_\+model,  }\item[{}]{folderpath,  }\item[{}]{npts,  }\item[{}]{variogram\+\_\+model,  }\item[{}]{pts\+\_\+gdf\+\_\+all,  }\item[{}]{crs,  }\item[{$\ast$$\ast$}]{kwargs }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+kriging.\+krige\+\_\+bathy (\begin{DoxyParamCaption}\item[{}]{kr\+\_\+model,  }\item[{}]{folderpath,  }\item[{}]{npts,  }\item[{}]{pts\+\_\+gdf\+\_\+all,  }\item[{}]{crs,  }\item[{$\ast$$\ast$}]{kwargs }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Load the bathymetric points, select a subset of them via PDAL poisson dart-throwing, then krige using pykrige
 
@@ -29,11 +29,12 @@ Args:
     pointfolder_path (_type_): path of the location of the bathymetric points
     npts (integer): number of points to subset from the bathymetric points
 \end{DoxyVerb}
- Here is the call graph for this function\+:\nopagebreak
+ Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1kriging_a0d954f881975aa2124e7c9fb92a8384d_cgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1kriging_a51bf8167af683eb60bae2443bfe31833_cgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1kriging_a84986b88025bf97b6a73cfb9df90f537}\label{namespaceatl__module_1_1kriging_a84986b88025bf97b6a73cfb9df90f537}} 
@@ -42,7 +43,8 @@ Args:
 \doxysubsubsection{\texorpdfstring{prepare\_pt\_subset\_for\_kriging()}{prepare\_pt\_subset\_for\_kriging()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+kriging.\+prepare\+\_\+pt\+\_\+subset\+\_\+for\+\_\+kriging (\begin{DoxyParamCaption}\item[{}]{pts\+\_\+gdf\+\_\+all,  }\item[{}]{folderpath,  }\item[{}]{npts,  }\item[{}]{crs,  }\item[{}]{samplemethod }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode

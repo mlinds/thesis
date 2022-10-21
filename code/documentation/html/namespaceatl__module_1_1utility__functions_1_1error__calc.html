@@ -90,10 +90,8 @@ Functions</h2></td></tr>
 <tr class="separator:a254d4f0877223b2c951babae977333ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec9ccd8728232838cbb140d1a8766f06"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1utility__functions_1_1error__calc.html#aec9ccd8728232838cbb140d1a8766f06">icesat_error_metrics</a> (beam_df)</td></tr>
 <tr class="separator:aec9ccd8728232838cbb140d1a8766f06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2d1c9d211d49fabde4c0816841b69c9"><td class="memItemLeft" align="right" valign="top">dict&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1utility__functions_1_1error__calc.html#aa2d1c9d211d49fabde4c0816841b69c9">raster_RMSE_blocked</a> (str truth_raster_path, str measured_rasterpath, error_out=False)</td></tr>
-<tr class="separator:aa2d1c9d211d49fabde4c0816841b69c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe7316e7584adea431870614ef730e69"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1utility__functions_1_1error__calc.html#afe7316e7584adea431870614ef730e69">raster_RMSE</a> (truth_raster_path, measured_rasterpath)</td></tr>
-<tr class="separator:afe7316e7584adea431870614ef730e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec275ec8c7dce4efd8d4ff2245c66e11"><td class="memItemLeft" align="right" valign="top">dict&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1utility__functions_1_1error__calc.html#aec275ec8c7dce4efd8d4ff2245c66e11">raster_RMSE_blocked</a> (str truth_raster_path, str measured_rasterpath, error_out=None)</td></tr>
+<tr class="separator:aec275ec8c7dce4efd8d4ff2245c66e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -319,36 +317,8 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="afe7316e7584adea431870614ef730e69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe7316e7584adea431870614ef730e69">&#9670;&nbsp;</a></span>raster_RMSE()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def atl_module.utility_functions.error_calc.raster_RMSE </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>truth_raster_path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>measured_rasterpath</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa2d1c9d211d49fabde4c0816841b69c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2d1c9d211d49fabde4c0816841b69c9">&#9670;&nbsp;</a></span>raster_RMSE_blocked()</h2>
+<a id="aec275ec8c7dce4efd8d4ff2245c66e11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec275ec8c7dce4efd8d4ff2245c66e11">&#9670;&nbsp;</a></span>raster_RMSE_blocked()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -369,7 +339,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>error_out</em> = <code>False</code>&#160;</td>
+          <td class="paramname"><em>error_out</em> = <code>None</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -385,7 +355,7 @@ This function will perform the function for each GDAL block within the truth ras
 Args:
     truth_raster_path (str): The path of the truth raster
     measured_rasterpath (str): the path of the measurement raster, which will be reprojected to the same grid as the truth raster
-    error_out (bool, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
+    error_out (string, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
 
 Returns:
     dict: a dictionary with the keys 'RMSE' and 'MAE', whose values are a float of the respective error value

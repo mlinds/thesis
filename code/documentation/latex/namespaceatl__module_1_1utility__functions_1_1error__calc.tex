@@ -17,9 +17,7 @@ def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_a
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_aec9ccd8728232838cbb140d1a8766f06}{icesat\+\_\+error\+\_\+metrics}} (beam\+\_\+df)
 \item 
-dict \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}{raster\+\_\+\+R\+M\+S\+E\+\_\+blocked}} (str truth\+\_\+raster\+\_\+path, str measured\+\_\+rasterpath, error\+\_\+out=False)
-\item 
-def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}{raster\+\_\+\+R\+M\+SE}} (truth\+\_\+raster\+\_\+path, measured\+\_\+rasterpath)
+dict \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1error__calc_aec275ec8c7dce4efd8d4ff2245c66e11}{raster\+\_\+\+R\+M\+S\+E\+\_\+blocked}} (str truth\+\_\+raster\+\_\+path, str measured\+\_\+rasterpath, error\+\_\+out=None)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -133,17 +131,11 @@ Returns:
 \includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1error__calc_af046b9310a25220e442526f42137459b_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_afe7316e7584adea431870614ef730e69}} 
-\index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!raster\_RMSE@{raster\_RMSE}}
-\index{raster\_RMSE@{raster\_RMSE}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
-\doxysubsubsection{\texorpdfstring{raster\_RMSE()}{raster\_RMSE()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+raster\+\_\+\+R\+M\+SE (\begin{DoxyParamCaption}\item[{}]{truth\+\_\+raster\+\_\+path,  }\item[{}]{measured\+\_\+rasterpath }\end{DoxyParamCaption})}
-
-\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_aa2d1c9d211d49fabde4c0816841b69c9}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1error__calc_aec275ec8c7dce4efd8d4ff2245c66e11}\label{namespaceatl__module_1_1utility__functions_1_1error__calc_aec275ec8c7dce4efd8d4ff2245c66e11}} 
 \index{atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}!raster\_RMSE\_blocked@{raster\_RMSE\_blocked}}
 \index{raster\_RMSE\_blocked@{raster\_RMSE\_blocked}!atl\_module.utility\_functions.error\_calc@{atl\_module.utility\_functions.error\_calc}}
 \doxysubsubsection{\texorpdfstring{raster\_RMSE\_blocked()}{raster\_RMSE\_blocked()}}
-{\footnotesize\ttfamily  dict atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+raster\+\_\+\+R\+M\+S\+E\+\_\+blocked (\begin{DoxyParamCaption}\item[{str}]{truth\+\_\+raster\+\_\+path,  }\item[{str}]{measured\+\_\+rasterpath,  }\item[{}]{error\+\_\+out = {\ttfamily False} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily  dict atl\+\_\+module.\+utility\+\_\+functions.\+error\+\_\+calc.\+raster\+\_\+\+R\+M\+S\+E\+\_\+blocked (\begin{DoxyParamCaption}\item[{str}]{truth\+\_\+raster\+\_\+path,  }\item[{str}]{measured\+\_\+rasterpath,  }\item[{}]{error\+\_\+out = {\ttfamily None} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Create a dictionary summarizing the error metrics between two rasters. The measured raster is projected into the same CRS and resolution as the truth raster, and then the RMSE and MAE area calculated.
 
@@ -152,7 +144,7 @@ This function will perform the function for each GDAL block within the truth ras
 Args:
     truth_raster_path (str): The path of the truth raster
     measured_rasterpath (str): the path of the measurement raster, which will be reprojected to the same grid as the truth raster
-    error_out (bool, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
+    error_out (string, optional): if set to True, the error raster will be written to a separate file. This operation will increase the io load significantly. Defaults to False.
 
 Returns:
     dict: a dictionary with the keys 'RMSE' and 'MAE', whose values are a float of the respective error value

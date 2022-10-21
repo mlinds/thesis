@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['calc_5fkdeval_5fand_5fzval_44',['calc_kdeval_and_zval',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a03ae1ac3bcc5d7ada94c3be11e1ee7f2',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
-  ['calc_5fzsdpoints_5fby_5ftracks_45',['calc_zsdpoints_by_tracks',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da',1,'atl_module::core::GebcoUpscaler']]],
+  ['calc_5fkdeval_5fand_5fzval_43',['calc_kdeval_and_zval',['../classatl__module_1_1bathymetry__extraction_1_1kde__peaks__method_1_1AccumulateKDEs.html#a03ae1ac3bcc5d7ada94c3be11e1ee7f2',1,'atl_module::bathymetry_extraction::kde_peaks_method::AccumulateKDEs']]],
+  ['calc_5fzsdpoints_5fby_5ftracks_44',['calc_zsdpoints_by_tracks',['../classatl__module_1_1core_1_1GebcoUpscaler.html#a6c1d146791ec3ebfc2c933abd484a0da',1,'atl_module::core::GebcoUpscaler']]],
+  ['clip_5fto_5fdatawindow_45',['clip_to_datawindow',['../namespaceatl__module_1_1utility__functions_1_1raster__interaction.html#af73f802ca993ca9406c0e04efbc33635',1,'atl_module::utility_functions::raster_interaction']]],
   ['cmr_5fcollections_5furl_46',['CMR_COLLECTIONS_URL',['../namespaceatl__module_1_1ATL03__preprocessing_1_1download.html#ae0a3b390041d8e6796b9312a84c11b5d',1,'atl_module::ATL03_preprocessing::download']]],
   ['core_2epy_47',['core.py',['../core_8py.html',1,'']]],
   ['correct_5ffor_5frefraction_48',['correct_for_refraction',['../namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#abd730b4766d8bef34c84ce89726930e3',1,'atl_module::bathymetry_extraction::point_dataframe_filters']]],

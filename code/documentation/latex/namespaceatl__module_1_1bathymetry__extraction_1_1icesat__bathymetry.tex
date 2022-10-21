@@ -5,13 +5,11 @@
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ac754fa00c1ecdfe55b4cb0fcd9dd2f9f}{add\+\_\+along\+\_\+track\+\_\+dist}} (pointdata)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_aa5e298fdb8798d14b11d94f87d1b4f28}{add\+\_\+rolling\+\_\+kde}} (df, window, window\+\_\+meters, min\+\_\+photons)
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ae275f9b2dc91127038308d9b5a20b232}{add\+\_\+rolling\+\_\+kde}} (df, window)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ad3b631e1eee33cd88ca7d1b7f2887622}{get\+\_\+all\+\_\+bathy\+\_\+from\+\_\+granule}} (filename, window, threshold\+\_\+val, req\+\_\+perc\+\_\+hconf, window\+\_\+meters, min\+\_\+photons, min\+\_\+kde, low\+\_\+limit, high\+\_\+limit, rolling\+\_\+window, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z)
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a5d3167ec04a57dae6b416540cb84e1f3}{get\+\_\+all\+\_\+bathy\+\_\+from\+\_\+granule}} (filename, window, req\+\_\+perc\+\_\+hconf, min\+\_\+kde, low\+\_\+limit\+\_\+gebco, high\+\_\+limit\+\_\+gebco, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a4fe0f4d74ba794b33aba5d2eb134ab0c}{bathy\+\_\+from\+\_\+all\+\_\+tracks}} (folderpath, window, threshold\+\_\+val, req\+\_\+perc\+\_\+hconf, window\+\_\+meters, min\+\_\+photons, min\+\_\+kde)
-\item 
-def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a75845e257b4ef0e8e47bb7cded6baf7f}{bathy\+\_\+from\+\_\+all\+\_\+tracks\+\_\+parallel}} (folderpath, window, threshold\+\_\+val, req\+\_\+perc\+\_\+hconf, window\+\_\+meters, min\+\_\+photons, min\+\_\+kde, low\+\_\+limit, high\+\_\+limit, rolling\+\_\+window, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z)
+def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ab7b5660e299e6954c0a23314e9a960c3}{bathy\+\_\+from\+\_\+all\+\_\+tracks\+\_\+parallel}} (folderpath, window, req\+\_\+perc\+\_\+hconf, min\+\_\+kde, low\+\_\+limit\+\_\+gebco, high\+\_\+limit\+\_\+gebco, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -27,37 +25,25 @@ def \mbox{\hyperlink{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__b
 \doxysubsubsection{\texorpdfstring{add\_along\_track\_dist()}{add\_along\_track\_dist()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+add\+\_\+along\+\_\+track\+\_\+dist (\begin{DoxyParamCaption}\item[{}]{pointdata }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_aa5e298fdb8798d14b11d94f87d1b4f28}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_aa5e298fdb8798d14b11d94f87d1b4f28}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ae275f9b2dc91127038308d9b5a20b232}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ae275f9b2dc91127038308d9b5a20b232}} 
 \index{atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}!add\_rolling\_kde@{add\_rolling\_kde}}
 \index{add\_rolling\_kde@{add\_rolling\_kde}!atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}}
 \doxysubsubsection{\texorpdfstring{add\_rolling\_kde()}{add\_rolling\_kde()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+add\+\_\+rolling\+\_\+kde (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{window,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+photons }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+add\+\_\+rolling\+\_\+kde (\begin{DoxyParamCaption}\item[{}]{df,  }\item[{}]{window }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_aa5e298fdb8798d14b11d94f87d1b4f28_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ae275f9b2dc91127038308d9b5a20b232_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a4fe0f4d74ba794b33aba5d2eb134ab0c}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a4fe0f4d74ba794b33aba5d2eb134ab0c}} 
-\index{atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}!bathy\_from\_all\_tracks@{bathy\_from\_all\_tracks}}
-\index{bathy\_from\_all\_tracks@{bathy\_from\_all\_tracks}!atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}}
-\doxysubsubsection{\texorpdfstring{bathy\_from\_all\_tracks()}{bathy\_from\_all\_tracks()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+bathy\+\_\+from\+\_\+all\+\_\+tracks (\begin{DoxyParamCaption}\item[{}]{folderpath,  }\item[{}]{window,  }\item[{}]{threshold\+\_\+val,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+photons,  }\item[{}]{min\+\_\+kde }\end{DoxyParamCaption})}
-
-Here is the call graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a4fe0f4d74ba794b33aba5d2eb134ab0c_cgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a75845e257b4ef0e8e47bb7cded6baf7f}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a75845e257b4ef0e8e47bb7cded6baf7f}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ab7b5660e299e6954c0a23314e9a960c3}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ab7b5660e299e6954c0a23314e9a960c3}} 
 \index{atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}!bathy\_from\_all\_tracks\_parallel@{bathy\_from\_all\_tracks\_parallel}}
 \index{bathy\_from\_all\_tracks\_parallel@{bathy\_from\_all\_tracks\_parallel}!atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}}
 \doxysubsubsection{\texorpdfstring{bathy\_from\_all\_tracks\_parallel()}{bathy\_from\_all\_tracks\_parallel()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+bathy\+\_\+from\+\_\+all\+\_\+tracks\+\_\+parallel (\begin{DoxyParamCaption}\item[{}]{folderpath,  }\item[{}]{window,  }\item[{}]{threshold\+\_\+val,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+photons,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit,  }\item[{}]{high\+\_\+limit,  }\item[{}]{rolling\+\_\+window,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+bathy\+\_\+from\+\_\+all\+\_\+tracks\+\_\+parallel (\begin{DoxyParamCaption}\item[{}]{folderpath,  }\item[{}]{window,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit\+\_\+gebco,  }\item[{}]{high\+\_\+limit\+\_\+gebco,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Run the kde function for every single granule in parallel
 
@@ -70,11 +56,11 @@ Args:
 Returns:
     GeoDataFrame: Geodataframe of the locations of photons that are bathmetry
 \end{DoxyVerb}
- \mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ad3b631e1eee33cd88ca7d1b7f2887622}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ad3b631e1eee33cd88ca7d1b7f2887622}} 
+ \mbox{\Hypertarget{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a5d3167ec04a57dae6b416540cb84e1f3}\label{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a5d3167ec04a57dae6b416540cb84e1f3}} 
 \index{atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}!get\_all\_bathy\_from\_granule@{get\_all\_bathy\_from\_granule}}
 \index{get\_all\_bathy\_from\_granule@{get\_all\_bathy\_from\_granule}!atl\_module.bathymetry\_extraction.icesat\_bathymetry@{atl\_module.bathymetry\_extraction.icesat\_bathymetry}}
 \doxysubsubsection{\texorpdfstring{get\_all\_bathy\_from\_granule()}{get\_all\_bathy\_from\_granule()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+get\+\_\+all\+\_\+bathy\+\_\+from\+\_\+granule (\begin{DoxyParamCaption}\item[{}]{filename,  }\item[{}]{window,  }\item[{}]{threshold\+\_\+val,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+photons,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit,  }\item[{}]{high\+\_\+limit,  }\item[{}]{rolling\+\_\+window,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+bathymetry\+\_\+extraction.\+icesat\+\_\+bathymetry.\+get\+\_\+all\+\_\+bathy\+\_\+from\+\_\+granule (\begin{DoxyParamCaption}\item[{}]{filename,  }\item[{}]{window,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit\+\_\+gebco,  }\item[{}]{high\+\_\+limit\+\_\+gebco,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}For a single granule (stored in a netcdf4 file), loop over ever single beam, determine if it contains useful bathymetry signal, and return a dataframe just of the bathymetric points
 
@@ -87,18 +73,12 @@ Args:
 Returns:
     pd.DataFrame: Pandas Dataframe of bathymetric points
 \end{DoxyVerb}
- Here is the call graph for this function\+:\nopagebreak
+ Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ad3b631e1eee33cd88ca7d1b7f2887622_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_ad3b631e1eee33cd88ca7d1b7f2887622_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1bathymetry__extraction_1_1icesat__bathymetry_a5d3167ec04a57dae6b416540cb84e1f3_cgraph}
 \end{center}
 \end{figure}
 

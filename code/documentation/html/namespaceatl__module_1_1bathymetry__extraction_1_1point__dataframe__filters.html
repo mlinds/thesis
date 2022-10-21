@@ -82,8 +82,8 @@ Functions</h2></td></tr>
 <tr class="separator:aaf1fe670a179cdeec1154b17f65438dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13000aee400ecb64d2b4ff18a6076d29"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a13000aee400ecb64d2b4ff18a6076d29">filter_TEP_and_nonassoc</a> (df)</td></tr>
 <tr class="separator:a13000aee400ecb64d2b4ff18a6076d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c1f8f315a8727a23223effec2fbef85"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a0c1f8f315a8727a23223effec2fbef85">add_sea_surface_level</a> (df, max_sea_surf_elev, rolling_window=200)</td></tr>
-<tr class="separator:a0c1f8f315a8727a23223effec2fbef85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b0d6778f3ac8911e40f36616071b1b5"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a2b0d6778f3ac8911e40f36616071b1b5">add_sea_surface_level</a> (df, max_sea_surf_elev)</td></tr>
+<tr class="separator:a2b0d6778f3ac8911e40f36616071b1b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d96f41ce58a12d7483fe51752d38cb9"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a3d96f41ce58a12d7483fe51752d38cb9">filter_low_points</a> (df, filter_below_z)</td></tr>
 <tr class="separator:a3d96f41ce58a12d7483fe51752d38cb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad370dbe15226acaad178fd30eb59c050"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#ad370dbe15226acaad178fd30eb59c050">filter_depth</a> (df, filter_below_depth)</td></tr>
@@ -92,8 +92,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad964b0828cb993233df0305243bb9eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95e1371dc4250e39223651351ae0a441"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#a95e1371dc4250e39223651351ae0a441">add_gebco</a> (df)</td></tr>
 <tr class="separator:a95e1371dc4250e39223651351ae0a441"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adcb6653187c8f30786dd0fd8e576bfee"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#adcb6653187c8f30786dd0fd8e576bfee">filter_gebco</a> (pd.DataFrame df, float low_limit, float high_limit)</td></tr>
-<tr class="separator:adcb6653187c8f30786dd0fd8e576bfee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdaada08681c5681628de2795c5da7b3"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#acdaada08681c5681628de2795c5da7b3">filter_gebco</a> (pd.DataFrame df, float low_limit_gebco, float high_limit_gebco)</td></tr>
+<tr class="separator:acdaada08681c5681628de2795c5da7b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd730b4766d8bef34c84ce89726930e3"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#abd730b4766d8bef34c84ce89726930e3">correct_for_refraction</a> (df)</td></tr>
 <tr class="separator:abd730b4766d8bef34c84ce89726930e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefa9c39d8134977ed9a081420684f63a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters.html#aefa9c39d8134977ed9a081420684f63a">add_neighbor_count</a> (df, window_distance_pts, window_distance_meters)</td></tr>
@@ -153,7 +153,7 @@ Here is the caller graph for this function:</div>
 <div class="center"><img src="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678_icgraph.png" border="0" usemap="#namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678_icgraph" alt=""/></div>
 <map name="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678_icgraph" id="namespaceatl__module_1_1bathymetry__extraction_1_1point__dataframe__filters_a30cbf85eda85f01fe2bbd2bbc8c19678_icgraph">
 <area shape="rect" title=" " alt="" coords="285,5,468,76"/>
-<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a0f9ad889a4af2d8b333e59d94ea153dd" title=" " alt="" coords="5,20,237,61"/>
+<area shape="rect" href="classatl__module_1_1core_1_1GebcoUpscaler.html#a55225c673cc98704b0813bc20139e981" title=" " alt="" coords="5,20,237,61"/>
 </map>
 </div>
 
@@ -193,8 +193,8 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a0c1f8f315a8727a23223effec2fbef85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c1f8f315a8727a23223effec2fbef85">&#9670;&nbsp;</a></span>add_sea_surface_level()</h2>
+<a id="a2b0d6778f3ac8911e40f36616071b1b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b0d6778f3ac8911e40f36616071b1b5">&#9670;&nbsp;</a></span>add_sea_surface_level()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -209,13 +209,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>max_sea_surf_elev</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>rolling_window</em> = <code>200</code>&#160;</td>
+          <td class="paramname"><em>max_sea_surf_elev</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -282,8 +276,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="adcb6653187c8f30786dd0fd8e576bfee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adcb6653187c8f30786dd0fd8e576bfee">&#9670;&nbsp;</a></span>filter_gebco()</h2>
+<a id="acdaada08681c5681628de2795c5da7b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdaada08681c5681628de2795c5da7b3">&#9670;&nbsp;</a></span>filter_gebco()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,13 +292,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>low_limit</em>, </td>
+          <td class="paramname"><em>low_limit_gebco</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>high_limit</em>&#160;</td>
+          <td class="paramname"><em>high_limit_gebco</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

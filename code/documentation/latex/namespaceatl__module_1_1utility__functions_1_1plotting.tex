@@ -7,9 +7,9 @@ def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_acfe
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_ad93d9fe97403dfb8a9c50505496fc94d}{map\+\_\+ground\+\_\+truth\+\_\+data}} (truthdata\+\_\+path, plottitle)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_ab727e842b80198281307419e6b5ae9cc}{plot\+\_\+photon\+\_\+map}} (ax, bathy\+\_\+points\+\_\+gdf)
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a9805df9e782c696ed913d9a88dd7b1ee}{plot\+\_\+photon\+\_\+map}} (bathy\+\_\+points\+\_\+gdf, fraction, figsize=None)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_afc66daa3c7fdc6c1c839723ed66e4828}{plot\+\_\+tracklines\+\_\+overview}} (ax, tracklines\+\_\+gdf, ratio=0.\+4, fraction=1.\+2)
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_ac57723d062e5b421a41141dad535551e}{plot\+\_\+tracklines\+\_\+overview}} (ax, tracklines\+\_\+gdf, ratio=0.\+4, fraction=1.\+2, figsize\+\_\+input=None)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a0a1438a14e773da2e6f2b32cfaad4aec}{plot\+\_\+aoi}} (ax, aoi\+\_\+gdf)
 \item 
@@ -20,6 +20,21 @@ def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a302
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_adfcaed1b3e8873cf794d22b8e6a5ce57}{set\+\_\+size}} (fraction=1, ratio=1.\+618)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_aa4ccefe2aa44d84536e39a0b88a077d0}{site\+\_\+overview\+\_\+map}} ()
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a10f91ee1d31d3f6265ccceaacfd60b2b}{plot\+\_\+error\+\_\+improvement\+\_\+meters}} (error\+\_\+raster\+\_\+path, bathy\+\_\+points\+\_\+gdf)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_aff7b34ce78f3c261d499f81888cde330}{plot3d}} (site, subset\+\_\+pts, uncertainty, kriged\+\_\+bathy, northings, eastings, utm\+\_\+name, azim, elev)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_ac906d4746c0e5853686582c13fce34a0}{plot\+\_\+kriging\+\_\+output}} (site, rasterio.\+Dataset\+Reader kriging\+\_\+raster\+\_\+dataset, kriging\+\_\+pt\+\_\+df, uncertainty, kriged\+\_\+bathy, horiz=True)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a4284bba807014a0c0d17fd77c88adf87}{read\+\_\+kriging\+\_\+output}} (kriging\+\_\+output\+\_\+path)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a0c27d89d636474fdf7ccbfe9ae8c1697}{L\+A\+T\+E\+X\+\_\+\+P\+A\+G\+E\+\_\+\+W\+I\+D\+TH}}
+\item 
+\mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1plotting_a208a2aae0955e67ddbf0fbb1d97bf6bf}{greenredcolormap}}
 \end{DoxyCompactItemize}
 
 
@@ -57,6 +72,20 @@ Here is the caller graph for this function\+:\nopagebreak
 \includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_ad93d9fe97403dfb8a9c50505496fc94d_icgraph}
 \end{center}
 \end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_aff7b34ce78f3c261d499f81888cde330}\label{namespaceatl__module_1_1utility__functions_1_1plotting_aff7b34ce78f3c261d499f81888cde330}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot3d@{plot3d}}
+\index{plot3d@{plot3d}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{plot3d()}{plot3d()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot3d (\begin{DoxyParamCaption}\item[{}]{site,  }\item[{}]{subset\+\_\+pts,  }\item[{}]{uncertainty,  }\item[{}]{kriged\+\_\+bathy,  }\item[{}]{northings,  }\item[{}]{eastings,  }\item[{}]{utm\+\_\+name,  }\item[{}]{azim,  }\item[{}]{elev }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_aff7b34ce78f3c261d499f81888cde330_icgraph}
+\end{center}
+\end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a0a1438a14e773da2e6f2b32cfaad4aec}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a0a1438a14e773da2e6f2b32cfaad4aec}} 
 \index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot\_aoi@{plot\_aoi}}
 \index{plot\_aoi@{plot\_aoi}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
@@ -76,44 +105,101 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{plot\_both\_maps()}{plot\_both\_maps()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+both\+\_\+maps (\begin{DoxyParamCaption}\item[{}]{tracklines\+\_\+gdf,  }\item[{}]{bathy\+\_\+points\+\_\+gdf,  }\item[{}]{aoi\+\_\+gdf }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a7c07543dd9e47b7f55a99a4785669266_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_ab727e842b80198281307419e6b5ae9cc}\label{namespaceatl__module_1_1utility__functions_1_1plotting_ab727e842b80198281307419e6b5ae9cc}} 
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a10f91ee1d31d3f6265ccceaacfd60b2b}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a10f91ee1d31d3f6265ccceaacfd60b2b}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot\_error\_improvement\_meters@{plot\_error\_improvement\_meters}}
+\index{plot\_error\_improvement\_meters@{plot\_error\_improvement\_meters}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{plot\_error\_improvement\_meters()}{plot\_error\_improvement\_meters()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+error\+\_\+improvement\+\_\+meters (\begin{DoxyParamCaption}\item[{}]{error\+\_\+raster\+\_\+path,  }\item[{}]{bathy\+\_\+points\+\_\+gdf }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Generate a geospatial plot of the change in the error due to the kalman updating process
+
+Args:
+    error_raster_path (string): path to the raster dataset
+    bathy_points_gdf (gpd.GeoDataFrame): bathymetry point geodataframe
+
+Returns:
+    plt.Figure: matplotlib figure object of the geospatial plot
+\end{DoxyVerb}
+ Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a10f91ee1d31d3f6265ccceaacfd60b2b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a10f91ee1d31d3f6265ccceaacfd60b2b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_ac906d4746c0e5853686582c13fce34a0}\label{namespaceatl__module_1_1utility__functions_1_1plotting_ac906d4746c0e5853686582c13fce34a0}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot\_kriging\_output@{plot\_kriging\_output}}
+\index{plot\_kriging\_output@{plot\_kriging\_output}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{plot\_kriging\_output()}{plot\_kriging\_output()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+kriging\+\_\+output (\begin{DoxyParamCaption}\item[{}]{site,  }\item[{rasterio.\+Dataset\+Reader}]{kriging\+\_\+raster\+\_\+dataset,  }\item[{}]{kriging\+\_\+pt\+\_\+df,  }\item[{}]{uncertainty,  }\item[{}]{kriged\+\_\+bathy,  }\item[{}]{horiz = {\ttfamily True} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_ac906d4746c0e5853686582c13fce34a0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a9805df9e782c696ed913d9a88dd7b1ee}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a9805df9e782c696ed913d9a88dd7b1ee}} 
 \index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot\_photon\_map@{plot\_photon\_map}}
 \index{plot\_photon\_map@{plot\_photon\_map}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
 \doxysubsubsection{\texorpdfstring{plot\_photon\_map()}{plot\_photon\_map()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+photon\+\_\+map (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{bathy\+\_\+points\+\_\+gdf }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+photon\+\_\+map (\begin{DoxyParamCaption}\item[{}]{bathy\+\_\+points\+\_\+gdf,  }\item[{}]{fraction,  }\item[{}]{figsize = {\ttfamily None} }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_ab727e842b80198281307419e6b5ae9cc_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a9805df9e782c696ed913d9a88dd7b1ee_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_afc66daa3c7fdc6c1c839723ed66e4828}\label{namespaceatl__module_1_1utility__functions_1_1plotting_afc66daa3c7fdc6c1c839723ed66e4828}} 
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a9805df9e782c696ed913d9a88dd7b1ee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_ac57723d062e5b421a41141dad535551e}\label{namespaceatl__module_1_1utility__functions_1_1plotting_ac57723d062e5b421a41141dad535551e}} 
 \index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!plot\_tracklines\_overview@{plot\_tracklines\_overview}}
 \index{plot\_tracklines\_overview@{plot\_tracklines\_overview}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
 \doxysubsubsection{\texorpdfstring{plot\_tracklines\_overview()}{plot\_tracklines\_overview()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+tracklines\+\_\+overview (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{tracklines\+\_\+gdf,  }\item[{}]{ratio = {\ttfamily 0.4},  }\item[{}]{fraction = {\ttfamily 1.2} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+tracklines\+\_\+overview (\begin{DoxyParamCaption}\item[{}]{ax,  }\item[{}]{tracklines\+\_\+gdf,  }\item[{}]{ratio = {\ttfamily 0.4},  }\item[{}]{fraction = {\ttfamily 1.2},  }\item[{}]{figsize\+\_\+input = {\ttfamily None} }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_afc66daa3c7fdc6c1c839723ed66e4828_cgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_ac57723d062e5b421a41141dad535551e_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_afc66daa3c7fdc6c1c839723ed66e4828_icgraph}
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_ac57723d062e5b421a41141dad535551e_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a302a22aa8361a079e4b4a16ca8e02466}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a302a22aa8361a079e4b4a16ca8e02466}} 
@@ -122,6 +208,20 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{plot\_transect\_results()}{plot\_transect\_results()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+plot\+\_\+transect\+\_\+results (\begin{DoxyParamCaption}\item[{}]{subsurfacedf,  }\item[{}]{bathy\+\_\+df,  }\item[{}]{figpath }\end{DoxyParamCaption})}
 
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a4284bba807014a0c0d17fd77c88adf87}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a4284bba807014a0c0d17fd77c88adf87}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!read\_kriging\_output@{read\_kriging\_output}}
+\index{read\_kriging\_output@{read\_kriging\_output}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{read\_kriging\_output()}{read\_kriging\_output()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+read\+\_\+kriging\+\_\+output (\begin{DoxyParamCaption}\item[{}]{kriging\+\_\+output\+\_\+path }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespaceatl__module_1_1utility__functions_1_1plotting_a4284bba807014a0c0d17fd77c88adf87_icgraph}
+\end{center}
+\end{figure}
 \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_adfcaed1b3e8873cf794d22b8e6a5ce57}\label{namespaceatl__module_1_1utility__functions_1_1plotting_adfcaed1b3e8873cf794d22b8e6a5ce57}} 
 \index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!set\_size@{set\_size}}
 \index{set\_size@{set\_size}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
@@ -142,7 +242,8 @@ Returns
 fig_dim: tuple
         Dimensions of figure in inches
 \end{DoxyVerb}
- Here is the caller graph for this function\+:\nopagebreak
+ Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -154,4 +255,19 @@ fig_dim: tuple
 \index{site\_overview\_map@{site\_overview\_map}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
 \doxysubsubsection{\texorpdfstring{site\_overview\_map()}{site\_overview\_map()}}
 {\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+site\+\_\+overview\+\_\+map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a208a2aae0955e67ddbf0fbb1d97bf6bf}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a208a2aae0955e67ddbf0fbb1d97bf6bf}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!greenredcolormap@{greenredcolormap}}
+\index{greenredcolormap@{greenredcolormap}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{greenredcolormap}{greenredcolormap}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+greenredcolormap}
+
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1plotting_a0c27d89d636474fdf7ccbfe9ae8c1697}\label{namespaceatl__module_1_1utility__functions_1_1plotting_a0c27d89d636474fdf7ccbfe9ae8c1697}} 
+\index{atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}!LATEX\_PAGE\_WIDTH@{LATEX\_PAGE\_WIDTH}}
+\index{LATEX\_PAGE\_WIDTH@{LATEX\_PAGE\_WIDTH}!atl\_module.utility\_functions.plotting@{atl\_module.utility\_functions.plotting}}
+\doxysubsubsection{\texorpdfstring{LATEX\_PAGE\_WIDTH}{LATEX\_PAGE\_WIDTH}}
+{\footnotesize\ttfamily atl\+\_\+module.\+utility\+\_\+functions.\+plotting.\+L\+A\+T\+E\+X\+\_\+\+P\+A\+G\+E\+\_\+\+W\+I\+D\+TH}
 

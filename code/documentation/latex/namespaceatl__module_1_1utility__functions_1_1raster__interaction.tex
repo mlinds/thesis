@@ -3,11 +3,17 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ab73c8649c59f35e7352713ffbedd20c7}{write\+\_\+error\+\_\+improvement\+\_\+raster}} (folder, aoipath)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a1520dd1e68f84147f75914d5c327b3bd}{gdal\+\_\+clip}} (rasterinpath, rasteroutpath, aoipath)
+\item 
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_af73f802ca993ca9406c0e04efbc33635}{clip\+\_\+to\+\_\+datawindow}} (rasterpath, aoipath)
+\item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aee730af5a0558dddcebcf877402499ae}{query\+\_\+from\+\_\+lines}} (line, rasterpath, band, npts=200)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ae174d4e9e5ee14997ad8de7dd8bc1acb}{query\+\_\+raster}} (pd.\+Data\+Frame dataframe, str src, band=1)
 \item 
-def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aff930034bc3591879bcddcbb0b6849d2}{subset\+\_\+gebco}} (str folderpath, bathy\+\_\+pts, int epsg\+\_\+no, int hres)
+def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a8b3f468ad371b194556e03e782d6dbf3}{subset\+\_\+gebco}} (str folderpath, aoi\+\_\+data\+\_\+path, int epsg\+\_\+no, int hres)
 \item 
 def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aaa777eb96abb5a8bebabf58371c8d888}{random\+\_\+raster\+\_\+gdf}} (raster\+\_\+in, nsample\+\_\+points\+\_\+required, maskgdf=None)
 \end{DoxyCompactItemize}
@@ -21,6 +27,23 @@ def \mbox{\hyperlink{namespaceatl__module_1_1utility__functions_1_1raster__inter
 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_af73f802ca993ca9406c0e04efbc33635}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_af73f802ca993ca9406c0e04efbc33635}} 
+\index{atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}!clip\_to\_datawindow@{clip\_to\_datawindow}}
+\index{clip\_to\_datawindow@{clip\_to\_datawindow}!atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}}
+\doxysubsubsection{\texorpdfstring{clip\_to\_datawindow()}{clip\_to\_datawindow()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+raster\+\_\+interaction.\+clip\+\_\+to\+\_\+datawindow (\begin{DoxyParamCaption}\item[{}]{rasterpath,  }\item[{}]{aoipath }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Crop NODATA values surrounding a raster, then overwrite the raster with the new dataset
+
+Args:
+    rasterpath (str): path to the raster
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a1520dd1e68f84147f75914d5c327b3bd}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a1520dd1e68f84147f75914d5c327b3bd}} 
+\index{atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}!gdal\_clip@{gdal\_clip}}
+\index{gdal\_clip@{gdal\_clip}!atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}}
+\doxysubsubsection{\texorpdfstring{gdal\_clip()}{gdal\_clip()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+raster\+\_\+interaction.\+gdal\+\_\+clip (\begin{DoxyParamCaption}\item[{}]{rasterinpath,  }\item[{}]{rasteroutpath,  }\item[{}]{aoipath }\end{DoxyParamCaption})}
+
 \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aee730af5a0558dddcebcf877402499ae}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aee730af5a0558dddcebcf877402499ae}} 
 \index{atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}!query\_from\_lines@{query\_from\_lines}}
 \index{query\_from\_lines@{query\_from\_lines}!atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}}
@@ -83,11 +106,11 @@ Args:
 Returns:
     gpd.GeoDataFrame: geodataframe of the random points
 \end{DoxyVerb}
- \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aff930034bc3591879bcddcbb0b6849d2}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_aff930034bc3591879bcddcbb0b6849d2}} 
+ \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a8b3f468ad371b194556e03e782d6dbf3}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_a8b3f468ad371b194556e03e782d6dbf3}} 
 \index{atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}!subset\_gebco@{subset\_gebco}}
 \index{subset\_gebco@{subset\_gebco}!atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}}
 \doxysubsubsection{\texorpdfstring{subset\_gebco()}{subset\_gebco()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+raster\+\_\+interaction.\+subset\+\_\+gebco (\begin{DoxyParamCaption}\item[{str}]{folderpath,  }\item[{}]{bathy\+\_\+pts,  }\item[{int}]{epsg\+\_\+no,  }\item[{int}]{hres }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+raster\+\_\+interaction.\+subset\+\_\+gebco (\begin{DoxyParamCaption}\item[{str}]{folderpath,  }\item[{}]{aoi\+\_\+data\+\_\+path,  }\item[{int}]{epsg\+\_\+no,  }\item[{int}]{hres }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Create a resampled (bilinearly) and reprojected subset of the global GEBCO dataset. Write it to the same input folder
 
@@ -100,7 +123,13 @@ Args:
 Returns:
     None
 \end{DoxyVerb}
- 
+ \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ab73c8649c59f35e7352713ffbedd20c7}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ab73c8649c59f35e7352713ffbedd20c7}} 
+\index{atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}!write\_error\_improvement\_raster@{write\_error\_improvement\_raster}}
+\index{write\_error\_improvement\_raster@{write\_error\_improvement\_raster}!atl\_module.utility\_functions.raster\_interaction@{atl\_module.utility\_functions.raster\_interaction}}
+\doxysubsubsection{\texorpdfstring{write\_error\_improvement\_raster()}{write\_error\_improvement\_raster()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+utility\+\_\+functions.\+raster\+\_\+interaction.\+write\+\_\+error\+\_\+improvement\+\_\+raster (\begin{DoxyParamCaption}\item[{}]{folder,  }\item[{}]{aoipath }\end{DoxyParamCaption})}
+
+
 
 \doxysubsection{Variable Documentation}
 \mbox{\Hypertarget{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ae614df139fd8a151fb3987548b3cbf7c}\label{namespaceatl__module_1_1utility__functions_1_1raster__interaction_ae614df139fd8a151fb3987548b3cbf7c}} 

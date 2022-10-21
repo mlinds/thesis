@@ -13,7 +13,7 @@ def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a58ed7011a85401c8
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a3b43fdd21c17dde55ea141e28eff7878}{subset\+\_\+gebco}} (self, int hres)
 \item 
-def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}{find\+\_\+bathy\+\_\+from\+\_\+icesat}} (self, window, threshold\+\_\+val, req\+\_\+perc\+\_\+hconf, min\+\_\+photons, window\+\_\+meters, min\+\_\+kde, low\+\_\+limit, high\+\_\+limit, rolling\+\_\+window, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z, min\+\_\+ph\+\_\+count, save\+\_\+result=True)
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a55225c673cc98704b0813bc20139e981}{find\+\_\+bathy\+\_\+from\+\_\+icesat}} (self, window, req\+\_\+perc\+\_\+hconf, min\+\_\+kde, low\+\_\+limit\+\_\+gebco, high\+\_\+limit\+\_\+gebco, max\+\_\+sea\+\_\+surf\+\_\+elev, filter\+\_\+below\+\_\+z, filter\+\_\+below\+\_\+depth, n, max\+\_\+geoid\+\_\+high\+\_\+z, min\+\_\+ph\+\_\+count, save\+\_\+result=True)
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa20a8bcf7842b7884aeae3ad69fd8efb}{kriging}} (self, int npts, str kr\+\_\+model, $\ast$$\ast$kwargs)
 \item 
@@ -23,7 +23,7 @@ dict \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a8b9b75b6b08e65f
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ab9545b8018baabeb71e04c81e5e63fad}{add\+\_\+truth\+\_\+data}} (self)
 \item 
-def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}{raster\+\_\+rmse}} (self, check\+\_\+kriged=False, error\+\_\+out=False)
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a3c1f0f4a4cb9baf5a4c5b65472eeac69}{raster\+\_\+rmse}} (self, check\+\_\+kriged=False, error\+\_\+out=False, improvement\+\_\+out=False)
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a56e0411da599e1ebb844671023e0f9f8}{write\+\_\+raster\+\_\+error\+\_\+tables}} (self)
 \item 
@@ -33,11 +33,17 @@ def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c73
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}{plot\+\_\+truth\+\_\+data}} (self, plot\+\_\+title)
 \item 
-def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931}{plot\+\_\+icesat\+\_\+points}} (self, fraction=1)
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a35269d03c37d7f2ccf2fe8be8c39e8ad}{plot\+\_\+icesat\+\_\+points}} (self, fraction=1, figsize=None)
 \item 
-def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}{plot\+\_\+tracklines}} (self)
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a1c1b2b0a47a9da63389decc50f70fe32}{plot\+\_\+tracklines}} (self, figsize=None)
 \item 
 def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba63d8106089770244}{run\+\_\+summary}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a68f8a4a547c450ae2309635d99101a57}{plot\+\_\+improvement}} (self)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a649910c91aef804107fc8027b171035f}{plot\+\_\+kriging\+\_\+output}} (self, azim, elev, horiz)
+\item 
+def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a007e14ab044a328ba3957017978c2705}{plot\+\_\+variogram}} (self)
 \end{DoxyCompactItemize}
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
@@ -66,6 +72,8 @@ def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba
 \item 
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a153b593c9c2027258150441246f83f96}{run\+\_\+params}}
 \item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_af0a5d35d7b325bddb588ea92ad4e7383}{kriging\+\_\+subset\+\_\+points\+\_\+path}}
+\item 
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a94a4cd63cff534e79601906f5aad1954}{tracklines}}
 \item 
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa36f029eab27b5897f8a0d80634d85df}{crs}}
@@ -73,6 +81,8 @@ def \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aeaf7b76d493cb8ba
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_ac0de8f53617315a8b7a54018858ffff9}{epsg}}
 \item 
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_aa5eb69fe9b85f54e13c2669b97a2020e}{bathy\+\_\+pts\+\_\+gdf}}
+\item 
+\mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_abc6abbec7c2d28882cec50adce13c91c}{variogram\+\_\+fit\+\_\+params}}
 \item 
 \mbox{\hyperlink{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}{lidar\+\_\+err\+\_\+dict}}
 \item 
@@ -116,7 +126,8 @@ Args:
 {\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+add\+\_\+truth\+\_\+data (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}For every bathymetry points, query the raster of validation data and get the elevation at the x,y coordinate of the bathymetry point\end{DoxyVerb}
- Here is the caller graph for this function\+:\nopagebreak
+ Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -151,17 +162,18 @@ Args:
 \includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_aef0b7892306194d3dff5e851c2af05d0_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd}} 
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a55225c673cc98704b0813bc20139e981}\label{classatl__module_1_1core_1_1GebcoUpscaler_a55225c673cc98704b0813bc20139e981}} 
 \index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!find\_bathy\_from\_icesat@{find\_bathy\_from\_icesat}}
 \index{find\_bathy\_from\_icesat@{find\_bathy\_from\_icesat}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
 \doxysubsubsection{\texorpdfstring{find\_bathy\_from\_icesat()}{find\_bathy\_from\_icesat()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+find\+\_\+bathy\+\_\+from\+\_\+icesat (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{window,  }\item[{}]{threshold\+\_\+val,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{min\+\_\+photons,  }\item[{}]{window\+\_\+meters,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit,  }\item[{}]{high\+\_\+limit,  }\item[{}]{rolling\+\_\+window,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z,  }\item[{}]{min\+\_\+ph\+\_\+count,  }\item[{}]{save\+\_\+result = {\ttfamily True} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+find\+\_\+bathy\+\_\+from\+\_\+icesat (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{window,  }\item[{}]{req\+\_\+perc\+\_\+hconf,  }\item[{}]{min\+\_\+kde,  }\item[{}]{low\+\_\+limit\+\_\+gebco,  }\item[{}]{high\+\_\+limit\+\_\+gebco,  }\item[{}]{max\+\_\+sea\+\_\+surf\+\_\+elev,  }\item[{}]{filter\+\_\+below\+\_\+z,  }\item[{}]{filter\+\_\+below\+\_\+depth,  }\item[{}]{n,  }\item[{}]{max\+\_\+geoid\+\_\+high\+\_\+z,  }\item[{}]{min\+\_\+ph\+\_\+count,  }\item[{}]{save\+\_\+result = {\ttfamily True} }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a0f9ad889a4af2d8b333e59d94ea153dd_cgraph}
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a55225c673cc98704b0813bc20139e981_cgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0ddd1f5ad4829901ea5b6e5e2b6db0c8}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0ddd1f5ad4829901ea5b6e5e2b6db0c8}} 
@@ -192,11 +204,11 @@ Args:
 {\footnotesize\ttfamily  dict atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+lidar\+\_\+error (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Print the error between the LIDAR data and the truth data, and save the error metrics to the object calling it\end{DoxyVerb}
- \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931}\label{classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931}} 
+ \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a35269d03c37d7f2ccf2fe8be8c39e8ad}\label{classatl__module_1_1core_1_1GebcoUpscaler_a35269d03c37d7f2ccf2fe8be8c39e8ad}} 
 \index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_icesat\_points@{plot\_icesat\_points}}
 \index{plot\_icesat\_points@{plot\_icesat\_points}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
 \doxysubsubsection{\texorpdfstring{plot\_icesat\_points()}{plot\_icesat\_points()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+icesat\+\_\+points (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{fraction = {\ttfamily 1} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+icesat\+\_\+points (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{fraction = {\ttfamily 1},  }\item[{}]{figsize = {\ttfamily None} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}plot a map of the ICESat-2 points in the AOI
 
@@ -206,11 +218,40 @@ Args:
 Returns:
     matplotlib.figure: figure of the resulting plot
 \end{DoxyVerb}
- Here is the call graph for this function\+:\nopagebreak
+ Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_aa0424a22ae9df478bf5217c56823e931_cgraph}
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a35269d03c37d7f2ccf2fe8be8c39e8ad_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a68f8a4a547c450ae2309635d99101a57}\label{classatl__module_1_1core_1_1GebcoUpscaler_a68f8a4a547c450ae2309635d99101a57}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_improvement@{plot\_improvement}}
+\index{plot\_improvement@{plot\_improvement}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_improvement()}{plot\_improvement()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+improvement (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a68f8a4a547c450ae2309635d99101a57_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a649910c91aef804107fc8027b171035f}\label{classatl__module_1_1core_1_1GebcoUpscaler_a649910c91aef804107fc8027b171035f}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_kriging\_output@{plot\_kriging\_output}}
+\index{plot\_kriging\_output@{plot\_kriging\_output}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_kriging\_output()}{plot\_kriging\_output()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+kriging\+\_\+output (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{azim,  }\item[{}]{elev,  }\item[{}]{horiz }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a649910c91aef804107fc8027b171035f_cgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76}\label{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76}} 
@@ -231,18 +272,19 @@ Returns:
 \includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a786134ef76467c730ead59c7b9932e76_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}\label{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b}} 
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a1c1b2b0a47a9da63389decc50f70fe32}\label{classatl__module_1_1core_1_1GebcoUpscaler_a1c1b2b0a47a9da63389decc50f70fe32}} 
 \index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_tracklines@{plot\_tracklines}}
 \index{plot\_tracklines@{plot\_tracklines}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
 \doxysubsubsection{\texorpdfstring{plot\_tracklines()}{plot\_tracklines()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+tracklines (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+tracklines (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{figsize = {\ttfamily None} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Generate a plot of the tracklines\end{DoxyVerb}
- Here is the call graph for this function\+:\nopagebreak
+ Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a82c3f8ec4a887d499f3748532203423b_cgraph}
+\includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a1c1b2b0a47a9da63389decc50f70fe32_cgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}\label{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770}} 
@@ -263,11 +305,17 @@ Args:
 \includegraphics[width=350pt]{classatl__module_1_1core_1_1GebcoUpscaler_a0c5a6b059b640f514a51960f1710b770_cgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}\label{classatl__module_1_1core_1_1GebcoUpscaler_a05bc2c338a6ecc983ae29dc4e8bb252f}} 
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a007e14ab044a328ba3957017978c2705}\label{classatl__module_1_1core_1_1GebcoUpscaler_a007e14ab044a328ba3957017978c2705}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!plot\_variogram@{plot\_variogram}}
+\index{plot\_variogram@{plot\_variogram}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{plot\_variogram()}{plot\_variogram()}}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+plot\+\_\+variogram (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a3c1f0f4a4cb9baf5a4c5b65472eeac69}\label{classatl__module_1_1core_1_1GebcoUpscaler_a3c1f0f4a4cb9baf5a4c5b65472eeac69}} 
 \index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!raster\_rmse@{raster\_rmse}}
 \index{raster\_rmse@{raster\_rmse}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
 \doxysubsubsection{\texorpdfstring{raster\_rmse()}{raster\_rmse()}}
-{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+raster\+\_\+rmse (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{check\+\_\+kriged = {\ttfamily False},  }\item[{}]{error\+\_\+out = {\ttfamily False} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+raster\+\_\+rmse (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{check\+\_\+kriged = {\ttfamily False},  }\item[{}]{error\+\_\+out = {\ttfamily False},  }\item[{}]{improvement\+\_\+out = {\ttfamily False} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Calculate the raster error metrics for the various rasters (the naive bilinear raster, then kalman updated raster, and the post-kriging raster)
 
@@ -384,6 +432,12 @@ Args:
 \doxysubsubsection{\texorpdfstring{kriged\_raster\_path}{kriged\_raster\_path}}
 {\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kriged\+\_\+raster\+\_\+path}
 
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_af0a5d35d7b325bddb588ea92ad4e7383}\label{classatl__module_1_1core_1_1GebcoUpscaler_af0a5d35d7b325bddb588ea92ad4e7383}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!kriging\_subset\_points\_path@{kriging\_subset\_points\_path}}
+\index{kriging\_subset\_points\_path@{kriging\_subset\_points\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{kriging\_subset\_points\_path}{kriging\_subset\_points\_path}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+kriging\+\_\+subset\+\_\+points\+\_\+path}
+
 \mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}\label{classatl__module_1_1core_1_1GebcoUpscaler_a88a43096a017892b8ba667cb1259e416}} 
 \index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!lidar\_err\_dict@{lidar\_err\_dict}}
 \index{lidar\_err\_dict@{lidar\_err\_dict}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
@@ -455,6 +509,12 @@ Args:
 \index{truebathy\_path@{truebathy\_path}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
 \doxysubsubsection{\texorpdfstring{truebathy\_path}{truebathy\_path}}
 {\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+truebathy\+\_\+path}
+
+\mbox{\Hypertarget{classatl__module_1_1core_1_1GebcoUpscaler_abc6abbec7c2d28882cec50adce13c91c}\label{classatl__module_1_1core_1_1GebcoUpscaler_abc6abbec7c2d28882cec50adce13c91c}} 
+\index{atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}!variogram\_fit\_params@{variogram\_fit\_params}}
+\index{variogram\_fit\_params@{variogram\_fit\_params}!atl\_module.core.GebcoUpscaler@{atl\_module.core.GebcoUpscaler}}
+\doxysubsubsection{\texorpdfstring{variogram\_fit\_params}{variogram\_fit\_params}}
+{\footnotesize\ttfamily atl\+\_\+module.\+core.\+Gebco\+Upscaler.\+variogram\+\_\+fit\+\_\+params}
 
 
 
