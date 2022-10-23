@@ -50,7 +50,7 @@ To download data for a site, a geographic Area of Interest (AOI) is defined firs
 
 The three variables that define the 3D location of each photon in the WGS-84 ellipsoidal reference frame are \emph{h\_ph}, \emph{lat\_ph}, and \emph{lon\_ph}. They are located in the \emph{/heights/} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download. For ocean surface correction, the \emph{dac} and \emph{tide\_ocean} are downloaded from the \emph{geophys\_corr} group. Further
 
-These correction factors are not provided for every photon but are provided for each 20m segment because they vary at scales longer than the nominal 0.7m between each photon. To find the correct adjustment factors for each photon, we need to match the segment-rate variables to the photon rate variables. The spatial relationship between the reference photons is shown in Figure \ref{fig:reference-photon_match}. All blue photons within the black box around the reference photon are assigned the value from the reference photon. This matching is implemented using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has functions for joining time series data. For ever regular photon, the appropriate value of the segment-rate variable is determined using the Pandas DataFrame \emph{.asof()} method to find the closest segment rate variables in time to each photon. 
+These correction factors are not provided for every photon but are provided for each 20 m segment because they vary at scales longer than the nominal 0.7 m between each photon. To find the correct adjustment factors for each photon, we need to match the segment-rate variables to the photon rate variables. The spatial relationship between the reference photons is shown in Figure \ref{fig:reference-photon_match}. All blue photons within the black box around the reference photon are assigned the value from the reference photon. This matching is implemented using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has functions for joining time series data. For ever regular photon, the appropriate value of the segment-rate variable is determined using the Pandas DataFrame \emph{.asof()} method to find the closest segment rate variables in time to each photon. 
 
 \begin{figure}[h]
     \centering
@@ -64,7 +64,7 @@ These correction factors are not provided for every photon but are provided for 
 The bathymetric signal that we are seeking to find is located in the shallow-water nearshore zone. Therefore, photons outside that zone need to be removed to reduce processing time and eliminate false positives as much as possible. To reduce the downloaded transect data within the area of interest, the following filtering steps are applied to each transect:
 
 \begin{enumerate}
-    \item First, horiztonal filtering is applied to areas along the transect to remove photons in areas that are too deep to contain bathymetryic photons, or are on land. For every photon, the GEBCO elevation at the latitude and longitude of the photon is found. Any photons with a GEBCO elevation between -40~m and 3~m are selected, and those outside of this region are culled from the data set. Photons that are outside this range are assumed to be deeper than the maximum known depth detectable by ICESat-2 (38m per \citeauthor{Parrish2019}), or assumed to be on land. The results of this step can be seen in Figure~\ref{fig:gebco_filtering}. This figure shows a transect that crosses Marathon Key. The island is located in the middle of the transect, and the points over the island are removed by this step.
+    \item First, horiztonal filtering is applied to areas along the transect to remove photons in areas that are too deep to contain bathymetryic photons, or are on land. For every photon, the GEBCO elevation at the latitude and longitude of the photon is found. Any photons with a GEBCO elevation between -40~m and 3~m are selected, and those outside of this region are culled from the data set. Photons that are outside this range are assumed to be deeper than the maximum known depth detectable by ICESat-2 (38 m per \citeauthor{Parrish2019}), or assumed to be on land. The results of this step can be seen in Figure~\ref{fig:gebco_filtering}. This figure shows a transect that crosses Marathon Key. The island is located in the middle of the transect, and the points over the island are removed by this step.
     
     \begin{figure}[htbp]
         \centering
@@ -74,7 +74,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \end{figure}
 
     \item The local sea-surface elevation $h_{sea}$ is calculated by taking the median elevation of the  high-confidence sea surface photons in the transect. The water depth for each photon is then calculated. The standard deviation of the elevation high-confidence photons $\sigma_{h_{sea}}$ is also calculated. This is used as a proxy to estimate the magnitude of the wave height at the time of the observation.
-    \item Any photons with a water depth greater than 40 meters or a geoidal height less than -40m are removed, based on the same assumption that they are too deep to be bathymetric photons. 
+    \item Any photons with a water depth greater than 40 meters or a geoidal height less than -40 m are removed, based on the same assumption that they are too deep to be bathymetric photons. 
     \item To remove the sea surface signal and any noise points above it, any photons that are higher than $h_{sea} - \max{(2.5\sigma_{h_{sea}},1~m)}$ are removed. This removes the sea surface signal and any high noise photons.
     
     The results of steps 2-4 are shown in figure \ref{fig:vert_filtering}
@@ -266,7 +266,7 @@ By squaring the error first, larger magnitude errors are given relatively more w
 
 $$ \text{MAE} = \sum_{i=1}^{D}|x_i-y_i| $$
 
-To evaluate these errors between the Kalman-updated bathymetry grid and the validation data reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1m, while GEBCO has a horizontal resolution on the order of 450m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using GDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
+To evaluate these errors between the Kalman-updated bathymetry grid and the validation data reprojection and resampling is required. The validation data has a horizontal resolution on the order of 1 m, while GEBCO has a horizontal resolution on the order of 450 m. Before taking the error, the data being compared is first reprojected into the native coordinate system and resolution of the validation data using GDAL \parencite{rouault_even_2022_6352176}. Then, the RMSE and MAE can be calculated between each cell of the raster grid.
 
 The coefficient of determination $R^2$ can evaluated between the ICESat-2 bathymetry estimates and the true elevation at the corresponding point. It gives an indication of how well a ICESat-2 bathymetric photon value without a known ground-truth elevation would be predicted by the approach. This metric is given by the formula:
 
@@ -281,9 +281,9 @@ This section introduces some possible soures inherent limitations or error in th
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 
-The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5m \parencite{Neumann2019c}.
+The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5 m \parencite{Neumann2019c}.
 
-This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50m grid.
+This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50 m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50 m grid.
 
 \subsection{Errors in refraction correction}
 

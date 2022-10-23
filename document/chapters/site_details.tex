@@ -1,9 +1,10 @@
 \chapter{Test Site characteristics}
 
 
-
 \chapter{Detailed Output by test site}\label{ch:subsite-appendix}
+\section{Error metrics for all Oahu subsites}
 
+The main body includes only a summary of the changes in the error metrics due to the Kalman Updating approach.
 \input{tables/Oahu_all_sites_raster_error_summary.tex}
 
 % setup a command to create the section automatically
@@ -13,37 +14,52 @@
 
 \section{#2}
 
-\subsection*{#2: Site layout and available ICESat-2 tracks}
+% \subsection*{#2: Site layout and available ICESat-2 tracks}
 \begin{figure}[!ht]
     \centering
     \includegraphics{figures/#1_tracklines.pdf}
     \caption[#2 tracklines]{Site #2 tracklines. Basemap data \copyright Esri -- Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community}
-    \label{fig:site-#1-tracklines}
+    \label{fig:site-#1-tracklines-appendix}
 \end{figure}
 % \FloatBarrier
 
-\subsection*{#2: Point measurements via KDE signal finding}
+% \subsection*{#2: Point measurements via KDE signal finding}
 \begin{figure}[!ht]
     \centering
     \includegraphics{figures/#1_photon_map.pdf}
     \caption[#2 bathymetry points from KDE signal finding]{Site #2 bathymetry points from KDE signal finding. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
-    \label{fig:site-#1-photons}
+    \label{fig:site-#1-photons-appendix}
 \end{figure}
 % \FloatBarrier
 
-\subsection*{#2: 3D results of Kriging}
+% \subsection*{#2: 3D results of Kriging}
 \begin{figure}[!ht]
     \centering
     \includegraphics{figures/#1_plot_3d.pdf}
     \caption[#2 bathymetry points from KDE signal finding]{Site #2 bathymetry points from KDE signal finding. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
-    \label{fig:site-#1-photons}
+    \label{fig:site-#1-3d-kriging-figure-appendix}
 \end{figure}
 % \FloatBarrier
+\begin{figure}[!ht]
+    \centering
+    \includegraphics{figures/#1_kriging_output.pdf}
+    \caption[#2 Output of kriging algorithm]{Site #2 kriging results. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
+    \label{fig:site-#1-kriging-output-appendix}
+\end{figure}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics{figures/#1_error_improvement.pdf}
+    \caption[#2 Output Improvement]{Error Improvement in Site #2. Basemap data: \copyright ~ OpenStreetMap contributors, SRTM | Map style: \copyright ~ OpenTopoMap (CC-BY-SA)}
+    \label{fig:site-#1-error-improvement-appendix}
+\end{figure}
 
 
-\subsection*{Full kriging ouput along site}
+% \subsection*{Full kriging output along site}
 }
 
+\subsiteoutput{charlotteamalie}{St.\ Thomas/St.\ John test site}
+\subsiteoutput{florida_keys}{Florida Keys test site}
+\subsiteoutput{stcroix}{St.\ Croix test site}
 \subsiteoutput{oahu1}{Oahu Subsite 1}
 \subsiteoutput{oahu2}{Oahu Subsite 2}
 \subsiteoutput{oahu3}{Oahu Subsite 3}
@@ -52,6 +68,3 @@
 \subsiteoutput{oahu6}{Oahu Subsite 6}
 \subsiteoutput{oahu7}{Oahu Subsite 7}
 \subsiteoutput{oahu8}{Oahu Subsite 8}
-\subsiteoutput{charlotteamalie}{St.\ Thomas/St.\ John test site}
-\subsiteoutput{florida_keys}{Florida Keys test site}
-\subsiteoutput{stcroix}{St.\ Croix test site}
