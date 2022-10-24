@@ -18,14 +18,14 @@ The data is available via the National Snow and Ice Data Center Distributed Acti
 
 The General Bathymetric Chart of the Ocean (GEBCO) is a global grid of topography and bathymetry at a 30 arc-second mesh resolution \parencite{gebco2021griddata}. GEBCO is assembled by compiling many different data sources, including multibeam sonar data, nautical charts, and satellite gravimetric measurements for deep-ocean bathymetry \parencite{gebcocookbook}. The elevation data is referenced to a vaguely-defined 'mean sea level'. The various data sets included in GEBCO are all assumed to be referenced to MSL, but some datasets referenced to chart datum are included. 
 
-GEBCO has a limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the Bayesian updating approach. 
+GEBCO has limited accuracy and resolution, but it is the only available data source in many places in the world, so it is sometimes used as the best-estimate in very data-poor sites. However, the accuracy of GEBCO varies depending on the input data sources. In this project, the GEBCO elevation is used both to filter locations that \emph{may} contain valid bathymetry, and used as a prior guess to the Bayesian updating approach. 
 
 The GEBCO 2021 data includes a grid of the elevation values, and an additional metadata grid called the Type IDentifier grid (TID) that shows the source of the GEBCO input data (e.g., singlebeam sonar, multibeam sonar, satellite altimetry, nautical charts) for each grid cell. Both datasets were downloaded in NetCDF4 format.
 
 
 \subsection{GlobColour Daily Secchi disk depth data}
 
-To investigate the relationship between the water clarity and the availability and quality of the bathymetric data from the spaceborne lidar, ocean color data data from \citeauthor{Garnesson2019} is also linked to each transect. This dataset estimates the Secchi disk depth every day at a 4 km grid resolution across the entire world's ocean. Because this data is derived from optical remote sensing, the temporal resolution is sometimes limited by cloud cover over the area of interest on a certain day. When direct observations are not available, the ocean color is interpolated to create a daily product \parencite{Garnesson2019}.
+To investigate the relationship between the water clarity and the availability and quality of the bathymetric data from the spaceborne lidar, ocean color data data from \citeauthor{Garnesson2019}(\citeyear{Garnesson2019}) is also linked to each transect. This dataset estimates the Secchi disk depth every day at a 4 km grid resolution across the entire world's ocean. Because this data is derived from optical remote sensing, the temporal resolution is sometimes limited by cloud cover over the area of interest on a certain day. When direct observations are not available, the ocean color is interpolated to create a daily product \parencite{Garnesson2019}.
 
 The data is accessed via the OPeNDAP protocol on a server hosted by the Copernicus Marine Service. The Xarray python package \parencite{hoyer_stephan_2022_6323468,hoyer2017xarray} is used to subset and download the data.
 
@@ -46,11 +46,11 @@ To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lida
 
 \subsection{Processing ATL03}
 
-To download data for a site, a geographic Area of Interest (AOI) is defined first. This area is passed to the NSIDC download API to to obtain only the data within this spatial areas in HDF5 format. By spatial subsetting of the data the download side is significantly reduced compared to downloading an entire granule. The NSIDC API also allows subsetting by the variable name, so only the ATL03 variables that are relevant for this research are downloaded, which further reduces the file size for practical download and storage of the ATL03 data. 
+To download data for a site, a geographic Area of Interest (AOI) is defined first. This area is passed to the NSIDC download API to obtain only the data within the requested spatial subset in HDF5 format. By spatial subsetting of the data the download side is significantly reduced compared to downloading an entire granule. The NSIDC API also allows subsetting by the variable name, so only the ATL03 variables that are relevant for this research are downloaded, which further reduces the file size for practical download and storage of the ATL03 data. 
 
-The three variables that define the 3D location of each photon in the WGS-84 ellipsoidal reference frame are \emph{h\_ph}, \emph{lat\_ph}, and \emph{lon\_ph}. They are located in the \emph{/heights/} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download. For ocean surface correction, the \emph{dac} and \emph{tide\_ocean} are downloaded from the \emph{geophys\_corr} group. Further
+The three variables that define the 3D location of each photon in the WGS-84 ellipsoidal reference frame are \emph{h\_ph}, \emph{lat\_ph}, and \emph{lon\_ph}. They are located in the \emph{/heights/} group within the ATL03 data structure. To use these variables for the purpose of bathymetric measurement, several other variables are required for processing. To transform the ellipsoidal elevation to the geoidal elevation, two additive factors \emph{geoid} and \emph{geoid\_free2mean} are included in the download. For ocean surface correction, the \emph{dac} and \emph{tide\_ocean} are downloaded from the \emph{geophys\_corr} group.
 
-These correction factors are not provided for every photon but are provided for each 20 m segment because they vary at scales longer than the nominal 0.7 m between each photon. To find the correct adjustment factors for each photon, we need to match the segment-rate variables to the photon rate variables. The spatial relationship between the reference photons is shown in Figure \ref{fig:reference-photon_match}. All blue photons within the black box around the reference photon are assigned the value from the reference photon. This matching is implemented using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has functions for joining time series data. For ever regular photon, the appropriate value of the segment-rate variable is determined using the Pandas DataFrame \emph{.asof()} method to find the closest segment rate variables in time to each photon. 
+These correction factors are not provided for every photon but are provided for each 20 m segment because they vary at scales longer than the nominal 0.7 m between each photon. To find the correct adjustment factors for each photon, we need to match the segment-rate variables to the photon rate variables. The spatial relationship between the reference photons is shown in Figure \ref{fig:reference-photon_match}. All blue photons within the black box around the reference photon are assigned the value from the reference photon. This matching is implemented using the python package Pandas \parencite{jeff_reback_2022_6408044,mckinney-proc-scipy-2010} which has functions for joining time series data. For each regular photon, the appropriate value of the segment-rate variable is determined using the Pandas DataFrame \emph{.asof()} method to find the closest segment rate variables in time to each photon. 
 
 \begin{figure}[h]
     \centering
@@ -64,7 +64,7 @@ These correction factors are not provided for every photon but are provided for 
 The bathymetric signal that we are seeking to find is located in the shallow-water nearshore zone. Therefore, photons outside that zone need to be removed to reduce processing time and eliminate false positives as much as possible. To reduce the downloaded transect data within the area of interest, the following filtering steps are applied to each transect:
 
 \begin{enumerate}
-    \item First, horiztonal filtering is applied to areas along the transect to remove photons in areas that are too deep to contain bathymetryic photons, or are on land. For every photon, the GEBCO elevation at the latitude and longitude of the photon is found. Any photons with a GEBCO elevation between -40~m and 3~m are selected, and those outside of this region are culled from the data set. Photons that are outside this range are assumed to be deeper than the maximum known depth detectable by ICESat-2 (38 m per \citeauthor{Parrish2019}), or assumed to be on land. The results of this step can be seen in Figure~\ref{fig:gebco_filtering}. This figure shows a transect that crosses Marathon Key. The island is located in the middle of the transect, and the points over the island are removed by this step.
+    \item First, horizontal filtering is applied to areas along the transect to remove photons in areas that are too deep to contain bathymetric signal or are located on land. For every photon, the GEBCO elevation at the latitude and longitude of the photon is found. Any photons with a GEBCO elevation between -40~m and 3~m are selected, and those outside of this region are culled from the data set. Photons that are outside this range are assumed to be deeper than the maximum known depth detectable by ICESat-2 (38 m per \citeauthor{Parrish2019}), or assumed to be on land. The results of this step can be seen in Figure~\ref{fig:gebco_filtering}. This figure shows a transect that crosses Marathon Key. The island is located in the middle of the transect, and the points over the island are removed by this step.
     
     \begin{figure}[htbp]
         \centering
@@ -79,7 +79,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     
     The results of steps 2-4 are shown in figure \ref{fig:vert_filtering}
     
-    \item As an additional check, any photons with a geoid height greater than 10~m are removed. This is justifiable because it does make make physical sense to find bathymetric photons that high above the geoid surface. This additional step is required because it was found that in Oahu there are some photons classified as high-confidence ocean signal with an elevation in the range 50-100~m. This is likely due to misclassification of cloud photons as ocean surface signal.
+    \item As an additional check, any photons with a geoid height greater than 10~m are removed. This is justifiable because it does make physical sense to find bathymetric photons that high above the geoid surface. This additional step is required because it was found that in Oahu there are some photons classified as high-confidence ocean signal with an elevation in the range 50-100~m. This is likely due to misclassification of cloud photons as ocean surface signal.
     
     
     \begin{figure}[htb]
@@ -119,7 +119,7 @@ Finally, before the signal-finding is applied, the Parrish method of refraction 
 
 \subsection{Bathymetric signal extraction}\label{subsec:kdesignalfinding}
 
-The filtering steps reduce the dataset to only photons that have been geolocated to the subsurface zone. However, there might not be any usable photon data in that zone. To determine if there is bathymetric signal present, further processing is required. Some proposed methods for separating bathymetric signal photons from noise are explained in section~\ref{subsec:signal-finding}. These approaches are all based on the same principle, namely that an increased density of photon returns in an area means that it is more likely to be bathtymetry signal. For this project, a method is proposed based on a gaussian Kernel Density Estimation (KDE) function, a non-parametric estimator of the local probability density. 
+The filtering steps reduce the dataset to only photons that have been geolocated to the subsurface zone. However, there might not be any usable photon data in that zone. To determine if there is bathymetric signal present, further processing is required. Some proposed methods for separating bathymetric signal photons from noise are explained in section~\ref{subsec:signal-finding}. These approaches are all based on the same principle, namely that an increased density of photon returns in an area means that it is more likely to be bathymetry signal. For this project, a method is proposed based on a gaussian Kernel Density Estimation (KDE) function, a non-parametric estimator of the local probability density. 
 
 The KDE function is highly influenced by the \emph{bandwidth} parameter. For this implementation, the Scott method \parencite{Scott2015} is used to estimate the KDE bandwidth: $$ n^{\frac{-1}{d+4}} $$ where $n$ is the number of data points and $d$ is the number of dimensions of the data. 
 
@@ -132,7 +132,7 @@ A function is created that calculates the maximum kernel density, and the Z loca
     \label{fig:kdefunc}
 \end{figure}
 
-This kernel density function gives an indication of the strength and location of the density peak for every photon in the transect. To reject locations where the signal is weak, a threshold needs to be established for a distinguish between signal and noise. Because there can be significant variation in the density value between different transects, this is set adaptively based on either the median kde value $kde_{50}$, or $kde_{min}$, whichever is greater. The absolute minimum threshold of $kde_{min}$ is required because some transects contain no useful bathymetric signal. Setting an absolute minimum ensures these transects are more likely to be rejected as noise. 
+This kernel density function gives an indication of the strength and location of the density peak for every photon in the transect. To reject locations where the signal is weak, a threshold (i.e., a minimum KDE density) needs to be established to distinguish between signal and noise. Because there can be significant variation in the density value between different transects, this is set adaptively based on either the median kde value $kde_{50}$, or $kde_{min}$, whichever is greater. The absolute minimum threshold of $kde_{min}$ is required because some transects contain no useful bathymetric signal. Setting an absolute minimum ensures these transects are more likely to be rejected as noise. 
 
 Any photons with a KDE value less than the threshold are assigned an NaN value and are dropped from the analysis and the remaining photons are saved for further use.
 
@@ -153,10 +153,10 @@ After the bathymetric signal points are identified using the approach described 
 \subsubsection{Subsampling of bathymetric points using Poisson disk sampling} \label{subsec:poissonsubsampling}
 The bathymetric points are extremely densely spaced in some areas and transects. This can present an issue to kriging, which is computationally expensive and points too close together can make the algorithm even slower. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the Poisson disk sampling technique. Poisson disk sampling is a strategy that generates random samples of a distribution that are a minimum distance apart. When applied to a point cloud, in this case the point cloud of all the bathymetric points, the sampling function will only return points that are a minimum distance apart in 3d space. This ensures that the sampling is as representative as possible of the underlying surface.
 
-The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992} (\citeyear{McCool1992}). The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can be practically be used in the kriging step is approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using a consumer-grade laptop to run the algorithm. 
+The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992} (\citeyear{McCool1992}). The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can practically be used in the kriging step is approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using a consumer-grade laptop to run the algorithm. 
 
 \subsubsection{Kriging interpolation}
-The subsample of points obtained from the poisson disk sampling is then interpolated into a grid format using a universal kriging approach. This geostatistical technique results in a grid of the estimated depth as well as the estimated uncertainty. 
+The subsample of points obtained from the Poisson disk sampling is then interpolated into a grid format using a universal kriging approach. This geostatistical technique results in a grid of the estimated depth as well as the estimated uncertainty. 
 
 The universal kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generated for the entire site. A single slice of the output, taken along an ICESat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the input points. 
 
@@ -172,7 +172,7 @@ A spherical variogram with a range of $10 km$, a nugget variance of $0.7 m^2$, a
 
 \subsection{Bayesian data assimilation using Kalman update equation}\label{subsec:Kalman-update}
 
-The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, an \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations are used to estimate the state of a linear process for a state $x_k$ and a vector of measurements of the state $z_k$ \parencite{Welch2021a}.  It is assumed that the state of a system evolves according to the difference equation
+The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, a \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations are used to estimate the state of a linear process for a state $x_k$ and a vector of measurements of the state $z_k$ \parencite{Welch2021a}.  It is assumed that the state of a system evolves according to the difference equation
 
 \begin{equation}
  x_k = Ax_{k-1} + Bu_{k-1} + w_{k-1}   
@@ -233,9 +233,9 @@ $$ \hat{x}_k =  \hat{x}_{\bar{k}} + K(\hat{z}_k -  \hat{x}_{\bar{k}}) $$
 $$ P_k = (1 - K) P_{\bar{k}} $$
 
 
-It is also assumed all measurements are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement to produce and updated estimate of the bathymetry grid. This is a Bayesian update, in that it considers the uncertainty of each measurement when combining them. 
+It is also assumed that all estimates are measurements of the same underlying physical depth, and that differences between measurements are due to normally distributed measurement error, with magnitude of the error varying depending on the method. To combine multiple measurements, the \emph{measurement update} step is applied recursively for each available measurement to produce an updated estimate of the bathymetry grid. This is a Bayesian update, in that it considers the uncertainty of each measurement when combining them. 
 
-In this application, the starting point of estimate is based on a bilinear resampling of the GEBCO dataset, with an assumed variance of $1.5~\text{m}^2$. The value was found empirically to give good results in most test sites. Then, the simplified Kalman equations above are applied. At each raster grid cell the kriging uncertainty is used As $R$, and the kriged estimate of the seafloor is used as $\hat{z}_k$. The result is a new estimate of the bathymetry that includes both the kriged lidar surface and a priori depth of GEBCO. Figure \ref{fig:Kalman-figure} shows both the output of the kriging process, including the uncertainty bars for each. The plot on the left side shows the estimated probability density functions of the bathymetry surface along the black vertical line. The green PDF curve, labeled \emph{a posteriori estimate} shows the resulting of Kalman update along that slice.
+In this application, the starting point of estimate is based on a bilinear resampling of the GEBCO dataset, with an assumed variance of $1.5~\text{m}^2$. The value was found empirically to give good results in most test sites. Then, the simplified Kalman equations above are applied. At each raster grid cell the kriging uncertainty is used as $R$, and the kriged estimate of the seafloor is used as $\hat{z}_k$. The result is a new estimate of the bathymetry that includes both the kriged lidar surface and a priori depth of GEBCO. Figure \ref{fig:Kalman-figure} shows both outputs of the kriging process, including the uncertainty bars for each. The plot on the left side shows the estimated probability density functions of the bathymetry surface along the black vertical line. The green PDF curve, labeled \emph{new estimate} shows the resulting \emph{a posteriori} estimate of the sea surface that is calculated using the Kalman update equation.
 
 \begin{figure}[htb]
     \centering
@@ -277,7 +277,7 @@ The coefficient of determination $R^2$ can evaluated between the ICESat-2 bathym
 
 \section{Possible limitations}
 
-This section introduces some possible sources inherent limitations or error in the method, and how how they some of them might be mitigated.
+This section introduces some possible sources inherent limitations or error in the method, and how some of them might be mitigated.
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 
@@ -297,7 +297,7 @@ Correct filtering of sea surface returns is very important to the accuracy of th
 
 The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
 
-This could potentially be mitigated by a different filtering strategy that calculates the local sea surface based on the local geoid. This could be very feasible in microtidal areas where the tidal signal has a smaller impacts.
+This could potentially be mitigated by a different filtering strategy that calculates the local sea surface based on the local geoid. This could be very feasible in microtidal areas where the tidal signal has a smaller impact.
 
 % \pdfcomment{temp figure, replace with matplotlib figure with axis labels. Maybe also include a plan view map with scale bar to understand the geographic context}
 \begin{figure}[htbp]
@@ -325,7 +325,7 @@ One possible future step would be to gather even more validation sites, and expl
 
 There are a number of known issues with the ICESat-2 data. They are either due to atmospheric and environmental conditions, or due to limitations of the instrument. Many of them can be detected in advance, and then the effected granule data can be thrown out or the issue otherwise corrected for. However, there might be some edge cases related to these issues that cause either false bathymetric signal points, or cause the algorithm to miss valid bathymetric data. These data issues could present an issue for the scaling up the signal finding without any manual intervention. Currently the process is run without any intervention, but the sites are small enough to manually check several of the transects.
 
-The following known data issues could effect the results of the KDE signal finding algorithm:
+The following known data issues could affect the results of the KDE signal finding algorithm:
 
 \subsubsection{Clouds}
 
@@ -335,7 +335,7 @@ Clouds reflect sunlight which causes a higher background photon rate, and this c
 
 During processing from L0 to L1, if the elevation from NASA reference DEM is not within the telemetry bands, no photons will be classified as signal. Therefore, if the entire granule is affected by this issue, there will be no sea surface found and therefore the entire granule will be filtered out. This can cause a significant loss of data but it is an issue inherent to nearly any remote-sensing based approach. One possible way to mitigate this would be to combine the ICESat-2 bathymetry data with synthetic aperture radar (SAR) remote sensing data. SAR remote sensing data can penetrate clouds because it uses radiometry outside of the visible spectrum. Although the spectrum used in SAR sensing cannot directly penetrate even clear water, the data can be used to estimate wave conditions, and the bathymetry can be estimated based on the transformation of the wave (called \emph{wave kinematic satellite-derived bathymetry}). The bathymetry estimates from SAR-derived wave kinematic SDB could be incorporated into the Kalman filtering step. 
 
-In situations where the photons are able to pass through clouds, the changes to travel time through the clouds can affect the accuracy. This could potentially be something that is hard to detect and affect the accuracy of the bathymetric points if any are found.
+In situations where the photons are able to pass through clouds, the changes to travel time through the clouds can affect the accuracy. This could potentially be something that is hard to detect and affects the accuracy of the bathymetric points if any are found.
  
 
 \subsubsection{Multiple Telemetry Bands}
