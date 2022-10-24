@@ -37,7 +37,7 @@ To answer the primary research question \emph{How can spaceborne remote sensing 
 
     \item \textbf{How can spaceborne remote sensing sources be used to improve existing global bathymetry datasets?}
     
-    A kriging interpolator is used to resample the point measurements of bathymetry from the KDE algorithm to a continuous bathymetry grid, and a grid of the uncertainty. Areas that contain many bathymetry points in the local area have a lower uncertainty, whereas grid cells that are further away from any measured points with have a relatively higher uncertainty.
+    A kriging interpolator is used to resample the point estimates of bathymetry from the KDE algorithm to a continuous bathymetry grid, and a grid of the uncertainty. Areas that contain many bathymetry points in the local area have a lower uncertainty, whereas grid cells that are further away from any measured points with have a relatively higher uncertainty.
 
     To create an upscaled version of the global GEBCO data that incorporates the lidar data, the GEBCO data is first subset to the area of interest and then is resampled bilinearly to a grid in the local UTM coordinate system with the same resolution as the kriging output. Then, the bilinear data is updated using the Kalman update equation for each grid cell. 
 

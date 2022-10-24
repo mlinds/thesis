@@ -158,14 +158,14 @@ The implementation used is from the PDAL software library \parencite{howard_butl
 \subsubsection{Kriging interpolation}
 The subsample of points obtained from the poisson disk sampling is then interpolated into a grid format using a universal kriging approach. This geostatistical technique results in a grid of the estimated depth as well as the estimated uncertainty. 
 
-The universal kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generated for the entire site. A single slice of the output, taken along an ICESat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the measurement points. 
+The universal kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generated for the entire site. A single slice of the output, taken along an ICESat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the input points. 
 
 A spherical variogram with a range of $10 km$, a nugget variance of $0.7 m^2$, and a sill variance of $25 m^2$ was found to produce good results in most sites. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. 
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[]{figures/methodology-kriging-output.pdf}
-    \caption{Example of the subsampled points, and the results of a kriging interpolation. In blue, the result of GEBCO is shown for comparison.}
+    \caption[2D Slice of universal kriging process inputs and outputs]{Example of the subsampled points, and the results of the universal kriging interpolation. In blue, the result of GEBCO is shown for comparison. Note that this figure shows a single 2D slice of a 3D field.}
     \label{fig:kriging-interpolator}
 \end{figure}
 
@@ -180,7 +180,7 @@ The Kalman Filter is a mathematical technique to predict the state of systems ba
 
 Where $A$ is a matrix that relates the state at time step $k$ to the state at the previous time step and $w_k$ represents normally distributed process noise with a variance $Q$.  
 
-Measurements of the state are assumed to have the form
+Measurements of the state are assumed to have the form:
 
 \begin{equation}
     z_k = Hx_k + v_k
@@ -239,8 +239,8 @@ In this application, the starting point of estimate is based on a bilinear resam
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=\textwidth]{figures/methodology-Kalman-updating.pdf}
-    \caption{Using a section of the same transect in Figure \ref{fig:kriging-interpolator}, the processing of the Kalman measurement update is shown}
+    \includegraphics[width=0.75\textwidth]{figures/methodology-Kalman-updating.pdf}
+    \caption[Results of combination via Kalman updating]{Using a section of the same transect in Figure \ref{fig:kriging-interpolator}, the results of the Kalman measurement update is shown. The right side of the plot shows the plots along the black section line on the left side of the plot}
     \label{fig:Kalman-figure}
 \end{figure}
 
@@ -277,7 +277,7 @@ The coefficient of determination $R^2$ can evaluated between the ICESat-2 bathym
 
 \section{Possible limitations}
 
-This section introduces some possible soures inherent limitations or error in the method, and how how they are mitigated if at all.
+This section introduces some possible sources inherent limitations or error in the method, and how how they some of them might be mitigated.
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 

@@ -11,7 +11,7 @@ This approach uses the hydrodynamic properties of ocean surface to produce an es
 \subsection{Bathymetry from optical remote sensing}
 Optical remote sensing is a passive technique, as it detects light from the sun reflected by the earth. Since the 1970s many methods of estimating bathymetry based on the optical quality of the water have been found, all based on the physical principle that water attenuates light. Optical methods require to the water to be \emph{optically shallow}, or clear enough that light can reach the sea floor. This is a significant restriction, but in places where it is applicable it can provide continuous estimates of bathymetry with a resolution up to the resolution of the optical imagery. This means bathymetry grids at 10~m horizontal resolution using publicly available Sentinel-2 imagery, up to 0.5~m if commercial imagery is purchased \parencite{Babbel2021a,LeQuilleuc2022b,Pike2019}. There are two broad types of algorithms for extracting bathymetric data from optical satellite imagery, analytical and empirical. Empirical models link the amount of attenuation of each pixel to in-situ depth measurements and derive a relationship between color and depth. One advantage is that empirical approaches are generally computationally inexpensive. Analytical or physics-based approaches require corrections for atmospheric and subsurface factors \parencite{Turner2021} and require more sophisticated computational capabilities to apply.
 
-Empirical optical methods require some in-situ data to establish the relationship between the optical properties and the depth in the area. \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric measurement is to combine it with optical techniques. Because the ICEsat-2 data provides relatively high accuracy point estimates, and optical methods allow the estimation of a 2D bathymetry grid but require in-situ point measurements for calibration, combining the two techniques provides a synergistic fusion of the strengths of both. There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, identifying bathymetry signal, and combining the lidar data with optical techniques (For examples of studies combining ICESat-2 with optical SDB methods, see \cite{Geyman2019,Pike2019,Ma2020,Lee2021,Albright2021,Ranndal2021,Gleason2021,Thomas2021d,Babbel2021a,Hsu2021,Cao2021,Xie2021,Surisetty2022,Zhong2022a,Zheng2022,Daly2022,Xu2022,Magruder2020,Thomas2022,LeQuilleuc2022b}). Suffice it to say this topic has seen significant interest from researchers in recent years.
+Empirical optical methods require some in-situ data to establish the relationship between the optical properties and the depth in the area. \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric estimatation is to combine it with optical techniques. Because the ICEsat-2 data provides relatively high accuracy point estimates, and optical methods allow the estimation of a 2D bathymetry grid but require in-situ point measurements for calibration, combining the two techniques provides a synergistic fusion of the strengths of both. There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, identifying bathymetry signal, and combining the lidar data with optical techniques (For examples of studies combining ICESat-2 with optical SDB methods, see \cite{Geyman2019,Pike2019,Ma2020,Lee2021,Albright2021,Ranndal2021,Gleason2021,Thomas2021d,Babbel2021a,Hsu2021,Cao2021,Xie2021,Surisetty2022,Zhong2022a,Zheng2022,Daly2022,Xu2022,Magruder2020,Thomas2022,LeQuilleuc2022b}). Suffice it to say this topic has seen significant interest from researchers in recent years.
 
 \section{Lidar Bathymetric Surveying}
 
@@ -61,9 +61,9 @@ The main mission of the satellite is to gather data about mass and elevation cha
 To locate the position of each photon in 3D space, the time of flight of the photon is calculated with a precision of 800 ps \parencite{Neumann2019d}. The location of the center of mass of the instrument is found using Global Positioning System (GPS) systems onboard the satellite. By combining the measured time of flight and satellite position and attitude, the geolocation of each returning photon is calculated \parencite{Neumann2019d}.
 
 
-\begin{figure}[h]
+\begin{figure}[!ht]
       \centering
-      \includegraphics[width=\textwidth]{figures/Meantide_vs_tide_free_comparison_doc.png}
+      \includegraphics[width=0.5\textwidth]{figures/Meantide_vs_tide_free_comparison_doc.png}
       \caption{Relative levels of the reference planes}
       \label{fig:geoids-ellipsoids-graphics}
 \end{figure}
@@ -129,7 +129,7 @@ ICESat-2 data is provided to the public at a number of different processing leve
 
 In the level 2 products, the photon flight times are corrected for atmospheric effects, and the actual photon locations are resolved, then geodetically transformed to coordinates in WGS-84 ellipsoidal units.
 
-In accordance with the scientific mission of the satellite, the level 2 product is then transformed into a number of higher-level products, each for a specific use case. Level 3 is divided into two sublevels, 3A and 3B. 3A products are point measurements of of Land Ice, Sea Ice, Land vegetation, inland water elevation and ocean surface elevation. These point measurement products are then further transformed into level 3B or gridded products, which aggregate the point measurements over time to a grid.
+In accordance with the scientific mission of the satellite, the level 2 product is then transformed into a number of higher-level products, each for a specific use case. Level 3 is divided into two sublevels, 3A and 3B. 3A products are point elevations of Land Ice, Sea Ice, Land vegetation, inland water elevation and ocean surface elevation. These point measurement products are then further transformed into level 3B or gridded products, which aggregate the point measurements over time to a grid.
 
 
 \subsection{Weak vs. strong beams}
@@ -146,10 +146,10 @@ When the instrument is pointed directly at the reference ground track, the laser
 However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or $\sim43~km$ away from the RGT \parencite{Magruder2021}. During offpointing, the horizontal error is more significant and must be corrected for accurate bathymetry \parencite{Parrish2019}. \citeauthor{Parrish2019} propose a method to correct for both horizontal and vertical error that is widely cited in later papers. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}.  This is referred to as \emph{first order} refraction correction in the table summarizing previous research (Table \ref{tab:researchsummary}).
 
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
       \centering
       \includegraphics[width = 0.5\textwidth]{figures/refraction_error.png}
-      \caption{The errors caused by the refraction at the air-water interface}
+      \caption{The geometry of the error induced by refraction at the air-water interface. From \cite{Parrish2019}}
       \label{refract-image}
 \end{figure}
 
@@ -210,7 +210,7 @@ Other researchers have used implementations of the density-based spatial cluster
 
 \subsection{Summary of Prior Research on ICESat-2 derived bathymetry} %move to ICESat-2 section
 
-The studies that have used some version of the proposed technique are summarized in table \ref{tab:researchsummary}.
+Previous studies that have used used bathymetry data extracted from ICESat-2 data are summarized in table \ref{tab:researchsummary}.
 
 \begin{table}[h]
       \caption{Summary of prior studies that extract bathymetric data from ICESat-2 photons}
