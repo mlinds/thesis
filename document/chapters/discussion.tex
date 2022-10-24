@@ -20,7 +20,7 @@ One of the major challenges to the proposed KDE signal finding method is that it
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{figures/threshold_discussion_inset.png}
+    \includegraphics[width=0.8\textwidth]{figures/threshold_discussion_inset.png}
     \caption[Exclusion of quality points]{The red line shows a threshold of 0.15. If this was used as the signal classification threshold, this removes almost all the most severe errors but also eliminates many times more high quality points, resulting in a steep tradeoff between the quantity and quality of points}
     \label{fig:zoomed-inset-error}
 \end{figure}
@@ -50,7 +50,7 @@ However, handling this uneven spatial distribution is one of the advantages of u
 
 \section{Kalman updating and improvement over GEBCO}
 
-It was found that in most sites, the Bayesian combination of bilinearly resampled GEBCO data and the interpolated ICESat-2 data increased the accuracy compared to the validation data than either product on their own. The decrease in RMSE achieved was up to 34\% in some sites, but in other sites actually showed a decrease. 
+It was found that in most sites, the Bayesian combination of bilinearly resampled GEBCO data and the interpolated ICESat-2 data increased the accuracy compared to the validation data than either product on their own. The decrease in RMSE achieved was up to 34\% in some sites, but in other sites actually showed a decrease. This could likely be mitigated by optimizing the assumptions behind the measurement uncertainties.
 
 \input{tables/alls-ite_percent_change.tex}
 

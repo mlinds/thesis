@@ -107,7 +107,7 @@ However, the kriging process can account for an expected degree of error, and ca
 
 \begin{figure}[!ht]
 \begin{floatrow}
-        \ffigbox{\includegraphics[angle=90,width=0.5\textwidth]{figures/florida_keys_kriging_output.pdf}}{\caption{Output of the kriging process for the marathon key test site}\label{fig:marathon-key-kriging}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_kriging_output.pdf}}{\caption{Output of the kriging process for the marathon key test site}\label{fig:marathon-key-kriging}}
         \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_plot_3d.pdf}}{\caption{The Results of the kriging process in 3D}\label{fig:florida-3d}}
 \end{floatrow}
 \end{figure}
@@ -260,7 +260,7 @@ However, the effect cannot be fully explained by the quality and quantity of ICE
 
 \section{Prediction of Lidar error}
 
-One of the challenges of extracting bathymetry from ICEsat-2 data is finding robust, automated ways of distinguishing between signal and noise. For the KDE approach utilized here, a minimum kernel density threshold of $\max{kde_{50},0.10}$ was found to provide a good balance between filtering out the most severe errors and retaining as much data as possible. Increasing the minimum parameter to 0.15 was found to decrease RMS error of the ICESat-2 point bathymetry, but at the expense of throwing out significant amount of high quality data at the same time. Therefore, increasing the threshold was found lower the error for the point data while simultaneously \emph{increasing} the error in the resulting kriging surface.
+One of the challenges of extracting bathymetry from ICEsat-2 data is finding robust, automated ways of distinguishing between signal and noise. For the KDE approach utilized here, a minimum kernel density threshold of $\max({kde_{50},0.10})$ was found to provide a good balance between filtering out the most severe errors and retaining as much data as possible. Increasing the minimum parameter to 0.15 was found to decrease RMS error of the ICESat-2 point bathymetry, but at the expense of throwing out significant amount of high quality data at the same time. Therefore, increasing the threshold was found lower the error for the point data while simultaneously \emph{increasing} the error in the resulting kriging surface.
 
 Therefore, better methods are required to predict the quality of the bathymetry data in coastlines without in-situ data. Three possible ways to approaching this are explored: analyzing which parameters predict the error at the level of an individual photon, and also averaging by transect and by site.
 
