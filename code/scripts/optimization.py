@@ -1,12 +1,12 @@
 from itertools import product
 
 import pandas as pd
-from atl_module import GebcoUpscaler
+from atl_module import GebcoDownscaler
 
 
 def optimize_params(site_name):
     resultlist = []
-    site = GebcoUpscaler(site_name, f"../data/test_sites/{site_name}/in-situ-DEM/truth.vrt")
+    site = GebcoDownscaler(site_name, f"../data/test_sites/{site_name}/in-situ-DEM/truth.vrt")
 
     windows = [100, 150, 200]
     min_kdes = [0.1, 0.15]
@@ -21,8 +21,8 @@ def optimize_params(site_name):
             window_meters=None,
             min_photons=None,
             min_kde=minkde,
-            low_limit=-50,
-            high_limit=3,
+            low_limit_gebco=-50,
+            high_limit_gebco=3,
             rolling_window=200,
             max_sea_surf_elev=2,
             filter_below_z=-40,

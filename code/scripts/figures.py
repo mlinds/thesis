@@ -1,6 +1,5 @@
 # %
-# %%
-# import contextily as cx
+import cmocean
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -76,13 +75,13 @@ fig.savefig(
 )
 beamdata = icesat_bathymetry._filter_points(
     beamdata,
-    low_limit=-40,
-    high_limit=2,
+    low_limit_gebco=-40,
+    high_limit_gebco=1,
     rolling_window=200,
     max_sea_surf_elev=1,
     filter_below_z=-40,
     filter_below_depth=-40,
-    n=1,
+    n=2.5,
     max_geoid_high_z=5,
 )
 ax.scatter(
@@ -127,18 +126,23 @@ ax.plot(Zcorr, depth)
 # ax.plot(Ycorr,depth)
 
 # %%
+
+
 atl03_testfile = (
     "../data/test_sites/florida_keys/ATL03/processed_ATL03_20201202073402_10560901_005_01.nc"
 )
 beam = "gt3l"
+# IF YOU CHANGE TRANSECTS/BEAMS REMEMBER TO CHANGE THE KDE50 VALUE ON THE PLOT AS WELL
+# going to put it here for conveneince
+kde50val = 0.18
 
 beamdata = icesat_bathymetry.load_beam_array_ncds(atl03_testfile, beam)
 
 raw_data = icesat_bathymetry.add_along_track_dist(beamdata)
 point_dataframe = icesat_bathymetry._filter_points(
     raw_data,
-    low_limit=-50,
-    high_limit=2,
+    low_limit_gebco=-40,
+    high_limit_gebco=2,
     rolling_window=100,
     max_sea_surf_elev=1,
     filter_below_z=-40,
@@ -203,7 +207,7 @@ subsurf_ph = ax2d.scatter(
 )
 
 
-for startpt in [1200]:
+for startpt in [800, 2400]:
     # find the x lodcation of the middle of the box, by taking average of start and end x coordinate
     s = (
         point_dataframe.dist_or.iloc[startpt] + point_dataframe.dist_or.iloc[startpt + 100]
@@ -223,7 +227,11 @@ for startpt in [1200]:
     )
     subsetdf = point_dataframe[startpt : startpt + 100]
     photons_in_window = ax2d.scatter(
-        subsetdf.dist_or, subsetdf.Z_geoid, label="Photons within window", s=4
+        subsetdf.dist_or,
+        subsetdf.Z_geoid,
+        label="Photons within window",
+        s=4,
+        c="#FF8702",
     )
 
     window_height = 50
@@ -245,7 +253,7 @@ for startpt in [1200]:
     kdemax_y = kdey[kdez.argmax()]
 
     # add the seafloor location
-    sf_elev = ax2d.scatter(s, kdemax_y, label="Calculated Seafloor elev in middle of window")
+    sf_elev = ax2d.scatter(s, kdemax_y, label="Estiated bathymetry", c="green", s=6)
 
     path = ConnectionPatch(
         xyA=(kdemax_z, kdemax_y),
@@ -260,13 +268,21 @@ for startpt in [1200]:
 
 ax2d.set_ylim(-50, 5)
 ax2dkde.set_ylim(-50, 5)
+ax2dkde.axvline(0.10, label="Minimum density", color="red", linestyle="dashed")
+ax2dkde.axvline(kde50val, label="Transect kde$_{50}$", color="black", linestyle="dashed")
+ax2dkde.legend()
 
-ax2d.legend(handles=[rectangle, photons_in_window, sf_elev, subsurf_ph])
+ax2d.legend(
+    handles=[rectangle, photons_in_window, sf_elev, subsurf_ph],
+    loc="lower center",
+    ncols=2,
+)
 ax2d.set_title("Geolocated Photon Returns")
-ax2dkde.set_title("Kernel density with horizonal windowing")
+ax2dkde.set_title("Kernel density with horizontal windowing")
 fig.show()
 
 fig.savefig("../document/figures/2d_kde_plot.pdf", bbox_inches="tight")
+fig.savefig("../document/figures/2d_kde_plot.png", bbox_inches="tight")
 
 # %%
 # create a 3d figure showing how the rolling window kde function works to find the max density
@@ -355,7 +371,7 @@ for startpt in range(0, len(point_dataframe) - 100, 50):
     #     c="r",
     # )
 
-ax.set_zlabel("Probability Density")
+ax.set_zlabel("Probability density [-]")
 ax.set_xlabel("Along-track distance [m]")
 ax.set_ylabel("Depth +MSL [m]")
 ax.set_zlim(0, 0.2)
@@ -557,7 +573,9 @@ filtering_ax.plot(
     c="red",
     label="GEBCO DEM height",
 )
-filtered_photon_df = filtered_photon_df.pipe(dfilt.filter_gebco, low_limit=-50, high_limit=5)
+filtered_photon_df = filtered_photon_df.pipe(
+    dfilt.filter_gebco, low_limit_gebco=-50, high_limit_gebco=5
+)
 # filtering_ax.clear()
 filtering_ax.scatter(
     filtered_photon_df.X,
@@ -685,8 +703,10 @@ set_size()
 # %%
 st_croix_tracklines = gpd.read_file("../data/test_sites/stcroix/tracklines/")
 bathy_pts = gpd.read_file("../data/test_sites/stcroix/kriging_pts/")
+
+
 with rasterio.open("../data/for_other_figures/stcroixvalidation.tif") as femaras:
-    fig, ax = plt.subplots(figsize=set_size(1.3))
+    fig, ax = plt.subplots(figsize=set_size(1, ratio=1.9))
 
     ax.set_xlabel(f"Degrees longitude in {femaras.crs}")
     ax.set_ylabel(f"Degrees latitude in {femaras.crs}")
@@ -696,14 +716,14 @@ with rasterio.open("../data/for_other_figures/stcroixvalidation.tif") as femaras
     bathy_data_array = np.ma.masked_greater_equal(bathy_data_array, 0).filled(np.NaN)
     image_hidden = ax.imshow(
         bathy_data_array,
-        cmap="inferno",
+        cmap=cmocean.cm.deep_r,
     )
-    st_croix_tracklines.to_crs(femaras.crs).plot(ax=ax, label="ICESat-2 Track")
+    st_croix_tracklines.to_crs(femaras.crs).plot(ax=ax, label="ICESat-2 Track", color="red")
     bathy_pts.to_crs(femaras.crs).plot(
-        ax=ax, c="red", markersize=4, zorder=2, label="Bathymetry Point from KDE"
+        ax=ax, c="black", markersize=4, zorder=2, label="Bathymetry Point from ICESat-2"
     )
-    rastershow(femaras, cmap="inferno", ax=ax, vmax=0)
+    rastershow(femaras, cmap=cmocean.cm.deep_r, ax=ax, vmax=0)
     ax.legend()
-    fig.colorbar(image_hidden, ax=ax)
+    fig.colorbar(image_hidden, ax=ax, label="Validation Data [+m MSL]")
 
     fig.savefig("../document/figures/discussion-spatial-stcroix.pdf", bbox_inches="tight")
