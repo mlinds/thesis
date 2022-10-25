@@ -3,7 +3,7 @@
 import argparse
 
 import logzero
-from atl_module.core import GebcoUpscaler
+from atl_module.core import GebcoDownscaler
 from logzero import DEBUG
 
 # runlogger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
@@ -66,7 +66,7 @@ if args.verbose:
     logzero.loglevel(DEBUG)
 
 
-site = GebcoUpscaler(
+site = GebcoDownscaler(
     f"../data/test_sites/{args.sitename}",
     args.sitename,
     f"../data/test_sites/{args.sitename}/in-situ-DEM/truth.vrt",
@@ -111,7 +111,9 @@ if args.kriging:
         npts=2000,
         samplemethod="dart",
         kr_model="uk",
-        variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 25},
+        # variogram_parameters={"range": 10000, "nugget": 0.7, "sill": 25},
+        variogram_model="gaussian",
+        backend="loop",
     )
 
 if args.kalman_update:
@@ -120,13 +122,14 @@ if args.kalman_update:
     site.kalman_update(gebco_uncertainty)
 
 if args.raster_rmse:
-    print(site.raster_rmse(error_out=True, check_kriged=True))
+    print(site.raster_rmse(error_out=True, check_kriged=True, improvement_out=True))
     site.write_raster_error_tables()
 
 if args.generate_maps:
     # redo the summary maps for the results/maybe an appendix
-    site.plot_icesat_points()
-    site.plot_tracklines()
+    # site.plot_icesat_points()
+    # site.plot_tracklines()
+    site.plot_improvement()
 
 if args.table_error_metrics:
     # rewrite the error tables

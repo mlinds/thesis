@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import rasterio
 from matplotlib_scalebar.scalebar import ScaleBar
+from pyproj import Proj
+from pyproj import transform as point_transform
 from rasterio.plot import show as rastershow
 
 cx.set_cache_dir("/tmp/contextilycache")
@@ -65,14 +67,14 @@ def map_ground_truth_data(truthdata_path, plottitle):
         return fig
 
 
-def plot_photon_map(bathy_points_gdf, fraction, figsize=None):
+def plot_photon_map(bathy_points_gdf, fraction, figsize=None, colorbar_orient_in=None):
     # get the ratio of the map edges to each other
     minx, miny, maxx, maxy = bathy_points_gdf.total_bounds
     # this ratio we can feed into the figure sizing function
     scale_ratio = (maxx - minx) / (maxy - miny)
     width, height = set_size(fraction=fraction, ratio=scale_ratio)
     colorbar_orient = "vertical"
-    colorbar_fraction = 0.047 * (height / width)
+    # colorbar_fraction = 0.047 * (height / width)
     # if it is too tall for the page, shrink the vertical dimension a bit
     if height > 9:
         scale_relative_to_v = height / 9
@@ -82,7 +84,9 @@ def plot_photon_map(bathy_points_gdf, fraction, figsize=None):
     # if the map is horizontal, then set the colorbar to be on the long side
     if width > height:
         colorbar_orient = "horizontal"
-        colorbar_fraction = 0.047 * (width / height)
+        # colorbar_fraction = 0.047 * (width / height)
+    if colorbar_orient_in is not None:
+        colorbar_orient = colorbar_orient_in
     print("Calculated figsize is ", width, height)
     # overide the defaults
     if figsize is not None:
@@ -100,16 +104,22 @@ def plot_photon_map(bathy_points_gdf, fraction, figsize=None):
         legend_kwds={
             "label": "ICESat-2 elevation [m +MSL]",
             "orientation": colorbar_orient,
-            "fraction": colorbar_fraction,
-            "pad": 0.10,
+            #     "fraction": colorbar_fraction,
+            "pad": 0.060,
         },
         rasterized=True,
         ax=ax,
         s=1,
     )
-    cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite, crs=bathy_points_gdf.crs)
-    ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name}")
-    ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name}")
+    zoom = min(
+        13,
+        cx.tile._calculate_zoom(*bathy_points_gdf.to_crs("EPSG:4326").geometry.total_bounds),
+    )
+    cx.add_basemap(
+        ax, source=cx.providers.Stamen.TonerLite, crs=bathy_points_gdf.crs, zoom=zoom
+    )
+    ax.set_xlabel(f"Easting in {bathy_points_gdf.crs.name.strip('WGS 84 / ')}")
+    ax.set_ylabel(f"Northing in {bathy_points_gdf.crs.name.strip('WGS 84 / ')}")
     scalebar = ScaleBar(
         1,
         "m",
@@ -259,7 +269,9 @@ def site_overview_map():
 greenredcolormap = colorcet.cm.diverging_gwr_55_95_c38_r
 
 
-def plot_error_improvement_meters(error_raster_path, bathy_points_gdf):
+def plot_error_improvement_meters(
+    error_raster_path, bathy_points_gdf, figsize=None, cmap_orient=None
+):
     """Generate a geospatial plot of the change in the error due to the kalman updating process
 
     Args:
@@ -270,28 +282,59 @@ def plot_error_improvement_meters(error_raster_path, bathy_points_gdf):
         plt.Figure: matplotlib figure object of the geospatial plot
     """
     with rasterio.open(error_raster_path) as error_improvement:
-        data = error_improvement.read(1, masked=True).filled(np.NaN)
+        data = error_improvement.read(1, masked=True)
+        data = data.filled(np.NaN)
         transform = error_improvement.transform
         crs = error_improvement.crs
+        left, bottom, right, top = error_improvement.bounds
     # the colorbars edges need to be set to show the distribution
-    # using the quantoles will show the mag without being skewed by extreme outliers
+
+    # using the quantiles will show the distribution without being skewed by extreme outliers
     # find the 2% and 98% value
     q2 = np.nanquantile(data, 0.02)
     q98 = np.nanquantile(data, 0.98)
     # get the larger magnitude quantile, then set the high and low based on that
     quantilechoice = max(abs(q2), abs(q98))
+    # if not given a figsize argument
+    if figsize is None:
+        figsize = set_size()
 
+    h, w = data.shape
+    if cmap_orient is None:
+        if w / h > 1:
+            cmap_orient = "horizontal"
+        else:
+            cmap_orient = "vertical"
     # TODO consider using fancy scalebar options to indicate the true max
-    fig, ax = plt.subplots(figsize=set_size())
+    fig, ax = plt.subplots()
     imageartist = ax.imshow(
         data,
         cmap=greenredcolormap,
         vmax=quantilechoice,
         vmin=-1 * quantilechoice,
     )
-    fig.colorbar(imageartist, label="Improvement in error [m]")
+    fig.colorbar(imageartist, label="Improvement in error [m]", orientation=cmap_orient)
     # clear the axes, so that a version in geospatial coordinates can be created
     ax.clear()
+    ax.set_xlim((left, right))
+    ax.set_ylim((bottom, top))
+
+    # transform the truth rater coordinates to WGS84 for
+    wgs84 = Proj("epsg:4326")
+    left_geo, bottom_geo = point_transform(crs, wgs84, left, bottom)
+    right_geo, top_geo = point_transform(crs, wgs84, right, top)
+    print("original boundaries in truthraster coordinates", left, bottom, right, top)
+    print("geographic bounds", left_geo, bottom_geo, right_geo, top_geo)
+    # catch when map is overzoomed
+    zoom = min(14, cx.tile._calculate_zoom(w=left_geo, e=right_geo, n=top_geo, s=bottom_geo))
+    cx.add_basemap(
+        ax=ax,
+        source=cx.providers.Stamen.TonerLite,
+        attribution=False,
+        crs=crs,
+        zoom=zoom,
+    )
+    print(transform)
     # actually plot the raster in geospatial coordinates on to the axis
     rastershow(
         data,
@@ -301,17 +344,17 @@ def plot_error_improvement_meters(error_raster_path, bathy_points_gdf):
         vmin=-1 * quantilechoice,
         ax=ax,
     )
-    ptartist = bathy_points_gdf.to_crs(crs).plot(
-        ax=ax, label="ICESat-2 points", markersize=0.5, color="black"
+
+    bathy_points_gdf.to_crs(crs).plot(
+        ax=ax, label="ICESat-2 points", markersize=0.1, color="black", rasterized=True
     )
-    ptartist.set_rasterized(True)
-    ax.set_xlabel
+    ax.set_xlabel("Longitude WGS84")
+    ax.set_ylabel("Latitude WGS84")
     ax.legend()
     return fig
 
 
 def plot3d(
-    site,
     subset_pts,
     uncertainty,
     kriged_bathy,
@@ -321,7 +364,7 @@ def plot3d(
     azim,
     elev,
 ):
-    fig = plt.figure()
+    fig = plt.figure(figsize=set_size(fraction=1, ratio=1))
     ax = plt.axes(projection="3d")
     # set the view, the best view depends on the site so requires experimentation
     ax.view_init(elev=elev, azim=azim)
@@ -331,6 +374,8 @@ def plot3d(
         subset_pts.Z,
         s=3,
         label="ICESat-2 points",
+        c="black",
+        linewidths=0,
     )
     # set the labels as needed
     ax.set_zlabel("Elevation [m +MSL]")
@@ -338,10 +383,6 @@ def plot3d(
     ax.set_ylabel(f"Northing [m {utm_name}]")
     fig.tight_layout()
 
-    fig.savefig(
-        f"../data/gl_pres_data/for_powerpoint/{site}_3d_points_only.png",
-        bbox_inches="tight",
-    )
     ax.plot_wireframe(
         eastings,
         northings,
@@ -356,9 +397,17 @@ def plot3d(
 
     ymin = min(subset_pts.Y.min(), northings.min())
     ymax = max(subset_pts.Y.max(), northings.max())
-    contourf_artist = ax.contourf(
-        eastings, northings, uncertainty, 100, offset=mindepth, zdir="z", cmap="plasma"
+    ax.contourf(
+        eastings,
+        northings,
+        uncertainty,
+        100,
+        offset=mindepth,
+        zdir="z",
+        cmap="plasma",
+        rasterized=True,
     )
+    # contourf_artist.set_rasterized(True)
 
     # set plot limits
     ax.set_zlim3d(
@@ -370,30 +419,34 @@ def plot3d(
     # ax.set_aspect(1.5)
 
     ax.legend()
-    fig.colorbar(
-        contourf_artist,
-        ax=ax,
-        label="Variance [m$^2$]",
-        orientation="vertical",
-        fraction=0.025,
-        location="left",
-        pad=0.01,
-    )
+    #  commenting out the colorbar for now since it will be displayed next to
+    # a figure with the same colorbar
+    # fig.colorbar(
+    #     contourf_artist,
+    #     ax=ax,
+    #     label="Variance [m$^2$]",
+    #     orientation="vertical",
+    #     fraction=0.025,
+    #     location="left",
+    #     pad=0.01,
+    # )
 
     return fig
 
 
 def plot_kriging_output(
-    site,
     kriging_raster_dataset: rasterio.DatasetReader,
     kriging_pt_df,
     uncertainty,
     kriged_bathy,
     horiz=True,
+    figsize=None,
+    cmap_orient=None,
 ):
     ncols = 1
     nrows = 2
-    figsize = set_size(fraction=1, ratio=1.68 / 1.5)
+    if figsize is None:
+        figsize = set_size(fraction=1, ratio=1.68 / 1.5)
 
     if horiz:
         nrows = 1
@@ -411,20 +464,18 @@ def plot_kriging_output(
     ax2.add_artist(scalebar)
 
     # plot the points on both axes
-    kriging_pt_df.plot(ax=ax1, c="black", markersize=2, label="ICESat-2 Point")
-    kriging_pt_df.plot(ax=ax2, c="black", markersize=2)
-
-    # open the zero contour line and project it to the local UTM
-    # zero_contour = gpd.read_file(f"../data/test_sites/{site}/in-situ-DEM/contour.shp").to_crs(kriging_pt_df.crs)
-    # zero_contour.plot(ax=ax1,)
-    # zero_contour.plot(ax=ax2,)
+    kriging_pt_df.plot(ax=ax1, c="black", markersize=2, linewidths=0, label="ICESat-2 Point")
+    kriging_pt_df.plot(ax=ax2, c="black", markersize=2, linewidths=0)
 
     # plot the image with geo unit axes
     rastershow((kriging_raster_dataset, 2), ax=ax1, cmap="plasma")
     rastershow((kriging_raster_dataset, 1), ax=ax2, cmap=cmocean.cm.deep_r)
 
-    # add the colormaps using the artists we got before
-    orientval = "horizontal"
+    if cmap_orient is None:
+        # add the colormaps using the artists we got before
+        orientval = "vertical"
+    else:
+        orientval = cmap_orient
     fig.colorbar(
         imartist_sigma,
         ax=ax1,
@@ -440,16 +491,18 @@ def plot_kriging_output(
         pad=0.05,
     )
     fig.tight_layout()
-
-    fig.savefig(f"../data/gl_pres_data/{site}_kriging_output.pdf", bbox_inches="tight")
-    fig.savefig(
-        f"../data/gl_pres_data/for_powerpoint/{site}_kriging_output.png",
-        bbox_inches="tight",
-    )
+    return fig
 
 
 def read_kriging_output(kriging_output_path):
+    """Open a raster dataset at a given path and return the relevant variables
 
+    Args:
+        kriging_output_path (str): path to a rasterio-readable dataset with 2 bands, where 1 band is the elevation and band 2 is the uncertainty
+
+    Returns:
+        tuple: tuple of (uncertinaty_value, elevation_values, easting coordinates, northings coordinates, and the dataset object)
+    """
     krigingras = rasterio.open(kriging_output_path)
     # the sigma is the second band
     uncertainty = krigingras.read(2, masked=True).filled(np.NaN)

@@ -39,7 +39,7 @@ run_logger = setup_logger(name="mainrunlogger", logfile="./run_log.log")
 detail_logger = setup_logger(name="details")
 
 
-class GebcoUpscaler:
+class GebcoDownscaler:
     """Object that contains a test site, and optionally a truth raster for comparison"""
 
     def __init__(self, site, site_name, truebathy=None):
@@ -411,7 +411,7 @@ class GebcoUpscaler:
             bbox_inches="tight",
         )
 
-    def plot_icesat_points(self, fraction=1, figsize=None):
+    def plot_icesat_points(self, fraction=1, figsize=None, cmap_orient=None):
         """plot a map of the ICESat-2 points in the AOI
 
         Args:
@@ -424,13 +424,17 @@ class GebcoUpscaler:
         outpath = f"../document/figures/{self.site_name}_photon_map.pdf"
         # generate the matplotlib figure object
         icesat_points_figure = plot_photon_map(
-            self.bathy_pts_gdf, fraction=fraction, figsize=figsize
+            self.bathy_pts_gdf,
+            fraction=fraction,
+            figsize=figsize,
+            colorbar_orient_in=cmap_orient,
         )
         # save the figure
         icesat_points_figure.savefig(
             outpath,
             bbox_inches="tight",
             facecolor="white",
+            dpi=500,
         )
         icesat_points_figure.savefig(
             f"../document/figures/{self.site_name}_photon_map.png",
@@ -472,10 +476,13 @@ class GebcoUpscaler:
             f"Run Summary: assumed parameters in analysis: {self.run_params}. The lidar RMS error was {self.rmse_icesat}, lidar MAE error {self.mae_icesat}. The raster error was {self.raster_error_summary}"
         )
 
-    def plot_improvement(self):
+    def plot_improvement(self, cmap_orient, figsize):
         erraspath = self.folderpath + "/error_improvement_meter.tif"
         fig = plot_error_improvement_meters(
-            error_raster_path=erraspath, bathy_points_gdf=self.bathy_pts_gdf
+            error_raster_path=erraspath,
+            bathy_points_gdf=self.bathy_pts_gdf,
+            cmap_orient=cmap_orient,
+            figsize=figsize,
         )
         outpath = f"../document/figures/{self.site_name}_error_improvement.png"
         fig.savefig(outpath, bbox_inches="tight", dpi=400)
@@ -483,7 +490,7 @@ class GebcoUpscaler:
         fig.savefig(outpath, bbox_inches="tight", dpi=400)
         run_logger.info(f"{self.site_name}: Error improvement plot written to {outpath}")
 
-    def plot_kriging_output(self, azim, elev, horiz):
+    def plot_kriging_output(self, azim, elev, horiz, figsize):
         # get a dataframe of the subsampled points
         subset_df = gpd.read_file(self.folderpath + "/kriging_pts/")
         # find the name of the UTM grid
@@ -492,10 +499,11 @@ class GebcoUpscaler:
         subset_pts = subset_df.drop(columns="geometry").to_records(index=False)
 
         # get the kriging data
-        uncertainty, kriged_bathy, eastings, northings, dataset = read_kriging_output(self)
+        uncertainty, kriged_bathy, eastings, northings, dataset = read_kriging_output(
+            self.kriged_raster_path
+        )
         # plot and save the 3d plot
         fig = plot3d(
-            self.site_name,
             subset_pts,
             uncertainty,
             kriged_bathy,
@@ -506,20 +514,21 @@ class GebcoUpscaler:
             elev=elev,
         )
 
-        fig.savefig(f"../document/figures{self.site_name}_plot_3d.pdf", bbox_inches="tight")
+        fig.savefig(f"../document/figures/{self.site_name}_plot_3d.pdf", bbox_inches="tight")
         fig.savefig(
             f"../document/figures/{self.site_name}_plot_3d.png",
             bbox_inches="tight",
         )
         # plot and save the kriged output and uncertainty
         fig = plot_kriging_output(
-            self.site_name,
             kriging_raster_dataset=dataset,
             kriging_pt_df=subset_df,
             uncertainty=uncertainty,
             kriged_bathy=kriged_bathy,
             horiz=horiz,
+            figsize=figsize,
         )
+        #
         fig.savefig(
             f"../document/figures/{self.site_name}_kriging_output.pdf", bbox_inches="tight"
         )
