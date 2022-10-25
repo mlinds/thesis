@@ -6,8 +6,9 @@ code/OTPS_model/*
 code/download_examples/
 practicalities/forms/*
 practicalities/writing_tips/*
+practicalities/**/*.pdf
 document/out/*
-*.pdf
+# *.pdf
 *.loc
 /data/
 *.png
@@ -609,3 +610,20 @@ practicalities/reproj.tif
 *.qgz
 document/tudelft-reportoldclas.txt
 .gitignore
+document/GL/GL_presentation_Max_lindsay.pptx
+document/commented_pdfs/bert_version_comments_23_sep_2022.pdf
+document/commented_pdfs/bert_version.pdf
+document/commented_pdfs/bert_version2.pdf
+document/commented_pdfs/Gerben_draft_10sept.pdf
+document/commented_pdfs/gerben_full_version_gerben.pdf
+document/commented_pdfs/gerben_full_version.pdf
+document/commented_pdfs/Gerben_iteration-2_gerben.pdf
+document/commented_pdfs/Gerben_iteration-2.pdf
+document/commented_pdfs/gerben_round3.pdf
+document/commented_pdfs/gerben_results_2.pdf
+document/commented_pdfs/Gerben-results.pdf
+document/GL/GL_presentation_Max_lindsay_slides.pdf
+document/GL/GL_report.pdf
+document/GL/ML_greenlight_version.pdf
+document/GL/ouriginal_nobib.pdf
+document/GL/ouriginal_output_report.pdf

@@ -173,10 +173,10 @@
         \node[above right=6mm] at (current page.south west) {%
             \includegraphics[width=0.35\linewidth]{figures/logo-white.pdf}};
         
-        %% Add the Van Oord logo:
-        % \node[above right=30mm] at (current page.south west){
-        %     \includegraphics[width=0.4\textwidth]{figures/VanOord-2048x785.png}
-        % };
+        % Add the Van Oord logo:
+        \node[above left=7mm] at (current page.south east){
+            \includegraphics[width=0.45\textwidth]{figures/VanOord-2048x785.png}
+        };
 
         %% Add the banner with the title, subtitle, subject and author(s)
         \node[below=2cm,fill=black!85,minimum width={\paperwidth},inner ysep=25pt,opacity=0.6,text opacity=1] at (current page.north) {%
