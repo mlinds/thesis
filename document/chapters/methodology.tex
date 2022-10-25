@@ -134,7 +134,7 @@ A function is created that calculates the maximum kernel density, and the Z loca
 
 This kernel density function gives an indication of the strength and location of the density peak for every photon in the transect. To reject locations where the signal is weak, a threshold (i.e., a minimum KDE density) needs to be established to distinguish between signal and noise. Because there can be significant variation in the density value between different transects, this is set adaptively based on either the median kde value $kde_{50}$, or $kde_{min}$, whichever is greater. The absolute minimum threshold of $kde_{min}$ is required because some transects contain no useful bathymetric signal. Setting an absolute minimum ensures these transects are more likely to be rejected as noise. 
 
-Any photons with a KDE value less than the threshold are assigned an NaN value and are dropped from the analysis and the remaining photons are saved for further use.
+Any photons with a KDE value less than the threshold are assigned a NaN value and are dropped from the analysis and the remaining photons are saved for further use.
 
 To summarize, the input parameters to the signal finding process are:
 
