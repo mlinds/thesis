@@ -97,7 +97,7 @@ The area surrounding Marathon Key in the Florida Keys archipelago in Florida, US
 \begin{figure}[!ht]
     \centering
     \includegraphics{figures/florida_keys_lidar_estimated_vs_truth.pdf}
-    \caption{Marathon Key site: Bias plot showing the results of the KDE signal finding algorithm}
+    \caption[Marathon Key site: Error bias plot]{Marathon Key site: Bias plot showing the results of the KDE signal finding algorithm}
     \label{fig:keys-biasplot}
 \end{figure}
 
@@ -119,8 +119,8 @@ The change in error after the Kalman updating step is shown in table \ref{tab:fl
 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_error_improvement.pdf}}{\caption{Improvement in error after application of Kalman Updating}\label{fig:fl-keys-improvement}}
-        \capbtabbox{\input{tables/florida_keys_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:florida_keys_gebco_raster_error}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/florida_keys_error_improvement.pdf}}{\caption{Improvement in error after application of Kalman updating}\label{fig:fl-keys-improvement}}
+        \capbtabbox{\input{tables/florida_keys_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman updating of kriged data}\label{tab:florida_keys_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
 
@@ -161,7 +161,7 @@ After implementing the Kriging/Kalman updating process for the St.~Croix site it
 \begin{figure}[htbp]
     \begin{floatrow}
         \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_error_improvement.pdf}}{\caption[Spatial distribution in error improvement at St. Croix site]{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths. A larger version of this figure is shown in \ref{fig:site-stcroix-error-improvement-appendix}}\label{fig:improvement-st-croix}}
-        \capbtabbox{\input{tables/Stcroix_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:stcroix_gebco_raster_error}}
+        \capbtabbox{\input{tables/Stcroix_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman updating of kriged data}\label{tab:stcroix_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
 
@@ -203,7 +203,7 @@ After the Kalman updating of the GEBCO bathymetry data, the RMS error was reduce
 \begin{figure}[!ht]
     \begin{floatrow}
         \ffigbox{\includegraphics[width=0.45\textwidth]{figures/charlotteamalie_error_improvement.pdf}}{\caption[Absolute error improvement at St.\ Thomas and St.\ John test site]{St.~Thomas and St.~John Test site: Improvement in absolute error [m] after Kalman update. Note the relatively limited offshore extent of the validation data}\label{fig:charlotte-amalie-improvement}}
-        \capbtabbox{\input{tables/charlotteamalie_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman Updating of kriged data}\label{tab:charlotteamalie_gebco_raster_error}}
+        \capbtabbox{\input{tables/charlotteamalie_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman updating of kriged data}\label{tab:charlotteamalie_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
 
@@ -234,7 +234,7 @@ The accuracy of the ICESat-2 bathymetry points from the KDE signal finding algor
 
 \begin{figure}
     \begin{floatrow}
-        \capbtabbox{\input{tables/oahu_percent_change.tex}}{\caption{Percent reduction in error metrics via the Kalman updating approach. Positive values indicate reduced error, negative ones indicate increased error}\label{tab:oahu-percent-change}
+        \capbtabbox{\input{tables/oahu_percent_change.tex}}{\caption[Percent reduction in error metrics via the Kalman updating approach]{Percent reduction in error metrics via the Kalman updating approach. Positive values indicate reduced error, negative ones indicate increased error}\label{tab:oahu-percent-change}
         }
         \capbtabbox{%
             \input{tables/Oahu_all_sites_RMSE_summary.tex}
@@ -291,7 +291,7 @@ One variable that was checked at the transect level is the Secchi disk depth. Th
 \begin{figure}[!ht]
     \centering
     \includegraphics{figures/track-level-stats.pdf}
-    \caption{Relationship between transect-level statistics and RMS error of ICESat-2 data. None of the investigated variables can serve as a good way to predict the presence or quality of bathymetric signal.}
+    \caption[Relationship between transect-level statistics and RMS error of ICESat-2 data]{Relationship between transect-level statistics and RMS error of ICESat-2 data. None of the investigated variables can serve as a good way to predict the presence or quality of bathymetric signal.}
     \label{fig:track-level-stats}
 \end{figure}
 

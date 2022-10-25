@@ -13,7 +13,7 @@ Optical remote sensing is a passive technique, as it detects light from the sun 
 
 Empirical optical methods require some in-situ data to establish the relationship between the optical properties and the depth in the area. \cite{Parrish2019} conclude that the most effective way to use ICESat-2 data for bathymetric estimation is to combine it with optical techniques. Because the ICEsat-2 data provides relatively high accuracy point estimates, and optical methods allow the estimation of a 2D bathymetry grid but require in-situ point measurements for calibration, combining the two techniques provides a synergistic fusion of the strengths of both. There have since been several studies that employ this approach, and evaluate different techniques for correcting refraction, identifying bathymetry signal, and combining the lidar data with optical techniques (For examples of studies combining ICESat-2 with optical SDB methods, see \cite{Geyman2019,Pike2019,Ma2020,Lee2021,Albright2021,Ranndal2021,Gleason2021,Thomas2021d,Babbel2021a,Hsu2021,Cao2021,Xie2021,Surisetty2022,Zhong2022a,Zheng2022,Daly2022,Xu2022,Magruder2020,Thomas2022,LeQuilleuc2022b}). Suffice it to say this topic has seen significant interest from researchers in recent years.
 
-\section{Lidar Bathymetric Surveying}
+\section{Lidar bathymetric Surveying}
 
 The earliest attempts to use Light Detecting and Ranging (lidar) to survey the coastal zone date back to the late 1960s. \parencite{Bailly2016}. The technology has matured significantly since then and currently airborne lidar using a strong 532nm laser beam is a common technique for high accuracy bathymetric and topographic surveying. The downside of this technique is that it does not scale well to large areas because it requires expensive equipment, and extensive post-processing work is needed after the survey to produce a final product. 
 
@@ -149,11 +149,11 @@ However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or 
 \begin{figure}[!ht]
       \centering
       \includegraphics[width = 0.5\textwidth]{figures/refraction_error.png}
-      \caption{The geometry of the error induced by refraction at the air-water interface. From \cite{Parrish2019}}
+pa      \caption[Effects of refraction on lidar beam]{The geometry of the error induced by refraction at the air-water interface. From \cite{Parrish2019}}
       \label{refract-image}
 \end{figure}
 
-The method proposed by \citeauthor{Parrish2019} is outlined below. Figure \ref{refract-image} shows some of the geometric variables used in the equations. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
+The method rrproposed by \citeauthor{Parrish2019} is outlined below. Figure \ref{refract-image} shows some of the geometric variables used in the equations. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
 
 \begin{equation}\label{eq:snellslaw}
       \theta_2 = \sin^{-1}{\frac{n_1 \sin{\theta_1}}{n_2}}
