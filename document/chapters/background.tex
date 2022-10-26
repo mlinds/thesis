@@ -33,7 +33,7 @@ The surface of the actual geoid changes with over time due to deformation of the
 
 \subsection{Inverted barometer effect and dynamic atmosphere correction}
 
-The instantaneous sea surface elevation is affected by the local weather and atmospheric conditions. The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height, or the  local dynamic sea-surface topography \parencite{Robbins2022}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down.
+The instantaneous sea surface elevation is affected by the local weather and atmospheric conditions. The Inverted barometer (IB) effect refers to the effect of air pressure on the ocean height, or the local dynamic sea-surface topography \parencite{Robbins2022}. Spatial gradients in air pressure due to local high and low pressure systems are equalized by gradients in the water surface height. When atmospheric pressure is low, the ocean level rises, and when atmospheric pressure increases it pushes the ocean surface down.
 
 In the simplest formulation, the drop in ocean level is approximately 1 cm per additional mbar of atmospheric pressure: $D_h \approx 0.99484(P_i-P_{ref})$, where $P_i$ is the instantaneous pressure in mbar and $P_{ref}$ is an assumed average pressure (1013.3 mbar) \parencite{Neumann2019e}
 
@@ -149,11 +149,11 @@ However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or 
 \begin{figure}[!ht]
       \centering
       \includegraphics[width = 0.5\textwidth]{figures/refraction_error.png}
-pa      \caption[Effects of refraction on lidar beam]{The geometry of the error induced by refraction at the air-water interface. From \cite{Parrish2019}}
+      \caption[Effects of refraction on lidar beam]{The geometry of the error induced by refraction at the air-water interface. From \cite{Parrish2019}}
       \label{refract-image}
 \end{figure}
 
-The method rrproposed by \citeauthor{Parrish2019} is outlined below. Figure \ref{refract-image} shows some of the geometric variables used in the equations. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
+The method proposed by \citeauthor{Parrish2019} is outlined below. Figure \ref{refract-image} shows some of the geometric variables used in the equations. First, the angle of refraction $\theta_2$ is calculated based on the relative speed of light in the air and water. This first step, shown in equation \ref{eq:snellslaw}, is the application of Snell's law.
 
 \begin{equation}\label{eq:snellslaw}
       \theta_2 = \sin^{-1}{\frac{n_1 \sin{\theta_1}}{n_2}}

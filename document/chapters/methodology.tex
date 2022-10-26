@@ -35,7 +35,7 @@ The data is accessed via the OPeNDAP protocol on a server hosted by the Copernic
 % explain the idea of JarKus and the 
 \section{Methodology}
 
-To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lidar photon data for the area of interest is downloaded, processed into geoidal heights, subset to only include subsurface photons, find bathymetric signal within the subsurface data, interpolate into a 2D grid, then finally combine the interpolated ICESat-2 data with the resampled GEBCO grid within the area of interest. Then, for each test site the change in root mean square error (RMSE), Mean Absolute Error (MAE), and mean error (ME) when compared to  the raw GEBCO bathymetry is calculated. 
+To reach the end goal of incorporating ICESat-2 into GEBCO grids, first the lidar photon data for the area of interest is downloaded, processed into geoidal heights, subset to only include subsurface photons, find bathymetric signal within the subsurface data, interpolate into a 2D grid, then finally combine the interpolated ICESat-2 data with the resampled GEBCO grid within the area of interest. Then, for each test site the change in root mean square error (RMSE), Mean Absolute Error (MAE), and mean error (ME) when compared to the raw GEBCO bathymetry is calculated. 
 
 \begin{figure}[h]
     \centering
@@ -73,7 +73,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
         \label{fig:gebco_filtering}
     \end{figure}
 
-    \item The local sea-surface elevation $h_{sea}$ is calculated by taking the median elevation of the  high-confidence sea surface photons in the transect. The water depth for each photon is then calculated. The standard deviation of the elevation high-confidence photons $\sigma_{h_{sea}}$ is also calculated. This is used as a proxy to estimate the magnitude of the wave height at the time of the observation.
+    \item The local sea-surface elevation $h_{sea}$ is calculated by taking the median elevation of the high-confidence sea surface photons in the transect. The water depth for each photon is then calculated. The standard deviation of the elevation high-confidence photons $\sigma_{h_{sea}}$ is also calculated. This is used as a proxy to estimate the magnitude of the wave height at the time of the observation.
     \item Any photons with a water depth greater than 40 meters or a geoidal height less than -40 m are removed, based on the same assumption that they are too deep to be bathymetric photons. 
     \item To remove the sea surface signal and any noise points above it, any photons that are higher than $h_{sea} - \max{(2.5\sigma_{h_{sea}},1~m)}$ are removed. This removes the sea surface signal and any high noise photons.
     
@@ -172,7 +172,7 @@ A spherical variogram with a range of 10 km, a nugget variance of 0.7 $m^2$, and
 
 \subsection{Bayesian data assimilation using Kalman update equation}\label{subsec:Kalman-update}
 
-The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, a \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations are used to estimate the state of a linear process for a state $x_k$ and a vector of measurements of the state $z_k$ \parencite{Welch2021a}.  It is assumed that the state of a system evolves according to the difference equation
+The Kalman Filter is a mathematical technique to predict the state of systems based on uncertain measurements. It consists of a loop of two steps, a \emph{time update} step which updates the position based on a measurement and a known measurement uncertainty, and a \emph{measurement update} step which predicts the state based on the dynamic equations of the system. The Kalman filter equations are used to estimate the state of a linear process for a state $x_k$ and a vector of measurements of the state $z_k$ \parencite{Welch2021a}. It is assumed that the state of a system evolves according to the difference equation
 
 \begin{equation}
  x_k = Ax_{k-1} + Bu_{k-1} + w_{k-1}   
@@ -186,7 +186,7 @@ Measurements of the state are assumed to have the form:
     z_k = Hx_k + v_k
 \end{equation}
 
-Where $H$ is a matrix that relates the state to the measurement, and  $v_k$ is measurement noise which is assumed to be normally distributed with a variance $R$.
+Where $H$ is a matrix that relates the state to the measurement, and $v_k$ is measurement noise which is assumed to be normally distributed with a variance $R$.
 
 At each time step $k$, the estimates of the state can be updated according to the following two steps:
 
@@ -227,7 +227,7 @@ Equation \ref{eq:kalmangain} is the Kalman gain, an estimation of the strength o
 \pdfcomment{number these?}
 $$ K =  \frac{P_k}{P_k + R} $$
 
-$$ \hat{x}_k =  \hat{x}_{\bar{k}} + K(\hat{z}_k -  \hat{x}_{\bar{k}}) $$
+$$ \hat{x}_k = \hat{x}_{\bar{k}} + K(\hat{z}_k - \hat{x}_{\bar{k}}) $$
 
 
 $$ P_k = (1 - K) P_{\bar{k}} $$
@@ -260,7 +260,7 @@ To compare the results to the validation data, several different error metrics a
 
 The error metrics that are evaluated for both types of error are the root mean square error (RMSE) and the mean absolute error (MAE). The RMSE is calculated by taking the mean of the squared difference between the true value and the estimated value, and then taking the square root of this mean.
 
-$$  \text{RMSE} = \sqrt{\frac{1}{n}\Sigma_{i=1}^{n}{\Big(\frac{x_i - y_i}{\sigma_i}\Big)^2}}  $$
+$$  \text{RMSE} = \sqrt{\frac{1}{n}\Sigma_{i=1}^{n}{\Big(\frac{x_i - y_i}{\sigma_i}\Big)^2}}$$
 
 By squaring the error first, larger magnitude errors are given relatively more weight in the metric. Mean absolute error also gives an idea of the average deviation, but gives equal weight to all errors.
 
