@@ -1,7 +1,7 @@
 
 \chapter{Results}
 
-This section details the results of investigations into how point estimates of bathymetry can be extracted from ICESat-2 data, and then how these point estimates can be interpolated and integrated into existing bathymetry grids to produce an upscaled product. Sections \ref{subsec:randomsample} and \ref{subsec:petten_kriging} validate the principle of interpolating point estimates and combining them with GEBCO. In section \ref{subsec:randomsample} random point samples of the validation data for a region are taken, then those points as synthetic input data to the kriging + Kalman updating approach. Then, in section \ref{subsec:petten_kriging}, point estimates of bathymetry from JarKus are used as input to the Kriging Kalman updating process. The rest of the chapter shows the results of the full methodology, including ICESat-2 signal finding and the interpolation/updating of the GEBCO data. This full cycle is applied at 4 test sites: Marathon Key (Florida, USA), St.~Croix (US Virgin Islands), St.~Thomas and St.~John (US Virgin Islands), and the Island of Oahu (Hawai'i, USA). Finally, the full set of ICESat-2 data points found in all test sites are aggregated to evaluate if there are any variables which predict the quality or availability of bathymetric signal in the ICESat-2 data.
+This section details the results of investigations into how point estimates of bathymetry can be extracted from ICESat-2 data, and then how these point estimates can be interpolated and integrated into existing bathymetry grids to produce an upscaled product. Sections \ref{subsec:randomsample} and \ref{subsec:petten_kriging} validate the principle of interpolating point estimates and combining them with GEBCO. In section \ref{subsec:randomsample} random point samples of the validation data for a region are taken, then those points are used as synthetic input data to the kriging + Kalman updating approach. Then, in section \ref{subsec:petten_kriging}, point estimates of bathymetry from JarKus are used as input to the Kriging Kalman updating process. The rest of the chapter shows the results of the full methodology, including ICESat-2 signal finding and the interpolation/updating of the GEBCO data. This full cycle is applied at 4 test sites: Marathon Key (Florida, USA), St.~Croix (US Virgin Islands), St.~Thomas and St.~John (US Virgin Islands), and the Island of Oahu (Hawai'i, USA). Then, the full set of ICESat-2 data points extracted from all test sites are aggregated to evaluate if there are any variables which predict the quality or availability of bathymetric signal in the ICESat-2 data.
 
 The global distribution of the test sites where the full cycle is implemented is shown in Figure \ref{fig:world-site-map}
 
@@ -57,7 +57,7 @@ The location of Petten, The Netherlands, located on the Noord-Holland coast, was
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[]{figures/Petten_photon_map.pdf}
+    \includegraphics[angle=90]{figures/Petten_photon_map.pdf}
     \caption{Jarkus 2021 measurement points within the site}\label{fig:jarkus-points}
 \end{figure}
 
@@ -75,8 +75,7 @@ The Jarkus points are used as input to the kriging process instead of ICESat-2 p
 
 The kriging output is shown in Figures \ref{fig:petten-kriging} and \ref{fig:petten-3d-plot}. The Jarkus points show an even distribution of measurement points in the cross-shore and alongshore directions in the entire study site, so the RMSE between the kriging output surface is very low. This site is also very well-suited to interpolation, since the bathymetry of the site is relatively homogenous and isotropic - the slopes and elevations are all relatively constant. Because this nearshore area has good quality point data and also is easy to interpolate, the kriged bathymetry surface was found to have a lower RMSE and MAE error than GEBCO. 
 
-It is notable that in this site, the error between GEBCO and the high resolution bathymetry is significantly lower than other test sites. This could be due to higher quality or more recent input data into the GEBCO grid as compared to the other sites. 
-Even with a higher accuracy in the GEBCO data it was found that the Bayesian combination of both of these datasets has the highest accuracy --- indicating that the Bayesian combination of these two datasets increases the value compared to either dataset individually.
+It is notable that in this site, the error between GEBCO and the high resolution bathymetry is significantly lower than other test sites. This could be due to higher quality or more recent input data into the GEBCO grid as compared to the other sites. Even with a higher accuracy in the GEBCO data it was found that the Bayesian combination of both of these datasets has the highest accuracy --- indicating that the Bayesian combination of these two datasets increases the value compared to either dataset individually.
 
 \input{tables/petten_kalman_improvement.tex}
 
