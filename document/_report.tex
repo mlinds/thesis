@@ -1,10 +1,7 @@
 \documentclass[]{tudelft-report}
-% \documentclass{tudelft-report}
 \usepackage{gensymb}
 \usepackage{changes}
 \usepackage{booktabs}
-% \usepackage{lscape}
-% \usepackage{pdflscape}
 \usepackage[style=authoryear,maxcitenames=2,maxbibnames=100,giveninits=true]{biblatex}
 \usepackage{csquotes}
 \usepackage[author=Max,final]{pdfcomment}
@@ -13,9 +10,6 @@
 \usepackage{import}
 \usepackage[acronym]{glossaries}
 \usepackage[section]{placeins}
-% \usepackage[skip=10pt]{parskip}
-% \usepackage{floatrow}
-% \usepackage{tablefootnote}
 \addbibresource[datatype=bibtex]{library.bib}
 \addbibresource[datatype=bibtex]{non-mendeley.bib}
 
@@ -24,29 +18,18 @@
 
 \begin{document}
 
-% \showthe\textwidth % pt.
+
 %% Use Roman numerals for the page numbers of the title pages and table of
 %% contents.
 \frontmatter
-% \pdfcomment{decide on consistent hyphenation of remote sensing, signal finding, etc}
-% \pdfcomment{make sure that acronyms are defined the first time they're used}
-% \pdfcomment{check for consistent spelling of Bayesian, kriging, etc}
-% \pdfcomment{check for contractions}
+
 %% Uncomment following 16 lines for a cover with a picture on the lower half only
 \title{Bayesian downscaling of global bathymetry using spaceborne lidar}
 % \subtitle[tudelft-black]{}
 \author{M.\ A.\ E. Lindsay}
 \affiliation{Technische Universiteit Delft}
 \coverimage{figures/my_spacelidar_image/cover_image3_crop.jpg}
-% \covertext[tudelft-white]{
-%     \textbf{Draft as of \today} 
-%     % possibly \\
-%     % spanning 
-%     % multiple 
-%     % lines
-%     % \vfill
-%     % ISBN 000-00-0000-000-0
-% }
+
 % \setpagecolor{tudelft-cyan}
 \definecolor{title}{HTML}{4884d6}
 \makecover
@@ -74,15 +57,11 @@
 \input{chapters/discussion.tex}
 \input{chapters/conclusion.tex}
 
-
 %% Use letters for the chapter numbers of the appendices.
 \appendix
 \printbibliography
 \input{chapters/python_code.tex}
 \input{chapters/site_details.tex}
-% \input{chapters/output_data.tex}
-
-
 
 \end{document}
 
