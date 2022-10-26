@@ -77,7 +77,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \item Any photons with a water depth greater than 40 meters or a geoidal height less than -40 m are removed, based on the same assumption that they are too deep to be bathymetric photons. 
     \item To remove the sea surface signal and any noise points above it, any photons that are higher than $h_{sea} - \max{(2.5\sigma_{h_{sea}},1~m)}$ are removed. This removes the sea surface signal and any high noise photons.
     
-    The results of steps 2-4 are shown in Figure \ref{fig:vert_filtering}
+    The results of steps 2--4 are shown in Figure \ref{fig:vert_filtering}
     
     \item As an additional check, any photons with a geoid height greater than 10~m are removed. This is justifiable because it does make physical sense to find bathymetric photons that high above the geoid surface. This additional step is required because it was found that in Oahu there are some photons classified as high-confidence ocean signal with an elevation in the range 50-100~m. This is likely due to misclassification of cloud photons as ocean surface signal.
     
@@ -151,7 +151,7 @@ After the bathymetric signal points are identified using the approach described 
 
 
 \subsubsection{Subsampling of bathymetric points using Poisson disk sampling} \label{subsec:poissonsubsampling}
-The bathymetric points are extremely densely spaced in some areas and transects. This can present an issue to kriging, which is computationally expensive and points too close together can make the algorithm even slower. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the Poisson disk sampling technique. Poisson disk sampling is a strategy that generates random samples of a distribution that are a minimum distance apart. When applied to a point cloud, in this case the point cloud of all the bathymetric points, the sampling function will only return points that are a minimum distance apart in 3d space. This ensures that the sampling is as representative as possible of the underlying surface.
+The bathymetric points are extremely densely spaced in some areas and transects. This can present an issue to kriging, which is computationally expensive and points too close together can make the algorithm even slower. To reduce the number of points fed into the algorithm, a subsample of the points is taken using the Poisson disk sampling technique. Poisson disk sampling is a strategy that generates random samples of a distribution that are a minimum distance apart. When applied to a point cloud, in this case the point cloud of all the bathymetric points, the sampling function will only return points that are a minimum distance apart in 3D space. This ensures that the sampling is as representative as possible of the underlying surface.
 
 The implementation used is from the PDAL software library \parencite{howard_butler_2022_6369164}, which provides an iterative Poisson disk sampling function based on \citeauthor{McCool1992} (\citeyear{McCool1992}). The disk sampling is applied iteratively with a decreasing radius until the desired number of points is reached. In this case, it was found that the maximum number of points that can practically be used in the kriging step is approximately 2000 points. Therefore, this was the number of points used to allow the maximum possible point density while using a consumer-grade laptop to run the algorithm. 
 
@@ -160,7 +160,7 @@ The subsample of points obtained from the Poisson disk sampling is then interpol
 
 The universal kriging interpolator used is a 2D interpolator, and both the estimated surface and its associated uncertainty are generated for the entire site. A single slice of the output, taken along an ICESat-2 transect, is shown in Figure \ref{fig:kriging-interpolator}. Note that the uncertainty estimate for the interpolated GEBCO surface is constant, and the uncertainty estimate for the kriging interpolator increases with increased distance from the input points. 
 
-A spherical variogram with a range of $10 km$, a nugget variance of $0.7 m^2$, and a sill variance of $25 m^2$ was found to produce good results in most sites. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. 
+A spherical variogram with a range of 10 km, a nugget variance of 0.7 $m^2$, and a sill variance of 25 $m^2$ was found to produce good results in most sites. The python package Pykrige \parencite{benjamin_murphy_2021_5380342} was used to implement the universal kriging approach. 
 
 \begin{figure}[!ht]
     \centering
@@ -247,7 +247,7 @@ In this application, the starting point of estimate is based on a bilinear resam
 \subsection{Per-track Secchi disk depth estimation}
 To evaluate the relationship between the Secchi disk depth at the location and the time of the transect, and the quality of the bathymetry estimate, the Secchi depth value from the GlobColour dataset \parencite{Garnesson2019} is found at points distributed along each ICESat-2 transect. 
 
-The GlobColour Daily Secchi Depth dataset is provided at a 4km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines are divided into points every $4~\text{km}$ starting at the end of the transect. For each of these points, the closest ocean color data in time and space is calculated using Xarray. 
+The GlobColour Daily Secchi Depth dataset is provided at a 4 km horizontal resolution, and a 1 day temporal resolution. To calculate the Secchi depth in water areas at the time of the satellite pass, the ATL03 tracklines are divided into points every $4~\text{km}$ starting at the end of the transect. For each of these points, the closest ocean color data in time and space is calculated using Xarray. 
 
 One issue is that this approach generates some points over land. The GlobColour data does include a land mask, but because of the $4~\text{km}$ horizontal resolution of the ocean color product, the land mask is not reliable along coasts. However, the GEBCO dataset has a much higher horizontal resolution than the GlobColour data ($450~\text{m}$). Therefore, in this case the GEBCO data can be used as a land mask. For each Secchi disk depth point, the corresponding GEBCO elevation is found, and if it is greater than 0 the point is assumed to be on land and is rejected. 
 
@@ -281,7 +281,7 @@ This section introduces some possible sources inherent limitations or error in t
 
 \subsection{Limitations in Photon Geolocation Accuracy}
 
-The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17cm, and the estimate of the x and y position uncertainty is 5 m \parencite{Neumann2019c}.
+The pointing determination algorithm used by the satellite has a high vertical accuracy, but there is an inherent limitation on the horizontal accuracy. The current best estimate of the vertical accuracy is 0.17 cm, and the estimate of the x and y position uncertainty is 5 m \parencite{Neumann2019c}.
 
 This uncertainty, and the horizontal refraction, are more likely second order effects. Because the kriging is used to create a product of 50 m resolution, any uncertainty introduced by this will be masked by the interpolation to a 50 m grid.
 
@@ -312,7 +312,7 @@ This could potentially be mitigated by a different filtering strategy that calcu
 
 In support of the vegetation mission of ICESat-2, the instrument is sometimes pointed as much as several degrees to the side of the reference ground tracks when the satellite passes over land. This increases the spatial density of points at the expense of the temporal resolution. For bathymetric purposes the increased spatial resolution gives a more even coverage of nearshore zone bathymetry. 
 
-However, the land mask that is used by NASA to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Due to apparently being located within the off-pointing zones, both of the aforementioned islands only have tracks which are 3km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the further reduction in spatial coverage limits the accuracy of the kriging method. This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations. The tradeoff for this scenario is that the temporal resolution is significantly better, so the spaceborne lidar could be useful for studying the changes over time. 
+However, the land mask that is used by NASA to determine the off-pointing strategy has a limited resolution, and therefore some island nations do not benefit from the increased spatial density. This was noted when trying to collect data from Fiji and the Maldives. Due to apparently being located within the off-pointing zones, both of the aforementioned islands only have tracks which are 3 km apart. They can still potentially collect bathymetry data if conditions are otherwise good, but the further reduction in spatial coverage limits the accuracy of the kriging method. This is unfortunate because many of the states that are at the highest need of detailed bathymetry for numerical studies are big ocean island nations. The tradeoff for this scenario is that the temporal resolution is significantly better, so the spaceborne lidar could be useful for studying the changes over time. 
 
 \subsection{Inherent uncertainty of KDE Method}
 There are a number of input parameters to the filtering and the density-based bathymetry finding methods. These parameters can be optimized for each site to reduce the RMS error as much as possible if there is some validation data available. However since the end goal of the project is to be able to improve estimates without using any in situ data, ideally there would be no need for optimization based on the site.
