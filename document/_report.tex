@@ -13,6 +13,7 @@
 \usepackage{import}
 \usepackage[acronym]{glossaries}
 \usepackage[section]{placeins}
+% \usepackage[skip=10pt]{parskip}
 % \usepackage{floatrow}
 % \usepackage{tablefootnote}
 \addbibresource[datatype=bibtex]{library.bib}
@@ -36,7 +37,7 @@
 % \subtitle[tudelft-black]{}
 \author{M.\ A.\ E. Lindsay}
 \affiliation{Technische Universiteit Delft}
-\coverimage{figures/my_spacelidar_image/cover_image2.pdf}
+\coverimage{figures/my_spacelidar_image/cover_image3_crop.jpg}
 % \covertext[tudelft-white]{
 %     \textbf{Draft as of \today} 
 %     % possibly \\
@@ -53,9 +54,9 @@
 
 %% Include an optional title page.
 \input{chapters/title.tex}
+\input{chapters/preface.tex}
 \input{chapters/abstract.tex}
 \input{chapters/summary.tex}
-\input{chapters/preface.tex}
 \listofpdfcomments[liststyle=Comment]
 \pdfcomment{check for captions that are too long, give them a different caption}
 \listoffigures
@@ -77,8 +78,8 @@
 %% Use letters for the chapter numbers of the appendices.
 \appendix
 \printbibliography
-\input{chapters/site_details.tex}
 \input{chapters/python_code.tex}
+\input{chapters/site_details.tex}
 % \input{chapters/output_data.tex}
 
 

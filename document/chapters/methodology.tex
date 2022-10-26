@@ -77,7 +77,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \item Any photons with a water depth greater than 40 meters or a geoidal height less than -40 m are removed, based on the same assumption that they are too deep to be bathymetric photons. 
     \item To remove the sea surface signal and any noise points above it, any photons that are higher than $h_{sea} - \max{(2.5\sigma_{h_{sea}},1~m)}$ are removed. This removes the sea surface signal and any high noise photons.
     
-    The results of steps 2-4 are shown in figure \ref{fig:vert_filtering}
+    The results of steps 2-4 are shown in Figure \ref{fig:vert_filtering}
     
     \item As an additional check, any photons with a geoid height greater than 10~m are removed. This is justifiable because it does make physical sense to find bathymetric photons that high above the geoid surface. This additional step is required because it was found that in Oahu there are some photons classified as high-confidence ocean signal with an elevation in the range 50-100~m. This is likely due to misclassification of cloud photons as ocean surface signal.
     
@@ -90,7 +90,7 @@ The bathymetric signal that we are seeking to find is located in the shallow-wat
     \end{figure}
 \end{enumerate}
 
-After these filtering steps, the resulting subsurface photons for this example transect are shown in figure \ref{fig:remaing_photons}. The bathymetric signal can be seen clearly throughout the entire transect.
+After these filtering steps, the resulting subsurface photons for this example transect are shown in Figure \ref{fig:remaing_photons}. The bathymetric signal can be seen clearly throughout the entire transect.
 
 \begin{figure}[htb]
     \centering
@@ -295,7 +295,7 @@ Another potential source of error is the slope of the water surface. Since there
 
 Correct filtering of sea surface returns is very important to the accuracy of the bathymetry signal finding, because the sea surface signal is often several orders of magnitude more dense than the bathymetric signal, and the location of the sea surface is also used to calculate the depth of a photon for refraction correction. The default photon classification provided in the ATL03 data is used to identify the sea surface within the filtering algorithm. Errors in the default ocean signal classification can result in sea surface signal being inadvertently included in the subsurface data and biasing the KDE results.
 
-The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
+The default classification is often reliable, but when there is a large area where the bathymetric surface is shallow and nearly parallel to the sea surface, there can be misclassifications. An example of this is shown in Figure \ref{fig:ageeba_bad_classes}. In this example, actual sea surface is not classified as a high confidence ocean surface return, and some areas that appear to be bathymetric signal are classified as ocean surface. This causes the bathymetric signal to be thrown out because it is incorrectly considered to be the sea surface.
 
 This could potentially be mitigated by a different filtering strategy that calculates the local sea surface based on the local geoid. This could be very feasible in microtidal areas where the tidal signal has a smaller impact.
 
