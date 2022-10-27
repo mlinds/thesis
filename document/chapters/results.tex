@@ -125,7 +125,7 @@ The change in error after the Kalman updating step is shown in table \ref{tab:fl
 
 \section{St.~Croix test site} \label{sec:stcroix-site}
 
-Another site where the entire processing chain was implemented was in the Caribbean island of St. Croix. The site was chosen based on the availability of recent high-resolution bathymetry validation data, and also on the basis of the clear water. The site provides some interesting contrasts: the south edge of the island is a relatively gently sloping shelf, while the north edge of the island has an extremely steep shoreline. On the northeast edge there is a bank between the main island and a smaller island.
+Another site where the entire processing chain was implemented was in the Caribbean island of St.~Croix. The site was chosen based on the availability of recent high-resolution bathymetry validation data, and also on the basis of the clear water. The site provides some interesting contrasts: the south edge of the island is a relatively gently sloping shelf, while the north edge of the island has an extremely steep shoreline. On the northeast edge there is a bank between the main island and a smaller island.
 
 The validation data used is provided by a USGS-sponsored survey of the area using a Riegl VQ-880-G II lidar sensor between January and June 2019. The lidar point data was then post-processed into a 1 m raster DEM product with a bathymetric vertical accuracy of $12.1$~cm when compared to the survey control points \parencite{USVI-lidar2022}. This DEM was used for validation. Note that the areas to the Northwest of the island has a very steep slope, and is therefore missing in the validation data - the slope is steep enough that the airborne lidar sensor could not get sufficient signal in that area.
 
@@ -149,8 +149,8 @@ The results of the kriging output for this site are shown in Figures \ref{fig:st
 
 \begin{figure}[!ht]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St. Croix Test site}\label{fig:stcroix-kriging}}
-        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption[3D Plot of the kriging result at St. Croix Site]{3D Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot. Note that the scale of the uncertainty (plotted on the bottom) is the same used in the lower half of \ref{fig:stcroix-kriging}}\label{fig:stcroix-3d}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_kriging_output.pdf}}{\caption{Results of Universal Kriging interpolation in the St.~Croix Test site}\label{fig:stcroix-kriging}}
+        \ffigbox{\includegraphics[width=0.45\textwidth]{figures/stcroix_plot_3d.pdf}}{\caption[3D Plot of the kriging result at St.~Croix Site]{3D Plot of the kriging results (red wireframe) with the resulting uncertainty shown on the bottom of the plot. Note that the scale of the uncertainty (plotted on the bottom) is the same used in the lower half of \ref{fig:stcroix-kriging}}\label{fig:stcroix-3d}}
     \end{floatrow}
 \end{figure}
 
@@ -159,7 +159,7 @@ After implementing the Kriging/Kalman updating process for the St.~Croix site it
 
 \begin{figure}[htbp]
     \begin{floatrow}
-        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_error_improvement.pdf}}{\caption[Spatial distribution in error improvement at St. Croix site]{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths. A larger version of this figure is shown in \ref{fig:site-stcroix-error-improvement-appendix}}\label{fig:improvement-st-croix}}
+        \ffigbox{\includegraphics[width=0.5\textwidth]{figures/stcroix_error_improvement.pdf}}{\caption[Spatial distribution in error improvement at St.~Croix site]{Improvement in absolute error in meters after combining the interpolated bathymetry grid via Kalman updating. The improvement at this site occurs mostly at the middle depths. A larger version of this figure is shown in \ref{fig:site-stcroix-error-improvement-appendix}}\label{fig:improvement-st-croix}}
         \capbtabbox{\input{tables/Stcroix_kalman_improvement.tex}}{\caption{Improvement in error metrics after applying Kalman updating of kriged data}\label{tab:stcroix_gebco_raster_error}}
     \end{floatrow}
 \end{figure}
