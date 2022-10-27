@@ -141,10 +141,10 @@ The beams are divided into weak and strong signals to enhance the radiometric dy
 
 The locations calculated by the data products from the satellite do not correct for the refraction induced by the water column. The subsurface photons are geolocated as if they are not underwater. However, because the speed at which light travels is different in water than the atmosphere. This effect introduces both a horizontal and vertical error in the photon location, as shown in Figure \ref{refract-image}.
 
-When the instrument is pointed directly at the reference ground track, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is $\sim 9~cm$ \parencite{Parrish2019}, which for bathymetric purposes is negligible. Some studies of bathymetry extraction from ICESat-2 data only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law.
+When the instrument is pointed directly at the reference ground track, the laser beams point nearly directly at the satellite's nadir. When directly on-nadir, the additional horizontal error induced by refraction is $\sim 9~cm$ \parencite{Parrish2019}, which for bathymetric purposes is negligible. Some studies of bathymetry extraction from ICESat-2 data only use data that is collected when the instrument is pointing on-nadir, and therefore only correct for the vertical error using Snell's law. This is referred to as \emph{first order} refraction correction in the table summarizing previous research (Table \ref{tab:researchsummary}).
 
-However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or $\sim43~km$ away from the RGT \parencite{Magruder2021}. During offpointing, the horizontal error is more significant and must be corrected for accurate bathymetry \parencite{Parrish2019}. \citeauthor{Parrish2019} propose a method to correct for both horizontal and vertical error that is widely cited in later papers. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}.  This is referred to as \emph{first order} refraction correction in the table summarizing previous research (Table \ref{tab:researchsummary}).
 
+However, by design ATLAS is capable of pointing up to $5 \degree$ off-nadir, or $\sim43~km$ away from the RGT \parencite{Magruder2021}. During offpointing, the horizontal error is more significant and must be corrected for accurate bathymetry \parencite{Parrish2019}. \citeauthor{Parrish2019} propose a method to correct for both horizontal and vertical error that is widely cited in later papers. The Parrish method assumes a flat water surface, but other studies have extended their method to include the effect of water slope or wave action on the refraction error \parencite{Ma2020,Zhang2022}. 
 
 \begin{figure}[!ht]
       \centering
@@ -193,7 +193,7 @@ The horizontal correction $\Delta Y$ is along the direction of the laser pointin
 \end{align}
 
 
-The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects, this effect can be corrected with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this correction factor is
+The curvature of the earth can also affect the accuracy of the refraction correction. For longer transects this effect can be corrected with an additional correction suggested by \citeauthor{Parrish2019}. The equation for this correction factor is
 
 \begin{equation}
       \delta \theta_{EC} = \arctan{\frac{H \tan{\theta_1}}{R_e}}
